@@ -1,43 +1,47 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask, request, jsonify
+import requests
 
-app = FastAPI()
+app = Flask(__name__)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# 🔥 REPLACE THESE WITH YOUR REAL VALUES
+SUPABASE_URL = "https://xhxnyfrhizbvhlhedhjud.supabase.co"
+SUPABASE_KEY = "PASTE_YOUR_sb_publishable_KEY"
 
-class InputData(BaseModel):
-    situation: str
-    objective: str
-    constraints: str
-    context: str
-    leverage_goal: str
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    data = request.json
+    text = data.get("text", "")
+    mode = data.get("mode", "Decision")
 
-@app.get("/")
-def root():
+    # BASIC OUTPUT (we upgrade later)
+    output = {
+        "snapshot": f"{mode} context understood",
+        "objective": "Clarify outcome and next move",
+        "best_move": "Take decisive action"
+    }
+
+    # 🔥 SAVE TO SUPABASE
+    requests.post(
+        f"{SUPABASE_URL}/rest/v1/items",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        },
+        json={
+            "mode": mode,
+            "content": text,
+            "output": str(output),
+            "status": "active"
+        }
+    )
+
+    return jsonify(output)
+
+@app.route("/")
+def home():
     return {"status": "running"}
 
-@app.post("/analyze")
-def analyze(data: InputData):
-    return {
-        "what_matters": [
-            "Focus on outcome alignment",
-            "Control value perception",
-            "Clarify objective immediately"
-        ],
-        "risks": [
-            "Weak positioning",
-            "Lack of clarity"
-        ],
-        "leverage": [
-            "Reframe narrative",
-            "Control framing early"
-        ],
-        "best_move": "Clarify objective → reframe value → lead decisively"
-    }
+if __name__ == "__main__":
+    app.run(debug=True) 
