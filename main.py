@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-app = Flask(__name__) 
-CORS(app)
 # 🔥 REPLACE THESE WITH YOUR REAL VALUES
 SUPABASE_URL = "https://xhxnyfrhizbvhlhedhjud.supabase.co"
 SUPABASE_KEY = "PASTE_YOUR_sb_publishable_KEY"
