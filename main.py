@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from openai import OpenAI
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -17,19 +18,17 @@ def analyze():
     if request.method == "OPTIONS":
         return '', 200
 
-    data = request.get_json()
-    text = data.get("text", "")
-    mode = data.get("mode", "Decision")
+    try:
+        data = request.get_json()
+        text = data.get("text", "")
+        mode = data.get("mode", "Decision")
 
-    prompt = f"""
+        prompt = f"""
 You are an elite executive strategist.
 
-User input:
 {text}
 
-Mode: {mode}
-
-Respond ONLY in JSON format:
+Respond JSON:
 {{
   "snapshot": "...",
   "objective": "...",
@@ -37,18 +36,12 @@ Respond ONLY in JSON format:
 }}
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[{"role": "user", "content": prompt}]
-    )
+        r = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}]
+        )
 
-    content = response.choices[0].message.content
+        return jsonify(json.loads(r.choices[0].message.content))
 
-    try:
-        return jsonify(eval(content))
-    except:
-        return jsonify({
-            "snapshot": content,
-            "objective": "",
-            "best_move": ""
-        })
+    except Exception as e:
+        return jsonify({"error": str(e)})
