@@ -20,11 +20,15 @@ def analyze():
     try:
         data = request.get_json()
         text = data.get("text", "")
+        mode = data.get("mode", "Decision")
 
         prompt = f"""
 You are an elite executive strategist.
 
+User input:
 {text}
+
+Mode: {mode}
 
 Respond ONLY in JSON:
 {{
@@ -34,12 +38,12 @@ Respond ONLY in JSON:
 }}
 """
 
-        r = client.chat.completions.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}]
         )
 
-        return jsonify(json.loads(r.choices[0].message.content))
+        return jsonify(json.loads(response.choices[0].message.content))
 
     except Exception as e:
         return jsonify({"error": str(e)})
