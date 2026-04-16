@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
+import os, json
 from openai import OpenAI
-import json
 
 app = Flask(__name__)
 CORS(app)
@@ -21,14 +20,13 @@ def analyze():
     try:
         data = request.get_json()
         text = data.get("text", "")
-        mode = data.get("mode", "Decision")
 
         prompt = f"""
 You are an elite executive strategist.
 
 {text}
 
-Respond JSON:
+Respond ONLY in JSON:
 {{
   "snapshot": "...",
   "objective": "...",
