@@ -1,37 +1,57 @@
-from openai import OpenAI
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 from flask import Flask, request, jsonify
 import os
 from flask_cors import CORS
+from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+
+# 👇 THIS IS WHERE YOU PASTE IT
 @app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
     if request.method == "OPTIONS":
         return '', 200
 
     data = request.get_json()
-
     text = data.get("text", "")
     mode = data.get("mode", "Decision")
 
-    output = {
-        "snapshot": f"{mode} context understood",
-        "objective": "Clarify outcome and next move",
-        "best_move": "Take decisive action"
-    }
+    prompt = f"""
+You are an elite executive strategist.
 
-    return jsonify(output)
+User input:
+{text}
+
+Mode: {mode}
+
+Respond in JSON format:
+{{
+  "snapshot": "...",
+  "objective": "...",
+  "best_move": "..."
+}}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    content = response.choices[0].message.content
+
+    try:
+        return jsonify(eval(content))
+    except:
+        return jsonify({
+            "snapshot": "Error parsing AI response",
+            "objective": "",
+            "best_move": ""
+        })
 
 
 @app.route("/")
 def home():
     return jsonify({"status": "running"})
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
