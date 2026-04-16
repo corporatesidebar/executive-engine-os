@@ -12,7 +12,6 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 def home():
     return {"status": "running"}
 
-
 @app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
     if request.method == "OPTIONS":
@@ -30,7 +29,7 @@ User input:
 
 Mode: {mode}
 
-Respond ONLY in valid JSON like this:
+Respond ONLY in JSON format:
 {{
   "snapshot": "...",
   "objective": "...",
@@ -38,22 +37,18 @@ Respond ONLY in valid JSON like this:
 }}
 """
 
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    content = response.choices[0].message.content
+
     try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        content = response.choices[0].message.content.strip()
-
-        import json
-        parsed = json.loads(content)
-
-        return jsonify(parsed)
-
-    except Exception as e:
+        return jsonify(eval(content))
+    except:
         return jsonify({
-            "snapshot": "AI error",
-            "objective": str(e),
+            "snapshot": content,
+            "objective": "",
             "best_move": ""
         })
