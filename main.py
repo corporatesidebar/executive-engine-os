@@ -1,15 +1,3 @@
-from flask import Flask, request, jsonify
-import os
-from flask_cors import CORS
-from openai import OpenAI
-
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-
-# 👇 THIS IS WHERE YOU PASTE IT
 @app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
     if request.method == "OPTIONS":
@@ -18,6 +6,11 @@ def analyze():
     data = request.get_json()
     text = data.get("text", "")
     mode = data.get("mode", "Decision")
+
+    from openai import OpenAI
+    import os
+
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
     prompt = f"""
 You are an elite executive strategist.
@@ -46,12 +39,7 @@ Respond in JSON format:
         return jsonify(eval(content))
     except:
         return jsonify({
-            "snapshot": "Error parsing AI response",
+            "snapshot": content,
             "objective": "",
             "best_move": ""
         })
-
-
-@app.route("/")
-def home():
-    return jsonify({"status": "running"})
