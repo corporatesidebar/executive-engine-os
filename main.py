@@ -43,20 +43,12 @@ CONTEXT: {data.context}
 LEVERAGE GOAL: {data.leverage_goal}
 
 Return ONLY:
-
-WHAT MATTERS:
-- bullet points
-
-RISKS:
-- bullet points
-
-LEVERAGE:
-- bullet points
-
-BEST MOVE:
-- one decisive sentence
-"""
-
+return {
+    "what_matters": [text],
+    "risks": [],
+    "leverage": [],
+    "best_move": text
+}
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
