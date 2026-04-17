@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -11,15 +12,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class InputData(BaseModel):
+    situation: str
+    objective: str
+    constraints: str
+    context: str
+    leverage_goal: str
+
 @app.get("/")
 def root():
     return {"status": "running"}
 
 @app.post("/analyze")
-def analyze():
+def analyze(data: InputData):
     return {
-        "what_matters": ["Clarity", "Leverage", "Execution"],
-        "risks": ["Unclear objective", "Weak positioning"],
-        "leverage": ["Reframe narrative", "Control timing"],
-        "best_move": "Simplify and execute decisively"
+        "what_matters": [
+            "Clarity of objective",
+            "Strong positioning",
+            "Execution speed"
+        ],
+        "risks": [
+            "Unclear direction",
+            "Weak leverage"
+        ],
+        "leverage": [
+            "Control narrative",
+            "Act decisively"
+        ],
+        "best_move": "Clarify → position → execute"
     }
