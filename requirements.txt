@@ -1,5 +1,2 @@
-flask
-flask-cors
-supabase
-gunicorn
-python-dotenv
+fastapi
+uvicorn
