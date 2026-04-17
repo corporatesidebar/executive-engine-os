@@ -1,22 +1,13 @@
-Will Webb <corporatesidebar@gmail.com>
-7:55 AM (0 minutes ago)
-to me
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# ✅ THIS FIXES YOUR ERROR
+# Allow frontend to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow ALL domains
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-    allow_origins=["*"],  # allow ALL domains
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
