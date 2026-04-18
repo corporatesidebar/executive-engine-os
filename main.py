@@ -16,18 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# KEYS
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 supabase = create_client(
     os.getenv("SUPABASE_URL"),
     os.getenv("SUPABASE_KEY")
 )
 
-# INPUT MODEL
 class InputData(BaseModel):
     situation: str
 
-# PARSER
 def extract(text, section):
     pattern = rf"{section}:(.*?)(\n[A-Z ]+:|$)"
     match = re.search(pattern, text, re.DOTALL)
@@ -35,19 +33,16 @@ def extract(text, section):
         return [l.strip("- ").strip() for l in match.group(1).split("\n") if l.strip()]
     return []
 
-# MAIN ENGINE
 @app.post("/analyze")
 def analyze(data: InputData):
 
     prompt = f"""
-You are APEX — an elite executive operator.
-
-You think in leverage, risk, and decisive action.
+You are APEX — elite executive operator.
 
 INPUT:
 {data.situation}
 
-Return EXACT format:
+Return:
 
 WHAT MATTERS:
 - ...
@@ -59,7 +54,7 @@ LEVERAGE:
 - ...
 
 BEST MOVE:
-- one direct action sentence
+- one direct action
 """
 
     response = client.chat.completions.create(
@@ -73,10 +68,9 @@ BEST MOVE:
         "what_matters": extract(text,"WHAT MATTERS"),
         "risks": extract(text,"RISKS"),
         "leverage": extract(text,"LEVERAGE"),
-        "best_move": extract(text,"BEST MOVE")[0] if extract(text,"BEST MOVE") else text
+        "best_move": extract(text,"BEST MOVE")[0]
     }
 
-    # SAVE TO MEMORY
     supabase.table("decisions").insert({
         "input": data.situation,
         "what_matters": str(result["what_matters"]),
@@ -87,8 +81,39 @@ BEST MOVE:
 
     return result
 
-# HISTORY
-@app.get("/history")
-def history():
-    data = supabase.table("decisions").select("*").limit(10).execute()
-    return data.data
+# 🔥 NEW: INTELLIGENCE ENGINE
+@app.get("/intelligence")
+def intelligence():
+
+    data = supabase.table("decisions").select("*").limit(20).execute().data
+
+    all_moves = [d["best_move"] for d in data if d.get("best_move")]
+
+    combined = "\n".join(all_moves)
+
+    prompt = f"""
+You are an elite operator.
+
+These are recent actions:
+
+{combined}
+
+Your job:
+- remove duplicates
+- combine similar ideas
+- prioritize impact
+
+Return ONLY:
+
+PRIORITIES:
+1. ...
+2. ...
+3. ...
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role":"user","content":prompt}]
+    )
+
+    return {"priorities": response.choices[0].message.content}
