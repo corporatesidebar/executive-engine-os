@@ -5,6 +5,7 @@ from openai import OpenAI
 from supabase import create_client
 import os
 import re
+from datetime import datetime
 
 app = FastAPI()
 
@@ -76,39 +77,41 @@ BEST MOVE:
         "what_matters": str(result["what_matters"]),
         "risks": str(result["risks"]),
         "leverage": str(result["leverage"]),
-        "best_move": result["best_move"]
+        "best_move": result["best_move"],
+        "created_at": datetime.utcnow().isoformat()
     }).execute()
 
     return result
 
-# 🔥 NEW: INTELLIGENCE ENGINE
+# 🔥 INTELLIGENCE ENGINE (UPGRADED)
 @app.get("/intelligence")
 def intelligence():
 
-    data = supabase.table("decisions").select("*").limit(20).execute().data
+    data = supabase.table("decisions").select("*").limit(30).execute().data
 
-    all_moves = [d["best_move"] for d in data if d.get("best_move")]
-
-    combined = "\n".join(all_moves)
+    moves = [d["best_move"] for d in data if d.get("best_move")]
+    combined = "\n".join(moves)
 
     prompt = f"""
 You are an elite operator.
 
 These are recent actions:
-
 {combined}
 
-Your job:
-- remove duplicates
-- combine similar ideas
-- prioritize impact
-
-Return ONLY:
+Analyze and return:
 
 PRIORITIES:
-1. ...
-2. ...
-3. ...
+1. top action
+2. second action
+3. third action
+
+URGENCY:
+1. what must be done immediately
+2. what can wait
+
+REVENUE IMPACT:
+1. highest revenue action
+2. secondary revenue action
 """
 
     response = client.chat.completions.create(
@@ -116,4 +119,4 @@ PRIORITIES:
         messages=[{"role":"user","content":prompt}]
     )
 
-    return {"priorities": response.choices[0].message.content}
+    return {"data": response.choices[0].message.content}
