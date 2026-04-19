@@ -4,8 +4,6 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Allow frontend to talk to backend
-
 app.add_middleware(
 CORSMiddleware,
 allow_origins=["*"],
@@ -19,12 +17,12 @@ situation: str
 
 @app.get("/")
 def root():
-return {"status": "Executive Engine API is live"}
+return {"status": "live"}
 
 @app.post("/command")
 def command(data: InputData):
 return {
 "outcome": f"Handled: {data.situation}",
-"context": "System is working correctly",
+"context": "System operational",
 "required_action": "Proceed with next step"
 }
