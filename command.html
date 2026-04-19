@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+<h3>Command</h3>
+<input id="input"/>
+<button onclick="send()">Send</button>
+<pre id="out"></pre>
+
+<script>
+const API = "PASTE_RENDER_URL_HERE";
+
+async function send(){
+ const val = document.getElementById("input").value;
+
+ const res = await fetch(API + "/command",{
+   method:"POST",
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({situation:val})
+ });
+
+ const r = await res.json();
+
+ document.getElementById("out").innerText =
+   "Outcome: " + r.outcome + "\nAction: " + r.required_action;
+}
+</script>
+</body>
+</html>
