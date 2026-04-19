@@ -2,61 +2,19 @@
 
 <html>
 <head>
-  <title>Executive Command</title>
+  <title>Executive Engine</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<body style="font-family: Arial; padding:20px;">
+<body style="font-family: Arial; padding:40px;">
 
-<h2>Command</h2>
+<h1>Executive Engine</h1>
 
-<input id="input" placeholder="Enter situation..." style="width:70%; padding:10px;" />
-<button onclick="send()" style="padding:10px;">Send</button>
+<p>Operate like an executive. Move with clarity.</p>
 
-<pre id="output" style="margin-top:20px; white-space:pre-wrap;"></pre>
-
-<script>
-
-const API = "https://executive-engine-os.onrender.com";
-
-async function send(){
-
-  const val = document.getElementById("input").value;
-
-  if(!val){
-    document.getElementById("output").innerText = "Enter something first.";
-    return;
-  }
-
-  document.getElementById("output").innerText = "Loading...";
-
-  try {
-
-    const res = await fetch(API + "/command", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        situation: val
-      })
-    });
-
-    const data = await res.json();
-
-    document.getElementById("output").innerText =
-      "Outcome:\n" + data.outcome + "\n\n" +
-      "Context:\n" + data.context + "\n\n" +
-      "Action:\n" + data.required_action;
-
-  } catch (err) {
-    document.getElementById("output").innerText =
-      "ERROR:\n\n" + err;
-  }
-
-}
-
-</script>
+<a href="/command.html" style="display:inline-block; margin-top:20px; padding:12px 20px; background:black; color:white; text-decoration:none;">
+  Open Command
+</a>
 
 </body>
 </html>
