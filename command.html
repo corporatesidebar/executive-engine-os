@@ -5,47 +5,19 @@
   <title>Command</title>
 </head>
 
-<body style="font-family: Arial; padding:20px;">
+<body>
 
 <h2>Command</h2>
 
-<input id="input" placeholder="Enter situation..." style="width:70%; padding:10px;" />
-<button onclick="send()" style="padding:10px;">Send</button>
+<input id="input" />
+<button onclick="send()">Send</button>
 
-<pre id="out" style="margin-top:20px;"></pre>
+<pre id="out"></pre>
 
 <script>
 
-const API = "https://executive-engine-os.onrender.com";
-
-async function send() {
-
-  const val = document.getElementById("input").value;
-
-  const out = document.getElementById("out");
-  out.innerText = "Sending request...";
-
-  try {
-
-    const res = await fetch(API + "/command", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ situation: val })
-    });
-
-    const data = await res.json();
-
-    out.innerText =
-      "Outcome:\n" + data.outcome +
-      "\n\nContext:\n" + data.context +
-      "\n\nAction:\n" + data.required_action;
-
-  } catch (err) {
-    out.innerText = "ERROR:\n" + err;
-  }
-
+function send() {
+  alert("BUTTON CLICKED"); // must appear
 }
 
 </script>
