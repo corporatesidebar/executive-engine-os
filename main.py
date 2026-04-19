@@ -1,8 +1,8 @@
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
-from supabase import create_client
 import os, json
 
 app = FastAPI()
@@ -16,31 +16,35 @@ app.add_middleware(
 )
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+
+ACTIVE_CONTEXT = {"text": ""}
+ASSETS = []
 
 class InputData(BaseModel):
     situation: str
 
-# 🔥 DECISION ENGINE
-@app.post("/analyze")
-def analyze(data: InputData):
+class ActionData(BaseModel):
+    type: str
+    context: str = ""
+
+class SaveData(BaseModel):
+    type: str
+    content: str
+
+@app.post("/command")
+def command(data: InputData):
+    ACTIVE_CONTEXT["text"] = data.situation
 
     prompt = f"""
-You are APEX — elite executive operator.
-
-Be decisive. No fluff.
-
-INPUT:
-{data.situation}
-
 Return JSON:
-
 {{
- "objective": "...",
- "direction": "...",
- "next_step": "...",
- "support": ["proposal","contract","meeting","content"]
+ "outcome": "...",
+ "context": "...",
+ "required_action": "...",
+ "support": ["meeting","proposal","content","strategy"],
+ "next": "..."
 }}
+INPUT: {data.situation}
 """
 
     res = client.chat.completions.create(
@@ -48,43 +52,24 @@ Return JSON:
         messages=[{"role":"user","content":prompt}]
     )
 
-    text = res.choices[0].message.content
+    return json.loads(res.choices[0].message.content)
 
-    try:
-        result = json.loads(text)
-    except:
-        result = {"objective":"","direction":"","next_step":text,"support":[]}
-
-    supabase.table("decisions").insert({
-        "input": data.situation,
-        "next_step": result["next_step"]
-    }).execute()
-
-    return result
-
-
-# 🔥 DASHBOARD INTELLIGENCE (NEW)
-@app.get("/dashboard")
-def dashboard():
-
-    data = supabase.table("decisions").select("*").limit(10).execute().data
-
-    combined = "\n".join([d["next_step"] for d in data])
-
-    prompt = f"""
-You are an executive system.
-
-Summarize into:
-
-WHAT:
-DIRECTION:
-NEXT:
-SUPPORT OPTIONS:
-"""
+@app.post("/action")
+def action(data: ActionData):
+    prompt = f"Generate {data.type} based on: {data.context or ACTIVE_CONTEXT['text']}"
 
     res = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role":"user","content":combined}]
+        messages=[{"role":"user","content":prompt}]
     )
 
-    return {"data": res.choices[0].message.content}
+    return {"result": res.choices[0].message.content}
+
+@app.post("/save")
+def save(data: SaveData):
+    ASSETS.append({"type": data.type, "content": data.content})
+    return {"status": "saved"}
+
+@app.get("/assets")
+def get_assets():
+    return ASSETS
