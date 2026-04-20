@@ -3,9 +3,6 @@ import requests
 
 app = Flask(__name__)
 
-SUPABASE_URL = "https://asmajwoyfygkabhhaye.supabase.co"
-SUPABASE_KEY = "sb_publishable_X44x716G4WW1u4Q5msuTwA_DYZzLmvg"
-
 @app.route("/")
 def home():
     return "Backend is live"
