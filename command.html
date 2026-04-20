@@ -3,21 +3,73 @@
 <head>
   <title>Executive Engine</title>
   <style>
-    body { font-family: Arial; background: #f5f5f5; margin: 0; }
-    .container { max-width: 800px; margin: auto; padding: 20px; }
-    h1 { text-align: center; }
-    #chat { height: 60vh; overflow-y: auto; background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
-    .user { text-align: right; margin: 10px 0; color: #0077ff; font-weight: bold; }
-    .ai { text-align: left; margin: 10px 0; background: #eaeaea; padding: 10px; border-radius: 8px; }
-    .input-box { display: flex; gap: 10px; }
-    input { flex: 1; padding: 12px; font-size: 16px; }
-    button { padding: 12px 20px; font-size: 16px; }
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #chat {
+      height: 60vh;
+      overflow-y: auto;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user {
+      text-align: right;
+      margin: 10px 0;
+      color: #0077ff;
+      font-weight: bold;
+    }
+
+    .ai {
+      text-align: left;
+      margin: 10px 0;
+      background: #eaeaea;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
+
 <div class="container">
   <h1>Executive Engine</h1>
+
   <div id="chat"></div>
+
   <div class="input-box">
     <input id="input" placeholder="Enter situation..." />
     <button onclick="send()">Send</button>
@@ -25,12 +77,15 @@
 </div>
 
 <script>
+
 const API = "https://executive-engine-os-1.onrender.com";
 
 async function send() {
   const input = document.getElementById("input");
   const chat = document.getElementById("chat");
+
   const text = input.value;
+
   if (!text) return;
 
   chat.innerHTML += `<div class="user">${text}</div>`;
@@ -39,17 +94,36 @@ async function send() {
   try {
     const res = await fetch(API + "/command", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ situation: text })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+
+    if (!raw) {
+      chat.innerHTML += `<div class="ai">No response from server</div>`;
+      return;
+    }
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (e) {
+      chat.innerHTML += `<div class="ai">Invalid JSON response</div>`;
+      return;
+    }
+
     chat.innerHTML += `<div class="ai">${data.response}</div>`;
     chat.scrollTop = chat.scrollHeight;
+
   } catch (err) {
     chat.innerHTML += `<div class="ai">ERROR: ${err}</div>`;
   }
 }
+
 </script>
+
 </body>
 </html>
