@@ -1,82 +1,33 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
+from flask import Flask, request, jsonify
+import requests
 
-app = FastAPI()
+app = Flask(__name__)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+SUPABASE_URL = "https://asmajwoyfygkabhhaye.supabase.co"
+SUPABASE_KEY = "PASTE_YOUR_sb_publishable_KEY_HERE"
 
-client = OpenAI()
+@app.route("/")
+def home():
+    return "Backend is live"
 
-def detect_mode(text):
-    text = text.lower()
-    if "meeting" in text:
-        return "meeting"
-    if "strategy" in text:
-        return "strategy"
-    return "decision"
+@app.route("/add", methods=["POST"])
+def add_item():
+    data = request.json
 
-@app.get("/")
-def root():
-    return {"status": "live"}
+    payload = {
+        "input": data.get("input"),
+        "output": data.get("output"),
+        "mode": data.get("mode")
+    }
 
-@app.post("/command")
-def command(data: dict):
-    situation = data.get("situation", "")
-    mode = detect_mode(situation)
-
-    system_prompt = f"""
-You are a high-level executive operator (COO/CEO level).
-
-Mode: {mode}
-
-Your job is to make clear, decisive, real-world decisions under pressure.
-
-Think in terms of:
-- consequences
-- trade-offs
-- speed vs risk
-- execution reality
-
-Avoid:
-- generic advice
-- over-explaining
-- soft language
-
-If information is missing, make a reasonable assumption and proceed.
-
-Return ONLY in this format:
-
-Outcome:
-<what is actually happening — be blunt>
-
-Risk:
-<what could fail or backfire>
-
-Action:
-<clear next move — specific and executable>
-
-Priority:
-<low, medium, high>
-"""
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": situation}
-        ]
+    response = requests.post(
+        f"{SUPABASE_URL}/rest/v1/items",
+        json=payload,
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json"
+        }
     )
 
-    output = response.choices[0].message.content
-
-    return {
-        "mode": mode,
-        "response": output
-    }
+    return jsonify(response.json())
