@@ -24,6 +24,7 @@ async def command(request: Request):
 data = await request.json()
 text = data.get("situation", "")
 
+```
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
@@ -32,3 +33,4 @@ response = client.chat.completions.create(
 )
 
 return {"response": response.choices[0].message.content}
+```
