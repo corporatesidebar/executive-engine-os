@@ -4,11 +4,11 @@
     <title>Executive Engine</title>
     <style>
         body { font-family: Arial; background: #f5f5f5; margin: 0; }
-        .container { max-width: 800px; margin: auto; padding: 20px; }
+        .container { max-width: 900px; margin: auto; padding: 20px; }
         h1 { text-align: center; }
         #chat { height: 60vh; overflow-y: auto; background: #fff; padding: 15px; border-radius: 10px; }
         .user { text-align: right; margin: 10px 0; color: #0077ff; font-weight: bold; }
-        .ai { text-align: left; margin: 10px 0; background: #eaeaea; padding: 10px; border-radius: 8px; }
+        .ai { text-align: left; margin: 10px 0; background: #eaeaea; padding: 10px; border-radius: 8px; white-space: pre-wrap; }
         .input-box { display: flex; gap: 10px; margin-top: 10px; }
         input { flex: 1; padding: 12px; font-size: 16px; }
         button { padding: 12px 20px; font-size: 16px; cursor: pointer; }
@@ -29,7 +29,6 @@
             const input = document.getElementById("input");
             const chat = document.getElementById("chat");
             const text = input.value;
-
             if (!text) return;
 
             chat.innerHTML += `<div class="user">${text}</div>`;
@@ -38,19 +37,27 @@
             try {
                 const res = await fetch("/command", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ situation: text })
                 });
 
-                const data = await res.json();
+                const raw = await res.text();
+                if (!raw) {
+                    chat.innerHTML += `<div class="ai">ERROR: Empty server response</div>`;
+                    return;
+                }
+
+                const data = JSON.parse(raw);
                 chat.innerHTML += `<div class="ai">${data.response}</div>`;
                 chat.scrollTop = chat.scrollHeight;
             } catch (err) {
                 chat.innerHTML += `<div class="ai">ERROR: No response from server</div>`;
             }
         }
+
+        document.getElementById("input").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") send();
+        });
     </script>
 </body>
 </html>
