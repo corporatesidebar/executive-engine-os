@@ -1,9 +1,9 @@
+# main.py (UPDATED EXECUTIVE ENGINE)
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 from openai import OpenAI
 import os
-import requests
 
 app = FastAPI()
 
@@ -17,90 +17,50 @@ app.add_middleware(
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SUPABASE_URL = "https://asmajwoyfygkabhhaye.supabase.co"
-SUPABASE_KEY = "sb_publishable_X44x716G4WW1u4Q5msuTwA_DYZzLmvg"
+SYSTEM_PROMPT = """
+You are an elite executive decision engine.
 
-memory = []
+You do NOT give general advice.
+You do NOT speak casually.
+You do NOT explain unnecessarily.
 
-PROMPTS = {
-    "strategy": "You are a high-level business strategist. Focus on long-term leverage and positioning.",
-    "hiring": "You are a hiring expert. Focus on talent ROI, ramp time, and risk.",
-    "finance": "You are a financial operator. Focus on cost, ROI, and capital allocation.",
-    "execution": "You are an execution expert. Focus on steps, speed, and priorities."
-}
+You think like:
+- CEO
+- Operator
+- Investor
 
-FORMAT = """You MUST follow this exact structure. No extra text.
+Your job:
+Turn any input into a CLEAR, DECISIVE, EXECUTABLE output.
 
-Situation Summary:
-(2-3 sentences max)
+STRICT FORMAT:
 
-Key Problems:
-- Bullet 1
-- Bullet 2
-- Bullet 3
+1. Situation Summary (1-2 lines max)
+2. Core Problem (brutally honest)
+3. Decision Options (3 max, real options only)
+4. Recommended Decision (pick ONE, no hedging)
+5. Execution Plan (specific steps, actionable)
+6. Risk (what could go wrong, real)
 
-Strategic Options:
-1. Option A
-2. Option B
-3. Option C
-
-Recommended Action:
-(1 clear decision)
-
-Next Steps:
-1. Step 1
-2. Step 2
-3. Step 3
+RULES:
+- Be direct
+- Be sharp
+- No fluff
+- No motivational talk
+- No vague suggestions
+- Every output must lead to ACTION
 """
 
-def save_to_supabase(user_input, ai_output, mode):
-    try:
-        requests.post(
-            f"{SUPABASE_URL}/rest/v1/items",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-                "Prefer": "return=minimal"
-            },
-            json={
-                "input": user_input,
-                "output": ai_output,
-                "mode": mode
-            },
-            timeout=15
-        )
-    except Exception as e:
-        print("Supabase save failed:", e)
-
-@app.get("/")
-def root():
-    return FileResponse("index.html")
-
-@app.get("/command.html")
-def command_page():
-    return FileResponse("command.html")
-
-@app.post("/command")
-async def command(request: Request):
+@app.post("/analyze")
+async def analyze(request: Request):
     data = await request.json()
-    text = data.get("situation", "").strip()
-    mode = data.get("mode", "strategy")
-
-    system_prompt = PROMPTS.get(mode, PROMPTS["strategy"]) + "\n\n" + FORMAT
-    context = "\n".join(memory[-5:])
+    user_input = data.get("input", "")
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": context + "\n\n" + text}
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_input}
         ]
     )
 
-    output = response.choices[0].message.content
-
-    memory.append(f"[{mode}] {text} -> {output[:120]}")
-    save_to_supabase(text, output, mode)
-
-    return {"response": output}
+    return {"output": response.choices[0].message.content}
