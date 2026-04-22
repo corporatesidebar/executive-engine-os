@@ -18,6 +18,86 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class RequestModel(BaseModel):
     input: str
+    mode: str = "strategy"
+
+SYSTEM_PROMPTS = {
+    "strategy": """You are a sharp executive strategy engine.
+Think like a CEO, COO, operator, and investor.
+Be concise, practical, and decisive.
+Return exactly this structure:
+
+Outcome:
+...
+
+Risk:
+...
+
+Action:
+...
+
+Priority:
+...""",
+    "decision": """You are a decision engine for senior operators.
+Force clarity. Eliminate fluff. Choose a direction.
+Return exactly this structure:
+
+Decision:
+...
+
+Why:
+...
+
+Risk:
+...
+
+Next Move:
+...
+
+Priority:
+...""",
+    "meeting": """You are an executive meeting prep engine.
+Turn messy thoughts into talking points and next steps.
+Return exactly this structure:
+
+Meeting Goal:
+...
+
+Key Talking Points:
+- ...
+- ...
+- ...
+
+Decision Needed:
+...
+
+Next Steps:
+1. ...
+2. ...
+3. ...
+
+Priority:
+...""",
+    "execution": """You are an execution engine for operators.
+Focus on action, sequencing, and accountability.
+Return exactly this structure:
+
+Target:
+...
+
+Blocker:
+...
+
+Execution Plan:
+1. ...
+2. ...
+3. ...
+
+Risk:
+...
+
+Priority:
+...""",
+}
 
 @app.get("/")
 def root():
@@ -26,27 +106,13 @@ def root():
 @app.post("/api/command")
 async def command(req: RequestModel):
     try:
+        system_prompt = SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])
         response = client.responses.create(
             model="gpt-4o-mini",
-            input=f"""
-You are a high-level executive decision engine.
-
-You do NOT give generic advice.
-You think like a CEO, strategist, and operator.
-
-For every input, return:
-
-1. Outcome
-2. Risk
-3. Action
-4. Priority
-
-Be direct, sharp, and real-world focused.
-No fluff.
-
-User input:
-{req.input}
-"""
+            input=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": req.input}
+            ]
         )
         return {"output": response.output_text}
     except Exception as e:

@@ -1,24 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<h1>Executive Engine</h1>
-<textarea id="input" rows="5" cols="50"></textarea><br>
-<button onclick="send()">Send</button>
-<pre id="output"></pre>
+  <div class="page-shell">
+    <div class="app-card">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Rival Summit • Executive OS</div>
+          <h1>Executive Engine</h1>
+          <p class="subcopy">Put in a real situation. Get an operator-level answer.</p>
+        </div>
+        <div class="status-pill">LIVE</div>
+      </div>
 
-<script>
-async function send() {
-    const input = document.getElementById("input").value;
+      <div class="controls">
+        <div class="control-group">
+          <label for="mode">Mode</label>
+          <select id="mode">
+            <option value="strategy">Strategy</option>
+            <option value="decision">Decision</option>
+            <option value="meeting">Meeting</option>
+            <option value="execution">Execution</option>
+          </select>
+        </div>
+      </div>
 
-    const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({input})
-    });
+      <div class="input-wrap">
+        <label for="input">Situation</label>
+        <textarea id="input" placeholder="Example: We need to grow revenue fast without adding headcount. What’s the smartest move?"></textarea>
+      </div>
 
-    const data = await res.json();
-    document.getElementById("output").innerText = data.output || data.error;
-}
-</script>
+      <div class="button-row">
+        <button class="primary-button" onclick="send()">Run Engine</button>
+      </div>
+
+      <div id="loading" class="loading hidden">Thinking...</div>
+
+      <div id="outputCard" class="output-card hidden">
+        <div class="output-header">
+          <span>Response</span>
+        </div>
+        <pre id="output"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input").value.trim();
+      const mode = document.getElementById("mode").value;
+      const output = document.getElementById("output");
+      const outputCard = document.getElementById("outputCard");
+      const loading = document.getElementById("loading");
+
+      if (!input) return;
+
+      outputCard.classList.add("hidden");
+      loading.classList.remove("hidden");
+      output.textContent = "";
+
+      try {
+        const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ input, mode })
+        });
+
+        const data = await res.json();
+        output.textContent = data.output || data.error || "No response returned.";
+        outputCard.classList.remove("hidden");
+      } catch (err) {
+        output.textContent = "ERROR: " + err.message;
+        outputCard.classList.remove("hidden");
+      } finally {
+        loading.classList.add("hidden");
+      }
+    }
+  </script>
 </body>
 </html>
