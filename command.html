@@ -1,44 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Executive Engine</title>
-<link rel="stylesheet" href="style.css">
-</head>
 <body>
-
 <h1>Executive Engine</h1>
-
-<textarea id="input" placeholder="Enter situation..."></textarea>
-<br><br>
+<textarea id="input"></textarea><br>
 <button onclick="send()">Send</button>
-
 <pre id="output"></pre>
-
 <script>
-async function send() {
-    const input = document.getElementById("input").value.trim();
-    if (!input) return;
-
-    try {
-        const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ input: input })
-        });
-
-        const data = await res.json();
-
-        document.getElementById("output").innerText =
-            data.output ||
-            data.response ||
-            data.error ||
-            data.detail ||
-            JSON.stringify(data, null, 2);
-    } catch (err) {
-        document.getElementById("output").innerText = "ERROR: " + err.message;
-    }
+async function send(){
+const input=document.getElementById("input").value;
+const res=await fetch("https://executive-engine-os.onrender.com/api/command",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({input})
+});
+const data=await res.json();
+document.getElementById("output").innerText=data.output||data.error;
 }
 </script>
-
 </body>
 </html>
