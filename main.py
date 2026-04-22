@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from openai import OpenAI
+from fastapi.middleware.cors import CORSMiddleware
 import os
-import requests
+from openai import OpenAI
+from supabase import create_client
 
 app = FastAPI()
 
@@ -15,95 +15,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# Optional Supabase config from environment
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-
-SYSTEM_PROMPT = """You are an elite executive decision engine.
-
-You do NOT give general advice.
-You do NOT speak casually.
-You do NOT explain unnecessarily.
-
-You think like:
-- CEO
-- Operator
-- Investor
-
-Your job:
-Turn any input into a CLEAR, DECISIVE, EXECUTABLE output.
-
-STRICT FORMAT:
-
-Situation Summary:
-(1-2 lines max)
-
-Core Problem:
-(brutally honest)
-
-Decision Options:
-1. Option A
-2. Option B
-3. Option C
-
-Recommended Decision:
-(pick ONE, no hedging)
-
-Execution Plan:
-1. Step 1
-2. Step 2
-3. Step 3
-
-Risk:
-(what could go wrong, real)
-"""
-
-def save_to_supabase(user_input: str, ai_output: str, mode: str) -> None:
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return
-    try:
-        requests.post(
-            f"{SUPABASE_URL}/rest/v1/items",
-            headers={
-                "apikey": SUPABASE_KEY,
-                "Authorization": f"Bearer {SUPABASE_KEY}",
-                "Content-Type": "application/json",
-                "Prefer": "return=minimal",
-            },
-            json={
-                "input": user_input,
-                "output": ai_output,
-                "mode": mode,
-            },
-            timeout=15,
-        )
-    except Exception as e:
-        print("Supabase save failed:", e)
+client = OpenAI(api_key=OPENAI_API_KEY)
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.get("/")
 def home():
     return FileResponse("index.html")
 
 @app.get("/command.html")
-def command_page():
+def command():
     return FileResponse("command.html")
 
-@app.post("/command")
-async def command(request: Request):
-    data = await request.json()
-    user_input = data.get("situation", "").strip()
-    mode = data.get("mode", "strategy").strip() or "strategy"
+@app.post("/api/command")
+async def command_api(data: dict):
+    user_input = data.get("input", "")
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT + f"\n\nCurrent mode: {mode}"},
-            {"role": "user", "content": user_input},
-        ],
-    )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an executive decision engine. Respond in structured format: Situation Summary, Key Problems, Strategic Options, Recommended Action, Next Steps."},
+                {"role": "user", "content": user_input}
+            ],
+        )
 
-    output = response.choices[0].message.content
-    save_to_supabase(user_input, output, mode)
-    return {"response": output}
+        output = response.choices[0].message.content
+
+        supabase.table("items").insert({
+            "input": user_input,
+            "output": output
+        }).execute()
+
+        return {"output": output}
+
+    except Exception as e:
+        return {"error": str(e)}
