@@ -28,7 +28,25 @@ async def command(req: RequestModel):
     try:
         response = client.responses.create(
             model="gpt-4o-mini",
-            input=f"You are an executive decision engine. User input: {req.input}"
+            input=f"""
+You are a high-level executive decision engine.
+
+You do NOT give generic advice.
+You think like a CEO, strategist, and operator.
+
+For every input, return:
+
+1. Outcome
+2. Risk
+3. Action
+4. Priority
+
+Be direct, sharp, and real-world focused.
+No fluff.
+
+User input:
+{req.input}
+"""
         )
         return {"output": response.output_text}
     except Exception as e:

@@ -2,19 +2,22 @@
 <html>
 <body>
 <h1>Executive Engine</h1>
-<textarea id="input"></textarea><br>
+<textarea id="input" rows="5" cols="50"></textarea><br>
 <button onclick="send()">Send</button>
 <pre id="output"></pre>
+
 <script>
-async function send(){
-const input=document.getElementById("input").value;
-const res=await fetch("https://executive-engine-os.onrender.com/api/command",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({input})
-});
-const data=await res.json();
-document.getElementById("output").innerText=data.output||data.error;
+async function send() {
+    const input = document.getElementById("input").value;
+
+    const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({input})
+    });
+
+    const data = await res.json();
+    document.getElementById("output").innerText = data.output || data.error;
 }
 </script>
 </body>
