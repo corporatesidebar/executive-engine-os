@@ -19,13 +19,15 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 class RequestModel(BaseModel):
     input: str
     mode: str = "strategy"
+    profile: str | None = None
+    uploaded_context: str | None = None
 
 SYSTEM_PROMPTS = {
-    "strategy": """You are a sharp executive strategy engine.
+    "strategy": """You are a high-level executive strategy engine.
 Think like a CEO, COO, operator, and investor.
-Be concise, practical, and decisive.
-Return exactly this structure:
+Be direct, sharp, practical, and commercially aware.
 
+Return exactly:
 Outcome:
 ...
 
@@ -33,14 +35,16 @@ Risk:
 ...
 
 Action:
-...
+1. ...
+2. ...
+3. ...
 
 Priority:
 ...""",
-    "decision": """You are a decision engine for senior operators.
+    "decision": """You are a senior executive decision engine.
 Force clarity. Eliminate fluff. Choose a direction.
-Return exactly this structure:
 
+Return exactly:
 Decision:
 ...
 
@@ -51,14 +55,16 @@ Risk:
 ...
 
 Next Move:
-...
+1. ...
+2. ...
+3. ...
 
 Priority:
 ...""",
     "meeting": """You are an executive meeting prep engine.
-Turn messy thoughts into talking points and next steps.
-Return exactly this structure:
+Convert rough thinking into a focused meeting structure.
 
+Return exactly:
 Meeting Goal:
 ...
 
@@ -78,9 +84,9 @@ Next Steps:
 Priority:
 ...""",
     "execution": """You are an execution engine for operators.
-Focus on action, sequencing, and accountability.
-Return exactly this structure:
+Focus on sequencing, accountability, momentum, and constraints.
 
+Return exactly:
 Target:
 ...
 
@@ -107,13 +113,23 @@ def root():
 async def command(req: RequestModel):
     try:
         system_prompt = SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])
+
+        context_parts = []
+        if req.profile:
+            context_parts.append(f"User Profile:\n{req.profile}")
+        if req.uploaded_context:
+            context_parts.append(f"Uploaded Context:\n{req.uploaded_context}")
+
+        context_block = "\n\n".join(context_parts) if context_parts else "No extra context provided."
+
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": req.input}
+                {"role": "user", "content": f"{context_block}\n\nSituation:\n{req.input}"}
             ]
         )
+
         return {"output": response.output_text}
     except Exception as e:
         return {"error": str(e)}

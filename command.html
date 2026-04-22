@@ -3,84 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Executive Engine</title>
+  <title>Executive OS</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="page-shell">
-    <div class="app-card">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-kicker">Rival Summit</div>
+        <div class="brand-title">Executive OS</div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-section">Workspace</div>
+        <button class="nav-item active" type="button">Executive Engine</button>
+        <button class="nav-item" type="button">Memory</button>
+        <button class="nav-item" type="button">Uploads</button>
+        <button class="nav-item" type="button">Settings</button>
+      </nav>
+
+      <div class="profile-card">
+        <div class="profile-label">Profile</div>
+        <textarea id="profile" placeholder="Example: Will Webb | COO target | strategy, execution, scaling businesses | direct tone"></textarea>
+      </div>
+
+      <div class="upload-card">
+        <div class="profile-label">Upload Context</div>
+        <input id="fileInput" type="file" accept=".txt,.md,.csv">
+        <div id="fileStatus" class="file-status">No file loaded</div>
+      </div>
+    </aside>
+
+    <main class="main">
       <div class="topbar">
         <div>
-          <div class="eyebrow">Rival Summit • Executive OS</div>
+          <div class="eyebrow">Executive Decision Platform</div>
           <h1>Executive Engine</h1>
           <p class="subcopy">Put in a real situation. Get an operator-level answer.</p>
         </div>
-        <div class="status-pill">LIVE</div>
+        <div class="live-pill">LIVE</div>
       </div>
 
-      <div class="controls">
-        <div class="control-group">
-          <label for="mode">Mode</label>
-          <select id="mode">
-            <option value="strategy">Strategy</option>
-            <option value="decision">Decision</option>
-            <option value="meeting">Meeting</option>
-            <option value="execution">Execution</option>
-          </select>
+      <section class="panel">
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="strategy" type="button">Strategy</button>
+          <button class="mode-tab" data-mode="decision" type="button">Decision</button>
+          <button class="mode-tab" data-mode="meeting" type="button">Meeting</button>
+          <button class="mode-tab" data-mode="execution" type="button">Execution</button>
         </div>
-      </div>
 
-      <div class="input-wrap">
-        <label for="input">Situation</label>
-        <textarea id="input" placeholder="Example: We need to grow revenue fast without adding headcount. What’s the smartest move?"></textarea>
-      </div>
+        <label class="field-label" for="input">Situation</label>
+        <textarea id="input" class="main-input" placeholder="Describe the situation clearly..."></textarea>
 
-      <div class="button-row">
-        <button class="primary-button" onclick="send()">Run Engine</button>
-      </div>
-
-      <div id="loading" class="loading hidden">Thinking...</div>
-
-      <div id="outputCard" class="output-card hidden">
-        <div class="output-header">
-          <span>Response</span>
+        <div class="button-row">
+          <button id="runBtn" class="primary-button" type="button">Run Engine</button>
         </div>
-        <pre id="output"></pre>
-      </div>
-    </div>
+
+        <div id="loading" class="loading hidden">Thinking...</div>
+
+        <div id="responseShell" class="response-shell hidden">
+          <div class="response-header">Response</div>
+          <div id="responseCards" class="response-cards"></div>
+          <pre id="rawOutput" class="hidden"></pre>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <script>
-    async function send() {
-      const input = document.getElementById("input").value.trim();
-      const mode = document.getElementById("mode").value;
-      const output = document.getElementById("output");
-      const outputCard = document.getElementById("outputCard");
-      const loading = document.getElementById("loading");
-
-      if (!input) return;
-
-      outputCard.classList.add("hidden");
-      loading.classList.remove("hidden");
-      output.textContent = "";
-
-      try {
-        const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ input, mode })
-        });
-
-        const data = await res.json();
-        output.textContent = data.output || data.error || "No response returned.";
-        outputCard.classList.remove("hidden");
-      } catch (err) {
-        output.textContent = "ERROR: " + err.message;
-        outputCard.classList.remove("hidden");
-      } finally {
-        loading.classList.add("hidden");
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
