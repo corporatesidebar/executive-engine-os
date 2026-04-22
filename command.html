@@ -18,7 +18,7 @@
 async function send() {
     const input = document.getElementById("input").value;
 
-    const res = await fetch("/api/command", {
+    const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({input})
