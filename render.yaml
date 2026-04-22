@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: executive-engine-os
+    name: executive-engine-backend
     env: python
     buildCommand: ""
     startCommand: "uvicorn main:app --host 0.0.0.0 --port 10000"
