@@ -16,16 +16,27 @@
 
 <script>
 async function send() {
-    const input = document.getElementById("input").value;
+    const input = document.getElementById("input").value.trim();
+    if (!input) return;
 
-    const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({input})
-    });
+    try {
+        const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ input: input })
+        });
 
-    const data = await res.json();
-    document.getElementById("output").innerText = data.output || data.error;
+        const data = await res.json();
+
+        document.getElementById("output").innerText =
+            data.output ||
+            data.response ||
+            data.error ||
+            data.detail ||
+            JSON.stringify(data, null, 2);
+    } catch (err) {
+        document.getElementById("output").innerText = "ERROR: " + err.message;
+    }
 }
 </script>
 

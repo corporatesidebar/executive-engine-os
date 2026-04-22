@@ -1,8 +1,6 @@
-Replace ONLY command.html in your GitHub repo for the static site.
+Replace ONLY command.html in your static site repo.
 
-Why:
-- Frontend is running on executive-engine-os-1.onrender.com
-- Backend is running on executive-engine-os.onrender.com
-- fetch("/api/command") only works when frontend and backend are on the same host
-- This file changes fetch to the full backend URL:
-  https://executive-engine-os.onrender.com/api/command
+Why you saw 'undefined':
+- The API responded
+- But your frontend was only looking for one field name
+- This version handles output / response / error / detail safely
