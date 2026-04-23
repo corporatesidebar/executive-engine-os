@@ -1,5 +1,5 @@
-V8 changes:
-- one-call backend instead of two-call backend
-- strict JSON output
-- better executive decision structure
-- action items and feedback overview derive from same structured response
+Executive Engine V9.1
+- frontend static site in /frontend
+- backend FastAPI in /backend
+- frontend URL should load index.html from the static site root
+- backend URL should expose /api/command
