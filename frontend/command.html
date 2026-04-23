@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive OS V8</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="left">
+      <div class="logo-kicker">Rival Summit</div>
+      <div class="logo-title">Executive<br>OS</div>
+      <div class="logo-copy">Decision support, speed, and execution clarity.</div>
+
+      <div class="section-kicker">Core</div>
+      <div class="left-card">
+        <button class="nav-pill" type="button">Executive Engine</button>
+      </div>
+
+      <div class="section-kicker">Executive Profile</div>
+      <div class="left-card">
+        <div class="profile-grid">
+          <div class="field">
+            <label for="profile_role">Role Target</label>
+            <select id="profile_role">
+              <option value="">Select</option>
+              <option>COO</option><option>CEO</option><option>Founder</option><option>Operator</option><option>Executive</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="profile_industry">Industry</label>
+            <select id="profile_industry">
+              <option value="">Select</option>
+              <option>AI</option><option>SaaS</option><option>Finance</option><option>Marketing</option><option>Consumer</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="profile_tone">Tone</label>
+            <select id="profile_tone">
+              <option value="">Select</option>
+              <option>Direct</option><option>Strategic</option><option>Commercial</option><option>Polished</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="profile_goal">Goal</label>
+            <select id="profile_goal">
+              <option value="">Select</option>
+              <option>Growth</option><option>Job Search</option><option>Operations</option><option>Hiring</option><option>Fundraising</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-kicker">Personal Context</div>
+      <div class="left-card">
+        <textarea id="personal_context" placeholder="Current stress, priorities, life context, or what matters right now..."></textarea>
+      </div>
+
+      <div class="section-kicker">Personal Knowledge</div>
+      <div class="left-card">
+        <label class="upload-box" for="knowledgeFileInput">
+          <strong>Upload personal knowledge</strong>
+          <span>Upload résumé, notes, plans, or background context.</span>
+        </label>
+        <input id="knowledgeFileInput" type="file" accept=".txt,.md,.csv" hidden>
+        <div id="knowledgeStatus" class="upload-status">No personal knowledge file loaded</div>
+      </div>
+    </aside>
+
+    <main class="center">
+      <div class="head">
+        <div>
+          <div class="head-kicker">Executive Decision Platform</div>
+          <div class="head-title">Executive Engine</div>
+        </div>
+        <div class="head-tools">
+          <button class="tool-btn" id="toggleHistoryBtn" type="button">View past history</button>
+          <div class="live-pill">LIVE</div>
+        </div>
+      </div>
+
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="strategy" type="button">Strategy</button>
+        <button class="mode-btn" data-mode="decision" type="button">Decision</button>
+        <button class="mode-btn" data-mode="meeting" type="button">Meeting</button>
+        <button class="mode-btn" data-mode="execution" type="button">Execution</button>
+        <button class="mode-btn" data-mode="personal" type="button">Personal</button>
+      </div>
+
+      <section class="workspace">
+        <div class="history-bar" id="historyBar">
+          <div class="history-title">Past History</div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+
+        <div class="chat-scroll" id="chatScroll"></div>
+
+        <div class="composer">
+          <div class="prompt-label">
+            <span>What decision or situation needs action?</span>
+            <span class="loading" id="loading" style="display:none">Thinking...</span>
+          </div>
+          <div class="prompt-wrap">
+            <textarea id="prompt" class="prompt" placeholder="Type the situation clearly. Press Enter to submit. Use Shift+Enter for a new line."></textarea>
+          </div>
+          <div class="composer-bottom">
+            <div class="attach-wrap">
+              <label class="attach-btn" for="requestFileInput">Attach to this request</label>
+              <input id="requestFileInput" type="file" accept=".txt,.md,.csv" hidden>
+              <div class="attach-status" id="requestStatus">No request file loaded</div>
+            </div>
+            <button id="runBtn" class="run-btn" type="button">Run Engine</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="right">
+      <div class="side-panel">
+        <div class="side-kicker">Execution</div>
+        <div class="side-title">Action Items</div>
+        <div class="action-filters">
+          <button class="filter-btn active" data-filter="all" type="button">All</button>
+          <button class="filter-btn" data-filter="strategy" type="button">Strategy</button>
+          <button class="filter-btn" data-filter="decision" type="button">Decision</button>
+          <button class="filter-btn" data-filter="meeting" type="button">Meeting</button>
+          <button class="filter-btn" data-filter="execution" type="button">Execution</button>
+          <button class="filter-btn" data-filter="personal" type="button">Personal</button>
+        </div>
+        <div id="actionList" class="action-list"></div>
+      </div>
+
+      <div class="side-panel">
+        <div class="side-kicker">Live Context</div>
+        <div class="side-title">Feedback Overview</div>
+        <div id="summaryList" class="summary-list"></div>
+      </div>
+    </aside>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

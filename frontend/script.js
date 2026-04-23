@@ -1,282 +1,309 @@
-let currentMode = "strategy";
-let knowledgeText = "";
-let requestAttachmentText = "";
-let historyItems = [];
-let actionItems = [];
-let currentSummaryText = "";
-let activeActionFilter = "all";
 
-const modeTabs = document.querySelectorAll(".mode-pill");
-const chatThread = document.getElementById("chatThread");
-const loading = document.getElementById("loading");
+const API_URL = "https://executive-engine-os.onrender.com/api/command";
+
+let currentMode = "strategy";
+let activeActionFilter = "all";
+let personalKnowledgeText = "";
+let requestAttachmentText = "";
+
+const chatScroll = document.getElementById("chatScroll");
+const historyBar = document.getElementById("historyBar");
 const historyList = document.getElementById("historyList");
 const actionList = document.getElementById("actionList");
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsMenu = document.getElementById("settingsMenu");
-const knowledgeStatus = document.getElementById("knowledgeFileStatus");
-const requestStatus = document.getElementById("requestFileStatus");
-const summaryContent = document.getElementById("summaryContent");
+const summaryList = document.getElementById("summaryList");
+const loading = document.getElementById("loading");
 
-document.querySelectorAll(".action-filter").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".action-filter").forEach(b => b.classList.remove("active"));
+let memory = {
+  conversations: JSON.parse(localStorage.getItem("exec_conversations_v8") || "[]"),
+  actions: JSON.parse(localStorage.getItem("exec_actions_v8") || "[]"),
+  summaries: JSON.parse(localStorage.getItem("exec_summaries_v8") || "[]")
+};
+
+document.querySelectorAll(".mode-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+  });
+});
+
+document.getElementById("toggleHistoryBtn").addEventListener("click", ()=>{
+  historyBar.classList.toggle("open");
+});
+
+document.getElementById("knowledgeFileInput").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if(!file){
+    personalKnowledgeText = "";
+    document.getElementById("knowledgeStatus").textContent = "No personal knowledge file loaded";
+    return;
+  }
+  personalKnowledgeText = await file.text();
+  document.getElementById("knowledgeStatus").textContent = "Loaded: " + file.name;
+});
+
+document.getElementById("requestFileInput").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if(!file){
+    requestAttachmentText = "";
+    document.getElementById("requestStatus").textContent = "No request file loaded";
+    return;
+  }
+  requestAttachmentText = await file.text();
+  document.getElementById("requestStatus").textContent = "Attached: " + file.name;
+});
+
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     activeActionFilter = btn.dataset.filter;
     renderActionItems();
   });
 });
 
-document.getElementById("historyBtn").addEventListener("click", () => {
-  document.getElementById("historyPanel").classList.toggle("hidden");
-});
-document.getElementById("closeHistoryBtn").addEventListener("click", () => {
-  document.getElementById("historyPanel").classList.add("hidden");
-});
-
-document.querySelectorAll(".settings-item").forEach(btn => {
-  btn.addEventListener("click", () => {
-    if (btn.dataset.topView === "history") {
-      document.getElementById("historyPanel").classList.remove("hidden");
-    }
-    settingsMenu.classList.add("hidden");
-  });
-});
-
-settingsBtn.addEventListener("click", () => {
-  settingsMenu.classList.toggle("hidden");
-});
-
-document.addEventListener("click", (e) => {
-  if (!settingsBtn.contains(e.target) && !settingsMenu.contains(e.target)) {
-    settingsMenu.classList.add("hidden");
+document.getElementById("prompt").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    runEngine();
   }
 });
 
-modeTabs.forEach(btn => {
-  btn.addEventListener("click", () => {
-    modeTabs.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentMode = btn.dataset.mode;
-  });
-});
+document.getElementById("runBtn").addEventListener("click", runEngine);
 
-document.getElementById("runBtn").addEventListener("click", send);
-document.getElementById("newChatBtn").addEventListener("click", () => {
-  chatThread.innerHTML = "";
-  document.getElementById("input").value = "";
-});
-
-document.getElementById("knowledgeFileInput").addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) {
-    knowledgeText = "";
-    knowledgeStatus.textContent = "No personal knowledge file loaded";
-    return;
-  }
-  try {
-    knowledgeText = await file.text();
-    knowledgeStatus.textContent = `Loaded: ${file.name}`;
-  } catch {
-    knowledgeText = "";
-    knowledgeStatus.textContent = "Could not read personal knowledge file";
-  }
-});
-
-document.getElementById("requestFileInput").addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) {
-    requestAttachmentText = "";
-    requestStatus.textContent = "No request file loaded";
-    return;
-  }
-  try {
-    requestAttachmentText = await file.text();
-    requestStatus.textContent = `Attached: ${file.name}`;
-  } catch {
-    requestAttachmentText = "";
-    requestStatus.textContent = "Could not read request file";
-  }
-});
-
-function escapeHtml(text) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function saveLocal(){
+  localStorage.setItem("exec_conversations_v8", JSON.stringify(memory.conversations));
+  localStorage.setItem("exec_actions_v8", JSON.stringify(memory.actions));
+  localStorage.setItem("exec_summaries_v8", JSON.stringify(memory.summaries));
 }
-function makeLinksClickable(text) {
-  const escaped = escapeHtml(text);
-  return escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+
+function escapeHtml(str=""){
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-function parseSections(text) {
-  const lines = text.split("\n");
-  const sections = [];
-  let current = null;
-  lines.forEach(line => {
-    const trimmed = line.trim();
-    if (!trimmed) return;
-    if (/^[A-Za-z ]+:$/.test(trimmed)) {
-      if (current) sections.push(current);
-      current = { title: trimmed.replace(":", ""), body: [] };
-    } else {
-      if (!current) current = { title: "Response", body: [] };
-      current.body.push(trimmed);
-    }
-  });
-  if (current) sections.push(current);
-  return sections;
+
+function linkify(str=""){
+  const escaped = escapeHtml(str);
+  return escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 }
-function renderAssistantCards(text) {
-  const sections = parseSections(text);
+
+function semanticClass(title){
+  const t = (title || "").toLowerCase();
+  if(t.includes("risk")) return "risk";
+  if(t.includes("action")) return "action";
+  if(t.includes("priority")) return "priority";
+  if(t.includes("overview")) return "overview";
+  if(t.includes("decision")) return "outcome";
+  return "generic";
+}
+
+function renderAssistantCards(structured){
   const wrap = document.createElement("div");
-  wrap.className = "response-cards";
-  if (!sections.length) {
-    const fallback = document.createElement("div");
-    fallback.className = "response-card";
-    fallback.innerHTML = `<h3>Response</h3><div class="card-body">${makeLinksClickable(text)}</div>`;
-    wrap.appendChild(fallback);
-    return wrap;
-  }
-  sections.forEach(section => {
+  wrap.className = "cards";
+
+  const ordered = [
+    ["Decision", structured.decision, "outcome"],
+    ["Why", structured.why, "generic"],
+    ["Risk", structured.risk, "risk"],
+    ["Action", (structured.action_items || []).map((x, i)=>`${i+1}. ${x}`).join("<br>"), "action"],
+    ["Priority", structured.priority, "priority"],
+    ["Feedback Overview", structured.feedback_overview, "overview"]
+  ];
+
+  ordered.forEach(([title, value, klass])=>{
+    if(!value || (Array.isArray(value) && !value.length)) return;
     const card = document.createElement("div");
-    card.className = "response-card";
-    card.innerHTML = `<h3>${escapeHtml(section.title)}</h3><div class="card-body">${makeLinksClickable(section.body.join("<br>"))}</div>`;
+    card.className = "result-card " + klass;
+    card.innerHTML = `<h4>${escapeHtml(title)}</h4><div class="body">${typeof value === "string" ? linkify(value) : value}</div>`;
     wrap.appendChild(card);
   });
+
   return wrap;
 }
-function addMessage(role, content, structured = false) {
+
+function addMessage(role, payload){
   const row = document.createElement("div");
-  row.className = `message-row ${role}`;
+  row.className = "message-row " + role;
   const bubble = document.createElement("div");
-  bubble.className = `bubble ${role}`;
+  bubble.className = "bubble " + role;
   const label = document.createElement("div");
   label.className = "bubble-label";
   label.textContent = role === "user" ? "You" : "Executive Engine";
   bubble.appendChild(label);
-  if (role === "assistant" && structured) {
-    bubble.appendChild(renderAssistantCards(content));
+
+  if(role === "ai"){
+    bubble.appendChild(renderAssistantCards(payload));
   } else {
-    const text = document.createElement("div");
-    text.className = "bubble-text";
-    text.textContent = content;
-    bubble.appendChild(text);
+    const textEl = document.createElement("div");
+    textEl.style.fontSize = "18px";
+    textEl.style.lineHeight = "1.5";
+    textEl.textContent = payload;
+    bubble.appendChild(textEl);
   }
+
   row.appendChild(bubble);
-  chatThread.appendChild(row);
-  chatThread.scrollTop = chatThread.scrollHeight;
+  chatScroll.appendChild(row);
+  chatScroll.scrollTop = chatScroll.scrollHeight;
 }
-function saveHistory(prompt) {
-  const item = { prompt, mode: currentMode, timestamp: new Date().toISOString() };
-  historyItems.unshift(item);
-  historyItems = historyItems.slice(0, 20);
-  localStorage.setItem("executive_os_history", JSON.stringify(historyItems));
-  renderHistory();
+
+function clearThread(){
+  chatScroll.innerHTML = "";
 }
-function loadHistory() {
-  try {
-    historyItems = JSON.parse(localStorage.getItem("executive_os_history") || "[]");
-  } catch {
-    historyItems = [];
-  }
-  renderHistory();
+
+function openConversation(item){
+  clearThread();
+  addMessage("user", item.prompt);
+  addMessage("ai", item.structured);
 }
-function renderHistory() {
+
+function inferPriority(value){
+  const text = (value || "").toLowerCase();
+  if(text.includes("high") || text.includes("urgent") || text.includes("immediate")) return "high";
+  if(text.includes("medium") || text.includes("important") || text.includes("soon")) return "medium";
+  return "normal";
+}
+
+function renderHistory(){
   historyList.innerHTML = "";
-  historyItems.forEach(item => {
+  const conversations = memory.conversations || [];
+  conversations.forEach(item=>{
     const btn = document.createElement("button");
-    btn.className = "history-item";
-    btn.type = "button";
-    btn.textContent = `[${item.mode}] ${item.prompt.slice(0, 56)}${item.prompt.length > 56 ? "..." : ""}`;
-    btn.addEventListener("click", () => {
-      document.getElementById("input").value = item.prompt;
-      currentMode = item.mode;
-      modeTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.mode === item.mode));
-    });
+    btn.className = "history-chip";
+    btn.textContent = `[${item.mode}] ${item.prompt.slice(0,48)}${item.prompt.length>48?"...":""}`;
+    btn.onclick = ()=>openConversation(item);
     historyList.appendChild(btn);
   });
 }
-function extractActionItems(text) {
-  const numbered = text.match(/(^|\n)\s*\d+\.\s.+/g) || [];
-  numbered.forEach(item => {
-    const clean = item.replace(/^\n?\s*/, "").trim().replace(/<br>/g, " ");
-    actionItems.unshift({ text: clean, mode: currentMode });
-  });
-  actionItems = actionItems.slice(0, 30);
-  renderActionItems();
-}
-function renderActionItems() {
+
+function renderActionItems(){
   actionList.innerHTML = "";
-  const filtered = activeActionFilter === "all" ? actionItems : actionItems.filter(item => item.mode === activeActionFilter);
-  if (!filtered.length) {
-    actionList.innerHTML = '<div class="action-item">No action items for this filter yet.</div>';
+  const list = activeActionFilter === "all"
+    ? (memory.actions || [])
+    : (memory.actions || []).filter(x=>x.mode===activeActionFilter);
+
+  if(!list.length){
+    actionList.innerHTML = `<div class="action-item" data-priority="normal"><h5>Status</h5><p>No action items yet.</p></div>`;
     return;
   }
-  filtered.forEach(item => {
+
+  list.forEach(item=>{
     const div = document.createElement("div");
     div.className = "action-item";
-    div.innerHTML = `<strong>[${item.mode}]</strong> ${escapeHtml(item.text)}`;
+    div.dataset.priority = item.priority || "normal";
+    div.innerHTML = `<h5>${escapeHtml(item.mode)} · ${escapeHtml(item.priority || "normal")}</h5><p>${escapeHtml(item.action)}</p>`;
+    div.onclick = ()=>openConversation(item.conversation);
     actionList.appendChild(div);
   });
 }
-function renderSummary(summaryText) {
-  currentSummaryText = summaryText || "";
-  if (!summaryText) {
-    summaryContent.innerHTML = '<div class="summary-empty"><div class="summary-empty-title">No summary yet</div><div class="summary-empty-copy">Submit a prompt and the executive summary will update automatically.</div></div>';
+
+function renderSummaries(){
+  summaryList.innerHTML = "";
+  const summaries = memory.summaries || [];
+  if(!summaries.length){
+    summaryList.innerHTML = `<div class="summary-card"><h5>Status</h5><p>No feedback overview yet.</p></div>`;
     return;
   }
-  const sections = parseSections(summaryText);
-  if (!sections.length) {
-    summaryContent.innerHTML = `<div class="summary-card"><div class="summary-card-title">Summary</div><div class="summary-card-body">${escapeHtml(summaryText)}</div></div>`;
-    return;
-  }
-  summaryContent.innerHTML = "";
-  sections.forEach(section => {
-    const card = document.createElement("div");
-    card.className = "summary-card";
-    card.innerHTML = `<div class="summary-card-title">${escapeHtml(section.title)}</div><div class="summary-card-body">${escapeHtml(section.body.join("\n"))}</div>`;
-    summaryContent.appendChild(card);
+  summaries.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "summary-card";
+    div.innerHTML = `<h5>${escapeHtml(item.title)}</h5><p>${escapeHtml(item.body)}</p>`;
+    div.onclick = ()=>openConversation(item.conversation);
+    summaryList.appendChild(div);
   });
 }
-async function send() {
-  const input = document.getElementById("input").value.trim();
-  if (!input) return;
+
+async function runEngine(){
+  const prompt = document.getElementById("prompt").value.trim();
+  if(!prompt) return;
 
   const payload = {
-    input,
+    input: prompt,
     mode: currentMode,
     profile_role: document.getElementById("profile_role").value,
     profile_industry: document.getElementById("profile_industry").value,
     profile_tone: document.getElementById("profile_tone").value,
     profile_goal: document.getElementById("profile_goal").value,
     personal_context: document.getElementById("personal_context").value.trim(),
-    uploaded_context: knowledgeText,
-    request_attachment_context: requestAttachmentText,
-    prior_summary: currentSummaryText
+    uploaded_context: personalKnowledgeText,
+    request_attachment_context: requestAttachmentText
   };
 
-  addMessage("user", input, false);
-  saveHistory(input);
-  document.getElementById("input").value = "";
-  requestAttachmentText = "";
-  document.getElementById("requestFileInput").value = "";
-  requestStatus.textContent = "No request file loaded";
-  loading.classList.remove("hidden");
+  addMessage("user", prompt);
+  document.getElementById("prompt").value = "";
+  loading.style.display = "inline";
 
-  try {
-    const res = await fetch("https://executive-engine-os.onrender.com/api/command", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(payload)
+  try{
+    const res = await fetch(API_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
     });
     const data = await res.json();
-    const output = data.output || data.error || "No response returned.";
-    addMessage("assistant", output, true);
-    extractActionItems(output);
-    if (data.summary) renderSummary(data.summary);
-  } catch (err) {
-    addMessage("assistant", "Error: " + err.message, true);
-  } finally {
-    loading.classList.add("hidden");
+
+    const structured = data.structured || {
+      decision: data.error || "No response returned.",
+      why: "",
+      risk: "",
+      action_items: [],
+      priority: "",
+      feedback_overview: ""
+    };
+
+    addMessage("ai", structured);
+
+    const conversation = {
+      id: String(Date.now()),
+      prompt,
+      mode: currentMode,
+      structured,
+      created_at: new Date().toISOString()
+    };
+
+    memory.conversations.unshift(conversation);
+    memory.conversations = memory.conversations.slice(0, 30);
+
+    const actions = (structured.action_items || []).map(action => ({
+      id: String(Date.now()) + Math.random().toString(16).slice(2),
+      mode: currentMode,
+      action,
+      priority: inferPriority(structured.priority),
+      conversation
+    }));
+    memory.actions = [...actions, ...memory.actions].slice(0, 50);
+
+    const summaryParts = [
+      {title:"Objective", body:structured.feedback_overview || structured.why || ""},
+      {title:"Priority", body:structured.priority || ""},
+      {title:"Risk", body:structured.risk || ""}
+    ].filter(x => x.body);
+
+    memory.summaries = summaryParts.map(x => ({
+      title: x.title,
+      body: x.body,
+      conversation
+    }));
+
+    saveLocal();
+    renderHistory();
+    renderActionItems();
+    renderSummaries();
+
+    requestAttachmentText = "";
+    document.getElementById("requestFileInput").value = "";
+    document.getElementById("requestStatus").textContent = "No request file loaded";
+  } catch(err){
+    addMessage("ai", {
+      decision: "Request failed",
+      why: err.message,
+      risk: "No output returned",
+      action_items: ["Retry with shorter context", "Remove large attachment text", "Try again in 10 seconds"],
+      priority: "Medium",
+      feedback_overview: "The request failed before the engine returned a structured answer."
+    });
+  } finally{
+    loading.style.display = "none";
   }
 }
-loadHistory();
+
+renderHistory();
 renderActionItems();
-renderSummary("");
+renderSummaries();

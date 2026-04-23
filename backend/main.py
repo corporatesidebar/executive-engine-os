@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+import json
+from typing import Optional
 
 app = FastAPI()
 
@@ -25,185 +27,108 @@ class RequestModel(BaseModel):
     profile_tone: str = ""
     profile_goal: str = ""
     personal_context: str = ""
-    uploaded_context: str | None = None
-    request_attachment_context: str | None = None
-    prior_summary: str | None = None
+    uploaded_context: Optional[str] = None
+    request_attachment_context: Optional[str] = None
 
-SYSTEM_PROMPTS = {
-    "strategy": """You are an executive strategy engine.
-Be sharp, concise, and operator-grade.
-No praise, no coaching tone, no emotional padding.
-
-Return exactly:
-Outcome:
-...
-
-Risk:
-...
-
-Action:
-1. ...
-2. ...
-3. ...
-
-Priority:
-...""",
-    "decision": """You are an executive decision engine.
-Force clarity. Choose a direction. Be concise and commercially aware.
-No praise, no coaching tone, no emotional padding.
-
-Return exactly:
-Decision:
-...
-
-Why:
-...
-
-Risk:
-...
-
-Next Move:
-1. ...
-2. ...
-3. ...
-
-Priority:
-...""",
-    "meeting": """You are an executive meeting prep engine.
-Turn rough ideas into a focused meeting structure.
-No praise, no coaching tone, no emotional padding.
-
-Return exactly:
-Meeting Goal:
-...
-
-Key Talking Points:
-- ...
-- ...
-- ...
-
-Decision Needed:
-...
-
-Next Steps:
-1. ...
-2. ...
-3. ...
-
-Priority:
-...""",
-    "execution": """You are an execution engine for operators.
-Focus on sequencing, accountability, momentum, and constraints.
-No praise, no coaching tone, no emotional padding.
-
-Return exactly:
-Target:
-...
-
-Blocker:
-...
-
-Execution Plan:
-1. ...
-2. ...
-3. ...
-
-Risk:
-...
-
-Priority:
-...""",
-    "personal": """You are a direct personal advisor.
-Be clear, grounded, and practical.
-No praise, no coaching tone, no emotional padding.
-
-Return exactly:
-What Matters:
-...
-
-Best Move:
-...
-
-Watch Out For:
-...
-
-Next Step:
-...""",
+MODE_GUIDANCE = {
+    "strategy": "Choose a direction and make the tradeoff explicit.",
+    "decision": "Force a decision and explain why this option wins.",
+    "meeting": "Turn the situation into a focused meeting outcome with immediate next steps.",
+    "execution": "Sequence the work, remove blockers, and make action immediate.",
+    "personal": "Be direct, practical, and grounded."
 }
 
-SUMMARY_SYSTEM = """You are updating an executive summary panel.
-Be concise and factual. Compress signal.
+def trimmed_context(req: RequestModel) -> str:
+    parts = []
+    if req.profile_role:
+        parts.append(f"Role Target: {req.profile_role}")
+    if req.profile_industry:
+        parts.append(f"Industry: {req.profile_industry}")
+    if req.profile_tone:
+        parts.append(f"Tone: {req.profile_tone}")
+    if req.profile_goal:
+        parts.append(f"Goal: {req.profile_goal}")
+    if req.personal_context:
+        parts.append(f"Personal Context: {req.personal_context[:500]}")
+    if req.uploaded_context:
+        parts.append("Personal Knowledge: " + req.uploaded_context[:1500])
+    if req.request_attachment_context:
+        parts.append("Request Attachment: " + req.request_attachment_context[:1000])
+    return "\n".join(parts)
 
-Return exactly:
-Objective:
-...
+SYSTEM_PROMPT = """
+You are Executive Engine, an operator-grade decision system.
 
-Current Situation:
-...
+Your job is not to coach, hedge, or nag.
+Your job is to make a call, explain the logic, identify the main risk, and give immediate next actions.
 
-Key Risks:
-- ...
-- ...
+Rules:
+- Be decisive.
+- No filler.
+- No motivational language.
+- No generic advice.
+- Make the output practical and commercially intelligent.
+- Prefer clarity over comprehensiveness.
+- If context is weak, still make the best call and state the key assumption briefly.
+- Keep action items concrete and executable.
 
-Active Strategy:
-...
-
-Next Moves:
-- ...
-- ...
-- ..."""
+Return ONLY valid JSON with this exact shape:
+{
+  "decision": "string",
+  "why": "string",
+  "risk": "string",
+  "action_items": ["string", "string", "string"],
+  "priority": "High | Medium | Low",
+  "feedback_overview": "string"
+}
+"""
 
 @app.get("/")
 def root():
     return {"status": "live"}
 
-def build_context(req: RequestModel) -> str:
-    profile_parts = []
-    if req.profile_role:
-        profile_parts.append(f"Role Target: {req.profile_role}")
-    if req.profile_industry:
-        profile_parts.append(f"Industry: {req.profile_industry}")
-    if req.profile_tone:
-        profile_parts.append(f"Tone: {req.profile_tone}")
-    if req.profile_goal:
-        profile_parts.append(f"Goal: {req.profile_goal}")
-    if req.personal_context:
-        profile_parts.append(f"Personal Context: {req.personal_context}")
-
-    context_parts = []
-    if profile_parts:
-        context_parts.append("User Profile:\n" + "\n".join(profile_parts))
-    if req.uploaded_context:
-        context_parts.append("Personal Knowledge Files:\n" + req.uploaded_context[:6000])
-    if req.request_attachment_context:
-        context_parts.append("Files Attached To This Request:\n" + req.request_attachment_context[:4000])
-    if req.prior_summary:
-        context_parts.append("Prior Executive Summary:\n" + req.prior_summary)
-
-    return "\n\n".join(context_parts) if context_parts else "No extra context provided."
-
 @app.post("/api/command")
 async def command(req: RequestModel):
     try:
-        context_block = build_context(req)
+        context_block = trimmed_context(req)
+        user_prompt = f"""Mode: {req.mode}
+Mode Guidance: {MODE_GUIDANCE.get(req.mode, MODE_GUIDANCE['strategy'])}
+
+Relevant Context:
+{context_block if context_block else 'None'}
+
+Situation:
+{req.input}"""
 
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {"role": "system", "content": SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])},
-                {"role": "user", "content": f"{context_block}\n\nCurrent Mode: {req.mode}\n\nSituation:\n{req.input}"}
-            ]
-        )
-        output = response.output_text
-
-        summary_response = client.responses.create(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": SUMMARY_SYSTEM},
-                {"role": "user", "content": f"{context_block}\n\nUser Input:\n{req.input}\n\nEngine Output:\n{output}"}
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt}
             ]
         )
 
-        return {"output": output, "summary": summary_response.output_text}
+        text = response.output_text.strip()
+        structured = json.loads(text)
+
+        if not isinstance(structured.get("action_items"), list):
+            structured["action_items"] = [str(structured.get("action_items", ""))]
+
+        structured["action_items"] = [str(x) for x in structured["action_items"][:5] if str(x).strip()]
+
+        return {"structured": structured}
     except Exception as e:
-        return {"error": str(e)}
+        return {
+            "structured": {
+                "decision": "Engine response failed",
+                "why": f"The backend could not complete the structured response: {str(e)}",
+                "risk": "The system returned no usable decision output.",
+                "action_items": [
+                    "Retry with a shorter input",
+                    "Reduce large uploaded context",
+                    "Run the request again"
+                ],
+                "priority": "Medium",
+                "feedback_overview": "The request failed before a structured decision could be generated."
+            }
+        }
