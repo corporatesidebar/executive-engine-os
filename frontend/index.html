@@ -1,41 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executive Engine</title>
-  <link rel="stylesheet" href="/style.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine</title>
 </head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">Executive OS</div>
-      <button class="mode mode-active" data-mode="Strategy">Strategy</button>
-      <button class="mode" data-mode="Decision">Decision</button>
-      <button class="mode" data-mode="Execution">Execution</button>
-      <button class="mode" data-mode="Meeting">Meeting</button>
-      <button class="mode" data-mode="Personal">Personal</button>
-    </aside>
+<body style="font-family: Arial; background:#f5f7fa; padding:20px;">
 
-    <main class="main">
-      <h1>Executive Engine</h1>
-      <p class="subhead">What needs a decision?</p>
+<h2>Executive Decision Engine</h2>
 
-      <section class="main-card">
-        <div class="mode-line">Mode: <span id="currentMode">Strategy</span></div>
-        <textarea id="input" placeholder="What’s on your mind?"></textarea>
-        <div class="actions">
-          <button class="run-btn" onclick="runEngine()">Run Engine</button>
-        </div>
+<textarea id="input" placeholder="Enter your situation..." 
+style="width:100%; height:120px; padding:10px;"></textarea>
 
-        <div class="output-box"><strong>Outcome:</strong> <span id="outcome">-</span></div>
-        <div class="output-box"><strong>Risk:</strong> <span id="risk">-</span></div>
-        <div class="output-box"><strong>Action:</strong> <span id="action">-</span></div>
-        <div class="output-box"><strong>Priority:</strong> <span id="priority">-</span></div>
-      </section>
-    </main>
-  </div>
+<br><br>
 
-  <script src="/script.js"></script>
+<button onclick="run()" style="padding:10px 20px;">Execute</button>
+
+<pre id="output" style="margin-top:20px;"></pre>
+
+<script>
+async function run() {
+  const input = document.getElementById("input").value;
+
+  const res = await fetch("https://executive-engine-os.onrender.com/run", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ input })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("output").innerText =
+    "Outcome: " + data.outcome + "\n\n" +
+    "Risk: " + data.risk + "\n\n" +
+    "Action: " + data.action + "\n\n" +
+    "Priority: " + data.priority;
+}
+</script>
+
 </body>
 </html>
