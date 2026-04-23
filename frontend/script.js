@@ -1,3 +1,4 @@
+const API_URL = "https://executive-engine-backend.onrender.com/api/command";
 async function runEngine() {
   const input = document.getElementById("input").value;
 
