@@ -1,9 +1,23 @@
+const API_URL = "https://executive-engine-os.onrender.com/run-engine";
+
 async function runEngine() {
   const input = document.getElementById("input").value;
 
-  // TEMP mock (no backend needed)
-  document.getElementById("outcome").innerText = "Clarity gained";
-  document.getElementById("risk").innerText = "Low";
-  document.getElementById("action").innerText = "Proceed with focused execution";
-  document.getElementById("priority").innerText = "High";
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("outcome").innerText = data.outcome || "N/A";
+    document.getElementById("risk").innerText = data.risk || "N/A";
+    document.getElementById("action").innerText = data.action || "N/A";
+    document.getElementById("priority").innerText = data.priority || "N/A";
+
+  } catch (err) {
+    alert("API error. Backend not responding.");
+  }
 }
