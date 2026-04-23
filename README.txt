@@ -1,6 +1,5 @@
-Replace ONLY command.html in your static site repo.
-
-Why you saw 'undefined':
-- The API responded
-- But your frontend was only looking for one field name
-- This version handles output / response / error / detail safely
+V8 changes:
+- one-call backend instead of two-call backend
+- strict JSON output
+- better executive decision structure
+- action items and feedback overview derive from same structured response
