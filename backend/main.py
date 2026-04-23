@@ -9,8 +9,8 @@ class Input(BaseModel):
 @app.post("/run-engine")
 def run_engine(data: Input):
     return {
-        "outcome": "Move forward with confidence",
-        "risk": "Low",
-        "action": "Execute next step immediately",
+        "outcome": "Clear next move",
+        "risk": "Moderate",
+        "action": "Take first step immediately",
         "priority": "High"
     }
