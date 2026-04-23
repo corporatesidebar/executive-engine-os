@@ -1,18 +1,23 @@
+const API_URL = "REPLACE_THIS_WITH_BACKEND";
+
 async function runEngine() {
     const input = document.getElementById("input").value;
 
-    const res = await fetch("https://YOUR-BACKEND-URL.onrender.com/run-engine", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ input })
-    });
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ input })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    document.getElementById("outcome").innerText = data.outcome;
-    document.getElementById("risk").innerText = data.risk;
-    document.getElementById("action").innerText = data.action;
-    document.getElementById("priority").innerText = data.priority;
+        document.getElementById("outcome").innerText = data.outcome || "N/A";
+        document.getElementById("risk").innerText = data.risk || "N/A";
+        document.getElementById("action").innerText = data.action || "N/A";
+        document.getElementById("priority").innerText = data.priority || "N/A";
+
+    } catch (err) {
+        alert("API error. Check backend URL.");
+    }
 }

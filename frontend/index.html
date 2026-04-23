@@ -2,16 +2,19 @@
 <html>
 <head>
     <title>Executive Engine</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Executive Engine</h1>
     <textarea id="input" placeholder="Type your decision..."></textarea><br><br>
     <button onclick="runEngine()">Run Engine</button>
 
-    <h3>Outcome: <span id="outcome"></span></h3>
-    <h3>Risk: <span id="risk"></span></h3>
-    <h3>Action: <span id="action"></span></h3>
-    <h3>Priority: <span id="priority"></span></h3>
+    <div id="results">
+        <p>Outcome: <span id="outcome">-</span></p>
+        <p>Risk: <span id="risk">-</span></p>
+        <p>Action: <span id="action">-</span></p>
+        <p>Priority: <span id="priority">-</span></p>
+    </div>
 
     <script src="script.js"></script>
 </body>
