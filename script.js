@@ -1,16 +1,30 @@
 let currentMode = "strategy";
-let uploadedText = "";
+let knowledgeText = "";
+let requestAttachmentText = "";
 let historyItems = [];
 let actionItems = [];
+let currentSummaryText = "";
+let activeActionFilter = "all";
 
 const modeTabs = document.querySelectorAll(".mode-tab");
 const chatThread = document.getElementById("chatThread");
 const loading = document.getElementById("loading");
-const fileStatus = document.getElementById("fileStatus");
 const historyList = document.getElementById("historyList");
 const actionList = document.getElementById("actionList");
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsMenu = document.getElementById("settingsMenu");
+const knowledgeStatus = document.getElementById("knowledgeFileStatus");
+const requestStatus = document.getElementById("requestFileStatus");
+const summaryContent = document.getElementById("summaryContent");
+
+document.querySelectorAll(".action-filter").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".action-filter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeActionFilter = btn.dataset.filter;
+    renderActionItems();
+  });
+});
 
 document.querySelectorAll(".nav-item").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -22,25 +36,26 @@ document.querySelectorAll(".nav-item").forEach(btn => {
 
 function showSidebarView(view) {
   document.getElementById("engineSidebar").classList.add("hidden");
-  document.getElementById("actionsSidebar").classList.add("hidden");
-  document.getElementById("historySidebar").classList.add("hidden");
+  document.getElementById("actionsSidebar")?.classList.add("hidden");
+  document.getElementById("historySidebar")?.classList.add("hidden");
 
-  if (view === "actions") {
-    document.getElementById("actionsSidebar").classList.remove("hidden");
-  } else if (view === "history") {
-    document.getElementById("historySidebar").classList.remove("hidden");
-  } else {
+  if (view === "engine") {
     document.getElementById("engineSidebar").classList.remove("hidden");
   }
 }
+
+document.getElementById("historyBtn").addEventListener("click", () => {
+  document.getElementById("historyPanel").classList.toggle("hidden");
+});
+document.getElementById("closeHistoryBtn").addEventListener("click", () => {
+  document.getElementById("historyPanel").classList.add("hidden");
+});
 
 document.querySelectorAll(".settings-item").forEach(btn => {
   btn.addEventListener("click", () => {
     const view = btn.dataset.topView;
     if (view === "history") {
-      document.querySelector('.nav-item[data-left-view="history"]').click();
-    } else {
-      document.querySelector('.nav-item[data-left-view="engine"]').click();
+      document.getElementById("historyPanel").classList.remove("hidden");
     }
     settingsMenu.classList.add("hidden");
   });
@@ -70,19 +85,35 @@ document.getElementById("newChatBtn").addEventListener("click", () => {
   document.getElementById("input").value = "";
 });
 
-document.getElementById("fileInput").addEventListener("change", async (event) => {
+document.getElementById("knowledgeFileInput").addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) {
-    uploadedText = "";
-    fileStatus.textContent = "No file loaded";
+    knowledgeText = "";
+    knowledgeStatus.textContent = "No personal knowledge file loaded";
     return;
   }
   try {
-    uploadedText = await file.text();
-    fileStatus.textContent = `Loaded: ${file.name}`;
-  } catch (e) {
-    uploadedText = "";
-    fileStatus.textContent = "Could not read file";
+    knowledgeText = await file.text();
+    knowledgeStatus.textContent = `Loaded: ${file.name}`;
+  } catch {
+    knowledgeText = "";
+    knowledgeStatus.textContent = "Could not read personal knowledge file";
+  }
+});
+
+document.getElementById("requestFileInput").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) {
+    requestAttachmentText = "";
+    requestStatus.textContent = "No request file loaded";
+    return;
+  }
+  try {
+    requestAttachmentText = await file.text();
+    requestStatus.textContent = `Attached: ${file.name}`;
+  } catch {
+    requestAttachmentText = "";
+    requestStatus.textContent = "Could not read request file";
   }
 });
 
@@ -178,7 +209,7 @@ function saveHistory(prompt) {
     timestamp: new Date().toISOString()
   };
   historyItems.unshift(item);
-  historyItems = historyItems.slice(0, 12);
+  historyItems = historyItems.slice(0, 20);
   localStorage.setItem("executive_os_history", JSON.stringify(historyItems));
   renderHistory();
 }
@@ -198,7 +229,7 @@ function renderHistory() {
     const btn = document.createElement("button");
     btn.className = "history-item";
     btn.type = "button";
-    btn.textContent = `[${item.mode}] ${item.prompt.slice(0, 50)}${item.prompt.length > 50 ? "..." : ""}`;
+    btn.textContent = `[${item.mode}] ${item.prompt.slice(0, 56)}${item.prompt.length > 56 ? "..." : ""}`;
     btn.addEventListener("click", () => {
       document.getElementById("input").value = item.prompt;
       currentMode = item.mode;
@@ -211,26 +242,66 @@ function renderHistory() {
 }
 
 function extractActionItems(text) {
-  const matches = text.match(/\n\s*\d+\.\s.+/g) || [];
-  matches.forEach(item => {
-    const clean = item.replace(/^\n\s*/, "").trim();
-    if (!actionItems.includes(clean)) actionItems.push(clean);
+  const numbered = text.match(/(^|\n)\s*\d+\.\s.+/g) || [];
+  numbered.forEach(item => {
+    const clean = item.replace(/^\n?\s*/, "").trim().replace(/<br>/g, " ");
+    actionItems.unshift({ text: clean, mode: currentMode });
   });
-  actionItems = actionItems.slice(-20);
+  actionItems = actionItems.slice(0, 30);
   renderActionItems();
 }
 
 function renderActionItems() {
   actionList.innerHTML = "";
-  if (actionItems.length === 0) {
-    actionList.innerHTML = '<div class="action-item">No action items yet.</div>';
+  const filtered = activeActionFilter === "all"
+    ? actionItems
+    : actionItems.filter(item => item.mode === activeActionFilter);
+
+  if (filtered.length === 0) {
+    actionList.innerHTML = '<div class="action-item">No action items for this filter yet.</div>';
     return;
   }
-  actionItems.forEach(item => {
+
+  filtered.forEach(item => {
     const div = document.createElement("div");
     div.className = "action-item";
-    div.textContent = item;
+    div.innerHTML = `<strong>[${item.mode}]</strong> ${escapeHtml(item.text)}`;
     actionList.appendChild(div);
+  });
+}
+
+function renderSummary(summaryText) {
+  currentSummaryText = summaryText || "";
+  if (!summaryText) {
+    summaryContent.innerHTML = `
+      <div class="summary-empty">
+        <div class="summary-empty-title">No summary yet</div>
+        <div class="summary-empty-copy">Submit a prompt and the executive summary will update automatically.</div>
+      </div>
+    `;
+    return;
+  }
+
+  const sections = parseSections(summaryText);
+  if (!sections.length) {
+    summaryContent.innerHTML = `
+      <div class="summary-card">
+        <div class="summary-card-title">Summary</div>
+        <div class="summary-card-body">${escapeHtml(summaryText)}</div>
+      </div>
+    `;
+    return;
+  }
+
+  summaryContent.innerHTML = "";
+  sections.forEach(section => {
+    const card = document.createElement("div");
+    card.className = "summary-card";
+    card.innerHTML = `
+      <div class="summary-card-title">${escapeHtml(section.title)}</div>
+      <div class="summary-card-body">${escapeHtml(section.body.join("\n"))}</div>
+    `;
+    summaryContent.appendChild(card);
   });
 }
 
@@ -246,12 +317,17 @@ async function send() {
     profile_tone: document.getElementById("profile_tone").value,
     profile_goal: document.getElementById("profile_goal").value,
     personal_context: document.getElementById("personal_context").value.trim(),
-    uploaded_context: uploadedText
+    uploaded_context: knowledgeText,
+    request_attachment_context: requestAttachmentText,
+    prior_summary: currentSummaryText
   };
 
   addMessage("user", input, false);
   saveHistory(input);
   document.getElementById("input").value = "";
+  requestAttachmentText = "";
+  document.getElementById("requestFileInput").value = "";
+  requestStatus.textContent = "No request file loaded";
   loading.classList.remove("hidden");
 
   try {
@@ -265,6 +341,10 @@ async function send() {
     const output = data.output || data.error || "No response returned.";
     addMessage("assistant", output, true);
     extractActionItems(output);
+
+    if (data.summary) {
+      renderSummary(data.summary);
+    }
   } catch (err) {
     addMessage("assistant", "Error: " + err.message, true);
   } finally {
@@ -274,4 +354,5 @@ async function send() {
 
 loadHistory();
 renderActionItems();
+renderSummary("");
 showSidebarView("engine");

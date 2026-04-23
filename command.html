@@ -7,26 +7,25 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="layout">
+  <div class="shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-kicker">Rival Summit</div>
-        <div class="brand-title">Executive OS</div>
+        <div class="brand-mark">Rival Summit</div>
+        <div class="brand-name">Executive OS</div>
+        <div class="brand-copy">Decision support, execution clarity, and persistent context.</div>
       </div>
 
-      <nav class="nav">
-        <div class="nav-section">Core</div>
+      <nav class="primary-nav">
+        <div class="nav-label">Core</div>
         <button class="nav-item active" type="button" data-left-view="engine">Executive Engine</button>
-        <button class="nav-item" type="button" data-left-view="actions">Action Items</button>
-        <button class="nav-item" type="button" data-left-view="history">History</button>
       </nav>
 
-      <div id="engineSidebar" class="sidebar-stack">
-        <div class="panel-card">
-          <div class="profile-label">Executive Profile</div>
+      <div id="engineSidebar" class="sidebar-pane">
+        <section class="side-card">
+          <div class="side-title">Executive Profile</div>
           <div class="profile-grid">
-            <div>
-              <label>Role Target</label>
+            <div class="field">
+              <label for="profile_role">Role Target</label>
               <select id="profile_role">
                 <option value="">Select</option>
                 <option>COO</option>
@@ -36,8 +35,8 @@
                 <option>Executive</option>
               </select>
             </div>
-            <div>
-              <label>Industry</label>
+            <div class="field">
+              <label for="profile_industry">Industry</label>
               <select id="profile_industry">
                 <option value="">Select</option>
                 <option>AI</option>
@@ -48,8 +47,8 @@
                 <option>Other</option>
               </select>
             </div>
-            <div>
-              <label>Tone</label>
+            <div class="field">
+              <label for="profile_tone">Tone</label>
               <select id="profile_tone">
                 <option value="">Select</option>
                 <option>Direct</option>
@@ -58,8 +57,8 @@
                 <option>Polished</option>
               </select>
             </div>
-            <div>
-              <label>Goal</label>
+            <div class="field">
+              <label for="profile_goal">Goal</label>
               <select id="profile_goal">
                 <option value="">Select</option>
                 <option>Job Search</option>
@@ -70,86 +69,126 @@
               </select>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="panel-card">
-          <div class="profile-label">Personal Context</div>
-          <textarea id="personal_context" class="side-textarea" placeholder="Tell us about your personal life, current stress, goals, or what matters right now..."></textarea>
-        </div>
+        <section class="side-card">
+          <div class="side-title">Personal Context</div>
+          <textarea id="personal_context" class="side-textarea" placeholder="Current stress, priorities, life context, or what matters right now..."></textarea>
+        </section>
 
-        <div class="panel-card">
-          <div class="profile-label">Let us know who you are</div>
-          <div class="helper-copy">Upload files like your résumé, bio, notes, personal background, business plan, strategy documents, or anything that helps the system understand you better.</div>
-          <label class="upload-box" for="fileInput">
-            <span class="upload-title">Upload files</span>
-            <span class="upload-subtitle">TXT, MD, CSV for now</span>
+        <section class="side-card">
+          <div class="side-title">Personal Knowledge</div>
+          <p class="side-copy">Upload high-level files like résumé, bio, notes, background, plans, or strategy documents.</p>
+          <label class="upload-box" for="knowledgeFileInput">
+            <span class="upload-icon">⬆</span>
+            <span class="upload-head">Upload personal knowledge</span>
+            <span class="upload-sub">Résumé, notes, plans, background</span>
           </label>
-          <input id="fileInput" type="file" accept=".txt,.md,.csv" hidden>
-          <div id="fileStatus" class="file-status">No file loaded</div>
-        </div>
-      </div>
-
-      <div id="actionsSidebar" class="sidebar-stack hidden">
-        <div class="panel-card">
-          <div class="profile-label">Action Items</div>
-          <div id="actionList" class="action-list"></div>
-        </div>
-      </div>
-
-      <div id="historySidebar" class="sidebar-stack hidden">
-        <div class="panel-card history-card">
-          <div class="history-header">
-            <span class="profile-label">History</span>
-            <button id="newChatBtn" class="ghost-btn" type="button">New</button>
-          </div>
-          <div id="historyList" class="history-list"></div>
-        </div>
+          <input id="knowledgeFileInput" type="file" accept=".txt,.md,.csv" hidden>
+          <div id="knowledgeFileStatus" class="upload-status">No personal knowledge file loaded</div>
+        </section>
       </div>
     </aside>
 
-    <main class="main">
-      <div class="topbar">
+    <main class="workspace">
+      <header class="workspace-header">
         <div>
-          <div class="eyebrow">Executive Decision Platform</div>
+          <div class="hero-kicker">Executive Decision Platform</div>
           <h1>Executive Engine</h1>
-          <p class="subcopy">Put in a real situation. Get an operator-level answer.</p>
         </div>
-
-        <div class="topbar-right">
+        <div class="workspace-tools">
+          <button id="historyBtn" class="history-top-button" type="button">View past history</button>
           <div class="live-pill">LIVE</div>
           <div class="settings-wrap">
-            <button id="settingsBtn" class="icon-btn" type="button">⚙</button>
+            <button id="settingsBtn" class="icon-button" type="button">⚙</button>
             <div id="settingsMenu" class="settings-menu hidden">
-              <div class="settings-title">Quick Access</div>
+              <div class="menu-label">Quick Access</div>
               <button class="settings-item" type="button" data-top-view="profile">Profile</button>
               <button class="settings-item" type="button" data-top-view="uploads">Uploads</button>
               <button class="settings-item" type="button" data-top-view="history">History</button>
             </div>
           </div>
         </div>
+      </header>
+
+      <div class="content-grid">
+        <section class="conversation-column">
+          <section class="main-panel">
+            <div class="mode-tabs">
+              <button class="mode-tab active" data-mode="strategy" type="button">Strategy</button>
+              <button class="mode-tab" data-mode="decision" type="button">Decision</button>
+              <button class="mode-tab" data-mode="meeting" type="button">Meeting</button>
+              <button class="mode-tab" data-mode="execution" type="button">Execution</button>
+              <button class="mode-tab" data-mode="personal" type="button">Personal</button>
+            </div>
+
+            <div id="historyPanel" class="history-panel hidden">
+              <div class="history-panel-head">
+                <div class="history-panel-title">Past History</div>
+                <button id="closeHistoryBtn" class="ghost-button" type="button">Close</button>
+              </div>
+              <div id="historyList" class="history-list history-inline"></div>
+            </div>
+
+            <section id="chatThread" class="chat-thread"></section>
+
+            <div id="loading" class="loading hidden">Thinking...</div>
+
+            <section class="composer-dock">
+              <div class="composer-shell">
+                <textarea id="input" class="prompt-input" placeholder="How can I help you?"></textarea>
+                <div class="composer-row">
+                  <div class="request-upload-wrap">
+                    <label class="mini-upload" for="requestFileInput">Attach to this request</label>
+                    <input id="requestFileInput" type="file" accept=".txt,.md,.csv" hidden>
+                    <div id="requestFileStatus" class="request-status">No request file loaded</div>
+                  </div>
+                  <button id="runBtn" class="primary-button" type="button">Run Engine</button>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <aside class="summary-column">
+          <section class="summary-panel">
+            <div class="summary-head">
+              <div>
+                <div class="summary-kicker">Live Context</div>
+                <h2>Executive Summary</h2>
+              </div>
+              <div id="summaryPulse" class="summary-pulse"></div>
+            </div>
+
+            <div id="summaryContent" class="summary-content">
+              <div class="summary-empty">
+                <div class="summary-empty-title">No summary yet</div>
+                <div class="summary-empty-copy">Submit a prompt and the executive summary will update automatically.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="summary-panel action-panel">
+            <div class="summary-head compact">
+              <div>
+                <div class="summary-kicker">Execution</div>
+                <h2>Action Items</h2>
+              </div>
+            </div>
+
+            <div class="action-filters">
+              <button class="action-filter active" data-filter="all" type="button">All</button>
+              <button class="action-filter" data-filter="strategy" type="button">Strategy</button>
+              <button class="action-filter" data-filter="decision" type="button">Decision</button>
+              <button class="action-filter" data-filter="meeting" type="button">Meeting</button>
+              <button class="action-filter" data-filter="execution" type="button">Execution</button>
+              <button class="action-filter" data-filter="personal" type="button">Personal</button>
+            </div>
+
+            <div id="actionList" class="action-list"></div>
+          </section>
+        </aside>
       </div>
-
-      <section class="panel">
-        <div class="mode-tabs">
-          <button class="mode-tab active" data-mode="strategy" type="button">Strategy</button>
-          <button class="mode-tab" data-mode="decision" type="button">Decision</button>
-          <button class="mode-tab" data-mode="meeting" type="button">Meeting</button>
-          <button class="mode-tab" data-mode="execution" type="button">Execution</button>
-          <button class="mode-tab" data-mode="personal" type="button">Personal</button>
-        </div>
-
-        <div id="chatThread" class="chat-thread"></div>
-
-        <div id="loading" class="loading hidden">Thinking...</div>
-
-        <div class="composer">
-          <label class="field-label" for="input">How can I help you?</label>
-          <textarea id="input" class="main-input" placeholder="Describe the situation clearly..."></textarea>
-          <div class="button-row">
-            <button id="runBtn" class="primary-button" type="button">Run Engine</button>
-          </div>
-        </div>
-      </section>
     </main>
   </div>
 

@@ -25,11 +25,13 @@ class RequestModel(BaseModel):
     profile_goal: str = ""
     personal_context: str = ""
     uploaded_context: str | None = None
+    request_attachment_context: str | None = None
+    prior_summary: str | None = None
 
 SYSTEM_PROMPTS = {
-    "strategy": """You are a high-level executive strategy engine.
-Think like a CEO, COO, operator, and investor.
-Be direct, sharp, commercially aware, and practical.
+    "strategy": """You are an executive strategy engine.
+Be sharp, concise, and operator-grade.
+No praise, no coaching tone, no emotional padding.
 
 Return exactly:
 Outcome:
@@ -45,8 +47,9 @@ Action:
 
 Priority:
 ...""",
-    "decision": """You are a senior executive decision engine.
-Force clarity. Eliminate fluff. Choose a direction.
+    "decision": """You are an executive decision engine.
+Force clarity. Choose a direction. Be concise and commercially aware.
+No praise, no coaching tone, no emotional padding.
 
 Return exactly:
 Decision:
@@ -66,7 +69,8 @@ Next Move:
 Priority:
 ...""",
     "meeting": """You are an executive meeting prep engine.
-Convert rough thinking into a focused meeting structure.
+Turn rough ideas into a focused meeting structure.
+No praise, no coaching tone, no emotional padding.
 
 Return exactly:
 Meeting Goal:
@@ -89,6 +93,7 @@ Priority:
 ...""",
     "execution": """You are an execution engine for operators.
 Focus on sequencing, accountability, momentum, and constraints.
+No praise, no coaching tone, no emotional padding.
 
 Return exactly:
 Target:
@@ -107,9 +112,9 @@ Risk:
 
 Priority:
 ...""",
-    "personal": """You are a thoughtful personal advisor.
-Be warm, clear, grounded, and useful.
-Do not force executive/business framing unless the user asks for it.
+    "personal": """You are a direct personal advisor.
+Be clear, grounded, and practical.
+No praise, no coaching tone, no emotional padding.
 
 Return exactly:
 What Matters:
@@ -125,43 +130,80 @@ Next Step:
 ...""",
 }
 
+SUMMARY_SYSTEM = """You are updating an executive summary panel.
+Be concise and factual.
+Compress signal.
+
+Return exactly:
+Objective:
+...
+
+Current Situation:
+...
+
+Key Risks:
+- ...
+- ...
+
+Active Strategy:
+...
+
+Next Moves:
+- ...
+- ...
+- ..."""
+
 @app.get("/")
 def root():
     return {"status": "live"}
 
+def build_context(req: RequestModel) -> str:
+    profile_parts = []
+    if req.profile_role:
+        profile_parts.append(f"Role Target: {req.profile_role}")
+    if req.profile_industry:
+        profile_parts.append(f"Industry: {req.profile_industry}")
+    if req.profile_tone:
+        profile_parts.append(f"Tone: {req.profile_tone}")
+    if req.profile_goal:
+        profile_parts.append(f"Goal: {req.profile_goal}")
+    if req.personal_context:
+        profile_parts.append(f"Personal Context: {req.personal_context}")
+
+    context_parts = []
+    if profile_parts:
+        context_parts.append("User Profile:\n" + "\n".join(profile_parts))
+    if req.uploaded_context:
+        context_parts.append("Personal Knowledge Files:\n" + req.uploaded_context[:6000])
+    if req.request_attachment_context:
+        context_parts.append("Files Attached To This Request:\n" + req.request_attachment_context[:4000])
+    if req.prior_summary:
+        context_parts.append("Prior Executive Summary:\n" + req.prior_summary)
+
+    return "\n\n".join(context_parts) if context_parts else "No extra context provided."
+
 @app.post("/api/command")
 async def command(req: RequestModel):
     try:
-        system_prompt = SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])
-
-        profile_parts = []
-        if req.profile_role:
-            profile_parts.append(f"Role Target: {req.profile_role}")
-        if req.profile_industry:
-            profile_parts.append(f"Industry: {req.profile_industry}")
-        if req.profile_tone:
-            profile_parts.append(f"Tone: {req.profile_tone}")
-        if req.profile_goal:
-            profile_parts.append(f"Goal: {req.profile_goal}")
-        if req.personal_context:
-            profile_parts.append(f"Personal Context: {req.personal_context}")
-
-        context_parts = []
-        if profile_parts:
-            context_parts.append("User Profile:\n" + "\n".join(profile_parts))
-        if req.uploaded_context:
-            context_parts.append("Uploaded Context:\n" + req.uploaded_context)
-
-        context_block = "\n\n".join(context_parts) if context_parts else "No extra context provided."
+        context_block = build_context(req)
 
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"{context_block}\n\nSituation:\n{req.input}"}
+                {"role": "system", "content": SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])},
+                {"role": "user", "content": f"{context_block}\n\nCurrent Mode: {req.mode}\n\nSituation:\n{req.input}"}
+            ]
+        )
+        output = response.output_text
+
+        summary_response = client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {"role": "system", "content": SUMMARY_SYSTEM},
+                {"role": "user", "content": f"{context_block}\n\nUser Input:\n{req.input}\n\nEngine Output:\n{output}"}
             ]
         )
 
-        return {"output": response.output_text}
+        return {"output": output, "summary": summary_response.output_text}
     except Exception as e:
         return {"error": str(e)}
