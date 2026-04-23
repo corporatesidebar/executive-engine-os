@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Executive OS</div>
+      <div class="mode mode-active">Strategy</div>
+      <div class="mode">Decision</div>
+      <div class="mode">Execution</div>
+      <div class="mode">Meeting</div>
+      <div class="mode">Personal</div>
+    </aside>
+
+    <main class="main">
+      <h1>Executive Engine</h1>
+      <p class="subhead">What needs a decision?</p>
+
+      <section class="main-card">
+        <textarea id="input" placeholder="What’s on your mind?"></textarea>
+        <div class="actions">
+          <button onclick="runEngine()">Run Engine</button>
+        </div>
+
+        <div class="output-box"><strong>Outcome:</strong> <span id="outcome">-</span></div>
+        <div class="output-box"><strong>Risk:</strong> <span id="risk">-</span></div>
+        <div class="output-box"><strong>Action:</strong> <span id="action">-</span></div>
+        <div class="output-box"><strong>Priority:</strong> <span id="priority">-</span></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
