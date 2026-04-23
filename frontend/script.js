@@ -1,4 +1,4 @@
-const API_URL = "https://executive-engine-os.onrender.com/run-engine";
+const API_URL = "https://executive-engine-os-v2.onrender.com/api/command";
 
 async function runEngine() {
   const input = document.getElementById("input").value;
@@ -16,8 +16,7 @@ async function runEngine() {
     document.getElementById("risk").innerText = data.risk || "N/A";
     document.getElementById("action").innerText = data.action || "N/A";
     document.getElementById("priority").innerText = data.priority || "N/A";
-
   } catch (err) {
-    alert("API error. Backend not responding.");
+    alert("Backend not responding.");
   }
 }
