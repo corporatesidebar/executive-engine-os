@@ -17,20 +17,84 @@
       <nav class="nav">
         <div class="nav-section">Workspace</div>
         <button class="nav-item active" type="button">Executive Engine</button>
+        <button class="nav-item" type="button">Personal</button>
         <button class="nav-item" type="button">Memory</button>
         <button class="nav-item" type="button">Uploads</button>
         <button class="nav-item" type="button">Settings</button>
       </nav>
 
-      <div class="profile-card">
+      <div class="panel-card">
         <div class="profile-label">Profile</div>
-        <textarea id="profile" placeholder="Example: Will Webb | COO target | strategy, execution, scaling businesses | direct tone"></textarea>
+        <div class="profile-grid">
+          <div>
+            <label>Role Target</label>
+            <select id="profile_role">
+              <option value="">Select</option>
+              <option>COO</option>
+              <option>CEO</option>
+              <option>Founder</option>
+              <option>Operator</option>
+              <option>Executive</option>
+            </select>
+          </div>
+          <div>
+            <label>Industry</label>
+            <select id="profile_industry">
+              <option value="">Select</option>
+              <option>AI</option>
+              <option>SaaS</option>
+              <option>Finance</option>
+              <option>Marketing</option>
+              <option>Consumer</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Work Style</label>
+            <select id="profile_work_style">
+              <option value="">Select</option>
+              <option>Remote</option>
+              <option>Hybrid</option>
+              <option>In-person</option>
+            </select>
+          </div>
+          <div>
+            <label>Tone</label>
+            <select id="profile_tone">
+              <option value="">Select</option>
+              <option>Direct</option>
+              <option>Strategic</option>
+              <option>Aggressive</option>
+              <option>Polished</option>
+            </select>
+          </div>
+          <div class="full-span">
+            <label>Goal</label>
+            <select id="profile_goal">
+              <option value="">Select</option>
+              <option>Job Search</option>
+              <option>Business Growth</option>
+              <option>Hiring</option>
+              <option>Operations</option>
+              <option>Fundraising</option>
+              <option>Personal Guidance</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="upload-card">
+      <div class="panel-card">
         <div class="profile-label">Upload Context</div>
         <input id="fileInput" type="file" accept=".txt,.md,.csv">
         <div id="fileStatus" class="file-status">No file loaded</div>
+      </div>
+
+      <div class="panel-card history-card">
+        <div class="history-header">
+          <span class="profile-label">History</span>
+          <button id="newChatBtn" class="ghost-btn" type="button">New</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
       </div>
     </aside>
 
@@ -50,21 +114,19 @@
           <button class="mode-tab" data-mode="decision" type="button">Decision</button>
           <button class="mode-tab" data-mode="meeting" type="button">Meeting</button>
           <button class="mode-tab" data-mode="execution" type="button">Execution</button>
+          <button class="mode-tab" data-mode="personal" type="button">Personal</button>
         </div>
 
-        <label class="field-label" for="input">Situation</label>
-        <textarea id="input" class="main-input" placeholder="Describe the situation clearly..."></textarea>
-
-        <div class="button-row">
-          <button id="runBtn" class="primary-button" type="button">Run Engine</button>
-        </div>
+        <div id="chatThread" class="chat-thread"></div>
 
         <div id="loading" class="loading hidden">Thinking...</div>
 
-        <div id="responseShell" class="response-shell hidden">
-          <div class="response-header">Response</div>
-          <div id="responseCards" class="response-cards"></div>
-          <pre id="rawOutput" class="hidden"></pre>
+        <div class="composer">
+          <label class="field-label" for="input">Situation</label>
+          <textarea id="input" class="main-input" placeholder="Describe the situation clearly..."></textarea>
+          <div class="button-row">
+            <button id="runBtn" class="primary-button" type="button">Run Engine</button>
+          </div>
         </div>
       </section>
     </main>

@@ -19,13 +19,17 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 class RequestModel(BaseModel):
     input: str
     mode: str = "strategy"
-    profile: str | None = None
+    profile_role: str = ""
+    profile_industry: str = ""
+    profile_work_style: str = ""
+    profile_tone: str = ""
+    profile_goal: str = ""
     uploaded_context: str | None = None
 
 SYSTEM_PROMPTS = {
     "strategy": """You are a high-level executive strategy engine.
 Think like a CEO, COO, operator, and investor.
-Be direct, sharp, practical, and commercially aware.
+Be direct, sharp, commercially aware, and practical.
 
 Return exactly:
 Outcome:
@@ -103,6 +107,22 @@ Risk:
 
 Priority:
 ...""",
+    "personal": """You are a thoughtful personal advisor.
+Be warm, clear, grounded, and useful.
+Do not force executive/business framing unless the user asks for it.
+
+Return exactly:
+What Matters:
+...
+
+Best Move:
+...
+
+Watch Out For:
+...
+
+Next Step:
+...""",
 }
 
 @app.get("/")
@@ -114,9 +134,17 @@ async def command(req: RequestModel):
     try:
         system_prompt = SYSTEM_PROMPTS.get(req.mode, SYSTEM_PROMPTS["strategy"])
 
+        profile = "\n".join([
+            f"Role Target: {req.profile_role}" if req.profile_role else "",
+            f"Industry: {req.profile_industry}" if req.profile_industry else "",
+            f"Work Style: {req.profile_work_style}" if req.profile_work_style else "",
+            f"Tone: {req.profile_tone}" if req.profile_tone else "",
+            f"Goal: {req.profile_goal}" if req.profile_goal else "",
+        ]).strip()
+
         context_parts = []
-        if req.profile:
-            context_parts.append(f"User Profile:\n{req.profile}")
+        if profile:
+            context_parts.append(f"User Profile:\n{profile}")
         if req.uploaded_context:
             context_parts.append(f"Uploaded Context:\n{req.uploaded_context}")
 
