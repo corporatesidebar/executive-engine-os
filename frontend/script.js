@@ -1,22 +1,20 @@
-const API_URL = "https://executive-engine-backend.onrender.com/api/command";
-async function runEngine() {
-  const input = document.getElementById("input").value;
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input })
-    });
+document.querySelectorAll('.mode-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
 
-    const data = await res.json();
-
-    document.getElementById("outcome").innerText = data.outcome || "N/A";
-    document.getElementById("risk").innerText = data.risk || "N/A";
-    document.getElementById("action").innerText = data.action || "N/A";
-    document.getElementById("priority").innerText = data.priority || "N/A";
-
-  } catch (err) {
-    alert("API error. Check backend URL.");
-  }
-}
+document.querySelector('.send-btn').addEventListener('click', () => {
+  const textarea = document.querySelector('.composer textarea');
+  const value = textarea.value.trim();
+  if (!value) return;
+  const row = document.createElement('div');
+  row.className = 'message-row user';
+  row.innerHTML = '<div class="avatar user-avatar">W</div><div class="message-bubble user-bubble"></div>';
+  row.querySelector('.user-bubble').textContent = value;
+  document.querySelector('.conversation').appendChild(row);
+  textarea.value = '';
+  row.scrollIntoView({ behavior: 'smooth', block: 'end' });
+});
