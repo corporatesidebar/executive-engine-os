@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine V2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-kicker">AI-Powered Executive OS</div>
+        <h1>Executive Engine</h1>
+        <p>Sharper decisions. Cleaner execution. Persistent memory.</p>
+      </div>
+
+      <div class="mode-panel">
+        <div class="panel-label">Mode</div>
+        <div class="mode-grid">
+          <button class="mode-btn active" data-mode="strategy">Strategy</button>
+          <button class="mode-btn" data-mode="decision">Decision</button>
+          <button class="mode-btn" data-mode="meeting">Meeting</button>
+          <button class="mode-btn" data-mode="proposal">Proposal</button>
+        </div>
+      </div>
+
+      <div class="panel small-panel">
+        <div class="panel-label">How to use</div>
+        <ul>
+          <li>Be specific about the business problem.</li>
+          <li>Choose the mode that matches the task.</li>
+          <li>Push for decisions, not generic advice.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Executive Decision Engine</div>
+          <h2 id="activeModeTitle">Strategy Mode</h2>
+        </div>
+        <div class="status-badge">Live System</div>
+      </header>
+
+      <section class="chat-window" id="chatWindow">
+        <div class="message assistant intro-card">
+          <div class="message-header">
+            <span class="message-role">Executive Engine</span>
+          </div>
+          <div class="intro-copy">
+            Ask a business question, strategic problem, meeting follow-up, or proposal challenge. The response will be organized like an executive operating system, not a generic chatbot.
+          </div>
+        </div>
+      </section>
+
+      <section class="composer">
+        <textarea id="messageInput" placeholder="Type the business problem, decision, opportunity, or execution challenge..."></textarea>
+        <div class="composer-actions">
+          <button id="sendButton">Run Executive Analysis</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
