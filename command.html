@@ -15,7 +15,7 @@
       </div>
 
       <nav class="nav">
-        <div class="nav-section">Workspace</div>
+        <div class="nav-section">Modules</div>
         <button class="nav-item active" type="button">Executive Engine</button>
         <button class="nav-item" type="button">Personal</button>
         <button class="nav-item" type="button">Memory</button>
@@ -24,7 +24,7 @@
       </nav>
 
       <div class="panel-card">
-        <div class="profile-label">Profile</div>
+        <div class="profile-label">Executive Profile</div>
         <div class="profile-grid">
           <div>
             <label>Role Target</label>
@@ -50,15 +50,6 @@
             </select>
           </div>
           <div>
-            <label>Work Style</label>
-            <select id="profile_work_style">
-              <option value="">Select</option>
-              <option>Remote</option>
-              <option>Hybrid</option>
-              <option>In-person</option>
-            </select>
-          </div>
-          <div>
             <label>Tone</label>
             <select id="profile_tone">
               <option value="">Select</option>
@@ -68,7 +59,7 @@
               <option>Polished</option>
             </select>
           </div>
-          <div class="full-span">
+          <div>
             <label>Goal</label>
             <select id="profile_goal">
               <option value="">Select</option>
@@ -77,10 +68,14 @@
               <option>Hiring</option>
               <option>Operations</option>
               <option>Fundraising</option>
-              <option>Personal Guidance</option>
             </select>
           </div>
         </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="profile-label">Personal Context</div>
+        <textarea id="personal_context" class="side-textarea" placeholder="Tell us about your personal life, current stress, goals, or what matters right now..."></textarea>
       </div>
 
       <div class="panel-card">
