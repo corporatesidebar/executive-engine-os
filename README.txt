@@ -1,1 +1,0 @@
-UI mockup only. Upload frontend folder to your static site or repo.
