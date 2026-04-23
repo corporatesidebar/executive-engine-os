@@ -1,183 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executive Engine — UI Mockup</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Engine</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar left-sidebar">
-      <div class="brand">
-        <div class="brand-badge">EE</div>
-        <div>
-          <div class="eyebrow">Executive OS</div>
-          <h1>Executive Engine</h1>
-        </div>
-      </div>
 
-      <button class="new-chat-btn">+ New decision</button>
+<div class="app">
 
-      <section class="sidebar-section">
-        <div class="section-label">Modes</div>
-        <div class="mode-grid">
-          <button class="mode-chip active">Strategy</button>
-          <button class="mode-chip">Decision</button>
-          <button class="mode-chip">Meeting</button>
-          <button class="mode-chip">Execution</button>
-          <button class="mode-chip">Personal</button>
-        </div>
-      </section>
-
-      <section class="sidebar-section">
-        <div class="section-label">Executive profile</div>
-        <div class="profile-card">
-          <div class="mini-stat"><span>Role</span><strong>COO / Founder</strong></div>
-          <div class="mini-stat"><span>Industry</span><strong>AI / SaaS</strong></div>
-          <div class="mini-stat"><span>Tone</span><strong>Direct</strong></div>
-          <div class="mini-stat"><span>Bias</span><strong>Action first</strong></div>
-        </div>
-      </section>
-
-      <section class="sidebar-section">
-        <div class="section-label">Recent threads</div>
-        <div class="thread-list">
-          <button class="thread-item active">
-            <span class="thread-title">Pricing decision</span>
-            <span class="thread-meta">2 min ago</span>
-          </button>
-          <button class="thread-item">
-            <span class="thread-title">Marketing hire</span>
-            <span class="thread-meta">Yesterday</span>
-          </button>
-          <button class="thread-item">
-            <span class="thread-title">Quarterly planning</span>
-            <span class="thread-meta">Yesterday</span>
-          </button>
-        </div>
-      </section>
-    </aside>
-
-    <main class="main-panel">
-      <header class="topbar">
-        <div class="topbar-left">
-          <span class="topbar-pill">Executive Decision Platform</span>
-          <span class="topbar-pill soft">Prototype UI</span>
-        </div>
-        <div class="topbar-right">
-          <button class="ghost-btn">Share</button>
-          <button class="primary-btn">Upgrade layout</button>
-        </div>
-      </header>
-
-      <section class="hero">
-        <div class="hero-copy">
-          <h2>What needs a decision?</h2>
-          <p>Clean, executive-grade interface inspired by modern AI chat products.</p>
-        </div>
-      </section>
-
-      <section class="conversation">
-        <div class="message-row user">
-          <div class="avatar user-avatar">W</div>
-          <div class="message-bubble user-bubble">
-            I need a sharper plan for expanding the company without burning cash.
-          </div>
-        </div>
-
-        <div class="message-row assistant">
-          <div class="avatar ai-avatar">EE</div>
-          <div class="message-bubble ai-bubble">
-            <div class="answer-headline">Executive recommendation</div>
-            <p>Focus on revenue quality first, headcount second, and market expansion third.</p>
-
-            <div class="response-grid">
-              <div class="info-card">
-                <div class="info-label">Outcome</div>
-                <div class="info-value">Controlled growth with clearer ROI</div>
-              </div>
-              <div class="info-card">
-                <div class="info-label">Risk</div>
-                <div class="info-value">Over-expanding before repeatable demand</div>
-              </div>
-              <div class="info-card wide">
-                <div class="info-label">Action</div>
-                <div class="info-value">Validate 1–2 channels, tighten offer, then scale with weekly metrics.</div>
-              </div>
-              <div class="info-card">
-                <div class="info-label">Priority</div>
-                <div class="info-value">High</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="message-row assistant subtle-row">
-          <div class="avatar ai-avatar">EE</div>
-          <div class="message-bubble ai-bubble slim">
-            <div class="suggestion-row">
-              <button class="suggestion-pill">Build a 90-day execution plan</button>
-              <button class="suggestion-pill">Compare hiring vs outsourcing</button>
-              <button class="suggestion-pill">Create investor summary</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="composer-wrap">
-        <div class="composer">
-          <div class="composer-top">
-            <button class="tiny-btn">Attach context</button>
-            <button class="tiny-btn">Memory</button>
-            <button class="tiny-btn">Templates</button>
-          </div>
-          <div class="composer-main">
-            <textarea placeholder="What’s on your mind?" aria-label="Prompt"></textarea>
-            <button class="send-btn" type="button">Run Engine</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <aside class="sidebar right-sidebar">
-      <section class="sidebar-section">
-        <div class="section-label">Action items</div>
-        <div class="stack-card">
-          <div class="task-item">
-            <div class="task-dot"></div>
-            <div>
-              <strong>Validate best channel</strong>
-              <p>Pick one growth lever and score CAC, close rate, and payback period.</p>
-            </div>
-          </div>
-          <div class="task-item">
-            <div class="task-dot"></div>
-            <div>
-              <strong>Protect cash runway</strong>
-              <p>Set minimum cash threshold before committing to headcount expansion.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="sidebar-section">
-        <div class="section-label">Feedback overview</div>
-        <div class="stack-card">
-          <div class="metric-row"><span>Clarity</span><strong>High</strong></div>
-          <div class="metric-row"><span>Speed</span><strong>Fast</strong></div>
-          <div class="metric-row"><span>Confidence</span><strong>Strong</strong></div>
-        </div>
-      </section>
-
-      <section class="sidebar-section">
-        <div class="section-label">Quick view</div>
-        <div class="stack-card">
-          <p class="muted">This version is a visual prototype. It is designed to look strong for demos and stakeholder previews.</p>
-        </div>
-      </section>
-    </aside>
+  <div class="sidebar">
+    <h2>Executive OS</h2>
+    <div class="mode mode-active">Strategy</div>
+    <div class="mode">Decision</div>
+    <div class="mode">Execution</div>
   </div>
-  <script src="script.js"></script>
+
+  <div class="main">
+    <h1>Executive Engine</h1>
+
+    <div class="main-card">
+      <textarea id="input" placeholder="What’s on your mind?"></textarea>
+      <button onclick="runEngine()">Run Engine</button>
+
+      <div class="output-box"><strong>Outcome:</strong> <span id="outcome">-</span></div>
+      <div class="output-box"><strong>Risk:</strong> <span id="risk">-</span></div>
+      <div class="output-box"><strong>Action:</strong> <span id="action">-</span></div>
+      <div class="output-box"><strong>Priority:</strong> <span id="priority">-</span></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
