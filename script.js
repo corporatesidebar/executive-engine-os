@@ -1,12 +1,60 @@
 let currentMode = "strategy";
 let uploadedText = "";
 let historyItems = [];
+let actionItems = [];
 
 const modeTabs = document.querySelectorAll(".mode-tab");
 const chatThread = document.getElementById("chatThread");
 const loading = document.getElementById("loading");
 const fileStatus = document.getElementById("fileStatus");
 const historyList = document.getElementById("historyList");
+const actionList = document.getElementById("actionList");
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsMenu = document.getElementById("settingsMenu");
+
+document.querySelectorAll(".nav-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    showSidebarView(btn.dataset.leftView);
+  });
+});
+
+function showSidebarView(view) {
+  document.getElementById("engineSidebar").classList.add("hidden");
+  document.getElementById("actionsSidebar").classList.add("hidden");
+  document.getElementById("historySidebar").classList.add("hidden");
+
+  if (view === "actions") {
+    document.getElementById("actionsSidebar").classList.remove("hidden");
+  } else if (view === "history") {
+    document.getElementById("historySidebar").classList.remove("hidden");
+  } else {
+    document.getElementById("engineSidebar").classList.remove("hidden");
+  }
+}
+
+document.querySelectorAll(".settings-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const view = btn.dataset.topView;
+    if (view === "history") {
+      document.querySelector('.nav-item[data-left-view="history"]').click();
+    } else {
+      document.querySelector('.nav-item[data-left-view="engine"]').click();
+    }
+    settingsMenu.classList.add("hidden");
+  });
+});
+
+settingsBtn.addEventListener("click", () => {
+  settingsMenu.classList.toggle("hidden");
+});
+
+document.addEventListener("click", (e) => {
+  if (!settingsBtn.contains(e.target) && !settingsMenu.contains(e.target)) {
+    settingsMenu.classList.add("hidden");
+  }
+});
 
 modeTabs.forEach(btn => {
   btn.addEventListener("click", () => {
@@ -162,6 +210,30 @@ function renderHistory() {
   });
 }
 
+function extractActionItems(text) {
+  const matches = text.match(/\n\s*\d+\.\s.+/g) || [];
+  matches.forEach(item => {
+    const clean = item.replace(/^\n\s*/, "").trim();
+    if (!actionItems.includes(clean)) actionItems.push(clean);
+  });
+  actionItems = actionItems.slice(-20);
+  renderActionItems();
+}
+
+function renderActionItems() {
+  actionList.innerHTML = "";
+  if (actionItems.length === 0) {
+    actionList.innerHTML = '<div class="action-item">No action items yet.</div>';
+    return;
+  }
+  actionItems.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "action-item";
+    div.textContent = item;
+    actionList.appendChild(div);
+  });
+}
+
 async function send() {
   const input = document.getElementById("input").value.trim();
   if (!input) return;
@@ -190,7 +262,9 @@ async function send() {
     });
 
     const data = await res.json();
-    addMessage("assistant", data.output || data.error || "No response returned.", true);
+    const output = data.output || data.error || "No response returned.";
+    addMessage("assistant", output, true);
+    extractActionItems(output);
   } catch (err) {
     addMessage("assistant", "Error: " + err.message, true);
   } finally {
@@ -199,3 +273,5 @@ async function send() {
 }
 
 loadHistory();
+renderActionItems();
+showSidebarView("engine");

@@ -15,81 +15,95 @@
       </div>
 
       <nav class="nav">
-        <div class="nav-section">Modules</div>
-        <button class="nav-item active" type="button">Executive Engine</button>
-        <button class="nav-item" type="button">Personal</button>
-        <button class="nav-item" type="button">Memory</button>
-        <button class="nav-item" type="button">Uploads</button>
-        <button class="nav-item" type="button">Settings</button>
+        <div class="nav-section">Core</div>
+        <button class="nav-item active" type="button" data-left-view="engine">Executive Engine</button>
+        <button class="nav-item" type="button" data-left-view="actions">Action Items</button>
+        <button class="nav-item" type="button" data-left-view="history">History</button>
       </nav>
 
-      <div class="panel-card">
-        <div class="profile-label">Executive Profile</div>
-        <div class="profile-grid">
-          <div>
-            <label>Role Target</label>
-            <select id="profile_role">
-              <option value="">Select</option>
-              <option>COO</option>
-              <option>CEO</option>
-              <option>Founder</option>
-              <option>Operator</option>
-              <option>Executive</option>
-            </select>
+      <div id="engineSidebar" class="sidebar-stack">
+        <div class="panel-card">
+          <div class="profile-label">Executive Profile</div>
+          <div class="profile-grid">
+            <div>
+              <label>Role Target</label>
+              <select id="profile_role">
+                <option value="">Select</option>
+                <option>COO</option>
+                <option>CEO</option>
+                <option>Founder</option>
+                <option>Operator</option>
+                <option>Executive</option>
+              </select>
+            </div>
+            <div>
+              <label>Industry</label>
+              <select id="profile_industry">
+                <option value="">Select</option>
+                <option>AI</option>
+                <option>SaaS</option>
+                <option>Finance</option>
+                <option>Marketing</option>
+                <option>Consumer</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Tone</label>
+              <select id="profile_tone">
+                <option value="">Select</option>
+                <option>Direct</option>
+                <option>Strategic</option>
+                <option>Aggressive</option>
+                <option>Polished</option>
+              </select>
+            </div>
+            <div>
+              <label>Goal</label>
+              <select id="profile_goal">
+                <option value="">Select</option>
+                <option>Job Search</option>
+                <option>Business Growth</option>
+                <option>Hiring</option>
+                <option>Operations</option>
+                <option>Fundraising</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label>Industry</label>
-            <select id="profile_industry">
-              <option value="">Select</option>
-              <option>AI</option>
-              <option>SaaS</option>
-              <option>Finance</option>
-              <option>Marketing</option>
-              <option>Consumer</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div>
-            <label>Tone</label>
-            <select id="profile_tone">
-              <option value="">Select</option>
-              <option>Direct</option>
-              <option>Strategic</option>
-              <option>Aggressive</option>
-              <option>Polished</option>
-            </select>
-          </div>
-          <div>
-            <label>Goal</label>
-            <select id="profile_goal">
-              <option value="">Select</option>
-              <option>Job Search</option>
-              <option>Business Growth</option>
-              <option>Hiring</option>
-              <option>Operations</option>
-              <option>Fundraising</option>
-            </select>
-          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="profile-label">Personal Context</div>
+          <textarea id="personal_context" class="side-textarea" placeholder="Tell us about your personal life, current stress, goals, or what matters right now..."></textarea>
+        </div>
+
+        <div class="panel-card">
+          <div class="profile-label">Let us know who you are</div>
+          <div class="helper-copy">Upload files like your résumé, bio, notes, personal background, business plan, strategy documents, or anything that helps the system understand you better.</div>
+          <label class="upload-box" for="fileInput">
+            <span class="upload-title">Upload files</span>
+            <span class="upload-subtitle">TXT, MD, CSV for now</span>
+          </label>
+          <input id="fileInput" type="file" accept=".txt,.md,.csv" hidden>
+          <div id="fileStatus" class="file-status">No file loaded</div>
         </div>
       </div>
 
-      <div class="panel-card">
-        <div class="profile-label">Personal Context</div>
-        <textarea id="personal_context" class="side-textarea" placeholder="Tell us about your personal life, current stress, goals, or what matters right now..."></textarea>
-      </div>
-
-      <div class="panel-card">
-        <div class="profile-label">Upload Context</div>
-        <input id="fileInput" type="file" accept=".txt,.md,.csv">
-        <div id="fileStatus" class="file-status">No file loaded</div>
-      </div>
-
-      <div class="panel-card history-card">
-        <div class="history-header">
-          <span class="profile-label">History</span>
-          <button id="newChatBtn" class="ghost-btn" type="button">New</button>
+      <div id="actionsSidebar" class="sidebar-stack hidden">
+        <div class="panel-card">
+          <div class="profile-label">Action Items</div>
+          <div id="actionList" class="action-list"></div>
         </div>
-        <div id="historyList" class="history-list"></div>
+      </div>
+
+      <div id="historySidebar" class="sidebar-stack hidden">
+        <div class="panel-card history-card">
+          <div class="history-header">
+            <span class="profile-label">History</span>
+            <button id="newChatBtn" class="ghost-btn" type="button">New</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
       </div>
     </aside>
 
@@ -100,7 +114,19 @@
           <h1>Executive Engine</h1>
           <p class="subcopy">Put in a real situation. Get an operator-level answer.</p>
         </div>
-        <div class="live-pill">LIVE</div>
+
+        <div class="topbar-right">
+          <div class="live-pill">LIVE</div>
+          <div class="settings-wrap">
+            <button id="settingsBtn" class="icon-btn" type="button">⚙</button>
+            <div id="settingsMenu" class="settings-menu hidden">
+              <div class="settings-title">Quick Access</div>
+              <button class="settings-item" type="button" data-top-view="profile">Profile</button>
+              <button class="settings-item" type="button" data-top-view="uploads">Uploads</button>
+              <button class="settings-item" type="button" data-top-view="history">History</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <section class="panel">
@@ -117,7 +143,7 @@
         <div id="loading" class="loading hidden">Thinking...</div>
 
         <div class="composer">
-          <label class="field-label" for="input">Situation</label>
+          <label class="field-label" for="input">How can I help you?</label>
           <textarea id="input" class="main-input" placeholder="Describe the situation clearly..."></textarea>
           <div class="button-row">
             <button id="runBtn" class="primary-button" type="button">Run Engine</button>
