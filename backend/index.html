@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar left-sidebar">
+      <div class="brand">
+        <div class="eyebrow">Rival Summit</div>
+        <h1>Executive OS</h1>
+        <p>Decision support, execution clarity, and persistent context.</p>
+      </div>
+
+      <section class="panel">
+        <div class="panel-title">Mode</div>
+        <div class="mode-list" id="modeList">
+          <button class="mode-btn active" data-mode="strategy">Strategy</button>
+          <button class="mode-btn" data-mode="decision">Decision</button>
+          <button class="mode-btn" data-mode="meeting">Meeting</button>
+          <button class="mode-btn" data-mode="execution">Execution</button>
+          <button class="mode-btn" data-mode="personal">Personal</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Executive Profile</div>
+        <div class="grid-2">
+          <label>
+            <span>Role Target</span>
+            <input id="roleTarget" placeholder="COO / Founder / VP" />
+          </label>
+          <label>
+            <span>Industry</span>
+            <input id="industry" placeholder="AI / SaaS / Agency" />
+          </label>
+          <label>
+            <span>Tone</span>
+            <input id="tone" placeholder="Direct / Strategic" />
+          </label>
+          <label>
+            <span>Goal</span>
+            <input id="goal" placeholder="Growth / Hiring / Ops" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Personal Context</div>
+        <textarea id="personalContext" class="side-textarea" placeholder="Current stress, priorities, life context, or what matters right now..."></textarea>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Personal Knowledge</div>
+        <p class="panel-copy">Paste résumé, notes, plans, background, or strategy context here.</p>
+        <textarea id="knowledgeContext" class="side-textarea" placeholder="Paste personal knowledge here..."></textarea>
+      </section>
+    </aside>
+
+    <main class="main-column">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Executive Decision Platform</div>
+          <h2>Executive Engine</h2>
+        </div>
+        <button class="ghost-btn" id="clearBtn">Clear</button>
+      </header>
+
+      <section class="chat-area">
+        <div class="messages" id="messages">
+          <div class="empty-state">
+            <h3>Ready</h3>
+            <p>Type a situation and get a sharper decision, risk view, and action plan.</p>
+          </div>
+        </div>
+
+        <div class="composer">
+          <label class="composer-label" for="promptInput">What decision or situation needs action?</label>
+          <textarea id="promptInput" placeholder="Describe the situation clearly..."></textarea>
+          <div class="composer-actions">
+            <div class="status" id="statusText">Idle</div>
+            <button id="runBtn" class="primary-btn">Run Engine</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar right-sidebar">
+      <section class="panel">
+        <div class="panel-title">Action Items</div>
+        <div id="actionItems" class="stack-list">
+          <div class="placeholder">No action items yet.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Feedback Overview</div>
+        <div id="feedbackOverview" class="stack-list">
+          <div class="placeholder">No feedback overview yet.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Recent History</div>
+        <div id="historyList" class="stack-list">
+          <div class="placeholder">No history yet.</div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
