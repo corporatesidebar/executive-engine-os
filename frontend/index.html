@@ -10,11 +10,11 @@
   <div class="app">
     <aside class="sidebar">
       <div class="brand">Executive OS</div>
-      <div class="mode mode-active">Strategy</div>
-      <div class="mode">Decision</div>
-      <div class="mode">Execution</div>
-      <div class="mode">Meeting</div>
-      <div class="mode">Personal</div>
+      <button class="mode mode-active" data-mode="Strategy">Strategy</button>
+      <button class="mode" data-mode="Decision">Decision</button>
+      <button class="mode" data-mode="Execution">Execution</button>
+      <button class="mode" data-mode="Meeting">Meeting</button>
+      <button class="mode" data-mode="Personal">Personal</button>
     </aside>
 
     <main class="main">
@@ -22,9 +22,10 @@
       <p class="subhead">What needs a decision?</p>
 
       <section class="main-card">
+        <div class="mode-line">Mode: <span id="currentMode">Strategy</span></div>
         <textarea id="input" placeholder="What’s on your mind?"></textarea>
         <div class="actions">
-          <button onclick="runEngine()">Run Engine</button>
+          <button class="run-btn" onclick="runEngine()">Run Engine</button>
         </div>
 
         <div class="output-box"><strong>Outcome:</strong> <span id="outcome">-</span></div>
