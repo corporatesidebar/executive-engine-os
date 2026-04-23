@@ -1,83 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine</title>
-
-<style>
-body {
-    font-family: -apple-system, BlinkMacSystemFont, Arial;
-    background: #f5f7fa;
-    padding: 20px;
-}
-
-.container {
-    max-width: 800px;
-    margin: auto;
-}
-
-h2 {
-    margin-bottom: 10px;
-}
-
-textarea {
-    width: 100%;
-    height: 120px;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-}
-
-button {
-    padding: 12px 20px;
-    margin-top: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.output {
-    margin-top: 20px;
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 10px;
-    line-height: 1.6;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="app-shell">
+    <aside class="sidebar left-sidebar">
+      <div class="brand">
+        <div class="eyebrow">Rival Summit</div>
+        <h1>Executive OS</h1>
+        <p>Decision support, execution clarity, and persistent context.</p>
+      </div>
 
-<div class="container">
-    <h2>Executive Engine</h2>
+      <section class="panel">
+        <div class="panel-title">Mode</div>
+        <div class="mode-list" id="modeList">
+          <button class="mode-btn active" data-mode="strategy">Strategy</button>
+          <button class="mode-btn" data-mode="decision">Decision</button>
+          <button class="mode-btn" data-mode="meeting">Meeting</button>
+          <button class="mode-btn" data-mode="execution">Execution</button>
+          <button class="mode-btn" data-mode="personal">Personal</button>
+        </div>
+      </section>
 
-    <textarea id="input" placeholder="Type your decision or situation..."></textarea>
+      <section class="panel">
+        <div class="panel-title">Executive Profile</div>
+        <div class="grid-2">
+          <label>
+            <span>Role Target</span>
+            <input id="roleTarget" placeholder="COO / Founder / VP" />
+          </label>
+          <label>
+            <span>Industry</span>
+            <input id="industry" placeholder="AI / SaaS / Agency" />
+          </label>
+          <label>
+            <span>Tone</span>
+            <input id="tone" placeholder="Direct / Strategic" />
+          </label>
+          <label>
+            <span>Goal</span>
+            <input id="goal" placeholder="Growth / Hiring / Ops" />
+          </label>
+        </div>
+      </section>
 
-    <button onclick="run()">Run Engine</button>
+      <section class="panel">
+        <div class="panel-title">Personal Context</div>
+        <textarea id="personalContext" class="side-textarea" placeholder="Current stress, priorities, life context, or what matters right now..."></textarea>
+      </section>
 
-    <div class="output" id="out"></div>
-</div>
+      <section class="panel">
+        <div class="panel-title">Personal Knowledge</div>
+        <p class="panel-copy">Paste résumé, notes, plans, background, or strategy context here.</p>
+        <textarea id="knowledgeContext" class="side-textarea" placeholder="Paste personal knowledge here..."></textarea>
+      </section>
+    </aside>
 
-<script>
-async function run() {
-    const input = document.getElementById("input").value;
+    <main class="main-column">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Executive Decision Platform</div>
+          <h2>Executive Engine</h2>
+        </div>
+        <button class="ghost-btn" id="clearBtn">Clear</button>
+      </header>
 
-    const res = await fetch("https://executive-engine-os.onrender.com/run", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ input })
-    });
+      <section class="chat-area">
+        <div class="messages" id="messages">
+          <div class="empty-state">
+            <h3>Ready</h3>
+            <p>Type a situation and get a sharper decision, risk view, and action plan.</p>
+          </div>
+        </div>
 
-    const data = await res.json();
+        <div class="composer">
+          <label class="composer-label" for="promptInput">What decision or situation needs action?</label>
+          <textarea id="promptInput" placeholder="Describe the situation clearly..."></textarea>
+          <div class="composer-actions">
+            <div class="status" id="statusText">Idle</div>
+            <button id="runBtn" class="primary-btn">Run Engine</button>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    document.getElementById("out").innerHTML =
-        "<b>Outcome:</b> " + data.outcome + "<br>" +
-        "<b>Risk:</b> " + data.risk + "<br>" +
-        "<b>Action:</b> " + data.action + "<br>" +
-        "<b>Priority:</b> " + data.priority;
-}
-</script>
+    <aside class="sidebar right-sidebar">
+      <section class="panel">
+        <div class="panel-title">Action Items</div>
+        <div id="actionItems" class="stack-list">
+          <div class="placeholder">No action items yet.</div>
+        </div>
+      </section>
 
+      <section class="panel">
+        <div class="panel-title">Feedback Overview</div>
+        <div id="feedbackOverview" class="stack-list">
+          <div class="placeholder">No feedback overview yet.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Recent History</div>
+        <div id="historyList" class="stack-list">
+          <div class="placeholder">No history yet.</div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
