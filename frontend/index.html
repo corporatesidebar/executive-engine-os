@@ -1,114 +1,861 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine</title>
-<style>
-:root{--bg:#f7f8fb;--panel:#fff;--line:#d9e0ea;--text:#111827;--muted:#667085;--blue:#155eef;--soft:#eef4ff}
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
-.app{display:grid;grid-template-columns:240px 1fr 300px;min-height:100vh}
-.sidebar{background:#fff;border-right:1px solid var(--line);padding:18px}
-.brand{font-size:32px;font-weight:900;line-height:.95;margin:6px 0}
-.small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.nav button{width:100%;padding:11px;margin:5px 0;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;font-weight:800}
-.nav .active{background:var(--soft);color:var(--blue)}
-.main{padding:18px;display:flex;flex-direction:column;gap:10px;height:100vh}
-.header{display:flex;justify-content:space-between;align-items:center}
-h1{font-size:42px;margin:0;font-weight:900}
-.modes{display:flex;gap:8px;flex-wrap:wrap}
-.modes button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 15px;font-weight:900}
-.modes .active{background:var(--blue);color:#fff}
-.chat{flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px rgba(17,24,39,.08);display:flex;flex-direction:column;min-height:0}
-.thread{flex:1;padding:16px;overflow:auto}
-.center-prompt{padding:14px 10px 8px;color:#111827}
-.prompt-box h2{font-size:32px;margin:0 0 6px;font-weight:900}
-.prompt-box p{font-size:16px;color:var(--muted);margin:0}
-.msg{max-width:78%;padding:14px 16px;border-radius:16px;margin-bottom:12px;line-height:1.5}
-.user{margin-left:auto;background:var(--blue);color:#fff}
-.ai{background:#fff;border:1px solid var(--line)}
-.composer{border-top:1px solid var(--line);padding:14px;background:#fff;border-radius:0 0 20px 20px}
-.input-wrap{display:flex;gap:10px;align-items:flex-end;border:2px solid var(--line);border-radius:18px;padding:10px;background:#fff}
-textarea{flex:1;border:none;outline:none;resize:none;min-height:52px;max-height:150px;font-size:17px;font-family:inherit}
-.run{background:var(--blue);color:#fff;border:none;border-radius:14px;padding:13px 20px;font-weight:900;cursor:pointer}
-.right{background:#eef2f7;border-left:1px solid var(--line);padding:18px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
-.panel h3{margin:0 0 10px;font-size:23px}
-.item{border-left:5px solid var(--blue);background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:9px}
-.filebox{font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:12px;padding:12px}
-@media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar,.right{display:none}.main{height:100vh;padding:12px}h1{font-size:32px}.chat{min-height:0}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine OS V10.3</title>
+  <style>
+    :root {
+      --navy: #061a3a;
+      --navy2: #0b244d;
+      --blue: #0f62fe;
+      --blue-soft: #eef5ff;
+      --orange: #ff5a1f;
+      --orange-soft: #fff0e8;
+      --bg: #f6f9fd;
+      --card: #ffffff;
+      --line: #dbe5f3;
+      --text: #0f172a;
+      --muted: #64748b;
+      --shadow: 0 14px 36px rgba(15, 35, 70, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button, textarea { font-family: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr) 330px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--navy), #041226);
+      color: white;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+
+    .brand {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      margin-bottom: 22px;
+      padding: 0 6px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: white;
+      color: var(--navy);
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      font-size: 24px;
+    }
+
+    .brand-title {
+      font-weight: 950;
+      line-height: 1.02;
+      text-transform: uppercase;
+      letter-spacing: -.02em;
+    }
+
+    .brand-title span { color: var(--orange); }
+
+    .nav-label {
+      color: #8fa5c7;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: .13em;
+      font-weight: 950;
+      margin: 16px 8px 7px;
+    }
+
+    .nav-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #e7eefb;
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: 11px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .nav-item.active,
+    .nav-item:hover {
+      background: var(--blue);
+      color: white;
+    }
+
+    .profile {
+      margin-top: auto;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #173969;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      font-size: 13px;
+    }
+
+    .profile strong { display: block; font-size: 13px; }
+    .profile span { display: block; font-size: 12px; color: #adc0dc; }
+
+    .main {
+      min-width: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 70px;
+      padding: 14px 22px;
+      background: rgba(255,255,255,.95);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1 {
+      margin: 3px 0 0;
+      font-size: 25px;
+      line-height: 1.05;
+      letter-spacing: -.04em;
+    }
+
+    .live {
+      background: #e7f8ef;
+      border: 1px solid #bdebd0;
+      color: #087a3a;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .chat-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat {
+      height: 100%;
+      overflow-y: auto;
+      padding: 18px 22px 132px;
+      scroll-behavior: smooth;
+    }
+
+    .inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .welcome {
+      border: 2px solid transparent;
+      background: linear-gradient(white, white) padding-box,
+        linear-gradient(135deg, rgba(15,98,254,.86), rgba(255,90,31,.86)) border-box;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .welcome h2 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -.04em;
+    }
+
+    .welcome p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .chip {
+      border: 1px solid #bdd2ff;
+      background: var(--blue-soft);
+      color: var(--blue);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 12.5px;
+    }
+
+    .message {
+      display: flex;
+      gap: 11px;
+      margin-bottom: 12px;
+    }
+
+    .message.user { justify-content: flex-end; }
+
+    .bubble {
+      max-width: 790px;
+      border-radius: 19px;
+      padding: 15px 17px;
+      line-height: 1.5;
+      font-size: 15.5px;
+      box-shadow: 0 7px 22px rgba(15,35,70,.05);
+    }
+
+    .user .bubble {
+      background: var(--blue);
+      color: white;
+      border-bottom-right-radius: 7px;
+    }
+
+    .assistant .bubble {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 7px;
+    }
+
+    .ai-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: var(--navy);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .brief-title {
+      background: var(--navy);
+      color: white;
+      border-left: 6px solid var(--orange);
+      border-radius: 13px;
+      padding: 11px 13px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .output-card {
+      background: #fbfdff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--blue);
+      border-radius: 14px;
+      padding: 13px;
+      min-height: 96px;
+    }
+
+    .output-card.action,
+    .output-card.priority {
+      border-left-color: var(--orange);
+    }
+
+    .output-card.priority {
+      background: var(--orange-soft);
+    }
+
+    .output-card strong {
+      display: block;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .output-card.action strong,
+    .output-card.priority strong {
+      color: var(--orange);
+    }
+
+    .output-card p {
+      margin: 0;
+      line-height: 1.45;
+      font-size: 15px;
+    }
+
+    .composer-wrap {
+      position: fixed;
+      left: 240px;
+      right: 330px;
+      bottom: 0;
+      padding: 12px 22px 16px;
+      background: linear-gradient(180deg, rgba(246,249,253,0), rgba(246,249,253,.96) 24%, rgba(246,249,253,1));
+      z-index: 20;
+    }
+
+    .composer {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border: 2px solid #cfe0ff;
+      border-radius: 22px;
+      box-shadow: 0 18px 46px rgba(15,35,70,.14);
+      overflow: hidden;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 64px;
+      max-height: 160px;
+      resize: none;
+      border: 0;
+      outline: none;
+      padding: 15px 18px 6px;
+      font-size: 16px;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    textarea::placeholder { color: #8a9ab5; }
+
+    .composer-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 11px 11px 13px;
+      border-top: 1px solid #edf2f8;
+    }
+
+    .modes {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .mode {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      padding: 7px 11px;
+      border-radius: 11px;
+      font-weight: 850;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .mode.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .run {
+      border: 0;
+      background: linear-gradient(135deg, var(--orange), #ff7a45);
+      color: white;
+      padding: 11px 17px;
+      border-radius: 13px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(255,90,31,.24);
+      white-space: nowrap;
+    }
+
+    .run:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    .rightbar {
+      background: #f0f5fb;
+      border-left: 1px solid var(--line);
+      padding: 14px;
+      overflow-y: auto;
+    }
+
+    .right-title {
+      background: var(--navy);
+      color: white;
+      border-radius: 17px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 2px solid rgba(255,90,31,.7);
+    }
+
+    .right-title h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+
+    .right-title p {
+      margin: 5px 0 0;
+      color: #b7c6dd;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    .side-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 28px rgba(15,35,70,.055);
+    }
+
+    .side-card.action {
+      border: 2px solid transparent;
+      background: linear-gradient(white,white) padding-box,
+        linear-gradient(135deg, rgba(255,90,31,.95), rgba(15,98,254,.55)) border-box;
+    }
+
+    .side-header {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      margin-bottom: 10px;
+    }
+
+    .action .side-header { color: var(--orange); }
+
+    .todo {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf2f8;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .todo:last-child { border-bottom: 0; }
+
+    .todo input {
+      margin-top: 3px;
+      accent-color: var(--orange);
+      transform: scale(1.05);
+    }
+
+    .todo strong { display: block; }
+    .todo span { color: var(--muted); font-size: 12.5px; }
+
+    .focus {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.32;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 1200px) {
+      .app { grid-template-columns: 220px 1fr; }
+      .rightbar { display: none; }
+      .composer-wrap { left: 220px; right: 0; }
+    }
+
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .topbar { height: auto; padding: 14px; }
+      h1 { font-size: 22px; }
+      .chat { padding: 14px 12px 150px; }
+      .welcome { padding: 18px; }
+      .welcome h2 { font-size: 26px; }
+      .composer-wrap { left: 0; right: 0; padding: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+      .composer-footer { flex-direction: column; align-items: stretch; }
+      .run { width: 100%; }
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="small">Executive Engine</div>
-    <div class="brand">Executive<br>OS</div>
-    <p style="color:var(--muted)">Daily decision and execution system.</p>
-    <div class="small">Command</div>
-    <div class="nav"><button class="active">Executive Engine</button><button>Daily Brief</button><button>Decisions</button></div>
-    <div class="small" style="margin-top:18px">Content</div>
-    <div class="nav"><button>Files</button><button>Notes</button><button>Drafts</button><button>Ideas</button></div>
-    <div class="small" style="margin-top:18px">Files</div>
-    <div class="filebox">Upload Context<br><br><input type="file" id="fileInput"><div id="fileStatus">No file loaded</div></div>
-  </aside>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div class="brand-title">Executive<br><span>Engine</span></div>
+      </div>
 
-  <main class="main">
-    <div class="header">
-      <div><div class="small">Executive Decision Platform</div><h1>Executive Engine</h1></div>
-      <strong style="color:#16a34a">LIVE</strong>
-    </div>
+      <div class="nav-label">Command</div>
+      <button class="nav-item active">Command Center</button>
+      <button class="nav-item">Daily Brief</button>
+      <button class="nav-item">Decisions</button>
+      <button class="nav-item">Meetings</button>
 
-    <div class="modes">
-      <button class="active">Strategy</button><button>Decision</button><button>Meeting</button><button>Execution</button><button>Personal</button><button>Content</button><button>Sales</button>
-    </div>
+      <div class="nav-label">Intelligence</div>
+      <button class="nav-item">Insights</button>
+      <button class="nav-item">Strategy</button>
+      <button class="nav-item">Risk Monitor</button>
 
-    <section class="chat">
-      <div id="thread" class="thread">
-        <div class="center-prompt" id="emptyState">
-          <div class="prompt-box">
-            <h2>How can I help you?</h2>
-            <p>Enter a decision, situation, meeting, idea, or execution problem below.</p>
+      <div class="nav-label">Resources</div>
+      <button class="nav-item">Files</button>
+      <button class="nav-item">Notes</button>
+
+      <div class="profile">
+        <div class="avatar">WW</div>
+        <div>
+          <strong>Executive Mode</strong>
+          <span>Decision-ready</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Executive Flow System</div>
+          <h1>What do we need to get done today?</h1>
+        </div>
+        <div class="live">LIVE</div>
+      </header>
+
+      <section class="chat-wrap">
+        <div class="chat" id="chat">
+          <div class="inner" id="chatInner">
+            <div class="welcome" id="welcome">
+              <h2>Run your day from one input.</h2>
+              <p>Drop the situation, decision, meeting, or problem. Executive Engine turns it into a decision, risk, action, and priority — then pushes execution to the right side.</p>
+
+              <div class="chips">
+                <button class="chip" data-prompt="I need to decide what the highest priority is today across sales, product, and execution.">Set today’s priority</button>
+                <button class="chip" data-prompt="We have leads but poor conversion. What should I fix first?">Fix conversion</button>
+                <button class="chip" data-prompt="Prepare me for a difficult executive meeting about missed targets.">Meeting prep</button>
+                <button class="chip" data-prompt="I need a clear plan to increase revenue this week without creating chaos.">Increase revenue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
+
+          <div class="composer-footer">
+            <div class="modes">
+              <button class="mode active" data-mode="strategy">Strategy</button>
+              <button class="mode" data-mode="decision">Decision</button>
+              <button class="mode" data-mode="meeting">Meeting</button>
+              <button class="mode" data-mode="execution">Execution</button>
+            </div>
+            <button class="run" id="runBtn">Run Engine</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="rightbar">
+      <div class="right-title">
+        <h2>Today’s Execution</h2>
+        <p>The system pushes what needs to happen next.</p>
+      </div>
+
+      <div class="side-card action">
+        <div class="side-header">What Needs To Get Done</div>
+        <div id="pushedActions">
+          <div class="todo">
+            <input type="checkbox" />
+            <div>
+              <strong>Run the engine</strong>
+              <span>Your next action will appear here.</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="composer">
-        <div class="input-wrap">
-          <textarea id="input" placeholder="What decision or situation needs action?"></textarea>
-          <button class="run" onclick="runEngine()">Run</button>
+      <div class="side-card">
+        <div class="side-header">Active Action Items</div>
+        <div id="activeTasks">
+          <div class="todo">
+            <input type="checkbox" />
+            <div>
+              <strong>Review today’s highest leverage decision</strong>
+              <span>Due today</span>
+            </div>
+          </div>
+          <div class="todo">
+            <input type="checkbox" />
+            <div>
+              <strong>Convert output into execution</strong>
+              <span>Auto-created by the engine</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
 
-  <aside class="right">
-    <div class="panel"><h3>Feedback Overview</h3><div id="overview" class="item">Waiting for input.</div></div>
-    <div class="panel"><h3>Action Items</h3><div id="actions"><div class="item">No action items yet.</div></div></div>
-    <div class="panel"><h3>Priority</h3><div id="priority" class="item">Waiting for input.</div></div>
-  </aside>
-</div>
+      <div class="side-card">
+        <div class="side-header">Focus Lock</div>
+        <p class="focus" id="focusLock">Waiting for your first decision.</p>
+        <p class="small-note">This becomes the mental anchor for the day.</p>
+      </div>
 
-<script>
-function addMessage(role, html){
-  const empty=document.getElementById("emptyState"); if(empty) empty.remove();
-  const div=document.createElement("div"); div.className="msg "+role; div.innerHTML=html;
-  const thread=document.getElementById("thread"); thread.appendChild(div); thread.scrollTop=thread.scrollHeight;
-}
-async function runEngine(){
-  const input=document.getElementById("input").value.trim(); if(!input) return;
-  document.getElementById("input").value=""; addMessage("user", input); addMessage("ai", "Thinking...");
-  try{
-    const res=await fetch("https://executive-engine-os-v2.onrender.com/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input})});
-    const data=await res.json(); const actions=data.action_items || [data.action || "Define next action."];
-    document.querySelector("#thread .msg.ai:last-child").innerHTML="<b>Decision:</b> "+(data.decision||data.outcome||"No decision returned")+"<br><br><b>Risk:</b> "+(data.risk||"No risk returned")+"<br><br><b>Action:</b><br>"+actions.map((a,i)=>(i+1)+". "+a).join("<br>")+"<br><br><b>Priority:</b> "+(data.priority||"Medium");
-    document.getElementById("overview").innerText=data.feedback_overview||data.why||data.decision||"Feedback generated.";
-    document.getElementById("actions").innerHTML=actions.map(a=>'<div class="item">'+a+'</div>').join("");
-    document.getElementById("priority").innerText=data.priority||"Medium";
-  }catch(e){document.querySelector("#thread .msg.ai:last-child").innerHTML="Backend connection error.";}
-}
-document.getElementById("input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();runEngine();}});
-</script>
+      <div class="side-card">
+        <div class="side-header">Next Push</div>
+        <p class="small-note" id="nextPush">After the engine runs, it will tell you what to do next instead of making you search through the system.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const ENDPOINT = "https://executive-engine-os-v2.onrender.com/run";
+
+    const chat = document.getElementById("chat");
+    const chatInner = document.getElementById("chatInner");
+    const input = document.getElementById("input");
+    const runBtn = document.getElementById("runBtn");
+    const modeButtons = document.querySelectorAll(".mode");
+    const chips = document.querySelectorAll(".chip");
+    const pushedActions = document.getElementById("pushedActions");
+    const focusLock = document.getElementById("focusLock");
+    const nextPush = document.getElementById("nextPush");
+
+    let currentMode = "strategy";
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        modeButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentMode = btn.dataset.mode;
+      });
+    });
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        input.value = chip.dataset.prompt;
+        input.focus();
+        resizeInput();
+      });
+    });
+
+    function extractSection(text, name) {
+      const regex = new RegExp(`${name}:\\s*([\\s\\S]*?)(?=\\n(?:Decision|Outcome|Risk|Action|Action Items|Priority):|$)`, "i");
+      const match = text.match(regex);
+      return match ? match[1].trim() : "";
+    }
+
+    function normalizeResponse(data) {
+      const raw = data.response || data.output || data.message || "";
+      return {
+        decision: data.decision || extractSection(raw, "Decision") || extractSection(raw, "Outcome") || "Decision generated.",
+        risk: data.risk || extractSection(raw, "Risk") || "Main risk not specified.",
+        action: Array.isArray(data.action_items)
+          ? data.action_items.join("\\n")
+          : data.action || extractSection(raw, "Action") || extractSection(raw, "Action Items") || "Next action not specified.",
+        priority: data.priority || extractSection(raw, "Priority") || "High"
+      };
+    }
+
+    function addUserMessage(message) {
+      const div = document.createElement("div");
+      div.className = "message user";
+      div.innerHTML = `<div class="bubble">${escapeHtml(message)}</div>`;
+      chatInner.appendChild(div);
+      scrollToBottom();
+    }
+
+    function addThinkingMessage() {
+      const div = document.createElement("div");
+      div.className = "message assistant";
+      div.id = "thinking";
+      div.innerHTML = `
+        <div class="ai-icon">AI</div>
+        <div class="bubble">
+          <div class="brief-title">Executive Engine Thinking...</div>
+          Analyzing context, identifying the real constraint, and creating today’s execution push.
+        </div>
+      `;
+      chatInner.appendChild(div);
+      scrollToBottom();
+    }
+
+    function removeThinkingMessage() {
+      const el = document.getElementById("thinking");
+      if (el) el.remove();
+    }
+
+    function addAssistantMessage(result) {
+      const div = document.createElement("div");
+      div.className = "message assistant";
+      div.innerHTML = `
+        <div class="ai-icon">AI</div>
+        <div class="bubble">
+          <div class="brief-title">Executive Brief</div>
+          <div class="output-grid">
+            <div class="output-card">
+              <strong>Decision</strong>
+              <p>${escapeHtml(result.decision)}</p>
+            </div>
+            <div class="output-card">
+              <strong>Risk</strong>
+              <p>${escapeHtml(result.risk)}</p>
+            </div>
+            <div class="output-card action">
+              <strong>Action</strong>
+              <p>${escapeHtml(result.action)}</p>
+            </div>
+            <div class="output-card priority">
+              <strong>Priority</strong>
+              <p>${escapeHtml(result.priority)}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      chatInner.appendChild(div);
+      updateExecutionPanel(result);
+      scrollToBottom();
+    }
+
+    function updateExecutionPanel(result) {
+      const actionLines = result.action
+        .split("\\n")
+        .map((line) => line.replace(/^[-•\\d\\.\\s]+/, "").trim())
+        .filter(Boolean)
+        .slice(0, 5);
+
+      const lines = actionLines.length ? actionLines : [result.action];
+
+      pushedActions.innerHTML = lines.map((line) => `
+        <div class="todo">
+          <input type="checkbox" />
+          <div>
+            <strong>${escapeHtml(line)}</strong>
+            <span>Priority: ${escapeHtml(result.priority)}</span>
+          </div>
+        </div>
+      `).join("");
+
+      focusLock.textContent = result.decision;
+      nextPush.textContent = "Execute the action above, then run the engine again with the next blocker or decision.";
+    }
+
+    async function runEngine() {
+      const message = input.value.trim();
+      if (!message) {
+        input.focus();
+        return;
+      }
+
+      addUserMessage(message);
+      input.value = "";
+      resizeInput();
+
+      runBtn.disabled = true;
+      runBtn.textContent = "Running...";
+      addThinkingMessage();
+
+      try {
+        const response = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, mode: currentMode })
+        });
+
+        const data = await response.json();
+        removeThinkingMessage();
+        addAssistantMessage(normalizeResponse(data));
+      } catch (error) {
+        removeThinkingMessage();
+        addAssistantMessage({
+          decision: "Backend connection failed.",
+          risk: "The frontend could not reach the live Render backend.",
+          action: "Confirm the backend is live at https://executive-engine-os-v2.onrender.com/run and redeploy.",
+          priority: "High"
+        });
+      } finally {
+        runBtn.disabled = false;
+        runBtn.textContent = "Run Engine";
+      }
+    }
+
+    runBtn.addEventListener("click", runEngine);
+
+    input.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") runEngine();
+    });
+
+    input.addEventListener("input", resizeInput);
+
+    function resizeInput() {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 160) + "px";
+    }
+
+    function scrollToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
 </body>
 </html>
