@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine</title>
+<style>
+:root{
+  --bg:#f7f8fb; --panel:#fff; --line:#d9e0ea; --text:#111827;
+  --muted:#667085; --blue:#155eef; --soft:#eef4ff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:240px 1fr 300px;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:22px}
+.brand{font-size:34px;font-weight:900;line-height:.95;margin:8px 0}
+.small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.nav button{width:100%;padding:12px;margin:6px 0;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;font-weight:800}
+.nav .active{background:var(--soft);color:var(--blue)}
+.main{padding:24px;display:flex;flex-direction:column;gap:16px}
+.header{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:44px;margin:0;font-weight:900}
+.modes{display:flex;gap:10px;flex-wrap:wrap}
+.modes button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 17px;font-weight:900}
+.modes .active{background:var(--blue);color:#fff}
+.chat{
+  flex:1;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:0 10px 28px rgba(17,24,39,.08);
+  display:flex;
+  flex-direction:column;
+  min-height:560px;
+}
+.thread{flex:1;padding:22px;overflow:auto}
+.center-prompt{
+  min-height:100%;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:55px;
+  color:#111827;
+}
+.prompt-box{width:min(760px,100%);text-align:left}
+.prompt-box h2{font-size:34px;margin:0 0 10px;font-weight:900}
+.prompt-box p{font-size:17px;color:var(--muted);margin:0}
+.msg{max-width:78%;padding:14px 16px;border-radius:16px;margin-bottom:12px;line-height:1.5}
+.user{margin-left:auto;background:var(--blue);color:#fff}
+.ai{background:#fff;border:1px solid var(--line)}
+.composer{
+  border-top:1px solid var(--line);
+  padding:16px;
+  background:#fff;
+  border-radius:0 0 22px 22px;
+}
+.input-wrap{
+  display:flex;gap:10px;align-items:flex-end;
+  border:2px solid var(--line);border-radius:18px;padding:10px;background:#fff;
+}
+textarea{
+  flex:1;border:none;outline:none;resize:none;min-height:54px;max-height:160px;
+  font-size:17px;font-family:inherit;
+}
+.run{background:var(--blue);color:#fff;border:none;border-radius:14px;padding:13px 20px;font-weight:900;cursor:pointer}
+.right{background:#eef2f7;border-left:1px solid var(--line);padding:22px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.panel h3{margin:0 0 12px;font-size:24px}
+.item{border-left:5px solid var(--blue);background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:10px}
+.filebox{font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:12px;padding:12px}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar,.right{display:none}h1{font-size:34px}.chat{min-height:calc(100vh - 170px)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="small">Executive Engine</div>
+    <div class="brand">Executive<br>OS</div>
+    <p style="color:var(--muted)">Daily decision and execution system.</p>
+
+    <div class="small" style="margin-top:22px">Command</div>
+    <div class="nav">
+      <button class="active">Executive Engine</button>
+      <button>Daily Brief</button>
+      <button>Decisions</button>
+    </div>
+
+    <div class="small" style="margin-top:22px">Content</div>
+    <div class="nav">
+      <button>Files</button>
+      <button>Notes</button>
+      <button>Drafts</button>
+      <button>Ideas</button>
+    </div>
+
+    <div class="small" style="margin-top:22px">Files</div>
+    <div class="filebox">
+      Upload Context<br><br>
+      <input type="file" id="fileInput">
+      <div id="fileStatus">No file loaded</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <div class="small">Executive Decision Platform</div>
+        <h1>Executive Engine</h1>
+      </div>
+      <strong style="color:#16a34a">LIVE</strong>
+    </div>
+
+    <div class="modes">
+      <button class="active">Strategy</button><button>Decision</button><button>Meeting</button>
+      <button>Execution</button><button>Personal</button><button>Content</button><button>Sales</button>
+    </div>
+
+    <section class="chat">
+      <div id="thread" class="thread">
+        <div class="center-prompt" id="emptyState">
+          <div class="prompt-box">
+            <h2>How can I help you?</h2>
+            <p>Enter a decision, situation, meeting, idea, or execution problem below.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="input-wrap">
+          <textarea id="input" placeholder="What decision or situation needs action?"></textarea>
+          <button class="run" onclick="runEngine()">Run</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="right">
+    <div class="panel">
+      <h3>Feedback Overview</h3>
+      <div id="overview" class="item">Waiting for input.</div>
+    </div>
+    <div class="panel">
+      <h3>Action Items</h3>
+      <div id="actions"><div class="item">No action items yet.</div></div>
+    </div>
+    <div class="panel">
+      <h3>Priority</h3>
+      <div id="priority" class="item">Waiting for input.</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+function addMessage(role, html){
+  const empty = document.getElementById("emptyState");
+  if(empty) empty.remove();
+  const div=document.createElement("div");
+  div.className="msg "+role;
+  div.innerHTML=html;
+  const thread=document.getElementById("thread");
+  thread.appendChild(div);
+  thread.scrollTop=thread.scrollHeight;
+}
+
+async function runEngine(){
+  const input=document.getElementById("input").value.trim();
+  if(!input) return;
+  document.getElementById("input").value="";
+  addMessage("user", input);
+  addMessage("ai", "Thinking...");
+
+  try{
+    const res=await fetch("https://executive-engine-os-v2.onrender.com/run",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input})
+    });
+    const data=await res.json();
+    const actions=data.action_items || [data.action || "Define next action."];
+
+    document.querySelector("#thread .msg.ai:last-child").innerHTML =
+      "<b>Decision:</b> "+(data.decision||data.outcome||"No decision returned")+"<br><br>"+
+      "<b>Risk:</b> "+(data.risk||"No risk returned")+"<br><br>"+
+      "<b>Action:</b><br>"+actions.map((a,i)=>(i+1)+". "+a).join("<br>")+"<br><br>"+
+      "<b>Priority:</b> "+(data.priority||"Medium");
+
+    document.getElementById("overview").innerText=data.feedback_overview||data.why||data.decision||"Feedback generated.";
+    document.getElementById("actions").innerHTML=actions.map(a=>'<div class="item">'+a+'</div>').join("");
+    document.getElementById("priority").innerText=data.priority||"Medium";
+  }catch(e){
+    document.querySelector("#thread .msg.ai:last-child").innerHTML="Backend connection error.";
+  }
+}
+
+document.getElementById("input").addEventListener("keydown", e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();runEngine();}
+});
+</script>
+</body>
+</html>
