@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Executive Engine V12</title>
+<style>
+body{font-family:Arial;background:#f6f8fc;margin:0;padding:30px;color:#111827}
+.wrap{max-width:900px;margin:auto}
+textarea{width:100%;height:120px;font-size:16px;padding:14px;border-radius:12px;border:1px solid #ccc}
+button{margin-top:10px;background:#f25c2a;color:white;border:none;border-radius:10px;padding:12px 18px;font-weight:800}
+.card{background:white;border:1px solid #ddd;border-radius:14px;padding:16px;margin-top:16px}
+.next{border-left:6px solid #f25c2a}
+.decision{border-left:6px solid #155eef}
+.risk{border-left:6px solid #dc2626}
+.priority{border-left:6px solid #16a34a}
+.small{color:#667085;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Executive Engine</h1>
+<p class="small">V12 backend test interface</p>
+
+<textarea id="input" placeholder="What decision or situation needs action?"></textarea>
+<br>
+<button onclick="runEngine()">Run Engine</button>
+
+<div id="status" class="small"></div>
+<div id="output"></div>
+</div>
+
+<script>
+async function runEngine(){
+  const input = document.getElementById("input").value.trim();
+  if(!input) return;
+
+  const output = document.getElementById("output");
+  const status = document.getElementById("status");
+
+  status.innerText = "Thinking...";
+  output.innerHTML = "";
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+
+  try{
+    const res = await fetch("https://executive-engine-os-v2.onrender.com/run",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input:input, mode:"strategy"}),
+      signal:controller.signal
+    });
+
+    clearTimeout(timeout);
+    const data = await res.json();
+
+    status.innerText = "Complete.";
+
+    const actions = data.action_items || [];
+    output.innerHTML = `
+      <div class="card next"><h2>Next Move</h2><p>${data.next_move || actions[0] || "No next move returned."}</p></div>
+      <div class="card decision"><h2>Decision</h2><p>${data.decision || "No decision returned."}</p></div>
+      <div class="card"><h2>Action Steps</h2><ol>${actions.map(a=>`<li>${a}</li>`).join("")}</ol></div>
+      <div class="card risk"><h2>Risk</h2><p>${data.risk || "No risk returned."}</p></div>
+      <div class="card priority"><h2>Priority</h2><p>${data.priority || "Medium"}</p></div>
+      <div class="card"><h2>Overview</h2><p>${data.feedback_overview || ""}</p></div>
+    `;
+  }catch(e){
+    clearTimeout(timeout);
+    status.innerText = "Error or timeout. Backend did not respond fast enough.";
+    output.innerHTML = `<div class="card risk"><h2>Connection Issue</h2><p>${e.message}</p></div>`;
+  }
+}
+</script>
+</body>
+</html>
