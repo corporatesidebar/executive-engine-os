@@ -6,7 +6,7 @@ import os
 import json
 import requests
 
-app = FastAPI(title="Executive Engine V24")
+app = FastAPI(title="Executive Engine V27")
 
 app.add_middleware(
     CORSMiddleware,
@@ -64,7 +64,7 @@ def save_memory(req, output):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "Executive Engine V24"}
+    return {"status": "ok", "service": "Executive Engine V27"}
 
 @app.get("/memory")
 def memory():
