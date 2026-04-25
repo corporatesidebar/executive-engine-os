@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Executive Engine V21</title>
+<style>
+body{margin:0;font-family:Inter;background:#f5f8fc}
+.app{display:grid;grid-template-columns:220px 1fr;height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:#061a3a;color:#fff;padding:20px}
+.nav-item{padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer}
+.nav-item.active{background:#0f62fe}
+
+/* MAIN */
+.main{display:flex;flex-direction:column}
+
+/* CHAT */
+.chat{flex:1;overflow:auto;padding:20px}
+.message{background:#fff;padding:16px;border-radius:12px;margin-bottom:12px;border:1px solid #eee}
+.user{background:#eef5ff}
+.next{font-weight:700;font-size:18px;margin-bottom:6px}
+
+/* INPUT */
+.input{padding:15px;background:#fff;border-top:1px solid #ddd}
+textarea{width:100%;height:70px;border-radius:10px;border:1px solid #ddd;padding:10px}
+.controls{display:flex;justify-content:space-between;margin-top:10px}
+button{background:#ff5a1f;color:#fff;border:0;padding:10px 16px;border-radius:10px}
+
+/* TASKS */
+.tasks{position:absolute;right:0;top:0;width:300px;height:100%;background:#eef3f9;padding:15px;overflow:auto}
+.task{padding:10px;border-bottom:1px solid #ddd;cursor:pointer}
+.task.done{text-decoration:line-through;opacity:.5}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="sidebar">
+<div class="nav-item active">Command</div>
+<div class="nav-item">Tasks</div>
+</div>
+
+<div class="main">
+
+<div id="chat" class="chat"></div>
+
+<div class="input">
+<textarea id="input" placeholder="What needs to get done?"></textarea>
+<div class="controls">
+<button onclick="run()">Run Engine</button>
+</div>
+</div>
+
+</div>
+
+<div class="tasks">
+<h3>Tasks</h3>
+<div id="tasksList"></div>
+</div>
+
+</div>
+
+<script>
+const API="https://executive-engine-os-v2.onrender.com"
+let tasks = JSON.parse(localStorage.getItem("tasks")||"[]")
+
+function save(){
+ localStorage.setItem("tasks",JSON.stringify(tasks))
+ renderTasks()
+}
+
+function run(){
+ const val=document.getElementById("input").value
+ if(!val)return
+
+ addUser(val)
+
+ fetch(API+"/run",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({input:val})
+ })
+ .then(r=>r.json())
+ .then(d=>{
+  addSystem(d)
+  tasks = d.actions.map(a=>({text:a,done:false}))
+  save()
+ })
+}
+
+function addUser(text){
+ document.getElementById("chat").innerHTML+=`
+ <div class="message user">${text}</div>`
+}
+
+function addSystem(d){
+ document.getElementById("chat").innerHTML+=`
+ <div class="message">
+  <div class="next">${d.next_move}</div>
+  <div>${d.decision}</div>
+ </div>`
+ document.getElementById("chat").scrollTop=999999
+}
+
+function renderTasks(){
+ document.getElementById("tasksList").innerHTML=
+ tasks.map((t,i)=>`
+  <div class="task ${t.done?'done':''}" onclick="toggle(${i})">
+   ${t.text}
+  </div>
+ `).join("")
+}
+
+function toggle(i){
+ tasks[i].done=!tasks[i].done
+ save()
+}
+
+renderTasks()
+</script>
+
+</body>
+</html>
