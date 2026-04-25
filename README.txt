@@ -1,1 +1,1 @@
-Executive Engine V32 - ChatGPT-style Ready section for command input. Upload extracted folders only.
+Executive Engine V33 - integrated smaller Next Move, removed separate current task block until output, Run the Day promoted. Upload extracted folders only.
