@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine V27</title>
+<title>Executive Engine V28</title>
 <style>
 :root{
   --nav:#061a3a;
@@ -29,52 +29,60 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Sego
 .workspace{flex:1;overflow:auto;padding:22px}
 
 /* MEMORY */
-.memory-strip{background:#f8fbff;border:1px solid #dbeafe;border-left:5px solid var(--blue);border-radius:14px;padding:11px 14px;margin-bottom:14px;color:#1e3a8a;font-size:14px}
+.memory-strip{background:#eef5ff;border-left:5px solid var(--blue);border-radius:14px;padding:12px 14px;margin-bottom:16px;color:#1e3a8a;font-size:14px}
 
 /* INPUT */
-.input-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
-.input-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.input-card h2{margin:0;font-size:28px;letter-spacing:-.04em;line-height:1.05}
-.input-card p{margin:7px 0 0;color:var(--muted);font-size:15px}
-.mode-select{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:11px 14px;font-weight:800;min-width:140px}
-textarea{width:100%;height:112px;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:15px;resize:none;outline:none;background:#fbfdff}
-.run-row{display:flex;justify-content:flex-end;margin-top:12px}
-button{background:var(--orange);color:#fff;border:0;padding:12px 18px;border-radius:12px;font-weight:800;cursor:pointer;font-size:14px}
+.input-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.input-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.input-title h2{margin:0 0 6px;font-size:25px;letter-spacing:-.03em}
+.input-title p{margin:0;color:var(--muted)}
+.mode-select{
+  background:var(--orange);
+  color:#fff;
+  border:0;
+  border-radius:12px;
+  padding:11px 14px;
+  font-weight:850;
+  min-width:145px;
+  outline:none;
+}
+textarea{width:100%;height:110px;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;resize:none;outline:none;background:#fbfdff}
+.controls{display:flex;justify-content:flex-end;align-items:center;margin-top:12px}
+button{background:var(--orange);color:#fff;border:0;padding:11px 17px;border-radius:10px;font-weight:750;cursor:pointer}
 button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
 button.green{background:var(--green)}
 button:disabled{opacity:.55;cursor:not-allowed}
 
-/* CURRENT TASK IMMEDIATE */
-.execution-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 12px 30px rgba(15,35,70,.05)}
-.execution-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.execution-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:900}
-.current-task{border:2px solid #ffd7c6;background:#fff7ed;border-radius:18px;padding:20px;margin-bottom:14px}
-.current-task-label{font-size:12px;font-weight:900;color:var(--orange);text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}
-.current-task-text{font-size:27px;line-height:1.2;font-weight:900;letter-spacing:-.035em}
-.progress{height:10px;background:#edf2f7;border-radius:999px;overflow:hidden;margin-top:16px}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));width:0%}
-.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.action-buttons .wide{grid-column:1 / -1}
-.execution-complete{background:#ecfdf5;border-left:5px solid var(--green);border-radius:14px;padding:14px;margin-top:12px;color:#166534;font-weight:800}
-
-/* DO THIS NOW / NEXT MOVE */
+/* DO THIS NOW HERO */
 .do-now-hero{
-  background:#fff;
-  border:1px solid var(--line);
-  border-left:8px solid var(--orange);
-  border-radius:22px;
-  padding:22px;
-  margin-bottom:14px;
-  box-shadow:0 12px 28px rgba(15,35,70,.05);
+  background:linear-gradient(135deg,#fff,#fff7ed);
+  border:2px solid rgba(255,90,31,.35);
+  border-left:9px solid var(--orange);
+  border-radius:24px;
+  padding:26px;
+  margin-bottom:16px;
+  box-shadow:0 18px 42px rgba(255,90,31,.10);
 }
 .hero-label{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:var(--orange);font-weight:900;margin-bottom:10px}
-.hero-action{font-size:30px;line-height:1.13;font-weight:950;letter-spacing:-.05em;margin-bottom:14px}
+.hero-action{font-size:34px;line-height:1.1;font-weight:950;letter-spacing:-.05em;margin-bottom:14px}
 .hero-sub{font-size:15px;color:#334155;line-height:1.45;margin-bottom:14px}
 .tags{display:flex;gap:10px;flex-wrap:wrap}
-.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}
 .priority{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
 .risk{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
 .status{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
+
+/* EXECUTION */
+.execution-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.execution-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.execution-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:850}
+.current-task{border:2px solid #ffd7c6;background:#fff7ed;border-radius:16px;padding:18px;margin-bottom:14px}
+.current-task-label{font-size:12px;font-weight:850;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.current-task-text{font-size:23px;line-height:1.25;font-weight:850}
+.progress{height:9px;background:#edf2f7;border-radius:999px;overflow:hidden;margin-top:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));width:0%}
+.action-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.execution-complete{background:#ecfdf5;border-left:5px solid var(--green);border-radius:14px;padding:14px;margin-top:12px;color:#166534;font-weight:750}
 
 /* HISTORY */
 .history-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
@@ -86,7 +94,14 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .rail-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#9fb3d9;margin-bottom:10px;font-weight:850}
 .rail-nav button{display:block;width:100%;background:transparent;color:#dce8fa;text-align:left;border:0;border-radius:10px;padding:11px;margin-bottom:6px;font-size:14px}
 .rail-nav button.active,.rail-nav button:hover{background:var(--blue);color:#fff}
-.rail-do{background:#fff;color:var(--text);border:2px solid var(--orange);border-radius:18px;padding:16px;margin-bottom:12px}
+.rail-do{
+  background:#fff;
+  color:var(--text);
+  border:2px solid var(--orange);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
 .rail-do .label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);font-weight:900;margin-bottom:8px}
 .rail-do .text{font-size:18px;line-height:1.25;font-weight:850}
 .metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12)}
@@ -96,8 +111,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .queue-task.done{text-decoration:line-through;color:#94a3b8}
 .memory-item{font-size:13px;color:#dce8fa;margin-bottom:9px;line-height:1.35}
 .empty{color:#9fb3d9;font-size:13px}
-@media(max-width:1100px){.app{grid-template-columns:1fr}.rail{display:none}.hero-action{font-size:28px}.current-task-text{font-size:24px}}
-@media(max-width:760px){.workspace{padding:14px}.input-head{flex-direction:column}.mode-select,button{width:100%}.run-row{display:block}.action-buttons{grid-template-columns:1fr}}
+@media(max-width:1100px){.app{grid-template-columns:1fr}.rail{display:none}.hero-action{font-size:28px}}
+@media(max-width:760px){.workspace{padding:14px}.input-top{display:block}.mode-select{width:100%;margin-top:12px}button{width:100%}}
 </style>
 </head>
 <body>
@@ -105,16 +120,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 <main class="main">
   <div class="topbar">
-    <div class="brand">Executive <span>Engine</span> · Decision Weapon V27</div>
+    <div class="brand">Executive <span>Engine</span> · Decision Weapon V28</div>
     <div class="live">LIVE</div>
   </div>
 
   <div class="workspace">
-    <div id="memoryStrip" class="memory-strip">Memory activates after your first saved decision.</div>
+    <div id="memoryStrip" class="memory-strip">Memory loading...</div>
 
     <div class="input-card">
-      <div class="input-head">
-        <div>
+      <div class="input-top">
+        <div class="input-title">
           <h2>What needs to get done?</h2>
           <p>Enter the situation. The system produces one dominant action and drives execution.</p>
         </div>
@@ -125,29 +140,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
           <option value="meeting">Meeting</option>
         </select>
       </div>
-      <textarea id="input" placeholder="Example: I need to increase sales follow-up this week..."></textarea>
-      <div class="run-row">
-        <button id="runBtn" onclick="runEngine()">Run Engine</button>
-      </div>
-    </div>
 
-    <div id="executionArea">
-      <div class="execution-card">
-        <div class="execution-top">
-          <div class="execution-title">Current Task</div>
-          <div>0 / 0</div>
-        </div>
-        <div class="current-task">
-          <div class="current-task-label">Do this now</div>
-          <div class="current-task-text">Run the engine to create your first task.</div>
-          <div class="progress"><div class="progress-fill" style="width:0%"></div></div>
-        </div>
+      <textarea id="input" placeholder="Example: I need to increase sales follow-up this week..."></textarea>
+      <div class="controls">
+        <button id="runBtn" onclick="runEngine()">Run Engine</button>
       </div>
     </div>
 
     <div id="outputArea">
       <div class="do-now-hero">
-        <div class="hero-label">Next Move</div>
+        <div class="hero-label">Do This Now</div>
         <div class="hero-action">Define the one action that creates the most progress today.</div>
         <div class="hero-sub">Waiting for your input.</div>
         <div class="tags">
@@ -157,6 +159,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
       </div>
     </div>
 
+    <div id="executionArea"></div>
     <div id="historyArea"></div>
   </div>
 </main>
@@ -190,7 +193,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
   <div class="rail-card">
     <div class="rail-title">Recent Memory</div>
-    <div id="recentMemory" class="empty">Memory activates after your first saved decision.</div>
+    <div id="recentMemory" class="empty">No memory loaded.</div>
   </div>
 </aside>
 
@@ -198,11 +201,10 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 <script>
 const API = "https://executive-engine-os-v2.onrender.com";
-
 let activeRun = null;
 let currentTaskIndex = 0;
 let completed = {};
-let runHistory = JSON.parse(localStorage.getItem("ee_v27_history") || "[]");
+let runHistory = JSON.parse(localStorage.getItem("ee_v28_history") || "[]");
 
 function esc(v){
   return String(v || "")
@@ -261,19 +263,18 @@ function startRun(input, data){
   completed = {};
   runHistory.unshift({ input, ...data, created:new Date().toLocaleString() });
   runHistory = runHistory.slice(0, 8);
-  localStorage.setItem("ee_v27_history", JSON.stringify(runHistory));
+  localStorage.setItem("ee_v28_history", JSON.stringify(runHistory));
   renderWeapon(data);
   renderExecution();
   renderQueue();
   renderHistory();
   updateMetrics();
-  scrollToExecution();
 }
 
 function renderWeapon(d){
   document.getElementById("outputArea").innerHTML = `
     <div class="do-now-hero">
-      <div class="hero-label">Next Move</div>
+      <div class="hero-label">Do This Now</div>
       <div class="hero-action">${esc(d.next_move)}</div>
       <div class="hero-sub">${esc(d.decision)}</div>
       <div class="tags">
@@ -283,7 +284,7 @@ function renderWeapon(d){
       </div>
     </div>
   `;
-  document.getElementById("railDoNow").innerHTML = esc(d.actions[0] || d.next_move);
+  document.getElementById("railDoNow").innerHTML = esc(d.next_move);
 }
 
 function renderExecution(){
@@ -316,7 +317,7 @@ function renderExecution(){
         <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
       </div>
       <div class="action-buttons">
-        <button class="green wide" onclick="completeTask()">Complete Task</button>
+        <button class="green" onclick="completeTask()">Complete Task</button>
         <button class="secondary" onclick="skipTask()">Skip</button>
         <button class="secondary" onclick="focusInput()">New Input</button>
       </div>
@@ -379,15 +380,15 @@ async function loadMemory(){
     const data = await res.json();
     const items = data.memory || [];
     if(!items.length){
-      strip.innerHTML = "Memory activates after your first saved decision.";
-      recent.innerHTML = "Memory activates after your first saved decision.";
+      strip.innerHTML = "No memory yet. Run the engine to create decision history.";
+      recent.innerHTML = "No memory yet.";
       return;
     }
     strip.innerHTML = "Based on recent decisions: " + esc(items.slice(0,3).map(i=>i.next_move || i.decision).filter(Boolean).join(" · "));
     recent.innerHTML = items.slice(0,3).map(i=>`<div class="memory-item">${esc(i.next_move || i.decision || "Memory")}</div>`).join("");
   }catch(e){
-    strip.innerHTML = "Memory is not connected yet. Execution mode still works.";
-    recent.innerHTML = "Memory is not connected yet.";
+    strip.innerHTML = "Memory endpoint unavailable. Execution mode still active.";
+    recent.innerHTML = "Memory endpoint unavailable.";
   }
 }
 
