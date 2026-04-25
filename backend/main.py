@@ -1,13 +1,28 @@
+import os
+import json
+import asyncio
+from typing import List, Optional
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from openai import OpenAI
-import os
-import json
-import requests
-from typing import Optional
+from supabase import create_client, Client
+from openai import AsyncOpenAI
 
-app = FastAPI(title="Executive Engine V36")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+
+supabase: Optional[Client] = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception:
+        supabase = None
+
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,125 +32,125 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-
-class Req(BaseModel):
+class RunRequest(BaseModel):
     input: str
-    mode: Optional[str] = "execution"
+    mode: str
 
-def headers():
-    return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json"
-    }
+class RunResponse(BaseModel):
+    decision: str
+    next_move: str
+    actions: List[str]
+    risk: str
+    priority: str
 
-def get_memory(limit=5):
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return []
-    try:
-        url = f"{SUPABASE_URL}/rest/v1/items?select=input,mode,decision,next_move,actions,risk,priority,created_at&order=created_at.desc&limit={limit}"
-        r = requests.get(url, headers=headers(), timeout=6)
-        if r.status_code == 200:
-            return r.json()
-    except Exception:
-        pass
-    return []
+SYSTEM_PROMPT = """
+Act as an elite COO / operator.
 
-def save_memory(req, output):
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return
-    payload = {
-        "input": req.input,
-        "mode": req.mode,
-        "decision": output.get("decision", ""),
-        "next_move": output.get("next_move", ""),
-        "actions": output.get("actions", []),
-        "risk": output.get("risk", ""),
-        "priority": output.get("priority", "")
-    }
-    try:
-        requests.post(f"{SUPABASE_URL}/rest/v1/items", headers=headers(), json=payload, timeout=6)
-    except Exception:
-        pass
-
-@app.get("/")
-def root():
-    return {"status": "ok", "service": "Executive Engine V36"}
-
-@app.get("/health")
-def health():
-    return {
-        "status": "ok",
-        "service": "Executive Engine V36",
-        "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
-        "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY)
-    }
-
-@app.get("/memory")
-def memory():
-    return {"memory": get_memory(10)}
-
-@app.post("/run")
-async def run(req: Req):
-    memory_items = get_memory(5)
-    memory_text = "\n".join([
-        f"Previous Input: {m.get('input','')} | Next Move: {m.get('next_move','')}"
-        for m in memory_items
-    ]) or "No prior memory."
-
-    prompt = f'''
-You are Executive Engine OS, a decision weapon for operators and executives.
-
-Mode: {req.mode}
-
-Recent memory:
-{memory_text}
-
-Current input:
-{req.input}
-
-Return STRICT JSON only:
-{{
-  "decision": "clear executive decision",
-  "next_move": "single highest leverage action to do now",
-  "actions": ["specific task 1", "specific task 2", "specific task 3"],
-  "risk": "main risk/blocker",
-  "priority": "High | Medium | Low"
-}}
+Return ONLY valid JSON:
+{
+  "decision": "",
+  "next_move": "",
+  "actions": [],
+  "risk": "",
+  "priority": ""
+}
 
 Rules:
 - No markdown
 - No explanation
-- No generic advice
-- Actions must be executable
-- Next move must be immediate and force execution
-'''
+- No extra text
+- Always valid JSON
+"""
 
+async def call_openai(prompt: str) -> dict:
     try:
-        res = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.25,
-            max_tokens=450
+        response = await asyncio.wait_for(
+            openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                temperature=0.3,
+                max_tokens=300,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt}
+                ],
+            ),
+            timeout=10
         )
-        raw = res.choices[0].message.content.strip()
-        output = json.loads(raw)
+
+        content = response.choices[0].message.content.strip()
+
+        try:
+            return json.loads(content)
+        except Exception:
+            return fallback_response("JSON parsing failed")
+
     except Exception:
-        output = {
-            "decision": "Clarify the highest leverage objective.",
-            "next_move": "Identify the immediate blocker and take the first measurable step.",
-            "actions": ["Clarify the objective", "Identify the blocker", "Execute the next step"],
-            "risk": "Execution clarity is missing.",
-            "priority": "High"
-        }
+        return fallback_response("Model call failed")
 
-    if not isinstance(output.get("actions"), list):
-        output["actions"] = [str(output.get("actions", ""))]
 
-    save_memory(req, output)
-    return output
+def fallback_response(reason: str) -> dict:
+    return {
+        "decision": f"Fallback triggered: {reason}",
+        "next_move": "Retry request or inspect backend",
+        "actions": ["Retry request", "Check logs", "Validate API keys"],
+        "risk": reason,
+        "priority": "High"
+    }
+
+
+async def save_memory(data: dict, user_input: str, mode: str):
+    if not supabase:
+        return
+    try:
+        supabase.table("items").insert({
+            "input": user_input,
+            "mode": mode,
+            "decision": data.get("decision"),
+            "next_move": data.get("next_move"),
+            "actions": data.get("actions"),
+            "risk": data.get("risk"),
+            "priority": data.get("priority")
+        }).execute()
+    except Exception:
+        pass
+
+
+def fetch_memory(limit: int = 5):
+    if not supabase:
+        return []
+    try:
+        res = supabase.table("items") \
+            .select("*") \
+            .order("created_at", desc=True) \
+            .limit(limit) \
+            .execute()
+        return res.data if res.data else []
+    except Exception:
+        return []
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+@app.post("/run", response_model=RunResponse)
+async def run(req: RunRequest):
+    prompt = f"Mode: {req.mode}\nInput: {req.input}"
+
+    result = await call_openai(prompt)
+
+    clean_result = {
+        "decision": str(result.get("decision", "")),
+        "next_move": str(result.get("next_move", "")),
+        "actions": result.get("actions", []) if isinstance(result.get("actions"), list) else [],
+        "risk": str(result.get("risk", "")),
+        "priority": str(result.get("priority", ""))
+    }
+
+    asyncio.create_task(save_memory(clean_result, req.input, req.mode))
+
+    return clean_result
+
+@app.get("/memory")
+async def memory():
+    data = fetch_memory(5)
+    return {"memory": data}
