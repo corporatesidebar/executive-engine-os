@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Executive Engine V36</title>
+</head>
+<body style="font-family:Arial;padding:30px">
+
+<h2>Executive Engine V36</h2>
+
+<textarea id="input" style="width:100%;height:120px;"></textarea>
+<br><br>
+
+<button onclick="run()">Run Engine</button>
+
+<pre id="output"></pre>
+
+<script>
+const API = "https://executive-engine-os-v2.onrender.com";
+
+async function run(){
+  const input = document.getElementById("input").value;
+  const res = await fetch(API + "/run", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({input, mode:"execution"})
+  });
+  const data = await res.json();
+  document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
