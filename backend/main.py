@@ -6,7 +6,7 @@ import os
 import json
 import requests
 
-app = FastAPI(title="Executive Engine V27")
+app = FastAPI(title="Executive Engine V32")
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,6 +48,7 @@ def get_memory(limit=10):
 def save_memory(req, output):
     if not SUPABASE_URL or not SUPABASE_KEY:
         return
+
     payload = {
         "input": req.input,
         "mode": req.mode,
@@ -57,6 +58,7 @@ def save_memory(req, output):
         "risk": output.get("risk", ""),
         "priority": output.get("priority", "")
     }
+
     try:
         requests.post(f"{SUPABASE_URL}/rest/v1/items", headers=headers(), json=payload, timeout=10)
     except Exception:
@@ -64,7 +66,7 @@ def save_memory(req, output):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "Executive Engine V27"}
+    return {"status": "ok", "service": "Executive Engine V32"}
 
 @app.get("/memory")
 def memory():
@@ -73,6 +75,7 @@ def memory():
 @app.post("/run")
 async def run(req: Req):
     memory_items = get_memory(5)
+
     memory_text = "\n".join([
         f"Previous Input: {m.get('input','')} | Next Move: {m.get('next_move','')}"
         for m in memory_items
