@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine V14</title>
+<style>
+body{margin:0;font-family:Inter,system-ui;background:#f5f8fc}
+.app{display:flex;height:100vh}
+.sidebar{width:220px;background:#061a3a;color:#fff;padding:20px}
+.main{flex:1;display:flex;flex-direction:column}
+.chat{flex:1;overflow:auto;padding:20px}
+.next{font-size:24px;font-weight:700;margin-bottom:10px}
+.action{padding:12px;border-bottom:1px solid #ddd;cursor:pointer}
+.action.done{text-decoration:line-through;color:#888}
+.input{padding:15px;background:#fff;border-top:1px solid #ddd}
+textarea{width:100%;height:60px}
+button{margin-top:10px;background:#ff5a1f;color:#fff;border:0;padding:10px 16px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">Executive Engine</div>
+<div class="main">
+<div id="chat" class="chat"></div>
+<div class="input">
+<textarea id="input"></textarea>
+<button onclick="run()">Run</button>
+</div>
+</div>
+</div>
+
+<script>
+const ENDPOINT="https://executive-engine-os-v2.onrender.com/run"
+
+function run(){
+ const val=document.getElementById("input").value
+ fetch(ENDPOINT,{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({input:val})
+ })
+ .then(r=>r.json())
+ .then(d=>render(d))
+}
+
+function render(d){
+ const chat=document.getElementById("chat")
+ const div=document.createElement("div")
+
+ const actions=(d.actions||[]).map(a=>"<div class='action' onclick='this.classList.toggle("done")'>"+a+"</div>").join("")
+
+ div.innerHTML=`
+  <div class="next">${d.next_move}</div>
+  ${actions}
+ `
+ chat.appendChild(div)
+}
+</script>
+</body>
+</html>
