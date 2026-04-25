@@ -1,357 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine OS V37</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Executive Engine OS V8</title>
 <style>
 :root{
-  --nav:#07152d;
-  --blue:#0f62fe;
-  --orange:#ff5a1f;
-  --green:#16a34a;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --line:#e2e8f0;
-  --text:#0f172a;
-  --muted:#64748b;
-  --soft:#f8fafc;
+  --nav:#07152d; --blue:#0f62fe; --orange:#ff5a1f; --green:#16a34a;
+  --bg:#f5f7fb; --card:#ffffff; --line:#e2e8f0; --text:#0f172a; --muted:#64748b;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow:hidden;
-}
-.app{
-  display:grid;
-  grid-template-columns:220px minmax(0,1fr) 300px;
-  height:100vh;
-}
-.sidebar{
-  background:linear-gradient(180deg,#08162f,#050d1f);
-  color:#fff;
-  padding:18px 14px;
-}
-.logo{
-  font-size:18px;
-  font-weight:900;
-  margin-bottom:24px;
-}
-.logo span{color:var(--orange)}
-.nav-label{
-  color:#8ea2c7;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  margin:18px 8px 8px;
-}
-.nav-btn{
-  width:100%;
-  border:0;
-  border-radius:10px;
-  background:transparent;
-  color:#dbeafe;
-  text-align:left;
-  padding:11px 12px;
-  margin-bottom:5px;
-  cursor:pointer;
-  font-size:14px;
-}
-.nav-btn.active,.nav-btn:hover{
-  background:var(--blue);
-  color:#fff;
-}
-.main{
-  min-width:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-.topbar{
-  height:56px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 20px;
-}
-.topbar strong{font-size:14px}
-.live{
-  color:#087a3a;
-  background:#e7f8ef;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:800;
-}
-.workspace{
-  flex:1;
-  overflow:auto;
-  padding:22px;
-}
-.ready{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:24px;
-  margin-bottom:16px;
-  box-shadow:0 14px 36px rgba(15,23,42,.05);
-}
-.ready-inner{
-  max-width:840px;
-  margin:0 auto;
-  text-align:center;
-}
-.ready h1{
-  margin:0 0 18px;
-  font-size:30px;
-  letter-spacing:-.04em;
-}
-.command-box{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  background:#fff;
-  border:1px solid #d7e2f3;
-  border-radius:999px;
-  padding:12px;
-  box-shadow:0 10px 30px rgba(15,35,70,.06);
-}
-.plus{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  display:grid;
-  place-items:center;
-  color:var(--muted);
-}
-textarea{
-  flex:1;
-  height:46px;
-  min-height:46px;
-  border:0;
-  outline:0;
-  resize:none;
-  font-size:15px;
-  background:transparent;
-  padding:12px 8px;
-}
-select{
-  border:1px solid #fed7aa;
-  background:#fff7ed;
-  color:#c2410c;
-  border-radius:999px;
-  padding:10px 12px;
-  font-weight:800;
-  outline:0;
-}
-.run{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:0;
-  background:var(--orange);
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-.run:disabled{opacity:.6;cursor:not-allowed}
-.quick{
-  margin-top:14px;
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.quick button{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:999px;
-  padding:9px 13px;
-  cursor:pointer;
-}
-.status-row{
-  margin-top:12px;
-  display:flex;
-  justify-content:center;
-  gap:8px;
-}
-.status{
-  padding:6px 10px;
-  border-radius:999px;
-  background:#ecfdf5;
-  color:#166534;
-  font-size:12px;
-  font-weight:800;
-}
-.next-strip{
-  margin-top:18px;
-  background:linear-gradient(135deg,#fff,#fff7ed);
-  border:1px solid rgba(255,90,31,.25);
-  border-left:6px solid var(--orange);
-  border-radius:16px;
-  padding:14px 16px;
-  display:grid;
-  grid-template-columns:120px 1fr;
-  gap:14px;
-  align-items:center;
-  text-align:left;
-}
-.label{
-  color:var(--orange);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.13em;
-  font-weight:900;
-}
-.next-text{
-  font-weight:850;
-  font-size:18px;
-}
-.error{
-  display:none;
-  background:#fef2f2;
-  color:#991b1b;
-  border:1px solid #fecaca;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:14px;
-}
-.error.show{display:block}
-.card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:16px;
-}
-.card.hidden{display:none}
-.card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-.card-title{
-  color:var(--blue);
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-}
-.task-box{
-  border:2px solid #ffd7c6;
-  background:#fff7ed;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:14px;
-}
-.task-label{
-  color:var(--orange);
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.1em;
-  margin-bottom:8px;
-}
-.task-text{
-  font-size:22px;
-  font-weight:850;
-}
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.actions button{
-  border:0;
-  border-radius:10px;
-  padding:11px 17px;
-  font-weight:800;
-  cursor:pointer;
-}
-.green{background:var(--green);color:#fff}
-.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff!important}
-.detail{
-  line-height:1.5;
-  color:#334155;
-}
-.tags{
-  margin-top:12px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.tag{
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:750;
-}
-.priority{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
-.risk{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
-.active{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
-.rail{
-  background:#f0f5fb;
-  border-left:1px solid var(--line);
-  padding:14px;
-  overflow:auto;
-}
-.panel{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:14px;
-  margin-bottom:12px;
-}
-.panel.do{
-  border:2px solid var(--orange);
-}
-.panel h3{
-  margin:0 0 10px;
-  font-size:14px;
-  color:var(--blue);
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-.panel.do h3{color:var(--orange)}
-.do-text{
-  font-size:17px;
-  line-height:1.3;
-  font-weight:850;
-}
-.metric{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #edf2f8;
-}
-.metric:last-child{border-bottom:0}
-.metric strong{font-size:19px}
-.queue-item{
-  padding:8px 0;
-  border-bottom:1px solid #edf2f8;
-  font-size:13px;
-}
-.queue-item.done{text-decoration:line-through;color:#94a3b8}
-.empty{color:var(--muted);font-size:13px}
-@media(max-width:1150px){
-  .app{grid-template-columns:210px 1fr}
-  .rail{display:none}
-}
-@media(max-width:760px){
-  body{overflow:auto}
-  .app{display:block;height:auto}
-  .sidebar{display:none}
-  .workspace{padding:14px}
-  .command-box{border-radius:24px}
-  .next-strip{grid-template-columns:1fr}
-}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr) 300px;height:100vh}
+.sidebar{background:linear-gradient(180deg,#08162f,#050d1f);color:#fff;padding:18px 14px}
+.logo{font-size:18px;font-weight:900;margin-bottom:24px}.logo span{color:var(--orange)}
+.nav-label{color:#8ea2c7;font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin:18px 8px 8px}
+.nav-btn{width:100%;border:0;border-radius:10px;background:transparent;color:#dbeafe;text-align:left;padding:11px 12px;margin-bottom:5px;cursor:pointer;font-size:14px}
+.nav-btn.active,.nav-btn:hover{background:var(--blue);color:#fff}
+.main{min-width:0;height:100vh;display:flex;flex-direction:column}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 20px}
+.topbar strong{font-size:14px}.live{color:#087a3a;background:#e7f8ef;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.workspace{flex:1;overflow:auto;padding:22px}
+.ready{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 14px 36px rgba(15,23,42,.05)}
+.ready-inner{max-width:840px;margin:0 auto;text-align:center}.ready h1{margin:0 0 18px;font-size:30px;letter-spacing:-.04em}
+.command-box{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #d7e2f3;border-radius:999px;padding:12px;box-shadow:0 10px 30px rgba(15,35,70,.06)}
+.plus{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+textarea{flex:1;height:46px;min-height:46px;border:0;outline:0;resize:none;font-size:15px;background:transparent;padding:12px 8px}
+select{border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:10px 12px;font-weight:800;outline:0}
+.run{width:40px;height:40px;border-radius:50%;border:0;background:var(--orange);color:#fff;font-weight:900;cursor:pointer}.run:disabled{opacity:.6;cursor:not-allowed}
+.quick{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;cursor:pointer}
+.status-row{margin-top:12px;display:flex;justify-content:center;gap:8px}.status{padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#166534;font-size:12px;font-weight:800}
+.next-strip{margin-top:18px;background:linear-gradient(135deg,#fff,#fff7ed);border:1px solid rgba(255,90,31,.25);border-left:6px solid var(--orange);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;text-align:left}
+.label{color:var(--orange);font-size:12px;text-transform:uppercase;letter-spacing:.13em;font-weight:900}.next-text{font-weight:850;font-size:18px}
+.error{display:none;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:14px}.error.show{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}.card.hidden{display:none}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.card-title{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em}
+.task-box{border:2px solid #ffd7c6;background:#fff7ed;border-radius:16px;padding:18px;margin-bottom:14px}.task-label{color:var(--orange);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}.task-text{font-size:22px;font-weight:850}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.actions button{border:0;border-radius:10px;padding:11px 17px;font-weight:800;cursor:pointer}.green{background:var(--green);color:#fff}.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff!important}
+.detail{line-height:1.5;color:#334155}.tags{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}.priority{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}.risk{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}.active{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
+.rail{background:#f0f5fb;border-left:1px solid var(--line);padding:14px;overflow:auto}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}.panel.do{border:2px solid var(--orange)}.panel h3{margin:0 0 10px;font-size:14px;color:var(--blue);text-transform:uppercase;letter-spacing:.08em}.panel.do h3{color:var(--orange)}.do-text{font-size:17px;line-height:1.3;font-weight:850}.metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf2f8}.metric:last-child{border-bottom:0}.metric strong{font-size:19px}.queue-item{padding:8px 0;border-bottom:1px solid #edf2f8;font-size:13px}.queue-item.done{text-decoration:line-through;color:#94a3b8}.empty{color:var(--muted);font-size:13px}
+@media(max-width:1150px){.app{grid-template-columns:210px 1fr}.rail{display:none}}
+@media(max-width:760px){body{overflow:auto}.app{display:block;height:auto}.sidebar{display:none}.workspace{padding:14px}.command-box{border-radius:24px}.next-strip{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -368,14 +58,9 @@ select{
   </aside>
 
   <main class="main">
-    <div class="topbar">
-      <strong>Decision Weapon System V37</strong>
-      <div class="live">LIVE</div>
-    </div>
-
+    <div class="topbar"><strong>Decision Weapon System V8</strong><div class="live">LIVE</div></div>
     <div class="workspace">
       <div id="errorBox" class="error"></div>
-
       <section class="ready">
         <div class="ready-inner">
           <h1>Ready when you are.</h1>
@@ -408,14 +93,8 @@ select{
       </section>
 
       <section id="executionCard" class="card hidden">
-        <div class="card-head">
-          <div class="card-title">Current Task</div>
-          <div id="taskCount">0 / 0</div>
-        </div>
-        <div class="task-box">
-          <div class="task-label">Do this now</div>
-          <div id="currentTask" class="task-text"></div>
-        </div>
+        <div class="card-head"><div class="card-title">Current Task</div><div id="taskCount">0 / 0</div></div>
+        <div class="task-box"><div class="task-label">Do this now</div><div id="currentTask" class="task-text"></div></div>
         <div class="actions">
           <button class="green" onclick="completeTask()">Complete Task</button>
           <button class="secondary" onclick="skipTask()">Skip</button>
@@ -431,24 +110,10 @@ select{
   </main>
 
   <aside class="rail">
-    <div class="panel do">
-      <h3>Do This Now</h3>
-      <div id="railDoNow" class="do-text">Run the engine to create your first action.</div>
-    </div>
-    <div class="panel">
-      <h3>Execution Metrics</h3>
-      <div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div>
-      <div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div>
-      <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
-    </div>
-    <div class="panel">
-      <h3>Execution Queue</h3>
-      <div id="queueList" class="empty">No tasks yet.</div>
-    </div>
-    <div class="panel">
-      <h3>Recent Memory</h3>
-      <div id="recentMemory" class="empty">No memory loaded.</div>
-    </div>
+    <div class="panel do"><h3>Do This Now</h3><div id="railDoNow" class="do-text">Run the engine to create your first action.</div></div>
+    <div class="panel"><h3>Execution Metrics</h3><div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div><div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div><div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div></div>
+    <div class="panel"><h3>Execution Queue</h3><div id="queueList" class="empty">No tasks yet.</div></div>
+    <div class="panel"><h3>Recent Memory</h3><div id="recentMemory" class="empty">No memory loaded.</div></div>
   </aside>
 </div>
 
@@ -468,171 +133,100 @@ function esc(v){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
-
-function showError(msg){
-  $("errorBox").textContent = msg;
-  $("errorBox").classList.add("show");
-}
-function clearError(){
-  $("errorBox").textContent = "";
-  $("errorBox").classList.remove("show");
-}
-
-function setMode(mode){
-  $("mode").value = mode;
-  $("input").focus();
-}
-
+function showError(msg){$("errorBox").textContent=msg;$("errorBox").classList.add("show");}
+function clearError(){$("errorBox").textContent="";$("errorBox").classList.remove("show");}
+function setMode(mode){$("mode").value=mode;$("input").focus();}
 function normalize(data){
   const actions = Array.isArray(data.actions) ? data.actions : [];
   return {
     decision: data.decision || "Decision not returned.",
     next_move: data.next_move || "Define the highest leverage next move.",
-    actions: actions.length ? actions : ["Clarify the objective", "Identify the blocker", "Execute the next step"],
+    actions: actions.length ? actions : ["Clarify the objective","Identify the blocker","Execute the next step"],
     risk: data.risk || "Risk not returned.",
     priority: data.priority || "High"
   };
 }
-
 async function healthCheck(){
   try{
     const res = await fetch(API + "/health");
     const data = await res.json();
     $("backendStatus").textContent = data.status === "ok" ? "Backend: live" : "Backend: issue";
-  }catch(e){
-    $("backendStatus").textContent = "Backend: unavailable";
-  }
+  }catch(e){$("backendStatus").textContent = "Backend: unavailable";}
 }
-
 async function runEngine(){
   const input = $("input").value.trim();
   const mode = $("mode").value;
-
-  if(!input){
-    showError("Enter a command first.");
-    return;
-  }
-
-  clearError();
-  $("runBtn").disabled = true;
-  $("runBtn").textContent = "...";
-
+  if(!input){showError("Enter a command first.");return;}
+  clearError();$("runBtn").disabled=true;$("runBtn").textContent="...";
   try{
     const res = await fetch(API + "/run", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({input, mode})
     });
-
     if(!res.ok) throw new Error("Backend returned " + res.status);
-
     const data = normalize(await res.json());
     startRun(data);
     $("input").value = "";
     loadMemory(false);
-  }catch(e){
-    showError("Run failed: " + e.message);
-  }finally{
-    $("runBtn").disabled = false;
-    $("runBtn").textContent = "➜";
-  }
+  }catch(e){showError("Run failed: " + e.message);}
+  finally{$("runBtn").disabled=false;$("runBtn").textContent="➜";}
 }
-
 function startRun(data){
-  activeRun = data;
-  currentTaskIndex = 0;
-  completed = {};
-
-  $("topNextMove").textContent = data.next_move;
-  $("railDoNow").textContent = data.next_move;
-
-  renderExecution();
-  renderQueue();
-  renderDetails();
-  updateMetrics();
+  activeRun=data; currentTaskIndex=0; completed={};
+  $("topNextMove").textContent=data.next_move;
+  $("railDoNow").textContent=data.next_move;
+  renderExecution(); renderQueue(); renderDetails(); updateMetrics();
 }
-
 function renderExecution(){
   if(!activeRun) return;
-
-  const tasks = activeRun.actions;
-  const doneCount = Object.values(completed).filter(Boolean).length;
-
-  if(doneCount >= tasks.length){
-    $("executionCard").classList.add("hidden");
-    $("railDoNow").textContent = "Execution complete. Run the next decision.";
-    updateMetrics();
-    return;
-  }
-
+  const tasks=activeRun.actions;
+  const doneCount=Object.values(completed).filter(Boolean).length;
+  if(doneCount>=tasks.length){$("executionCard").classList.add("hidden");$("railDoNow").textContent="Execution complete. Run the next decision.";updateMetrics();return;}
   $("executionCard").classList.remove("hidden");
-  $("taskCount").textContent = `${currentTaskIndex + 1} / ${tasks.length}`;
-  $("currentTask").textContent = tasks[currentTaskIndex];
+  $("taskCount").textContent=`${currentTaskIndex+1} / ${tasks.length}`;
+  $("currentTask").textContent=tasks[currentTaskIndex];
   updateMetrics();
 }
-
 function renderDetails(){
   if(!activeRun) return;
-  $("decisionDetail").innerHTML = `
-    ${esc(activeRun.decision)}
+  $("decisionDetail").innerHTML = `${esc(activeRun.decision)}
     <div class="tags">
       <span class="tag priority">Priority: ${esc(activeRun.priority)}</span>
       <span class="tag risk">Risk: ${esc(activeRun.risk)}</span>
       <span class="tag active">Execution Mode Active</span>
-    </div>
-  `;
+    </div>`;
 }
-
 function completeTask(){
-  completed[currentTaskIndex] = true;
-  while(completed[currentTaskIndex] && currentTaskIndex < activeRun.actions.length - 1){
-    currentTaskIndex++;
-  }
-  renderExecution();
-  renderQueue();
+  if(!activeRun) return;
+  completed[currentTaskIndex]=true;
+  while(completed[currentTaskIndex] && currentTaskIndex<activeRun.actions.length-1){currentTaskIndex++;}
+  renderExecution(); renderQueue();
 }
-
-function skipTask(){
-  completeTask();
-}
-
+function skipTask(){completeTask();}
 function renderQueue(){
-  if(!activeRun){
-    $("queueList").innerHTML = "No tasks yet.";
-    return;
-  }
-  $("queueList").innerHTML = activeRun.actions.map((task, i) => `
-    <div class="queue-item ${completed[i] ? "done" : ""}">${i+1}. ${esc(task)}</div>
-  `).join("");
+  if(!activeRun){$("queueList").innerHTML="No tasks yet.";return;}
+  $("queueList").innerHTML=activeRun.actions.map((task,i)=>`<div class="queue-item ${completed[i] ? "done" : ""}">${i+1}. ${esc(task)}</div>`).join("");
 }
-
 function updateMetrics(){
-  const tasks = activeRun ? activeRun.actions : [];
-  const done = Object.values(completed).filter(Boolean).length;
-  $("totalTasks").textContent = tasks.length;
-  $("currentIndex").textContent = tasks.length ? Math.min(currentTaskIndex + 1, tasks.length) : 0;
-  $("doneTasks").textContent = done;
+  const tasks=activeRun ? activeRun.actions : [];
+  const done=Object.values(completed).filter(Boolean).length;
+  $("totalTasks").textContent=tasks.length;
+  $("currentIndex").textContent=tasks.length ? Math.min(currentTaskIndex+1,tasks.length) : 0;
+  $("doneTasks").textContent=done;
 }
-
 async function loadMemory(showLoading=true){
-  if(showLoading) $("recentMemory").textContent = "Loading memory...";
+  if(showLoading) $("recentMemory").textContent="Loading memory...";
   try{
-    const res = await fetch(API + "/memory");
-    const data = await res.json();
-    const items = data.memory || [];
-    $("memoryStatus").textContent = items.length ? "Memory: active" : "Memory: ready";
-    $("recentMemory").innerHTML = items.length
-      ? items.slice(0,3).map(i => `<div class="queue-item">${esc(i.next_move || i.decision || i.input || "Memory")}</div>`).join("")
-      : "No memory yet.";
-  }catch(e){
-    $("memoryStatus").textContent = "Memory: unavailable";
-    $("recentMemory").textContent = "Memory endpoint unavailable.";
-  }
+    const res=await fetch(API + "/memory");
+    const data=await res.json();
+    const items=data.memory || [];
+    $("memoryStatus").textContent=items.length ? "Memory: active" : "Memory: ready";
+    $("recentMemory").innerHTML=items.length ? items.slice(0,3).map(i=>`<div class="queue-item">${esc(i.next_move || i.decision || i.input || "Memory")}</div>`).join("") : "No memory yet.";
+  }catch(e){$("memoryStatus").textContent="Memory: unavailable";$("recentMemory").textContent="Memory endpoint unavailable.";}
 }
-
-function focusInput(){ $("input").focus(); }
-function scrollToExecution(){ $("executionCard").scrollIntoView({behavior:"smooth", block:"center"}); }
-
+function focusInput(){$("input").focus();}
+function scrollToExecution(){$("executionCard").scrollIntoView({behavior:"smooth",block:"center"});}
 healthCheck();
 loadMemory(false);
 </script>
