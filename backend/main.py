@@ -6,7 +6,7 @@ import os
 import json
 import requests
 
-app = FastAPI(title="Executive Engine V22")
+app = FastAPI(title="Executive Engine V24")
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,7 +48,6 @@ def get_memory(limit=10):
 def save_memory(req, output):
     if not SUPABASE_URL or not SUPABASE_KEY:
         return
-
     payload = {
         "input": req.input,
         "mode": req.mode,
@@ -58,7 +57,6 @@ def save_memory(req, output):
         "risk": output.get("risk", ""),
         "priority": output.get("priority", "")
     }
-
     try:
         requests.post(f"{SUPABASE_URL}/rest/v1/items", headers=headers(), json=payload, timeout=10)
     except Exception:
@@ -66,7 +64,7 @@ def save_memory(req, output):
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "Executive Engine V22"}
+    return {"status": "ok", "service": "Executive Engine V24"}
 
 @app.get("/memory")
 def memory():
@@ -75,14 +73,13 @@ def memory():
 @app.post("/run")
 async def run(req: Req):
     memory_items = get_memory(5)
-
     memory_text = "\n".join([
         f"Previous Input: {m.get('input','')} | Next Move: {m.get('next_move','')}"
         for m in memory_items
     ]) or "No prior memory."
 
     prompt = f'''
-You are Executive Engine OS, a decisive COO-level execution engine.
+You are Executive Engine OS, a decision weapon for operators and executives.
 
 Mode: {req.mode}
 
@@ -95,7 +92,7 @@ Current input:
 Return STRICT JSON only:
 {{
   "decision": "clear executive decision",
-  "next_move": "single highest leverage next action",
+  "next_move": "single highest leverage action to do now",
   "actions": ["specific task 1", "specific task 2", "specific task 3"],
   "risk": "main risk/blocker",
   "priority": "High | Medium | Low"
@@ -106,13 +103,13 @@ Rules:
 - No explanation
 - No generic advice
 - Actions must be executable
-- Next move must be immediate
+- Next move must be immediate and force execution
 '''
 
     res = client.chat.completions.create(
         model=OPENAI_MODEL,
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
+        temperature=0.25,
         max_tokens=450
     )
 

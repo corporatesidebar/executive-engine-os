@@ -1,11 +1,13 @@
-Executive Engine V22
+Executive Engine V24
 
 Includes:
-- Working sidebar pages: Command / Tasks / Memory
-- Local persistent tasks
-- Supabase memory integration
-- /memory endpoint
-- Action-first command feed
+- Decision weapon UX
+- Dominant NEXT MOVE
+- One-task-at-a-time execution mode
+- Execution queue
+- Memory strip
+- Recent memory panel
+- Supabase backend memory
 
 Render Backend:
 Root Directory: backend
@@ -18,9 +20,6 @@ OPENAI_MODEL=gpt-4o-mini
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_KEY=your Supabase key
 
-Important:
-Upload extracted folders, not the ZIP itself.
-Repo must look like:
-backend/main.py
-backend/requirements.txt
-frontend/index.html
+Upload extracted folders only:
+frontend/
+backend/

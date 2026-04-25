@@ -3,25 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine V22</title>
+<title>Executive Engine V24</title>
 <style>
 :root{
-  --nav:#061a3a;
-  --blue:#0f62fe;
-  --orange:#ff5a1f;
-  --bg:#f5f8fc;
-  --card:#ffffff;
-  --line:#e2e8f0;
-  --text:#0f172a;
-  --muted:#64748b;
+  --nav:#061a3a;--blue:#0f62fe;--orange:#ff5a1f;--bg:#f5f8fc;--card:#fff;
+  --line:#e2e8f0;--text:#0f172a;--muted:#64748b;--green:#16a34a;--red:#dc2626;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
-.app{display:grid;grid-template-columns:240px 1fr 360px;height:100vh}
+.app{display:grid;grid-template-columns:240px 1fr 350px;height:100vh}
 
 /* SIDEBAR */
 .sidebar{background:var(--nav);color:#fff;padding:20px}
-.logo{font-size:19px;font-weight:800;margin-bottom:24px}
+.logo{font-size:19px;font-weight:850;margin-bottom:24px}
 .logo span{color:var(--orange)}
 .nav-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fb3d9;margin:18px 0 8px}
 .nav-item{padding:11px;border-radius:10px;margin-bottom:6px;cursor:pointer;color:#e8eefb;font-size:14px}
@@ -30,45 +24,50 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Sego
 /* MAIN */
 .main{display:flex;flex-direction:column;min-width:0}
 .topbar{height:54px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-.live{background:#e7f8ef;color:#087a3a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
-.page{display:none;flex:1;overflow:auto}
-.page.active{display:block}
+.live{background:#e7f8ef;color:#087a3a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}
+.workspace{flex:1;overflow:auto;padding:22px}
 
-/* COMMAND */
-.command-wrap{padding:22px}
+/* INPUT */
 .input-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
-.input-card h2{margin:0 0 8px;font-size:24px}
+.input-card h2{margin:0 0 8px;font-size:25px;letter-spacing:-.03em}
 .input-card p{margin:0 0 14px;color:var(--muted)}
-textarea{width:100%;height:105px;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;resize:none;outline:none}
+textarea{width:100%;height:110px;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;resize:none;outline:none;background:#fbfdff}
 .controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
 select{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
-button{background:var(--orange);color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+button{background:var(--orange);color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:750;cursor:pointer}
 button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
-.output{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
-.user-msg{background:#eef5ff;border-left:5px solid var(--blue)}
-.next{font-size:22px;font-weight:800;margin-bottom:10px}
-.decision{font-size:15px;color:#334155;margin-bottom:14px;line-height:1.45}
-.tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+button.green{background:var(--green)}
+button.red{background:var(--red)}
+button:disabled{opacity:.55;cursor:not-allowed}
+
+/* WEAPON */
+.memory-strip{background:#eef5ff;border-left:5px solid var(--blue);border-radius:14px;padding:12px 14px;margin-bottom:16px;color:#1e3a8a;font-size:14px}
+.weapon-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;margin-bottom:16px;box-shadow:0 14px 34px rgba(15,35,70,.07)}
+.weapon-label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);font-weight:850;margin-bottom:8px}
+.next-move{font-size:34px;line-height:1.12;font-weight:900;letter-spacing:-.045em;margin-bottom:16px}
+.decision{font-size:15px;color:#334155;line-height:1.45;margin-bottom:12px}
+.tags{display:flex;gap:10px;flex-wrap:wrap}
+.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}
 .priority{background:#fff7ed;color:#c2410c}
 .risk{background:#f1f5f9;color:#334155}
-.actions{display:flex;flex-direction:column;gap:8px}
-.action{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff}
-.action input{margin-top:3px;accent-color:var(--orange)}
-.action.done span{text-decoration:line-through;color:#94a3b8}
+.status{background:#ecfdf5;color:#166534}
 
-/* TASKS */
-.tasks-page{padding:22px}
-.task-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
-.task-card input{margin-top:4px;accent-color:var(--orange)}
-.task-card.done span{text-decoration:line-through;color:#94a3b8}
-.task-meta{font-size:12px;color:var(--muted);margin-top:4px}
+/* EXECUTION */
+.execution-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.execution-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.execution-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:850}
+.current-task{border:2px solid #ffd7c6;background:#fff7ed;border-radius:16px;padding:18px;margin-bottom:14px}
+.current-task-label{font-size:12px;font-weight:850;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.current-task-text{font-size:23px;line-height:1.25;font-weight:850}
+.progress{height:9px;background:#edf2f7;border-radius:999px;overflow:hidden;margin-top:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));width:0%}
+.action-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.execution-complete{background:#ecfdf5;border-left:5px solid var(--green);border-radius:14px;padding:14px;margin-top:12px;color:#166534;font-weight:750}
+.note-box{background:#fbfdff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;color:#475569;font-size:14px}
 
-/* MEMORY */
-.memory-page{padding:22px}
-.memory-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
-.memory-card strong{display:block;margin-bottom:6px}
-.memory-card small{color:var(--muted);line-height:1.4}
+/* HISTORY */
+.history-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.history-item strong{display:block;margin-bottom:6px}
 
 /* RIGHT */
 .right{background:#f0f5fb;border-left:1px solid var(--line);padding:14px;overflow:auto}
@@ -77,9 +76,11 @@ button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
 .metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf2f8}
 .metric:last-child{border-bottom:0}
 .metric strong{font-size:20px}
+.queue-task{padding:10px 0;border-bottom:1px solid #edf2f8;font-size:14px}
+.queue-task.done{text-decoration:line-through;color:#94a3b8}
 .empty{color:var(--muted);font-size:13px}
 @media(max-width:1200px){.app{grid-template-columns:220px 1fr}.right{display:none}}
-@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{display:none}.controls{flex-direction:column;align-items:stretch}button,select{width:100%}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{display:none}.controls{flex-direction:column;align-items:stretch}button,select{width:100%}.next-move{font-size:26px}}
 </style>
 </head>
 <body>
@@ -87,68 +88,69 @@ button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
 
 <aside class="sidebar">
   <div class="logo">Executive <span>Engine</span></div>
-
   <div class="nav-title">Command</div>
-  <div class="nav-item active" onclick="showPage('command', this)">Command Center</div>
-  <div class="nav-item" onclick="showPage('tasks', this)">Tasks</div>
-  <div class="nav-item" onclick="showPage('memory', this)">Memory</div>
+  <div class="nav-item active">Decision Weapon</div>
+  <div class="nav-item">Execution Queue</div>
+  <div class="nav-item">Memory</div>
 </aside>
 
 <main class="main">
   <div class="topbar">
-    <strong id="pageTitle">Command Center</strong>
+    <strong>Decision Weapon System V24</strong>
     <div class="live">LIVE</div>
   </div>
 
-  <section id="command" class="page active">
-    <div class="command-wrap">
-      <div class="input-card">
-        <h2>What needs to get done?</h2>
-        <p>Enter the situation. The engine creates the next move, decision, tasks, risk, and priority.</p>
-        <textarea id="input" placeholder="Example: I need to improve sales follow-up this week..."></textarea>
-        <div class="controls">
-          <select id="mode">
-            <option value="execution">Execution</option>
-            <option value="strategy">Strategy</option>
-            <option value="decision">Decision</option>
-            <option value="meeting">Meeting</option>
-          </select>
-          <button onclick="runEngine()">Run Engine</button>
+  <div class="workspace">
+    <div id="memoryStrip" class="memory-strip">Memory loading...</div>
+
+    <div class="input-card">
+      <h2>What needs to get done?</h2>
+      <p>Enter the situation. The system gives one dominant move, then drives the task sequence.</p>
+      <textarea id="input" placeholder="Example: I need to increase sales follow-up this week..."></textarea>
+      <div class="controls">
+        <select id="mode">
+          <option value="execution">Execution</option>
+          <option value="strategy">Strategy</option>
+          <option value="decision">Decision</option>
+          <option value="meeting">Meeting</option>
+        </select>
+        <button id="runBtn" onclick="runEngine()">Run Engine</button>
+      </div>
+    </div>
+
+    <div id="outputArea">
+      <div class="weapon-card">
+        <div class="weapon-label">Next Move</div>
+        <div class="next-move">Define the one action that creates the most progress today.</div>
+        <div class="decision">Waiting for your input.</div>
+        <div class="tags">
+          <div class="tag priority">Priority: Pending</div>
+          <div class="tag risk">Risk: No risk yet</div>
         </div>
       </div>
-
-      <div id="feed"></div>
     </div>
-  </section>
 
-  <section id="tasks" class="page">
-    <div class="tasks-page">
-      <h2>Tasks</h2>
-      <div id="tasksList"></div>
-    </div>
-  </section>
-
-  <section id="memory" class="page">
-    <div class="memory-page">
-      <h2>Memory</h2>
-      <button class="secondary" onclick="loadMemory()">Refresh Memory</button>
-      <br><br>
-      <div id="memoryList"></div>
-    </div>
-  </section>
+    <div id="executionArea"></div>
+    <div id="historyArea"></div>
+  </div>
 </main>
 
 <aside class="right">
   <div class="panel">
     <h3>Execution Metrics</h3>
     <div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div>
-    <div class="metric"><span>Open</span><strong id="openTasks">0</strong></div>
+    <div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div>
     <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
   </div>
 
   <div class="panel">
     <h3>Do This Now</h3>
     <div id="doNow" class="empty">Run the engine to create your first action.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Execution Queue</h3>
+    <div id="queueList" class="empty">No tasks yet.</div>
   </div>
 
   <div class="panel">
@@ -161,7 +163,11 @@ button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
 
 <script>
 const API = "https://executive-engine-os-v2.onrender.com";
-let tasks = JSON.parse(localStorage.getItem("ee_tasks_v22") || "[]");
+
+let activeRun = null;
+let currentTaskIndex = 0;
+let completed = {};
+let runHistory = JSON.parse(localStorage.getItem("ee_v24_history") || "[]");
 
 function esc(v){
   return String(v || "")
@@ -172,29 +178,11 @@ function esc(v){
     .replaceAll("'","&#039;");
 }
 
-function showPage(id, el){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  el.classList.add("active");
-
-  document.getElementById("pageTitle").innerText = el.innerText;
-  if(id === "tasks") renderTasks();
-  if(id === "memory") loadMemory();
-}
-
-function saveTasks(){
-  localStorage.setItem("ee_tasks_v22", JSON.stringify(tasks));
-  renderTasks();
-  updateMetrics();
-}
-
 function normalize(d){
   const actions = Array.isArray(d.actions) ? d.actions : [];
   return {
     decision: d.decision || "Decision not returned.",
-    next_move: d.next_move || "Define the next move.",
+    next_move: d.next_move || "Define the highest leverage next move.",
     actions: actions.length ? actions : ["Clarify the objective", "Identify the blocker", "Execute the next step"],
     risk: d.risk || "Risk not returned.",
     priority: d.priority || "High"
@@ -205,9 +193,12 @@ async function runEngine(){
   const input = document.getElementById("input");
   const value = input.value.trim();
   const mode = document.getElementById("mode").value;
+  const btn = document.getElementById("runBtn");
+
   if(!value) return;
 
-  addUser(value);
+  btn.disabled = true;
+  btn.innerText = "Running...";
   input.value = "";
 
   try{
@@ -218,90 +209,158 @@ async function runEngine(){
     });
 
     const data = normalize(await res.json());
-    renderOutput(data);
-    addTasks(data.actions, data.priority);
+    startRun(value, data);
     loadMemory();
   }catch(e){
-    const fallback = {
+    startRun(value, {
       decision:"Backend connection issue.",
       next_move:"Confirm backend is live and /run is working.",
       actions:["Open backend URL", "Check Render logs", "Redeploy backend"],
       risk:"Frontend cannot receive engine output.",
       priority:"High"
-    };
-    renderOutput(fallback);
-    addTasks(fallback.actions, fallback.priority);
+    });
+  }finally{
+    btn.disabled = false;
+    btn.innerText = "Run Engine";
   }
 }
 
-function addUser(text){
-  const feed = document.getElementById("feed");
-  const div = document.createElement("div");
-  div.className = "output user-msg";
-  div.innerHTML = "<strong>You</strong><div style='margin-top:6px'>" + esc(text) + "</div>";
-  feed.prepend(div);
+function startRun(input, data){
+  activeRun = data;
+  currentTaskIndex = 0;
+  completed = {};
+
+  runHistory.unshift({ input, ...data, created:new Date().toLocaleString() });
+  runHistory = runHistory.slice(0, 8);
+  localStorage.setItem("ee_v24_history", JSON.stringify(runHistory));
+
+  renderWeapon(data);
+  renderExecution();
+  renderQueue();
+  renderHistory();
+  updateMetrics();
 }
 
-function renderOutput(d){
-  const feed = document.getElementById("feed");
-  const actionHtml = d.actions.map(a => `
-    <div class="action"><input type="checkbox"><span>${esc(a)}</span></div>
-  `).join("");
-
-  const div = document.createElement("div");
-  div.className = "output";
-  div.innerHTML = `
-    <div class="next">${esc(d.next_move)}</div>
-    <div class="decision">${esc(d.decision)}</div>
-    <div class="tags">
-      <div class="tag priority">Priority: ${esc(d.priority)}</div>
-      <div class="tag risk">Risk: ${esc(d.risk)}</div>
+function renderWeapon(d){
+  document.getElementById("outputArea").innerHTML = `
+    <div class="weapon-card">
+      <div class="weapon-label">Next Move</div>
+      <div class="next-move">${esc(d.next_move)}</div>
+      <div class="decision">${esc(d.decision)}</div>
+      <div class="tags">
+        <div class="tag priority">Priority: ${esc(d.priority)}</div>
+        <div class="tag risk">Risk: ${esc(d.risk)}</div>
+        <div class="tag status">Execution Mode Active</div>
+      </div>
     </div>
-    <div class="actions">${actionHtml}</div>
   `;
-  feed.prepend(div);
-
   document.getElementById("doNow").innerHTML = esc(d.next_move);
 }
 
-function addTasks(actions, priority){
-  const created = new Date().toLocaleString();
-  const newTasks = actions.map(a => ({ text:a, done:false, priority, created }));
-  tasks = [...newTasks, ...tasks];
-  saveTasks();
-}
+function renderExecution(){
+  if(!activeRun) return;
 
-function renderTasks(){
-  const list = document.getElementById("tasksList");
-  if(!tasks.length){
-    list.innerHTML = "<div class='empty'>No tasks yet.</div>";
+  const tasks = activeRun.actions;
+  const task = tasks[currentTaskIndex];
+  const doneCount = Object.values(completed).filter(Boolean).length;
+  const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
+
+  if(doneCount >= tasks.length){
+    document.getElementById("executionArea").innerHTML = `
+      <div class="execution-card">
+        <div class="execution-title">Execution Complete</div>
+        <div class="execution-complete">Execution complete. Feed the next decision into the system.</div>
+        <div style="margin-top:12px">
+          <button onclick="focusInput()">Run Next Decision</button>
+        </div>
+      </div>
+    `;
     updateMetrics();
     return;
   }
 
-  list.innerHTML = tasks.map((t,i)=>`
-    <div class="task-card ${t.done ? "done" : ""}" onclick="toggleTask(${i})">
-      <input type="checkbox" ${t.done ? "checked" : ""}>
-      <span>${esc(t.text)}<div class="task-meta">Priority: ${esc(t.priority)} · ${esc(t.created)}</div></span>
+  document.getElementById("executionArea").innerHTML = `
+    <div class="execution-card">
+      <div class="execution-top">
+        <div class="execution-title">Current Task</div>
+        <div>${currentTaskIndex + 1} / ${tasks.length}</div>
+      </div>
+
+      <div class="current-task">
+        <div class="current-task-label">Do this now</div>
+        <div class="current-task-text">${esc(task)}</div>
+        <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="green" onclick="completeTask()">Complete Task</button>
+        <button class="secondary" onclick="skipTask()">Skip</button>
+        <button class="secondary" onclick="focusInput()">New Input</button>
+      </div>
+
+      <div class="note-box">Do not browse. Do not overthink. Complete the current task, then move to the next one.</div>
     </div>
-  `).join("");
+  `;
   updateMetrics();
 }
 
-function toggleTask(i){
-  tasks[i].done = !tasks[i].done;
-  saveTasks();
+function completeTask(){
+  completed[currentTaskIndex] = true;
+  while(completed[currentTaskIndex] && currentTaskIndex < activeRun.actions.length - 1){
+    currentTaskIndex++;
+  }
+  renderExecution();
+  renderQueue();
+}
+
+function skipTask(){
+  completed[currentTaskIndex] = true;
+  while(completed[currentTaskIndex] && currentTaskIndex < activeRun.actions.length - 1){
+    currentTaskIndex++;
+  }
+  renderExecution();
+  renderQueue();
+}
+
+function renderQueue(){
+  const list = document.getElementById("queueList");
+  if(!activeRun){
+    list.innerHTML = "No tasks yet.";
+    return;
+  }
+
+  list.innerHTML = activeRun.actions.map((t,i)=>`
+    <div class="queue-task ${completed[i] ? "done" : ""}">
+      ${i + 1}. ${esc(t)}
+    </div>
+  `).join("");
 }
 
 function updateMetrics(){
+  const tasks = activeRun ? activeRun.actions : [];
+  const done = Object.values(completed).filter(Boolean).length;
   document.getElementById("totalTasks").innerText = tasks.length;
-  document.getElementById("doneTasks").innerText = tasks.filter(t=>t.done).length;
-  document.getElementById("openTasks").innerText = tasks.filter(t=>!t.done).length;
+  document.getElementById("currentIndex").innerText = tasks.length ? Math.min(currentTaskIndex + 1, tasks.length) : 0;
+  document.getElementById("doneTasks").innerText = done;
+}
+
+function renderHistory(){
+  const history = document.getElementById("historyArea");
+  history.innerHTML = runHistory.slice(1,4).map(h=>`
+    <div class="history-item">
+      <strong>${esc(h.next_move)}</strong>
+      <div>${esc(h.input)}</div>
+    </div>
+  `).join("");
+}
+
+function focusInput(){
+  document.getElementById("input").focus();
 }
 
 async function loadMemory(){
-  const memoryList = document.getElementById("memoryList");
-  const recentMemory = document.getElementById("recentMemory");
+  const strip = document.getElementById("memoryStrip");
+  const recent = document.getElementById("recentMemory");
 
   try{
     const res = await fetch(API + "/memory");
@@ -309,28 +368,22 @@ async function loadMemory(){
     const items = data.memory || [];
 
     if(!items.length){
-      memoryList.innerHTML = "<div class='empty'>No memory yet.</div>";
-      recentMemory.innerHTML = "No memory yet.";
+      strip.innerHTML = "No memory yet. Run the engine to create decision history.";
+      recent.innerHTML = "No memory yet.";
       return;
     }
 
-    memoryList.innerHTML = items.map(m=>`
-      <div class="memory-card">
-        <strong>${esc(m.next_move || m.decision || "Memory")}</strong>
-        <small>${esc(m.input || "")}</small>
-      </div>
-    `).join("");
-
-    recentMemory.innerHTML = items.slice(0,3).map(m=>`
-      <div style="margin-bottom:8px">${esc(m.next_move || m.decision || "Memory")}</div>
+    strip.innerHTML = "Based on recent decisions: " + esc(items.slice(0,3).map(i=>i.next_move || i.decision).filter(Boolean).join(" · "));
+    recent.innerHTML = items.slice(0,3).map(i=>`
+      <div style="margin-bottom:8px">${esc(i.next_move || i.decision || "Memory")}</div>
     `).join("");
   }catch(e){
-    memoryList.innerHTML = "<div class='empty'>Memory endpoint unavailable.</div>";
-    recentMemory.innerHTML = "Memory endpoint unavailable.";
+    strip.innerHTML = "Memory endpoint unavailable. Execution mode still active.";
+    recent.innerHTML = "Memory endpoint unavailable.";
   }
 }
 
-renderTasks();
+renderHistory();
 loadMemory();
 </script>
 </body>
