@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine V16</title>
+<style>
+:root{
+  --bg:#f5f8fc;
+  --card:#ffffff;
+  --nav:#061a3a;
+  --blue:#0f62fe;
+  --orange:#ff5a1f;
+  --text:#0f172a;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --green:#16a34a;
+  --red:#dc2626;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:240px 1fr 360px;height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--nav);color:#fff;padding:20px;display:flex;flex-direction:column}
+.logo{font-size:19px;font-weight:800;margin-bottom:22px}
+.logo span{color:var(--orange)}
+.nav-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fb3d9;margin:18px 0 8px}
+.nav-item{padding:10px;border-radius:9px;margin-bottom:5px;cursor:pointer;color:#e8eefb;font-size:14px}
+.nav-item.active,.nav-item:hover{background:var(--blue);color:#fff}
+.status{margin-top:auto;font-size:13px;color:#9fb3d9}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:54px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.topbar strong{font-size:15px}
+.live{background:#e7f8ef;color:#087a3a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+
+/* CHAT */
+.chat{flex:1;overflow:auto;padding:22px}
+.message{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,35,70,.04)}
+.user-message{background:#eef5ff;border-left:5px solid var(--blue)}
+.next{font-size:22px;font-weight:700;margin-bottom:12px}
+.decision{font-size:15px;color:#334155;margin-bottom:12px}
+.meta{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.risk{background:#f1f5f9;color:#334155}
+.priority{background:#fff7ed;color:#c2410c}
+.memory{background:#eef5ff;color:#0f62fe}
+.actions{display:flex;flex-direction:column;gap:8px}
+.action{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#fff}
+.action:hover{background:#f8fafc}
+.action input{margin-top:3px;accent-color:var(--orange)}
+.action.done span{text-decoration:line-through;color:#94a3b8}
+
+/* INPUT */
+.input{padding:16px;background:#fff;border-top:1px solid var(--line)}
+textarea{width:100%;height:76px;padding:12px;border-radius:12px;border:1px solid var(--line);font-size:14px;resize:none;outline:none}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
+.mode-select{border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
+button{background:var(--orange);color:#fff;border:0;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:700}
+button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
+
+/* RIGHT PANEL */
+.right{background:#f0f5fb;border-left:1px solid var(--line);padding:14px;overflow:auto}
+.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
+.panel h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
+.task{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #edf2f8;font-size:14px}
+.task:last-child{border-bottom:0}
+.task input{margin-top:3px;accent-color:var(--orange)}
+.task.done span{text-decoration:line-through;color:#94a3b8}
+.memory-item{padding:9px 0;border-bottom:1px solid #edf2f8}
+.memory-item:last-child{border-bottom:0}
+.memory-title{font-weight:700;font-size:13px}
+.memory-sub{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+.empty{color:var(--muted);font-size:13px}
+.metric{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #edf2f8}
+.metric:last-child{border-bottom:0}
+.metric strong{font-size:18px}
+@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.right{display:none}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{display:none}.chat{padding:12px}.controls{flex-direction:column;align-items:stretch}button,.mode-select{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo">Executive <span>Engine</span></div>
+
+    <div class="nav-label">Command</div>
+    <div class="nav-item active">Command Center</div>
+    <div class="nav-item">Daily Brief</div>
+    <div class="nav-item">Decisions</div>
+
+    <div class="nav-label">Execution</div>
+    <div class="nav-item">Tasks</div>
+    <div class="nav-item">Follow Ups</div>
+    <div class="nav-item">Memory</div>
+
+    <div class="status">Memory Layer: Active</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <strong>Command Center</strong>
+      <div class="live">LIVE</div>
+    </div>
+
+    <div id="chat" class="chat">
+      <div class="message">
+        <div class="next">What needs to get done?</div>
+        <div class="decision">Enter a situation, decision, meeting, or blocker. The engine will create the next move, task list, risk, and priority.</div>
+        <div class="meta">
+          <div class="tag priority">Execution-first</div>
+          <div class="tag memory">Memory-enabled</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input">
+      <textarea id="input" placeholder="Example: I need to improve sales follow-up this week..."></textarea>
+      <div class="controls">
+        <select id="mode" class="mode-select">
+          <option value="execution">Execution</option>
+          <option value="strategy">Strategy</option>
+          <option value="decision">Decision</option>
+          <option value="meeting">Meeting</option>
+        </select>
+        <div>
+          <button class="secondary" onclick="loadMemory()">Refresh Memory</button>
+          <button onclick="runEngine()">Run Engine</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="panel">
+      <h3>Today’s Task System</h3>
+      <div id="tasks"><div class="empty">Tasks will appear after you run the engine.</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Execution Metrics</h3>
+      <div class="metric"><span>Total Runs</span><strong id="runs">0</strong></div>
+      <div class="metric"><span>Open Tasks</span><strong id="openTasks">0</strong></div>
+      <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
+    </div>
+
+    <div class="panel">
+      <h3>Memory</h3>
+      <div id="memory"><div class="empty">Click Refresh Memory.</div></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+const ENDPOINT = "https://executive-engine-os-v2.onrender.com";
+let runCount = 0;
+
+function esc(v){
+  return String(v || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function normalize(data){
+  const actions = Array.isArray(data.actions) ? data.actions : [];
+  return {
+    decision: data.decision || "Decision not returned.",
+    next_move: data.next_move || "Define the highest leverage next move.",
+    actions: actions.length ? actions : ["Clarify the objective", "Identify the blocker", "Execute the next step"],
+    risk: data.risk || "Risk not returned.",
+    priority: data.priority || "High"
+  };
+}
+
+function addUser(text){
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "message user-message";
+  div.innerHTML = "<strong>You</strong><div style='margin-top:6px'>" + esc(text) + "</div>";
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addThinking(){
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.id = "thinking";
+  div.className = "message";
+  div.innerHTML = "<div class='next'>Running execution analysis...</div><div class='decision'>Creating next move, tasks, risk, and priority.</div>";
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeThinking(){
+  const el = document.getElementById("thinking");
+  if(el) el.remove();
+}
+
+async function runEngine(){
+  const input = document.getElementById("input");
+  const mode = document.getElementById("mode").value;
+  const value = input.value.trim();
+  if(!value) return;
+
+  addUser(value);
+  addThinking();
+  input.value = "";
+
+  try{
+    const res = await fetch(ENDPOINT + "/run", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input:value, mode})
+    });
+
+    const data = normalize(await res.json());
+    removeThinking();
+    renderOutput(data);
+    renderTasks(data.actions, data.priority);
+    runCount++;
+    document.getElementById("runs").innerText = runCount;
+    loadMemory();
+  }catch(e){
+    removeThinking();
+    const fallback = {
+      decision:"Backend connection needs attention.",
+      next_move:"Confirm Render backend is live and /run endpoint is active.",
+      actions:["Open backend URL","Check Render logs","Redeploy backend"],
+      risk:"The frontend cannot receive execution output.",
+      priority:"High"
+    };
+    renderOutput(fallback);
+    renderTasks(fallback.actions, fallback.priority);
+  }
+}
+
+function renderOutput(d){
+  const chat = document.getElementById("chat");
+  const actions = d.actions.map(a =>
+    "<div class='action' onclick='toggleAction(this)'><input type='checkbox'><span>" + esc(a) + "</span></div>"
+  ).join("");
+
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerHTML = `
+    <div class="next">${esc(d.next_move)}</div>
+    <div class="decision">${esc(d.decision)}</div>
+    <div class="meta">
+      <div class="tag risk">Risk: ${esc(d.risk)}</div>
+      <div class="tag priority">Priority: ${esc(d.priority)}</div>
+    </div>
+    <div class="actions">${actions}</div>
+  `;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function renderTasks(actions, priority){
+  const tasks = document.getElementById("tasks");
+  tasks.innerHTML = actions.map(a =>
+    "<div class='task' onclick='toggleTask(this)'><input type='checkbox'><span>" + esc(a) + "<br><small>Priority: " + esc(priority) + "</small></span></div>"
+  ).join("");
+  updateTaskMetrics();
+}
+
+function toggleAction(el){
+  el.classList.toggle("done");
+  const box = el.querySelector("input");
+  box.checked = !box.checked;
+}
+
+function toggleTask(el){
+  el.classList.toggle("done");
+  const box = el.querySelector("input");
+  box.checked = !box.checked;
+  updateTaskMetrics();
+}
+
+function updateTaskMetrics(){
+  const all = document.querySelectorAll("#tasks .task").length;
+  const done = document.querySelectorAll("#tasks .task.done").length;
+  document.getElementById("openTasks").innerText = Math.max(all - done, 0);
+  document.getElementById("doneTasks").innerText = done;
+}
+
+async function loadMemory(){
+  const memory = document.getElementById("memory");
+  try{
+    const res = await fetch(ENDPOINT + "/memory");
+    const data = await res.json();
+    const items = data.memory || [];
+    if(!items.length){
+      memory.innerHTML = "<div class='empty'>No memory yet.</div>";
+      return;
+    }
+    memory.innerHTML = items.slice(0,6).map(item => `
+      <div class="memory-item">
+        <div class="memory-title">${esc(item.next_move || item.decision || "Memory")}</div>
+        <div class="memory-sub">${esc(item.input || "")}</div>
+      </div>
+    `).join("");
+  }catch(e){
+    memory.innerHTML = "<div class='empty'>Memory endpoint not available yet.</div>";
+  }
+}
+
+loadMemory();
+</script>
+</body>
+</html>
