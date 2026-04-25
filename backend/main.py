@@ -1,12 +1,18 @@
+import json
+import os
+from typing import List, Optional
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
-import os
-import json
-import requests
 
-app = FastAPI(title="Executive Engine V33")
+
+APP_NAME = "Executive Engine OS Backend V35"
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+FALLBACK_MODELS = [DEFAULT_MODEL, "gpt-4o", "gpt-4o-mini"]
+
+app = FastAPI(title=APP_NAME)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,121 +22,176 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    timeout=18.0,
+    max_retries=1,
+)
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-class Req(BaseModel):
+class RunRequest(BaseModel):
     input: str
-    mode: str | None = "execution"
+    mode: Optional[str] = "strategy"
 
-def headers():
+
+class EngineResponse(BaseModel):
+    decision: str
+    next_move: str
+    actions: List[str]
+    risk: str
+    priority: str
+
+
+def fallback_response(reason: str = "AI service unavailable") -> dict:
     return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json"
+        "decision": "Reset execution around one clear business objective before adding more work.",
+        "next_move": "Write the exact outcome you want, then choose the single action that moves it forward today.",
+        "actions": [
+            "Define the desired result in one sentence.",
+            "Identify the main bottleneck blocking execution.",
+            "Assign one next action with an owner and deadline."
+        ],
+        "risk": f"{reason}. The main execution risk is moving without enough clarity.",
+        "priority": "High"
     }
 
-def get_memory(limit=10):
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return []
-    try:
-        url = f"{SUPABASE_URL}/rest/v1/items?select=input,mode,decision,next_move,actions,risk,priority,created_at&order=created_at.desc&limit={limit}"
-        r = requests.get(url, headers=headers(), timeout=10)
-        if r.status_code == 200:
-            return r.json()
-    except Exception:
-        pass
-    return []
 
-def save_memory(req, output):
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return
+def strip_to_json(text: str) -> dict:
+    cleaned = (text or "").strip()
 
-    payload = {
-        "input": req.input,
-        "mode": req.mode,
-        "decision": output.get("decision", ""),
-        "next_move": output.get("next_move", ""),
-        "actions": output.get("actions", []),
-        "risk": output.get("risk", ""),
-        "priority": output.get("priority", "")
+    if cleaned.startswith("```"):
+        cleaned = cleaned.replace("```json", "").replace("```", "").strip()
+
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+
+    if start == -1 or end == -1 or end <= start:
+        raise ValueError("No JSON object found")
+
+    return json.loads(cleaned[start:end + 1])
+
+
+def normalize_response(data: dict) -> dict:
+    if not isinstance(data, dict):
+        raise ValueError("Response is not a JSON object")
+
+    required = ["decision", "next_move", "actions", "risk", "priority"]
+    for key in required:
+        if key not in data:
+            raise ValueError(f"Missing required key: {key}")
+
+    actions = data.get("actions")
+    if not isinstance(actions, list):
+        actions = [str(actions)]
+
+    priority = str(data.get("priority", "Medium")).strip().title()
+    if priority not in ["High", "Medium", "Low"]:
+        priority = "Medium"
+
+    return {
+        "decision": str(data.get("decision", "")).strip(),
+        "next_move": str(data.get("next_move", "")).strip(),
+        "actions": [str(action).strip() for action in actions if str(action).strip()][:5],
+        "risk": str(data.get("risk", "")).strip(),
+        "priority": priority,
     }
 
-    try:
-        requests.post(f"{SUPABASE_URL}/rest/v1/items", headers=headers(), json=payload, timeout=10)
-    except Exception:
-        pass
 
-@app.get("/")
-def root():
-    return {"status": "ok", "service": "Executive Engine V33"}
+SYSTEM_PROMPT = """
+Act as an elite COO / operator.
 
-@app.get("/memory")
-def memory():
-    return {"memory": get_memory(10)}
-
-@app.post("/run")
-async def run(req: Req):
-    memory_items = get_memory(5)
-
-    memory_text = "\n".join([
-        f"Previous Input: {m.get('input','')} | Next Move: {m.get('next_move','')}"
-        for m in memory_items
-    ]) or "No prior memory."
-
-    prompt = f'''
-You are Executive Engine OS, a decision weapon for operators and executives.
-
-Mode: {req.mode}
-
-Recent memory:
-{memory_text}
-
-Current input:
-{req.input}
-
-Return STRICT JSON only:
-{{
-  "decision": "clear executive decision",
-  "next_move": "single highest leverage action to do now",
-  "actions": ["specific task 1", "specific task 2", "specific task 3"],
-  "risk": "main risk/blocker",
-  "priority": "High | Medium | Low"
-}}
+You make sharp executive decisions and convert messy business input into a clear execution path.
 
 Rules:
-- No markdown
-- No explanation
-- No generic advice
-- Actions must be executable
-- Next move must be immediate and force execution
-'''
+- Be direct, useful, and action-first.
+- No motivational fluff.
+- No vague advice.
+- No markdown.
+- No explanations outside JSON.
+- Return only valid JSON.
 
-    res = client.chat.completions.create(
-        model=OPENAI_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.25,
-        max_tokens=450
-    )
+Required JSON format:
+{
+  "decision": "clear executive decision",
+  "next_move": "single most important next action",
+  "actions": ["action 1", "action 2", "action 3"],
+  "risk": "main risk",
+  "priority": "High | Medium | Low"
+}
+""".strip()
 
-    raw = res.choices[0].message.content.strip()
 
-    try:
-        output = json.loads(raw)
-    except Exception:
-        output = {
-            "decision": "Clarify the highest leverage objective.",
-            "next_move": "Identify the immediate blocker and take the first measurable step.",
-            "actions": ["Clarify the objective", "Identify the blocker", "Execute the next step"],
-            "risk": "Execution clarity is missing.",
-            "priority": "High"
-        }
+@app.get("/")
+def health_check():
+    return {
+        "status": "live",
+        "service": APP_NAME,
+        "model": DEFAULT_MODEL,
+    }
 
-    if not isinstance(output.get("actions"), list):
-        output["actions"] = [str(output.get("actions", ""))]
 
-    save_memory(req, output)
-    return output
+@app.get("/debug")
+def debug():
+    return {
+        "has_api_key": bool(os.getenv("OPENAI_API_KEY")),
+        "model": DEFAULT_MODEL,
+    }
+
+
+@app.post("/run", response_model=EngineResponse)
+def run_engine(request: RunRequest):
+    user_input = request.input.strip()
+    mode = (request.mode or "strategy").strip().lower()
+
+    if not user_input:
+        return fallback_response("No input provided")
+
+    if not os.getenv("OPENAI_API_KEY"):
+        return fallback_response("OPENAI_API_KEY missing")
+
+    user_prompt = f"""
+Mode: {mode}
+
+Executive input:
+{user_input}
+
+Return strict JSON only.
+""".strip()
+
+    unique_models = []
+    for model in FALLBACK_MODELS:
+        if model and model not in unique_models:
+            unique_models.append(model)
+
+    last_error = "AI service unavailable"
+
+    for model in unique_models:
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                temperature=0.3,
+                max_tokens=500,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+
+            content = response.choices[0].message.content
+            parsed = strip_to_json(content)
+            normalized = normalize_response(parsed)
+
+            if not normalized["decision"] or not normalized["next_move"]:
+                raise ValueError("Empty decision or next_move")
+
+            if not normalized["actions"]:
+                normalized["actions"] = ["Choose one owner, one deadline, and one measurable outcome."]
+
+            return normalized
+
+        except Exception as error:
+            last_error = str(error)[:160]
+            continue
+
+    return fallback_response(last_error)
