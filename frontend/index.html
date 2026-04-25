@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine V22</title>
+<style>
+:root{
+  --nav:#061a3a;
+  --blue:#0f62fe;
+  --orange:#ff5a1f;
+  --bg:#f5f8fc;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:240px 1fr 360px;height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--nav);color:#fff;padding:20px}
+.logo{font-size:19px;font-weight:800;margin-bottom:24px}
+.logo span{color:var(--orange)}
+.nav-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fb3d9;margin:18px 0 8px}
+.nav-item{padding:11px;border-radius:10px;margin-bottom:6px;cursor:pointer;color:#e8eefb;font-size:14px}
+.nav-item.active,.nav-item:hover{background:var(--blue);color:#fff}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:54px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.live{background:#e7f8ef;color:#087a3a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.page{display:none;flex:1;overflow:auto}
+.page.active{display:block}
+
+/* COMMAND */
+.command-wrap{padding:22px}
+.input-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.input-card h2{margin:0 0 8px;font-size:24px}
+.input-card p{margin:0 0 14px;color:var(--muted)}
+textarea{width:100%;height:105px;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:15px;resize:none;outline:none}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+select{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+button{background:var(--orange);color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
+.output{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.user-msg{background:#eef5ff;border-left:5px solid var(--blue)}
+.next{font-size:22px;font-weight:800;margin-bottom:10px}
+.decision{font-size:15px;color:#334155;margin-bottom:14px;line-height:1.45}
+.tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.priority{background:#fff7ed;color:#c2410c}
+.risk{background:#f1f5f9;color:#334155}
+.actions{display:flex;flex-direction:column;gap:8px}
+.action{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff}
+.action input{margin-top:3px;accent-color:var(--orange)}
+.action.done span{text-decoration:line-through;color:#94a3b8}
+
+/* TASKS */
+.tasks-page{padding:22px}
+.task-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+.task-card input{margin-top:4px;accent-color:var(--orange)}
+.task-card.done span{text-decoration:line-through;color:#94a3b8}
+.task-meta{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* MEMORY */
+.memory-page{padding:22px}
+.memory-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.memory-card strong{display:block;margin-bottom:6px}
+.memory-card small{color:var(--muted);line-height:1.4}
+
+/* RIGHT */
+.right{background:#f0f5fb;border-left:1px solid var(--line);padding:14px;overflow:auto}
+.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
+.panel h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
+.metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf2f8}
+.metric:last-child{border-bottom:0}
+.metric strong{font-size:20px}
+.empty{color:var(--muted);font-size:13px}
+@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.right{display:none}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{display:none}.controls{flex-direction:column;align-items:stretch}button,select{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="logo">Executive <span>Engine</span></div>
+
+  <div class="nav-title">Command</div>
+  <div class="nav-item active" onclick="showPage('command', this)">Command Center</div>
+  <div class="nav-item" onclick="showPage('tasks', this)">Tasks</div>
+  <div class="nav-item" onclick="showPage('memory', this)">Memory</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <strong id="pageTitle">Command Center</strong>
+    <div class="live">LIVE</div>
+  </div>
+
+  <section id="command" class="page active">
+    <div class="command-wrap">
+      <div class="input-card">
+        <h2>What needs to get done?</h2>
+        <p>Enter the situation. The engine creates the next move, decision, tasks, risk, and priority.</p>
+        <textarea id="input" placeholder="Example: I need to improve sales follow-up this week..."></textarea>
+        <div class="controls">
+          <select id="mode">
+            <option value="execution">Execution</option>
+            <option value="strategy">Strategy</option>
+            <option value="decision">Decision</option>
+            <option value="meeting">Meeting</option>
+          </select>
+          <button onclick="runEngine()">Run Engine</button>
+        </div>
+      </div>
+
+      <div id="feed"></div>
+    </div>
+  </section>
+
+  <section id="tasks" class="page">
+    <div class="tasks-page">
+      <h2>Tasks</h2>
+      <div id="tasksList"></div>
+    </div>
+  </section>
+
+  <section id="memory" class="page">
+    <div class="memory-page">
+      <h2>Memory</h2>
+      <button class="secondary" onclick="loadMemory()">Refresh Memory</button>
+      <br><br>
+      <div id="memoryList"></div>
+    </div>
+  </section>
+</main>
+
+<aside class="right">
+  <div class="panel">
+    <h3>Execution Metrics</h3>
+    <div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div>
+    <div class="metric"><span>Open</span><strong id="openTasks">0</strong></div>
+    <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
+  </div>
+
+  <div class="panel">
+    <h3>Do This Now</h3>
+    <div id="doNow" class="empty">Run the engine to create your first action.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Recent Memory</h3>
+    <div id="recentMemory" class="empty">No memory loaded.</div>
+  </div>
+</aside>
+
+</div>
+
+<script>
+const API = "https://executive-engine-os-v2.onrender.com";
+let tasks = JSON.parse(localStorage.getItem("ee_tasks_v22") || "[]");
+
+function esc(v){
+  return String(v || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showPage(id, el){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  el.classList.add("active");
+
+  document.getElementById("pageTitle").innerText = el.innerText;
+  if(id === "tasks") renderTasks();
+  if(id === "memory") loadMemory();
+}
+
+function saveTasks(){
+  localStorage.setItem("ee_tasks_v22", JSON.stringify(tasks));
+  renderTasks();
+  updateMetrics();
+}
+
+function normalize(d){
+  const actions = Array.isArray(d.actions) ? d.actions : [];
+  return {
+    decision: d.decision || "Decision not returned.",
+    next_move: d.next_move || "Define the next move.",
+    actions: actions.length ? actions : ["Clarify the objective", "Identify the blocker", "Execute the next step"],
+    risk: d.risk || "Risk not returned.",
+    priority: d.priority || "High"
+  };
+}
+
+async function runEngine(){
+  const input = document.getElementById("input");
+  const value = input.value.trim();
+  const mode = document.getElementById("mode").value;
+  if(!value) return;
+
+  addUser(value);
+  input.value = "";
+
+  try{
+    const res = await fetch(API + "/run", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input:value, mode})
+    });
+
+    const data = normalize(await res.json());
+    renderOutput(data);
+    addTasks(data.actions, data.priority);
+    loadMemory();
+  }catch(e){
+    const fallback = {
+      decision:"Backend connection issue.",
+      next_move:"Confirm backend is live and /run is working.",
+      actions:["Open backend URL", "Check Render logs", "Redeploy backend"],
+      risk:"Frontend cannot receive engine output.",
+      priority:"High"
+    };
+    renderOutput(fallback);
+    addTasks(fallback.actions, fallback.priority);
+  }
+}
+
+function addUser(text){
+  const feed = document.getElementById("feed");
+  const div = document.createElement("div");
+  div.className = "output user-msg";
+  div.innerHTML = "<strong>You</strong><div style='margin-top:6px'>" + esc(text) + "</div>";
+  feed.prepend(div);
+}
+
+function renderOutput(d){
+  const feed = document.getElementById("feed");
+  const actionHtml = d.actions.map(a => `
+    <div class="action"><input type="checkbox"><span>${esc(a)}</span></div>
+  `).join("");
+
+  const div = document.createElement("div");
+  div.className = "output";
+  div.innerHTML = `
+    <div class="next">${esc(d.next_move)}</div>
+    <div class="decision">${esc(d.decision)}</div>
+    <div class="tags">
+      <div class="tag priority">Priority: ${esc(d.priority)}</div>
+      <div class="tag risk">Risk: ${esc(d.risk)}</div>
+    </div>
+    <div class="actions">${actionHtml}</div>
+  `;
+  feed.prepend(div);
+
+  document.getElementById("doNow").innerHTML = esc(d.next_move);
+}
+
+function addTasks(actions, priority){
+  const created = new Date().toLocaleString();
+  const newTasks = actions.map(a => ({ text:a, done:false, priority, created }));
+  tasks = [...newTasks, ...tasks];
+  saveTasks();
+}
+
+function renderTasks(){
+  const list = document.getElementById("tasksList");
+  if(!tasks.length){
+    list.innerHTML = "<div class='empty'>No tasks yet.</div>";
+    updateMetrics();
+    return;
+  }
+
+  list.innerHTML = tasks.map((t,i)=>`
+    <div class="task-card ${t.done ? "done" : ""}" onclick="toggleTask(${i})">
+      <input type="checkbox" ${t.done ? "checked" : ""}>
+      <span>${esc(t.text)}<div class="task-meta">Priority: ${esc(t.priority)} · ${esc(t.created)}</div></span>
+    </div>
+  `).join("");
+  updateMetrics();
+}
+
+function toggleTask(i){
+  tasks[i].done = !tasks[i].done;
+  saveTasks();
+}
+
+function updateMetrics(){
+  document.getElementById("totalTasks").innerText = tasks.length;
+  document.getElementById("doneTasks").innerText = tasks.filter(t=>t.done).length;
+  document.getElementById("openTasks").innerText = tasks.filter(t=>!t.done).length;
+}
+
+async function loadMemory(){
+  const memoryList = document.getElementById("memoryList");
+  const recentMemory = document.getElementById("recentMemory");
+
+  try{
+    const res = await fetch(API + "/memory");
+    const data = await res.json();
+    const items = data.memory || [];
+
+    if(!items.length){
+      memoryList.innerHTML = "<div class='empty'>No memory yet.</div>";
+      recentMemory.innerHTML = "No memory yet.";
+      return;
+    }
+
+    memoryList.innerHTML = items.map(m=>`
+      <div class="memory-card">
+        <strong>${esc(m.next_move || m.decision || "Memory")}</strong>
+        <small>${esc(m.input || "")}</small>
+      </div>
+    `).join("");
+
+    recentMemory.innerHTML = items.slice(0,3).map(m=>`
+      <div style="margin-bottom:8px">${esc(m.next_move || m.decision || "Memory")}</div>
+    `).join("");
+  }catch(e){
+    memoryList.innerHTML = "<div class='empty'>Memory endpoint unavailable.</div>";
+    recentMemory.innerHTML = "Memory endpoint unavailable.";
+  }
+}
+
+renderTasks();
+loadMemory();
+</script>
+</body>
+</html>
