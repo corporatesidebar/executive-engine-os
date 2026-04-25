@@ -1,234 +1,449 @@
+<!-- /frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V8</title>
-<style>
-:root{
-  --nav:#07152d; --blue:#0f62fe; --orange:#ff5a1f; --green:#16a34a;
-  --bg:#f5f7fb; --card:#ffffff; --line:#e2e8f0; --text:#0f172a; --muted:#64748b;
-}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-.app{display:grid;grid-template-columns:220px minmax(0,1fr) 300px;height:100vh}
-.sidebar{background:linear-gradient(180deg,#08162f,#050d1f);color:#fff;padding:18px 14px}
-.logo{font-size:18px;font-weight:900;margin-bottom:24px}.logo span{color:var(--orange)}
-.nav-label{color:#8ea2c7;font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin:18px 8px 8px}
-.nav-btn{width:100%;border:0;border-radius:10px;background:transparent;color:#dbeafe;text-align:left;padding:11px 12px;margin-bottom:5px;cursor:pointer;font-size:14px}
-.nav-btn.active,.nav-btn:hover{background:var(--blue);color:#fff}
-.main{min-width:0;height:100vh;display:flex;flex-direction:column}
-.topbar{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 20px}
-.topbar strong{font-size:14px}.live{color:#087a3a;background:#e7f8ef;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
-.workspace{flex:1;overflow:auto;padding:22px}
-.ready{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 14px 36px rgba(15,23,42,.05)}
-.ready-inner{max-width:840px;margin:0 auto;text-align:center}.ready h1{margin:0 0 18px;font-size:30px;letter-spacing:-.04em}
-.command-box{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #d7e2f3;border-radius:999px;padding:12px;box-shadow:0 10px 30px rgba(15,35,70,.06)}
-.plus{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
-textarea{flex:1;height:46px;min-height:46px;border:0;outline:0;resize:none;font-size:15px;background:transparent;padding:12px 8px}
-select{border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:10px 12px;font-weight:800;outline:0}
-.run{width:40px;height:40px;border-radius:50%;border:0;background:var(--orange);color:#fff;font-weight:900;cursor:pointer}.run:disabled{opacity:.6;cursor:not-allowed}
-.quick{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;cursor:pointer}
-.status-row{margin-top:12px;display:flex;justify-content:center;gap:8px}.status{padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#166534;font-size:12px;font-weight:800}
-.next-strip{margin-top:18px;background:linear-gradient(135deg,#fff,#fff7ed);border:1px solid rgba(255,90,31,.25);border-left:6px solid var(--orange);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;text-align:left}
-.label{color:var(--orange);font-size:12px;text-transform:uppercase;letter-spacing:.13em;font-weight:900}.next-text{font-weight:850;font-size:18px}
-.error{display:none;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:12px;padding:12px;margin-bottom:14px}.error.show{display:block}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}.card.hidden{display:none}
-.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.card-title{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em}
-.task-box{border:2px solid #ffd7c6;background:#fff7ed;border-radius:16px;padding:18px;margin-bottom:14px}.task-label{color:var(--orange);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}.task-text{font-size:22px;font-weight:850}
-.actions{display:flex;gap:10px;flex-wrap:wrap}.actions button{border:0;border-radius:10px;padding:11px 17px;font-weight:800;cursor:pointer}.green{background:var(--green);color:#fff}.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff!important}
-.detail{line-height:1.5;color:#334155}.tags{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}.priority{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}.risk{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}.active{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
-.rail{background:#f0f5fb;border-left:1px solid var(--line);padding:14px;overflow:auto}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}.panel.do{border:2px solid var(--orange)}.panel h3{margin:0 0 10px;font-size:14px;color:var(--blue);text-transform:uppercase;letter-spacing:.08em}.panel.do h3{color:var(--orange)}.do-text{font-size:17px;line-height:1.3;font-weight:850}.metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf2f8}.metric:last-child{border-bottom:0}.metric strong{font-size:19px}.queue-item{padding:8px 0;border-bottom:1px solid #edf2f8;font-size:13px}.queue-item.done{text-decoration:line-through;color:#94a3b8}.empty{color:var(--muted);font-size:13px}
-@media(max-width:1150px){.app{grid-template-columns:210px 1fr}.rail{display:none}}
-@media(max-width:760px){body{overflow:auto}.app{display:block;height:auto}.sidebar{display:none}.workspace{padding:14px}.command-box{border-radius:24px}.next-strip{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine OS</title>
+
+  <style>
+    :root {
+      --navy-950: #050914;
+      --navy-900: #0b1220;
+      --navy-850: #101827;
+      --navy-800: #111c31;
+      --navy-700: #18243a;
+
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+
+      --green-600: #16a34a;
+      --green-500: #22c55e;
+      --green-100: #dcfce7;
+      --green-50: #f0fdf4;
+
+      --amber-500: #f59e0b;
+      --red-500: #ef4444;
+
+      --slate-950: #020617;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+
+      --white: #ffffff;
+      --line: rgba(226, 232, 240, 0.88);
+      --shadow-sm: 0 10px 26px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 22px 50px rgba(15, 23, 42, 0.10);
+      --shadow-lg: 0 30px 80px rgba(15, 23, 42, 0.15);
+
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 30px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+      background:
+        radial-gradient(circle at 48% 0%, rgba(37, 99, 235, 0.11), transparent 34%),
+        linear-gradient(180deg, #fbfdff 0%, #f4f7fb 100%);
+      color: var(--slate-900);
+      overflow-x: hidden;
+    }
+
+    button,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 282px minmax(0, 1fr) 384px;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background:
+        radial-gradient(circle at 30% 0%, rgba(59, 130, 246, 0.16), transparent 34%),
+        linear-gradient(180deg, var(--navy-900) 0%, #070c18 100%);
+      color: #e5edf8;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 2px 6px 22px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.95), rgba(37, 99, 235, 0.95));
+      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+      color: white;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      font-size: 17px;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+      color: white;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(226, 232, 240, 0.58);
+    }
+
+    .nav-block { margin-bottom: 22px; }
+    .nav-title {
+      padding: 0 10px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: rgba(203, 213, 225, 0.52);
+    }
+    .nav-list { display: flex; flex-direction: column; gap: 5px; }
+    .nav-item {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 14px;
+      background: transparent;
+      color: rgba(226, 232, 240, 0.72);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 11px;
+      text-align: left;
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.055); color: white; transform: translateX(2px); }
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(37,99,235,.24), rgba(96,165,250,.10));
+      color: white;
+      box-shadow: inset 0 0 0 1px rgba(96,165,250,.22);
+    }
+    .nav-icon { width: 22px; height: 22px; display: grid; place-items: center; flex: 0 0 auto; color: currentColor; opacity: .95; }
+    .nav-label { flex: 1; font-size: 13px; font-weight: 650; letter-spacing: -.01em; }
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+      background: rgba(96,165,250,.17); color: #bfdbfe; font-size: 11px; font-weight: 800;
+    }
+    .badge.hot { background: rgba(239,68,68,.14); color: #fecaca; }
+
+    .horizontal-nav {
+      margin: 4px 0 20px; padding: 10px; border-radius: 18px;
+      background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.07);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .horizontal-nav button {
+      height: 34px; border-radius: 12px; background: rgba(255,255,255,.045);
+      color: rgba(226,232,240,.72); font-size: 11px; font-weight: 800; letter-spacing: -.01em;
+    }
+    .horizontal-nav button:first-child { background: rgba(37,99,235,.22); color: #dbeafe; }
+    .sidebar-spacer { flex: 1; min-height: 18px; }
+    .mode-card {
+      border-radius: 22px; padding: 16px;
+      background: linear-gradient(145deg, rgba(37,99,235,.22), rgba(15,23,42,.38)), rgba(255,255,255,.045);
+      border: 1px solid rgba(147,197,253,.22); box-shadow: 0 18px 44px rgba(0,0,0,.22);
+    }
+    .mode-card .mode-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .pulse-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--green-500); box-shadow: 0 0 0 6px rgba(34,197,94,.14); }
+    .mode-card strong { color: white; font-size: 13px; letter-spacing: -.015em; }
+    .mode-card p { margin: 0; color: rgba(226,232,240,.64); font-size: 12px; line-height: 1.5; }
+
+    .center { min-width: 0; padding: 24px 34px 38px; }
+    .topbar { min-height: 54px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 38px; }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .page-kicker {
+      width: 44px; height: 44px; border-radius: 16px; display: grid; place-items: center;
+      background: var(--white); border: 1px solid var(--line); box-shadow: var(--shadow-sm); color: var(--blue-600);
+    }
+    .page-title h1 { margin: 0; font-size: 20px; letter-spacing: -.045em; line-height: 1.05; }
+    .page-title span { display: block; margin-top: 5px; color: var(--slate-500); font-size: 13px; font-weight: 650; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 13px; border-radius: 999px;
+      background: var(--green-50); border: 1px solid rgba(34,197,94,.18); color: #15803d;
+      font-size: 12px; font-weight: 850; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .status-pill.offline { background: #fff7ed; border-color: rgba(245,158,11,.22); color: #b45309; }
+    .status-light { width: 8px; height: 8px; border-radius: 999px; background: var(--green-500); box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
+    .status-pill.offline .status-light { background: var(--amber-500); box-shadow: 0 0 0 5px rgba(245,158,11,.16); }
+
+    .hero { max-width: 850px; margin: 0 auto; text-align: center; }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 999px;
+      background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.11); color: var(--blue-700);
+      font-weight: 850; font-size: 12px; letter-spacing: .02em; margin-bottom: 18px;
+    }
+    .hero h2 { margin: 0 auto; max-width: 760px; font-size: clamp(38px, 5.2vw, 68px); line-height: .97; letter-spacing: -.075em; font-weight: 900; color: var(--slate-950); }
+    .hero p { max-width: 620px; margin: 20px auto 0; font-size: 17px; line-height: 1.65; color: var(--slate-500); letter-spacing: -.02em; }
+    .command-card {
+      margin: 34px auto 18px; max-width: 790px; background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.92));
+      border: 1px solid rgba(226,232,240,.92); box-shadow: 0 35px 100px rgba(15,23,42,.14), 0 1px 0 rgba(255,255,255,.92) inset;
+      border-radius: 30px; padding: 16px; text-align: left;
+    }
+    .input-wrap { position: relative; border-radius: 22px; background: linear-gradient(180deg, #fff, #f8fafc); border: 1px solid rgba(226,232,240,.94); overflow: hidden; }
+    textarea { width: 100%; min-height: 152px; resize: vertical; padding: 20px 20px 76px; border: 0; outline: 0; background: transparent; color: var(--slate-900); font-size: 15px; line-height: 1.65; letter-spacing: -.015em; }
+    textarea::placeholder { color: #94a3b8; }
+    .input-footer { position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; pointer-events: none; }
+    .keyboard-hint { color: var(--slate-400); font-size: 12px; font-weight: 750; padding-left: 6px; }
+    .run-button {
+      pointer-events: auto; height: 48px; padding: 0 22px; border-radius: 17px; display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-700)); color: white; font-weight: 850; letter-spacing: -.02em;
+      box-shadow: 0 18px 44px rgba(37,99,235,.34), inset 0 1px 0 rgba(255,255,255,.22);
+      transition: transform 170ms ease, box-shadow 170ms ease, opacity 170ms ease;
+    }
+    .run-button:hover { transform: translateY(-1px); box-shadow: 0 24px 54px rgba(37,99,235,.42), inset 0 1px 0 rgba(255,255,255,.28); }
+    .run-button:disabled { opacity: .72; cursor: not-allowed; transform: none; }
+    .quick-prompts { max-width: 790px; margin: 18px auto 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .quick-prompts button {
+      min-height: 38px; border-radius: 999px; padding: 0 15px; background: rgba(255,255,255,.84); border: 1px solid rgba(226,232,240,.92);
+      color: var(--slate-600); font-size: 13px; font-weight: 760; box-shadow: 0 10px 26px rgba(15,23,42,.05);
+      transition: transform 170ms ease, color 170ms ease, border-color 170ms ease, background 170ms ease;
+    }
+    .quick-prompts button:hover { transform: translateY(-1px); color: var(--blue-700); border-color: rgba(37,99,235,.22); background: white; }
+    .loading-line { display: none; max-width: 790px; margin: 20px auto 0; align-items: center; justify-content: center; gap: 10px; color: var(--blue-700); font-weight: 850; font-size: 13px; }
+    .loading-line.show { display: flex; }
+    .spinner { width: 16px; height: 16px; border-radius: 999px; border: 2px solid rgba(37,99,235,.18); border-top-color: var(--blue-600); animation: spin .75s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box { display: none; max-width: 790px; margin: 18px auto 0; padding: 14px 16px; border-radius: 18px; background: #fef2f2; border: 1px solid rgba(239,68,68,.18); color: #991b1b; font-size: 13px; font-weight: 750; text-align: left; }
+    .error-box.show { display: block; }
+    .results { display: none; max-width: 960px; margin: 38px auto 0; text-align: left; }
+    .results.show { display: block; }
+    .results-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .result-card { background: rgba(255,255,255,.92); border: 1px solid rgba(226,232,240,.92); border-radius: 24px; padding: 19px; box-shadow: var(--shadow-sm); }
+    .result-card.primary { grid-column: 1 / -1; padding: 22px; background: radial-gradient(circle at 8% 0%, rgba(37,99,235,.12), transparent 30%), linear-gradient(180deg, #fff, #f8fbff); border-color: rgba(37,99,235,.14); box-shadow: var(--shadow-md); }
+    .card-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--slate-500); font-size: 11px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+    .result-card h3 { margin: 0; font-size: 16px; letter-spacing: -.035em; color: var(--slate-950); }
+    .result-card.primary h3 { font-size: 24px; line-height: 1.22; }
+    .result-card p { margin: 9px 0 0; color: var(--slate-600); font-size: 14px; line-height: 1.65; }
+    .priority-badge { display: inline-flex; align-items: center; height: 30px; border-radius: 999px; padding: 0 12px; background: #eff6ff; color: var(--blue-700); border: 1px solid rgba(37,99,235,.12); font-size: 12px; font-weight: 900; letter-spacing: -.01em; }
+    .action-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .action-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 12px; border-radius: 16px; background: var(--slate-50); border: 1px solid rgba(226,232,240,.86); color: var(--slate-700); font-size: 13px; line-height: 1.45; }
+    .check { width: 21px; height: 21px; border-radius: 8px; border: 1px solid rgba(37,99,235,.25); background: white; flex: 0 0 auto; display: grid; place-items: center; color: transparent; margin-top: -1px; }
+    .action-item.done { color: var(--slate-400); text-decoration: line-through; }
+    .action-item.done .check { background: var(--green-500); border-color: var(--green-500); color: white; }
+    .complete-task { margin-top: 14px; height: 40px; border-radius: 14px; padding: 0 15px; background: var(--slate-900); color: white; font-size: 13px; font-weight: 850; box-shadow: 0 14px 30px rgba(15,23,42,.16); }
+    .complete-task:disabled { background: var(--slate-300); color: white; cursor: not-allowed; box-shadow: none; }
+
+    .right-panel { position: sticky; top: 0; height: 100vh; padding: 24px 24px 28px 0; overflow-y: auto; }
+    .right-shell { min-height: calc(100vh - 52px); border-radius: 30px; background: linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,250,252,.88)); border: 1px solid rgba(226,232,240,.92); box-shadow: var(--shadow-md); padding: 18px; }
+    .panel-header { padding: 4px 4px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .panel-header h2 { margin: 0; font-size: 16px; letter-spacing: -.04em; }
+    .panel-chip { height: 28px; border-radius: 999px; padding: 0 10px; display: inline-flex; align-items: center; background: #eff6ff; color: var(--blue-700); font-size: 11px; font-weight: 900; border: 1px solid rgba(37,99,235,.11); }
+    .panel-section { margin-bottom: 14px; padding: 15px; border-radius: 22px; background: white; border: 1px solid rgba(226,232,240,.88); box-shadow: 0 10px 26px rgba(15,23,42,.04); }
+    .panel-section h3 { margin: 0 0 12px; font-size: 12px; color: var(--slate-500); letter-spacing: .09em; text-transform: uppercase; font-weight: 900; }
+    .decision-list, .memory-list, .queue-list, .milestone-list { display: flex; flex-direction: column; gap: 9px; }
+    .mini-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 15px; background: var(--slate-50); border: 1px solid rgba(226,232,240,.7); }
+    .mini-dot { width: 9px; height: 9px; margin-top: 5px; border-radius: 999px; background: var(--blue-500); flex: 0 0 auto; }
+    .mini-row strong { display: block; font-size: 12.5px; line-height: 1.35; letter-spacing: -.02em; color: var(--slate-900); }
+    .mini-row span { display: block; margin-top: 4px; font-size: 11.5px; line-height: 1.45; color: var(--slate-500); }
+    .milestone-card { padding: 12px; border-radius: 16px; background: linear-gradient(180deg, #fff, #f8fafc); border: 1px solid rgba(226,232,240,.84); }
+    .milestone-card strong { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; letter-spacing: -.02em; }
+    .milestone-card p { margin: 6px 0 0; color: var(--slate-500); font-size: 11.5px; line-height: 1.45; }
+    .focus-card { background: radial-gradient(circle at 100% 0%, rgba(34,197,94,.18), transparent 36%), linear-gradient(135deg, #f0fdf4, #fff); border-color: rgba(34,197,94,.22); }
+    .focus-card h3 { color: #15803d; }
+    .focus-card p { margin: 0; color: #166534; font-size: 13px; line-height: 1.55; font-weight: 720; }
+    .ai-card { background: radial-gradient(circle at 100% 0%, rgba(59,130,246,.20), transparent 38%), linear-gradient(180deg, #111827, #050914); color: white; border-color: rgba(255,255,255,.08); }
+    .ai-card h3 { color: rgba(226,232,240,.72); }
+    .ai-card p { margin: 0; color: rgba(226,232,240,.84); font-size: 13px; line-height: 1.6; }
+    .queue-item { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 15px; background: var(--slate-50); border: 1px solid rgba(226,232,240,.7); }
+    .queue-num { width: 26px; height: 26px; border-radius: 10px; display: grid; place-items: center; background: white; border: 1px solid rgba(37,99,235,.13); color: var(--blue-700); font-size: 11px; font-weight: 900; }
+    .queue-item strong { font-size: 12.5px; letter-spacing: -.02em; line-height: 1.35; }
+    .queue-item span { display: block; margin-top: 4px; color: var(--slate-500); font-size: 11.5px; line-height: 1.4; }
+    .empty-note { padding: 11px; border-radius: 15px; background: var(--slate-50); border: 1px dashed rgba(148,163,184,.45); color: var(--slate-500); font-size: 12px; line-height: 1.45; }
+    svg { display: block; }
+
+    @media (max-width: 1240px) {
+      .app { grid-template-columns: 246px minmax(0, 1fr); }
+      .right-panel { position: static; grid-column: 1 / -1; height: auto; padding: 0 24px 28px 24px; }
+      .right-shell { min-height: 0; }
+      .right-shell-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .panel-header { grid-column: 1 / -1; }
+      .panel-section { margin-bottom: 0; }
+    }
+    @media (max-width: 880px) {
+      .app { display: block; }
+      .sidebar { position: relative; height: auto; min-height: 0; border-radius: 0 0 28px 28px; }
+      .nav-block { margin-bottom: 16px; }
+      .center { padding: 22px 18px 32px; }
+      .topbar { align-items: flex-start; gap: 18px; margin-bottom: 30px; }
+      .hero h2 { font-size: 42px; }
+      .results-grid { grid-template-columns: 1fr; }
+      .right-panel { padding: 0 18px 26px; }
+      .right-shell-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .topbar { flex-direction: column; }
+      .input-footer { position: static; margin: 0 12px 12px; flex-direction: column; align-items: stretch; }
+      textarea { min-height: 178px; padding-bottom: 20px; }
+      .run-button { width: 100%; justify-content: center; }
+      .keyboard-hint { text-align: center; }
+      .hero h2 { font-size: 36px; letter-spacing: -.065em; }
+      .hero p { font-size: 15px; }
+      .command-card { border-radius: 24px; padding: 12px; }
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="logo">Executive <span>Engine</span></div>
-    <div class="nav-label">Command</div>
-    <button class="nav-btn active" onclick="focusInput()">Command Center</button>
-    <button class="nav-btn" onclick="setMode('execution')">Run The Day</button>
-    <button class="nav-btn" onclick="setMode('decision')">Decisions</button>
-    <div class="nav-label">Execution</div>
-    <button class="nav-btn" onclick="scrollToExecution()">Tasks</button>
-    <button class="nav-btn" onclick="loadMemory(true)">Memory</button>
-  </aside>
+  <div class="app">
+    <aside class="sidebar" aria-label="Executive navigation">
+      <div class="brand"><div class="brand-mark">EE</div><div class="brand-copy"><strong>Executive Engine OS</strong><span>Operator Console</span></div></div>
+      <div class="horizontal-nav" aria-label="Horizontal quick navigation"><button type="button">Today</button><button type="button">Run</button><button type="button">Review</button></div>
+      <section class="nav-block"><div class="nav-title">COMMAND</div><div class="nav-list">
+        <button class="nav-item active" type="button"><span class="nav-icon">➜</span><span class="nav-label">Daily Brief</span><span class="badge">3</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">☰</span><span class="nav-label">Decisions</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">◷</span><span class="nav-label">Meeting Prep</span></button>
+      </div></section>
+      <section class="nav-block"><div class="nav-title">INTELLIGENCE</div><div class="nav-list">
+        <button class="nav-item" type="button"><span class="nav-icon">↗</span><span class="nav-label">Insights</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">▦</span><span class="nav-label">Strategy Board</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">◇</span><span class="nav-label">Risk Monitor</span><span class="badge hot">2</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">●</span><span class="nav-label">Team Pulse</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">$</span><span class="nav-label">Financial Snapshot</span></button>
+      </div></section>
+      <section class="nav-block"><div class="nav-title">RESOURCES</div><div class="nav-list">
+        <button class="nav-item" type="button"><span class="nav-icon">▣</span><span class="nav-label">Active Projects</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">□</span><span class="nav-label">Files</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">✎</span><span class="nav-label">Notes</span></button>
+        <button class="nav-item" type="button"><span class="nav-icon">↑</span><span class="nav-label">Upload Context</span></button>
+      </div></section>
+      <div class="sidebar-spacer"></div>
+      <div class="mode-card"><div class="mode-top"><span class="pulse-dot"></span><strong>Executive Mode</strong></div><p>Decision-ready. Built for fast operator judgment, execution clarity, and ruthless prioritization.</p></div>
+    </aside>
 
-  <main class="main">
-    <div class="topbar"><strong>Decision Weapon System V8</strong><div class="live">LIVE</div></div>
-    <div class="workspace">
-      <div id="errorBox" class="error"></div>
-      <section class="ready">
-        <div class="ready-inner">
-          <h1>Ready when you are.</h1>
-          <div class="command-box">
-            <div class="plus">+</div>
-            <textarea id="input" placeholder="Ask anything — decision, meeting, task, problem..."></textarea>
-            <select id="mode">
-              <option value="execution">Execution</option>
-              <option value="strategy">Strategy</option>
-              <option value="decision">Decision</option>
-              <option value="meeting">Meeting</option>
-            </select>
-            <button id="runBtn" class="run" onclick="runEngine()">➜</button>
-          </div>
-          <div class="quick">
-            <button onclick="setMode('execution')">Run the day</button>
-            <button onclick="setMode('decision')">Make a decision</button>
-            <button onclick="setMode('meeting')">Prep meeting</button>
-            <button onclick="setMode('strategy')">Strategy</button>
-          </div>
-          <div class="status-row">
-            <div id="backendStatus" class="status">Backend: checking</div>
-            <div id="memoryStatus" class="status">Memory: checking</div>
-          </div>
-          <div class="next-strip">
-            <div class="label">Next Move</div>
-            <div id="topNextMove" class="next-text">Define the one action that creates the most progress today.</div>
-          </div>
-        </div>
+    <main class="center">
+      <header class="topbar"><div class="topbar-left"><div class="page-kicker">⚡</div><div class="page-title"><h1>Executive Flow System</h1><span>Executive Engine</span></div></div><div id="healthStatus" class="status-pill offline"><span class="status-light"></span><span>Checking</span></div></header>
+      <section class="hero">
+        <div class="hero-label"><span class="pulse-dot"></span>LIVE</div>
+        <h2>How can I help you execute today?</h2>
+        <p>Drop the situation. I’ll turn it into one clear decision, next move, risk read, priority, and execution path.</p>
+        <section class="command-card"><div class="input-wrap"><textarea id="commandInput" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..." spellcheck="true"></textarea><div class="input-footer"><div class="keyboard-hint">Press ⌘ + Enter to submit</div><button id="runButton" class="run-button" type="button"><span id="runButtonText">Run Engine</span><span>→</span></button></div></div></section>
+        <div class="quick-prompts"><button type="button" data-prompt="Give me a clear business decision with the next move, risk, priority, and what to do now.">Make a decision</button><button type="button" data-prompt="Prepare me for a meeting. Give me the objective, talking points, risks, and strongest next move.">Prep a meeting</button><button type="button" data-prompt="Review this situation like an elite COO. Find the reality check, bottleneck, and execution plan.">Reality check</button></div>
+        <div id="loadingLine" class="loading-line"><span class="spinner"></span><span>Engine running...</span></div><div id="errorBox" class="error-box"></div>
       </section>
+      <section id="results" class="results" aria-live="polite"><div class="results-grid" id="resultsGrid"></div></section>
+    </main>
 
-      <section id="executionCard" class="card hidden">
-        <div class="card-head"><div class="card-title">Current Task</div><div id="taskCount">0 / 0</div></div>
-        <div class="task-box"><div class="task-label">Do this now</div><div id="currentTask" class="task-text"></div></div>
-        <div class="actions">
-          <button class="green" onclick="completeTask()">Complete Task</button>
-          <button class="secondary" onclick="skipTask()">Skip</button>
-          <button class="secondary" onclick="focusInput()">New Input</button>
-        </div>
-      </section>
+    <aside class="right-panel"><div class="right-shell"><div class="right-shell-grid"><div class="panel-header"><h2>Intelligence Panel</h2><span class="panel-chip">Live Memory</span></div>
+      <section class="panel-section"><h3>Recent Decisions</h3><div id="recentDecisions" class="decision-list"><div class="empty-note">Recent decisions will appear after the engine runs.</div></div></section>
+      <section class="panel-section"><h3>Critical Milestones</h3><div class="milestone-list"><div class="milestone-card"><strong>Frontend V10 <span class="priority-badge">Active</span></strong><p>Final SaaS-quality command interface and structured result rendering.</p></div><div class="milestone-card"><strong>Backend Stability <span class="priority-badge">Live</span></strong><p>Health, run, and memory endpoints connected to the UI.</p></div></div></section>
+      <section class="panel-section focus-card"><h3>Focus Today</h3><p>Run the engine, capture the decision, complete the first action, then review memory.</p></section>
+      <section class="panel-section ai-card"><h3>AI Recommendations</h3><p>Keep every command specific: objective, context, constraint, urgency, and the decision you need made.</p></section>
+      <section class="panel-section"><h3>Execution Queue</h3><div id="executionQueue" class="queue-list"><div class="queue-item"><div class="queue-num">1</div><div><strong>Submit current operator command</strong><span>Generate decision, action list, risk, and priority.</span></div></div><div class="queue-item"><div class="queue-num">2</div><div><strong>Complete first action</strong><span>Advance execution without overthinking the full plan.</span></div></div></div></section>
+      <section class="panel-section"><h3>Recent Memory</h3><div id="recentMemory" class="memory-list"><div class="empty-note">Loading recent memory...</div></div></section>
+    </div></div></aside>
+  </div>
 
-      <section id="detailCard" class="card">
-        <div class="card-title">Decision Details</div>
-        <div id="decisionDetail" class="detail">Run the engine to generate the decision, risk, priority and execution sequence.</div>
-      </section>
-    </div>
-  </main>
-
-  <aside class="rail">
-    <div class="panel do"><h3>Do This Now</h3><div id="railDoNow" class="do-text">Run the engine to create your first action.</div></div>
-    <div class="panel"><h3>Execution Metrics</h3><div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div><div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div><div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div></div>
-    <div class="panel"><h3>Execution Queue</h3><div id="queueList" class="empty">No tasks yet.</div></div>
-    <div class="panel"><h3>Recent Memory</h3><div id="recentMemory" class="empty">No memory loaded.</div></div>
-  </aside>
-</div>
-
-<script>
-const API = "https://executive-engine-os.onrender.com";
-const $ = (id) => document.getElementById(id);
-
-let activeRun = null;
-let currentTaskIndex = 0;
-let completed = {};
-
-function esc(v){
-  return String(v || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function showError(msg){$("errorBox").textContent=msg;$("errorBox").classList.add("show");}
-function clearError(){$("errorBox").textContent="";$("errorBox").classList.remove("show");}
-function setMode(mode){$("mode").value=mode;$("input").focus();}
-function normalize(data){
-  const actions = Array.isArray(data.actions) ? data.actions : [];
-  return {
-    decision: data.decision || "Decision not returned.",
-    next_move: data.next_move || "Define the highest leverage next move.",
-    actions: actions.length ? actions : ["Clarify the objective","Identify the blocker","Execute the next step"],
-    risk: data.risk || "Risk not returned.",
-    priority: data.priority || "High"
-  };
-}
-async function healthCheck(){
-  try{
-    const res = await fetch(API + "/health");
-    const data = await res.json();
-    $("backendStatus").textContent = data.status === "ok" ? "Backend: live" : "Backend: issue";
-  }catch(e){$("backendStatus").textContent = "Backend: unavailable";}
-}
-async function runEngine(){
-  const input = $("input").value.trim();
-  const mode = $("mode").value;
-  if(!input){showError("Enter a command first.");return;}
-  clearError();$("runBtn").disabled=true;$("runBtn").textContent="...";
-  try{
-    const res = await fetch(API + "/run", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({input, mode})
-    });
-    if(!res.ok) throw new Error("Backend returned " + res.status);
-    const data = normalize(await res.json());
-    startRun(data);
-    $("input").value = "";
-    loadMemory(false);
-  }catch(e){showError("Run failed: " + e.message);}
-  finally{$("runBtn").disabled=false;$("runBtn").textContent="➜";}
-}
-function startRun(data){
-  activeRun=data; currentTaskIndex=0; completed={};
-  $("topNextMove").textContent=data.next_move;
-  $("railDoNow").textContent=data.next_move;
-  renderExecution(); renderQueue(); renderDetails(); updateMetrics();
-}
-function renderExecution(){
-  if(!activeRun) return;
-  const tasks=activeRun.actions;
-  const doneCount=Object.values(completed).filter(Boolean).length;
-  if(doneCount>=tasks.length){$("executionCard").classList.add("hidden");$("railDoNow").textContent="Execution complete. Run the next decision.";updateMetrics();return;}
-  $("executionCard").classList.remove("hidden");
-  $("taskCount").textContent=`${currentTaskIndex+1} / ${tasks.length}`;
-  $("currentTask").textContent=tasks[currentTaskIndex];
-  updateMetrics();
-}
-function renderDetails(){
-  if(!activeRun) return;
-  $("decisionDetail").innerHTML = `${esc(activeRun.decision)}
-    <div class="tags">
-      <span class="tag priority">Priority: ${esc(activeRun.priority)}</span>
-      <span class="tag risk">Risk: ${esc(activeRun.risk)}</span>
-      <span class="tag active">Execution Mode Active</span>
-    </div>`;
-}
-function completeTask(){
-  if(!activeRun) return;
-  completed[currentTaskIndex]=true;
-  while(completed[currentTaskIndex] && currentTaskIndex<activeRun.actions.length-1){currentTaskIndex++;}
-  renderExecution(); renderQueue();
-}
-function skipTask(){completeTask();}
-function renderQueue(){
-  if(!activeRun){$("queueList").innerHTML="No tasks yet.";return;}
-  $("queueList").innerHTML=activeRun.actions.map((task,i)=>`<div class="queue-item ${completed[i] ? "done" : ""}">${i+1}. ${esc(task)}</div>`).join("");
-}
-function updateMetrics(){
-  const tasks=activeRun ? activeRun.actions : [];
-  const done=Object.values(completed).filter(Boolean).length;
-  $("totalTasks").textContent=tasks.length;
-  $("currentIndex").textContent=tasks.length ? Math.min(currentTaskIndex+1,tasks.length) : 0;
-  $("doneTasks").textContent=done;
-}
-async function loadMemory(showLoading=true){
-  if(showLoading) $("recentMemory").textContent="Loading memory...";
-  try{
-    const res=await fetch(API + "/memory");
-    const data=await res.json();
-    const items=data.memory || [];
-    $("memoryStatus").textContent=items.length ? "Memory: active" : "Memory: ready";
-    $("recentMemory").innerHTML=items.length ? items.slice(0,3).map(i=>`<div class="queue-item">${esc(i.next_move || i.decision || i.input || "Memory")}</div>`).join("") : "No memory yet.";
-  }catch(e){$("memoryStatus").textContent="Memory: unavailable";$("recentMemory").textContent="Memory endpoint unavailable.";}
-}
-function focusInput(){$("input").focus();}
-function scrollToExecution(){$("executionCard").scrollIntoView({behavior:"smooth",block:"center"});}
-healthCheck();
-loadMemory(false);
-</script>
+  <script>
+    const API = "https://executive-engine-os.onrender.com";
+    const input = document.getElementById("commandInput");
+    const runButton = document.getElementById("runButton");
+    const runButtonText = document.getElementById("runButtonText");
+    const loadingLine = document.getElementById("loadingLine");
+    const errorBox = document.getElementById("errorBox");
+    const results = document.getElementById("results");
+    const resultsGrid = document.getElementById("resultsGrid");
+    const healthStatus = document.getElementById("healthStatus");
+    const recentMemory = document.getElementById("recentMemory");
+    const recentDecisions = document.getElementById("recentDecisions");
+    const executionQueue = document.getElementById("executionQueue");
+    let currentActionIndex = 0;
+    let latestActions = [];
+    function escapeHTML(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+    function normalizeText(value, fallback = "Not provided.") { if (Array.isArray(value)) return value.filter(Boolean).join(" "); if (value === null || value === undefined || value === "") return fallback; if (typeof value === "object") return JSON.stringify(value, null, 2); return String(value); }
+    function normalizeActions(value) { if (Array.isArray(value)) return value.map((item) => normalizeText(item, "")).filter((item) => item.trim().length > 0); if (typeof value === "string" && value.trim()) return value.split(/\n|;|(?:\d+\.\s)/).map((item) => item.replace(/^[-•]\s*/, "").trim()).filter(Boolean); return []; }
+    function setLoading(isLoading) { runButton.disabled = isLoading; loadingLine.classList.toggle("show", isLoading); runButtonText.textContent = isLoading ? "Running..." : "Run Engine"; }
+    function showError(message) { errorBox.textContent = message; errorBox.classList.add("show"); }
+    function clearError() { errorBox.textContent = ""; errorBox.classList.remove("show"); }
+    function detectMode(text) { const lower = text.toLowerCase(); if (lower.includes("meeting")) return "meeting"; if (lower.includes("strategy")) return "strategy"; if (lower.includes("proposal")) return "proposal"; return "decision"; }
+    function cardHTML(label, title, body, extraClass = "") { return `<article class="result-card ${extraClass}"><div class="card-label">${escapeHTML(label)}</div><h3>${escapeHTML(title)}</h3><p>${escapeHTML(body)}</p></article>`; }
+    function renderResults(data) {
+      const whatToDoNow = normalizeText(data.what_to_do_now || data.whatToDoNow || data.next_move || data.decision);
+      const realityCheck = normalizeText(data.reality_check || data.realityCheck);
+      const decision = normalizeText(data.decision);
+      const nextMove = normalizeText(data.next_move || data.nextMove);
+      const risk = normalizeText(data.risk);
+      const priority = normalizeText(data.priority, "Medium");
+      const clarifyingQuestion = normalizeText(data.clarifying_question || data.clarifyingQuestion, "");
+      latestActions = normalizeActions(data.actions); currentActionIndex = 0;
+      const actionsHTML = latestActions.length ? latestActions.map((action, index) => `<li class="action-item" data-action-index="${index}"><span class="check">✓</span><span>${escapeHTML(action)}</span></li>`).join("") : `<li class="action-item"><span class="check"></span><span>No action list returned. Re-run with more context.</span></li>`;
+      resultsGrid.innerHTML = `<article class="result-card primary"><div class="card-label"><span>WHAT TO DO NOW</span><span class="priority-badge">${escapeHTML(priority)}</span></div><h3>${escapeHTML(whatToDoNow)}</h3><p>Execute the first action below, then reassess based on the result.</p></article>${cardHTML("REALITY CHECK", realityCheck, "This is the blunt operator read on the situation.")}${cardHTML("DECISION", decision, "This is the decision path the engine recommends.")}${cardHTML("NEXT MOVE", nextMove, "This is the immediate move to create momentum.")}${cardHTML("RISK", risk, "This is what could break, slow down, or create drag.")}<article class="result-card"><div class="card-label"><span>PRIORITY</span><span class="priority-badge">${escapeHTML(priority)}</span></div><h3>${escapeHTML(priority)}</h3><p>Use this to decide speed, depth, and attention level.</p></article><article class="result-card primary"><div class="card-label">ACTIONS</div><ul class="action-list" id="actionList">${actionsHTML}</ul><button id="completeTaskButton" class="complete-task" type="button" ${latestActions.length ? "" : "disabled"}>Complete Task</button></article>${clarifyingQuestion ? cardHTML("CLARIFYING QUESTION", clarifyingQuestion, "Answer this if you want the engine to sharpen the decision.", "primary") : ""}`;
+      results.classList.add("show");
+      const completeTaskButton = document.getElementById("completeTaskButton");
+      if (completeTaskButton) completeTaskButton.addEventListener("click", completeTask);
+      renderExecutionQueue(latestActions); renderRecentDecision(data);
+    }
+    function completeTask() { const actionItems = document.querySelectorAll(".action-item"); if (!actionItems.length || currentActionIndex >= actionItems.length) return; actionItems[currentActionIndex].classList.add("done"); currentActionIndex += 1; const button = document.getElementById("completeTaskButton"); if (button && currentActionIndex >= actionItems.length) { button.textContent = "All Tasks Complete"; button.disabled = true; } else if (button) button.textContent = `Complete Task ${currentActionIndex + 1}`; }
+    function renderExecutionQueue(actions) { if (!actions || !actions.length) { executionQueue.innerHTML = `<div class="empty-note">Run the engine to generate an execution queue.</div>`; return; } executionQueue.innerHTML = actions.slice(0, 5).map((action, index) => `<div class="queue-item"><div class="queue-num">${index + 1}</div><div><strong>${escapeHTML(action)}</strong><span>${index === 0 ? "Start here. Do not skip the first move." : "Next execution step."}</span></div></div>`).join(""); }
+    function renderRecentDecision(data) { const decision = normalizeText(data.decision, "Decision generated."); const nextMove = normalizeText(data.next_move || data.nextMove, "Next move generated."); recentDecisions.innerHTML = `<div class="mini-row"><span class="mini-dot"></span><div><strong>${escapeHTML(decision)}</strong><span>${escapeHTML(nextMove)}</span></div></div>`; }
+    async function runEngine() { const value = input.value.trim(); if (!value) { showError("Enter a command before running the engine."); input.focus(); return; } clearError(); setLoading(true); try { const response = await fetch(`${API}/run`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ input: value, mode: detectMode(value) }) }); if (!response.ok) throw new Error(`Backend returned ${response.status}`); const data = await response.json(); renderResults(data); await loadMemory(); } catch (error) { console.error(error); showError("Engine error: backend is not responding cleanly. Check Render service status, then try again."); } finally { setLoading(false); } }
+    async function checkHealth() { try { const response = await fetch(`${API}/health`, { method: "GET", cache: "no-store" }); if (!response.ok) throw new Error("Health check failed"); healthStatus.classList.remove("offline"); healthStatus.innerHTML = `<span class="status-light"></span><span>LIVE</span>`; } catch (error) { healthStatus.classList.add("offline"); healthStatus.innerHTML = `<span class="status-light"></span><span>Offline</span>`; } }
+    function memoryItemHTML(item) { const inputText = item.input || item.title || item.command || item.prompt || "Memory item"; const decisionText = item.decision || item.next_move || item.nextMove || item.mode || "Stored context"; return `<div class="mini-row"><span class="mini-dot"></span><div><strong>${escapeHTML(inputText).slice(0, 120)}</strong><span>${escapeHTML(decisionText).slice(0, 150)}</span></div></div>`; }
+    async function loadMemory() { try { const response = await fetch(`${API}/memory`, { method: "GET", cache: "no-store" }); if (!response.ok) throw new Error("Memory fetch failed"); const data = await response.json(); const items = Array.isArray(data) ? data : Array.isArray(data.items) ? data.items : Array.isArray(data.memory) ? data.memory : []; if (!items.length) { recentMemory.innerHTML = `<div class="empty-note">No memory returned yet. Run the engine to create context.</div>`; return; } recentMemory.innerHTML = items.slice(0, 5).map(memoryItemHTML).join(""); if (!recentDecisions.querySelector(".mini-row") || recentDecisions.textContent.includes("Recent decisions will appear")) { const decisionItems = items.filter((item) => item.decision || item.next_move || item.nextMove).slice(0, 3); if (decisionItems.length) recentDecisions.innerHTML = decisionItems.map(memoryItemHTML).join(""); } } catch (error) { recentMemory.innerHTML = `<div class="empty-note">Memory unavailable. The engine can still run if /run is live.</div>`; } }
+    document.querySelectorAll("[data-prompt]").forEach((button) => button.addEventListener("click", () => { input.value = button.getAttribute("data-prompt"); input.focus(); }));
+    runButton.addEventListener("click", runEngine);
+    input.addEventListener("keydown", (event) => { if ((event.metaKey || event.ctrlKey) && event.key === "Enter") { event.preventDefault(); runEngine(); } });
+    checkHealth(); loadMemory(); setInterval(checkHealth, 30000);
+  </script>
 </body>
 </html>
