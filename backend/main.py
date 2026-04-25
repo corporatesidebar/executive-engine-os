@@ -1,13 +1,34 @@
+import os
+import json
+import asyncio
+from typing import List, Optional
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from openai import OpenAI
-import os
-import json
-import requests
-from typing import Optional
+from openai import AsyncOpenAI
 
-app = FastAPI(title="Executive Engine V36")
+try:
+    from supabase import create_client, Client
+except Exception:
+    create_client = None
+    Client = None
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+
+supabase: Optional[Client] = None
+if create_client and SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception:
+        supabase = None
+
+app = FastAPI(title="Executive Engine OS V37")
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,125 +38,166 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-
-class Req(BaseModel):
+class RunRequest(BaseModel):
     input: str
-    mode: Optional[str] = "execution"
+    mode: str = "execution"
 
-def headers():
+class RunResponse(BaseModel):
+    decision: str
+    next_move: str
+    actions: List[str]
+    risk: str
+    priority: str
+
+SYSTEM_PROMPT = """
+You are Executive Engine OS, an elite COO/operator decision engine.
+
+Return ONLY valid JSON with this exact shape:
+{
+  "decision": "",
+  "next_move": "",
+  "actions": [],
+  "risk": "",
+  "priority": ""
+}
+
+Rules:
+- No markdown.
+- No explanation.
+- No extra text.
+- Always valid JSON.
+- Make the next_move immediate and specific.
+- Actions must be short, executable steps.
+- Priority must be High, Medium, or Low.
+"""
+
+def fallback_response(reason: str) -> dict:
     return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json"
+        "decision": "Backend fallback activated.",
+        "next_move": "Confirm OpenAI API key is valid and /run is working.",
+        "actions": [
+            "Check Render environment variable OPENAI_API_KEY",
+            "Check Render backend logs",
+            "Redeploy backend after saving changes"
+        ],
+        "risk": reason,
+        "priority": "High"
     }
 
-def get_memory(limit=5):
-    if not SUPABASE_URL or not SUPABASE_KEY:
+def clean_output(data: dict) -> dict:
+    actions = data.get("actions", [])
+    if not isinstance(actions, list):
+        actions = [str(actions)] if actions else []
+    actions = [str(a) for a in actions if str(a).strip()]
+
+    if not actions:
+        actions = ["Clarify the objective", "Identify the blocker", "Execute the first step"]
+
+    priority = str(data.get("priority", "High")).strip() or "High"
+    if priority.lower() not in ["high", "medium", "low"]:
+        priority = "High"
+
+    return {
+        "decision": str(data.get("decision", "Clarify the decision.")).strip(),
+        "next_move": str(data.get("next_move", "Execute the highest-leverage next step.")).strip(),
+        "actions": actions[:5],
+        "risk": str(data.get("risk", "Execution clarity is missing.")).strip(),
+        "priority": priority.capitalize()
+    }
+
+async def call_openai(user_prompt: str) -> dict:
+    if not openai_client:
+        return fallback_response("OPENAI_API_KEY is missing or not loaded.")
+
+    try:
+        response = await asyncio.wait_for(
+            openai_client.chat.completions.create(
+                model=OPENAI_MODEL,
+                temperature=0.3,
+                max_tokens=450,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt}
+                ],
+            ),
+            timeout=15
+        )
+
+        content = response.choices[0].message.content.strip()
+        parsed = json.loads(content)
+        return clean_output(parsed)
+
+    except Exception as e:
+        return fallback_response(f"OpenAI or JSON error: {str(e)[:160]}")
+
+def fetch_memory(limit: int = 5):
+    if not supabase:
         return []
     try:
-        url = f"{SUPABASE_URL}/rest/v1/items?select=input,mode,decision,next_move,actions,risk,priority,created_at&order=created_at.desc&limit={limit}"
-        r = requests.get(url, headers=headers(), timeout=6)
-        if r.status_code == 200:
-            return r.json()
+        res = (
+            supabase.table("items")
+            .select("input,mode,decision,next_move,actions,risk,priority,created_at")
+            .order("created_at", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return res.data if res.data else []
     except Exception:
-        pass
-    return []
+        return []
 
-def save_memory(req, output):
-    if not SUPABASE_URL or not SUPABASE_KEY:
+async def save_memory(input_text: str, mode: str, data: dict):
+    if not supabase:
         return
-    payload = {
-        "input": req.input,
-        "mode": req.mode,
-        "decision": output.get("decision", ""),
-        "next_move": output.get("next_move", ""),
-        "actions": output.get("actions", []),
-        "risk": output.get("risk", ""),
-        "priority": output.get("priority", "")
-    }
     try:
-        requests.post(f"{SUPABASE_URL}/rest/v1/items", headers=headers(), json=payload, timeout=6)
+        supabase.table("items").insert({
+            "input": input_text,
+            "mode": mode,
+            "decision": data.get("decision"),
+            "next_move": data.get("next_move"),
+            "actions": data.get("actions"),
+            "risk": data.get("risk"),
+            "priority": data.get("priority")
+        }).execute()
     except Exception:
         pass
 
 @app.get("/")
-def root():
-    return {"status": "ok", "service": "Executive Engine V36"}
+async def root():
+    return {"status": "ok", "service": "Executive Engine OS V37"}
 
 @app.get("/health")
-def health():
+async def health():
     return {
         "status": "ok",
-        "service": "Executive Engine V36",
-        "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
+        "service": "Executive Engine OS V37",
+        "openai_configured": bool(OPENAI_API_KEY),
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY)
     }
 
 @app.get("/memory")
-def memory():
-    return {"memory": get_memory(10)}
+async def memory():
+    return {"memory": fetch_memory(5)}
 
-@app.post("/run")
-async def run(req: Req):
-    memory_items = get_memory(5)
+@app.post("/run", response_model=RunResponse)
+async def run(req: RunRequest):
+    recent_memory = fetch_memory(3)
     memory_text = "\n".join([
-        f"Previous Input: {m.get('input','')} | Next Move: {m.get('next_move','')}"
-        for m in memory_items
+        f"- {m.get('mode','')}: {m.get('next_move') or m.get('decision') or m.get('input','')}"
+        for m in recent_memory
     ]) or "No prior memory."
 
-    prompt = f'''
-You are Executive Engine OS, a decision weapon for operators and executives.
-
+    prompt = f"""
 Mode: {req.mode}
 
 Recent memory:
 {memory_text}
 
-Current input:
+Current user input:
 {req.input}
 
-Return STRICT JSON only:
-{{
-  "decision": "clear executive decision",
-  "next_move": "single highest leverage action to do now",
-  "actions": ["specific task 1", "specific task 2", "specific task 3"],
-  "risk": "main risk/blocker",
-  "priority": "High | Medium | Low"
-}}
+Create one clear executive decision, one next move, 3-5 action steps, risk, and priority.
+"""
 
-Rules:
-- No markdown
-- No explanation
-- No generic advice
-- Actions must be executable
-- Next move must be immediate and force execution
-'''
-
-    try:
-        res = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.25,
-            max_tokens=450
-        )
-        raw = res.choices[0].message.content.strip()
-        output = json.loads(raw)
-    except Exception:
-        output = {
-            "decision": "Clarify the highest leverage objective.",
-            "next_move": "Identify the immediate blocker and take the first measurable step.",
-            "actions": ["Clarify the objective", "Identify the blocker", "Execute the next step"],
-            "risk": "Execution clarity is missing.",
-            "priority": "High"
-        }
-
-    if not isinstance(output.get("actions"), list):
-        output["actions"] = [str(output.get("actions", ""))]
-
-    save_memory(req, output)
-    return output
+    result = await call_openai(prompt)
+    asyncio.create_task(save_memory(req.input, req.mode, result))
+    return result

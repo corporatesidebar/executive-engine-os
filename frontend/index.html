@@ -3,193 +3,453 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Executive Engine V36</title>
+<title>Executive Engine OS V37</title>
 <style>
 :root{
-  --nav:#061a3a;--blue:#0f62fe;--orange:#ff5a1f;--bg:#f5f8fc;--card:#fff;
-  --line:#e2e8f0;--text:#0f172a;--muted:#64748b;--green:#16a34a;--red:#dc2626;
+  --nav:#07152d;
+  --blue:#0f62fe;
+  --orange:#ff5a1f;
+  --green:#16a34a;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+  --soft:#f8fafc;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-.app{display:grid;grid-template-columns:240px minmax(0,1fr) 340px;height:100vh}
-
-/* LEFT NAV */
-.sidebar{background:linear-gradient(180deg,var(--nav),#031225);color:#fff;padding:20px 16px}
-.logo{font-size:18px;font-weight:900;margin-bottom:24px}
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+.app{
+  display:grid;
+  grid-template-columns:220px minmax(0,1fr) 300px;
+  height:100vh;
+}
+.sidebar{
+  background:linear-gradient(180deg,#08162f,#050d1f);
+  color:#fff;
+  padding:18px 14px;
+}
+.logo{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:24px;
+}
 .logo span{color:var(--orange)}
-.nav-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9fb3d9;margin:18px 0 8px}
-.nav-item{width:100%;display:block;border:0;background:transparent;color:#dce8fa;text-align:left;padding:11px 12px;border-radius:10px;font-size:14px;margin-bottom:6px;cursor:pointer}
-.nav-item.active,.nav-item:hover{background:var(--blue);color:#fff}
-
-/* MAIN */
-.main{min-width:0;height:100vh;display:flex;flex-direction:column}
-.topbar{height:54px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-.live{background:#e7f8ef;color:#087a3a;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
-.workspace{flex:1;overflow:auto;padding:22px}
-
-/* READY */
-.ready-shell{background:#fff;border:1px solid var(--line);border-radius:22px;margin-bottom:18px;padding:24px;box-shadow:0 18px 42px rgba(15,35,70,.05)}
-.ready-center{width:min(880px,100%);margin:0 auto;text-align:center}
-.ready-center h1{margin:0 0 18px;font-size:30px;line-height:1.1;letter-spacing:-.04em;font-weight:850}
-.command-box{background:#fff;border:1px solid #d7e2f3;border-radius:999px;padding:12px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(15,35,70,.06)}
-.command-box textarea{flex:1;height:46px;min-height:46px;resize:none;border:0;outline:0;font-size:15px;line-height:1.4;padding:12px 8px;background:transparent;color:var(--text)}
-.plus{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:22px;color:var(--muted);flex-shrink:0}
-.mode-select{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:10px 12px;font-weight:800;outline:none}
-.run{width:40px;height:40px;border-radius:50%;border:0;background:var(--orange);color:#fff;font-weight:900;cursor:pointer;flex-shrink:0}
-.run:disabled{opacity:.55;cursor:not-allowed}
-.quick-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
-.quick-actions button{border:1px solid var(--line);background:#fff;color:#334155;padding:9px 13px;border-radius:999px;font-size:13px;cursor:pointer}
-
-/* STATUS */
-.status-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
-.status-pill{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750;background:#f8fafc;border:1px solid var(--line);color:#475569}
-.status-pill.good{background:#ecfdf5;border-color:#bbf7d0;color:#166534}
-
-/* NEXT MOVE */
-.next-strip{margin-top:18px;background:linear-gradient(135deg,#fff,#fff7ed);border:1px solid rgba(255,90,31,.25);border-left:6px solid var(--orange);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:center;text-align:left}
-.strip-label{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:var(--orange);font-weight:900}
-.strip-action{font-size:19px;line-height:1.25;font-weight:850}
-
-/* EXECUTION */
-.execution-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
-.execution-card.idle{display:none}
-.execution-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.execution-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:900}
-.current-task{border:2px solid #ffd7c6;background:#fff7ed;border-radius:16px;padding:18px;margin-bottom:14px}
-.current-task-label{font-size:12px;font-weight:900;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
-.current-task-text{font-size:22px;line-height:1.25;font-weight:850}
-.progress{height:9px;background:#edf2f7;border-radius:999px;overflow:hidden;margin-top:14px}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));width:0%}
-.action-buttons{display:flex;gap:10px;flex-wrap:wrap}
-.action-buttons button{background:var(--orange);color:#fff;border:0;padding:11px 17px;border-radius:10px;font-weight:800;cursor:pointer}
-.action-buttons button.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff}
-.action-buttons button.green{background:var(--green)}
-
-/* DETAILS */
-.detail-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
-.detail-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:900;margin-bottom:8px}
-.detail-text{color:#334155;line-height:1.5}
-.tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.tag{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}
+.nav-label{
+  color:#8ea2c7;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:18px 8px 8px;
+}
+.nav-btn{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#dbeafe;
+  text-align:left;
+  padding:11px 12px;
+  margin-bottom:5px;
+  cursor:pointer;
+  font-size:14px;
+}
+.nav-btn.active,.nav-btn:hover{
+  background:var(--blue);
+  color:#fff;
+}
+.main{
+  min-width:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+}
+.topbar strong{font-size:14px}
+.live{
+  color:#087a3a;
+  background:#e7f8ef;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+}
+.workspace{
+  flex:1;
+  overflow:auto;
+  padding:22px;
+}
+.ready{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:24px;
+  margin-bottom:16px;
+  box-shadow:0 14px 36px rgba(15,23,42,.05);
+}
+.ready-inner{
+  max-width:840px;
+  margin:0 auto;
+  text-align:center;
+}
+.ready h1{
+  margin:0 0 18px;
+  font-size:30px;
+  letter-spacing:-.04em;
+}
+.command-box{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  background:#fff;
+  border:1px solid #d7e2f3;
+  border-radius:999px;
+  padding:12px;
+  box-shadow:0 10px 30px rgba(15,35,70,.06);
+}
+.plus{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  display:grid;
+  place-items:center;
+  color:var(--muted);
+}
+textarea{
+  flex:1;
+  height:46px;
+  min-height:46px;
+  border:0;
+  outline:0;
+  resize:none;
+  font-size:15px;
+  background:transparent;
+  padding:12px 8px;
+}
+select{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+  border-radius:999px;
+  padding:10px 12px;
+  font-weight:800;
+  outline:0;
+}
+.run{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:0;
+  background:var(--orange);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+.run:disabled{opacity:.6;cursor:not-allowed}
+.quick{
+  margin-top:14px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.quick button{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:999px;
+  padding:9px 13px;
+  cursor:pointer;
+}
+.status-row{
+  margin-top:12px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+.status{
+  padding:6px 10px;
+  border-radius:999px;
+  background:#ecfdf5;
+  color:#166534;
+  font-size:12px;
+  font-weight:800;
+}
+.next-strip{
+  margin-top:18px;
+  background:linear-gradient(135deg,#fff,#fff7ed);
+  border:1px solid rgba(255,90,31,.25);
+  border-left:6px solid var(--orange);
+  border-radius:16px;
+  padding:14px 16px;
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:14px;
+  align-items:center;
+  text-align:left;
+}
+.label{
+  color:var(--orange);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  font-weight:900;
+}
+.next-text{
+  font-weight:850;
+  font-size:18px;
+}
+.error{
+  display:none;
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:14px;
+}
+.error.show{display:block}
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
+}
+.card.hidden{display:none}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+.card-title{
+  color:var(--blue);
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+}
+.task-box{
+  border:2px solid #ffd7c6;
+  background:#fff7ed;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:14px;
+}
+.task-label{
+  color:var(--orange);
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:8px;
+}
+.task-text{
+  font-size:22px;
+  font-weight:850;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.actions button{
+  border:0;
+  border-radius:10px;
+  padding:11px 17px;
+  font-weight:800;
+  cursor:pointer;
+}
+.green{background:var(--green);color:#fff}
+.secondary{background:#fff;color:var(--blue);border:1px solid #cfe0ff!important}
+.detail{
+  line-height:1.5;
+  color:#334155;
+}
+.tags{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tag{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:750;
+}
 .priority{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
 .risk{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
-.status{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
-
-/* RIGHT */
-.right{height:100vh;overflow:auto;background:#f0f5fb;border-left:1px solid var(--line);padding:14px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
-.panel h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
-.do-panel{border:2px solid var(--orange)}
-.do-panel h3{color:var(--orange)}
-.do-now-text{font-size:18px;font-weight:850;line-height:1.28}
-.metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf2f8}
+.active{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
+.rail{
+  background:#f0f5fb;
+  border-left:1px solid var(--line);
+  padding:14px;
+  overflow:auto;
+}
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:12px;
+}
+.panel.do{
+  border:2px solid var(--orange);
+}
+.panel h3{
+  margin:0 0 10px;
+  font-size:14px;
+  color:var(--blue);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.panel.do h3{color:var(--orange)}
+.do-text{
+  font-size:17px;
+  line-height:1.3;
+  font-weight:850;
+}
+.metric{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid #edf2f8;
+}
 .metric:last-child{border-bottom:0}
-.metric strong{font-size:20px}
-.queue-task{padding:9px 0;border-bottom:1px solid #edf2f8;font-size:14px}
-.queue-task.done{text-decoration:line-through;color:#94a3b8}
+.metric strong{font-size:19px}
+.queue-item{
+  padding:8px 0;
+  border-bottom:1px solid #edf2f8;
+  font-size:13px;
+}
+.queue-item.done{text-decoration:line-through;color:#94a3b8}
 .empty{color:var(--muted);font-size:13px}
-.error{color:var(--red);font-size:13px}
-
-@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.right{display:none}}
+@media(max-width:1150px){
+  .app{grid-template-columns:210px 1fr}
+  .rail{display:none}
+}
 @media(max-width:760px){
-  body{overflow:auto}.app{display:block;height:auto}.sidebar{display:none}.main{height:auto}.workspace{padding:14px}
-  .ready-shell{padding:20px}.ready-center h1{font-size:25px}.command-box{border-radius:24px;align-items:flex-end}
-  .mode-select{max-width:120px}.next-strip{grid-template-columns:1fr}
+  body{overflow:auto}
+  .app{display:block;height:auto}
+  .sidebar{display:none}
+  .workspace{padding:14px}
+  .command-box{border-radius:24px}
+  .next-strip{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 <div class="app">
-<aside class="sidebar">
-  <div class="logo">Executive <span>Engine</span></div>
-  <div class="nav-title">Command</div>
-  <button class="nav-item active" onclick="focusInput()">Command Center</button>
-  <button class="nav-item" onclick="setMode('execution')">Run The Day</button>
-  <button class="nav-item" onclick="setMode('decision')">Decisions</button>
-  <div class="nav-title">Execution</div>
-  <button class="nav-item" onclick="scrollToExecution()">Tasks</button>
-  <button class="nav-item" onclick="loadMemory(true)">Memory</button>
-</aside>
+  <aside class="sidebar">
+    <div class="logo">Executive <span>Engine</span></div>
+    <div class="nav-label">Command</div>
+    <button class="nav-btn active" onclick="focusInput()">Command Center</button>
+    <button class="nav-btn" onclick="setMode('execution')">Run The Day</button>
+    <button class="nav-btn" onclick="setMode('decision')">Decisions</button>
+    <div class="nav-label">Execution</div>
+    <button class="nav-btn" onclick="scrollToExecution()">Tasks</button>
+    <button class="nav-btn" onclick="loadMemory(true)">Memory</button>
+  </aside>
 
-<main class="main">
-  <div class="topbar">
-    <strong>Decision Weapon System V36</strong>
-    <div class="live">LIVE</div>
-  </div>
-
-  <div class="workspace">
-    <div class="ready-shell">
-      <div class="ready-center">
-        <h1>Ready when you are.</h1>
-
-        <div class="command-box">
-          <div class="plus">+</div>
-          <textarea id="input" placeholder="Ask anything — decision, meeting, task, problem..."></textarea>
-          <select id="mode" class="mode-select">
-            <option value="execution">Execution</option>
-            <option value="strategy">Strategy</option>
-            <option value="decision">Decision</option>
-            <option value="meeting">Meeting</option>
-          </select>
-          <button id="runBtn" class="run" onclick="runEngine()">➜</button>
-        </div>
-
-        <div class="quick-actions">
-          <button onclick="setMode('execution')">Run the day</button>
-          <button onclick="setMode('decision')">Make a decision</button>
-          <button onclick="setMode('meeting')">Prep meeting</button>
-          <button onclick="setMode('strategy')">Strategy</button>
-        </div>
-
-        <div class="status-row">
-          <div id="backendStatus" class="status-pill">Backend: checking</div>
-          <div id="memoryStatus" class="status-pill">Memory: checking</div>
-        </div>
-
-        <div class="next-strip">
-          <div class="strip-label">Next Move</div>
-          <div id="topNextMove" class="strip-action">Define the one action that creates the most progress today.</div>
-        </div>
-      </div>
+  <main class="main">
+    <div class="topbar">
+      <strong>Decision Weapon System V37</strong>
+      <div class="live">LIVE</div>
     </div>
 
-    <div id="executionArea">
-      <div class="execution-card idle" id="executionCard"></div>
+    <div class="workspace">
+      <div id="errorBox" class="error"></div>
+
+      <section class="ready">
+        <div class="ready-inner">
+          <h1>Ready when you are.</h1>
+          <div class="command-box">
+            <div class="plus">+</div>
+            <textarea id="input" placeholder="Ask anything — decision, meeting, task, problem..."></textarea>
+            <select id="mode">
+              <option value="execution">Execution</option>
+              <option value="strategy">Strategy</option>
+              <option value="decision">Decision</option>
+              <option value="meeting">Meeting</option>
+            </select>
+            <button id="runBtn" class="run" onclick="runEngine()">➜</button>
+          </div>
+          <div class="quick">
+            <button onclick="setMode('execution')">Run the day</button>
+            <button onclick="setMode('decision')">Make a decision</button>
+            <button onclick="setMode('meeting')">Prep meeting</button>
+            <button onclick="setMode('strategy')">Strategy</button>
+          </div>
+          <div class="status-row">
+            <div id="backendStatus" class="status">Backend: checking</div>
+            <div id="memoryStatus" class="status">Memory: checking</div>
+          </div>
+          <div class="next-strip">
+            <div class="label">Next Move</div>
+            <div id="topNextMove" class="next-text">Define the one action that creates the most progress today.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="executionCard" class="card hidden">
+        <div class="card-head">
+          <div class="card-title">Current Task</div>
+          <div id="taskCount">0 / 0</div>
+        </div>
+        <div class="task-box">
+          <div class="task-label">Do this now</div>
+          <div id="currentTask" class="task-text"></div>
+        </div>
+        <div class="actions">
+          <button class="green" onclick="completeTask()">Complete Task</button>
+          <button class="secondary" onclick="skipTask()">Skip</button>
+          <button class="secondary" onclick="focusInput()">New Input</button>
+        </div>
+      </section>
+
+      <section id="detailCard" class="card">
+        <div class="card-title">Decision Details</div>
+        <div id="decisionDetail" class="detail">Run the engine to generate the decision, risk, priority and execution sequence.</div>
+      </section>
     </div>
+  </main>
 
-    <div id="detailArea">
-      <div class="detail-card">
-        <div class="detail-title">Decision Details</div>
-        <div class="detail-text">Run the engine to generate the decision, risk, priority and execution sequence.</div>
-      </div>
+  <aside class="rail">
+    <div class="panel do">
+      <h3>Do This Now</h3>
+      <div id="railDoNow" class="do-text">Run the engine to create your first action.</div>
     </div>
-  </div>
-</main>
-
-<aside class="right">
-  <div class="panel do-panel">
-    <h3>Do This Now</h3>
-    <div id="railDoNow" class="do-now-text">Run the engine to create your first action.</div>
-  </div>
-
-  <div class="panel">
-    <h3>Execution Metrics</h3>
-    <div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div>
-    <div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div>
-    <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
-  </div>
-
-  <div class="panel">
-    <h3>Execution Queue</h3>
-    <div id="queueList" class="empty">No tasks yet.</div>
-  </div>
-
-  <div class="panel">
-    <h3>Recent Memory</h3>
-    <div id="recentMemory" class="empty">No memory loaded.</div>
-  </div>
-</aside>
+    <div class="panel">
+      <h3>Execution Metrics</h3>
+      <div class="metric"><span>Total Tasks</span><strong id="totalTasks">0</strong></div>
+      <div class="metric"><span>Current Task</span><strong id="currentIndex">0</strong></div>
+      <div class="metric"><span>Done</span><strong id="doneTasks">0</strong></div>
+    </div>
+    <div class="panel">
+      <h3>Execution Queue</h3>
+      <div id="queueList" class="empty">No tasks yet.</div>
+    </div>
+    <div class="panel">
+      <h3>Recent Memory</h3>
+      <div id="recentMemory" class="empty">No memory loaded.</div>
+    </div>
+  </aside>
 </div>
 
 <script>
@@ -202,8 +462,20 @@ let completed = {};
 
 function esc(v){
   return String(v || "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showError(msg){
+  $("errorBox").textContent = msg;
+  $("errorBox").classList.add("show");
+}
+function clearError(){
+  $("errorBox").textContent = "";
+  $("errorBox").classList.remove("show");
 }
 
 function setMode(mode){
@@ -211,14 +483,14 @@ function setMode(mode){
   $("input").focus();
 }
 
-function normalize(d){
-  const actions = Array.isArray(d.actions) ? d.actions : [];
+function normalize(data){
+  const actions = Array.isArray(data.actions) ? data.actions : [];
   return {
-    decision: d.decision || "Decision not returned.",
-    next_move: d.next_move || "Define the highest leverage next move.",
+    decision: data.decision || "Decision not returned.",
+    next_move: data.next_move || "Define the highest leverage next move.",
     actions: actions.length ? actions : ["Clarify the objective", "Identify the blocker", "Execute the next step"],
-    risk: d.risk || "Risk not returned.",
-    priority: d.priority || "High"
+    risk: data.risk || "Risk not returned.",
+    priority: data.priority || "High"
   };
 }
 
@@ -227,45 +499,42 @@ async function healthCheck(){
     const res = await fetch(API + "/health");
     const data = await res.json();
     $("backendStatus").textContent = data.status === "ok" ? "Backend: live" : "Backend: issue";
-    $("backendStatus").classList.toggle("good", data.status === "ok");
   }catch(e){
     $("backendStatus").textContent = "Backend: unavailable";
   }
 }
 
 async function runEngine(){
-  const value = $("input").value.trim();
+  const input = $("input").value.trim();
   const mode = $("mode").value;
-  const btn = $("runBtn");
 
-  if(!value) return;
+  if(!input){
+    showError("Enter a command first.");
+    return;
+  }
 
-  btn.disabled = true;
-  btn.textContent = "...";
-  $("input").value = "";
+  clearError();
+  $("runBtn").disabled = true;
+  $("runBtn").textContent = "...";
 
   try{
     const res = await fetch(API + "/run", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({input:value, mode})
+      body:JSON.stringify({input, mode})
     });
 
-    if(!res.ok) throw new Error("Bad response");
+    if(!res.ok) throw new Error("Backend returned " + res.status);
+
     const data = normalize(await res.json());
     startRun(data);
+    $("input").value = "";
     loadMemory(false);
   }catch(e){
-    startRun({
-      decision:"Backend connection issue.",
-      next_move:"Confirm backend is live and /run is working.",
-      actions:["Open backend URL", "Check Render logs", "Redeploy backend"],
-      risk:"Frontend cannot receive engine output.",
-      priority:"High"
-    });
+    showError("Run failed: " + e.message);
   }finally{
-    btn.disabled = false;
-    btn.textContent = "➜";
+    $("runBtn").disabled = false;
+    $("runBtn").textContent = "➜";
   }
 }
 
@@ -279,22 +548,8 @@ function startRun(data){
 
   renderExecution();
   renderQueue();
-  renderDetail(data);
+  renderDetails();
   updateMetrics();
-}
-
-function renderDetail(d){
-  $("detailArea").innerHTML = `
-    <div class="detail-card">
-      <div class="detail-title">Decision Details</div>
-      <div class="detail-text">${esc(d.decision)}</div>
-      <div class="tags">
-        <div class="tag priority">Priority: ${esc(d.priority)}</div>
-        <div class="tag risk">Risk: ${esc(d.risk)}</div>
-        <div class="tag status">Execution Mode Active</div>
-      </div>
-    </div>
-  `;
 }
 
 function renderExecution(){
@@ -302,37 +557,30 @@ function renderExecution(){
 
   const tasks = activeRun.actions;
   const doneCount = Object.values(completed).filter(Boolean).length;
-  const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
 
   if(doneCount >= tasks.length){
-    $("executionArea").innerHTML = `
-      <div class="execution-card" id="executionCard">
-        <div class="execution-title">Execution Complete</div>
-        <div style="background:#ecfdf5;border-left:5px solid var(--green);border-radius:14px;padding:14px;color:#166534;font-weight:800">Execution complete. Feed the next decision into the system.</div>
-        <div style="margin-top:12px"><button class="green" onclick="focusInput()">Run Next Decision</button></div>
-      </div>`;
+    $("executionCard").classList.add("hidden");
+    $("railDoNow").textContent = "Execution complete. Run the next decision.";
     updateMetrics();
     return;
   }
 
-  $("executionArea").innerHTML = `
-    <div class="execution-card" id="executionCard">
-      <div class="execution-top">
-        <div class="execution-title">Current Task</div>
-        <div>${currentTaskIndex + 1} / ${tasks.length}</div>
-      </div>
-      <div class="current-task">
-        <div class="current-task-label">Do this now</div>
-        <div class="current-task-text">${esc(tasks[currentTaskIndex])}</div>
-        <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
-      </div>
-      <div class="action-buttons">
-        <button class="green" onclick="completeTask()">Complete Task</button>
-        <button class="secondary" onclick="skipTask()">Skip</button>
-        <button class="secondary" onclick="focusInput()">New Input</button>
-      </div>
-    </div>`;
+  $("executionCard").classList.remove("hidden");
+  $("taskCount").textContent = `${currentTaskIndex + 1} / ${tasks.length}`;
+  $("currentTask").textContent = tasks[currentTaskIndex];
   updateMetrics();
+}
+
+function renderDetails(){
+  if(!activeRun) return;
+  $("decisionDetail").innerHTML = `
+    ${esc(activeRun.decision)}
+    <div class="tags">
+      <span class="tag priority">Priority: ${esc(activeRun.priority)}</span>
+      <span class="tag risk">Risk: ${esc(activeRun.risk)}</span>
+      <span class="tag active">Execution Mode Active</span>
+    </div>
+  `;
 }
 
 function completeTask(){
@@ -345,25 +593,17 @@ function completeTask(){
 }
 
 function skipTask(){
-  completed[currentTaskIndex] = true;
-  while(completed[currentTaskIndex] && currentTaskIndex < activeRun.actions.length - 1){
-    currentTaskIndex++;
-  }
-  renderExecution();
-  renderQueue();
+  completeTask();
 }
 
 function renderQueue(){
-  const list = $("queueList");
   if(!activeRun){
-    list.innerHTML = "No tasks yet.";
+    $("queueList").innerHTML = "No tasks yet.";
     return;
   }
-
-  list.innerHTML = activeRun.actions.map((t,i)=>`
-    <div class="queue-task ${completed[i] ? "done" : ""}">
-      ${i + 1}. ${esc(t)}
-    </div>`).join("");
+  $("queueList").innerHTML = activeRun.actions.map((task, i) => `
+    <div class="queue-item ${completed[i] ? "done" : ""}">${i+1}. ${esc(task)}</div>
+  `).join("");
 }
 
 function updateMetrics(){
@@ -374,32 +614,24 @@ function updateMetrics(){
   $("doneTasks").textContent = done;
 }
 
-function focusInput(){ $("input").focus(); }
-function scrollToExecution(){ $("executionCard")?.scrollIntoView({behavior:"smooth",block:"center"}); }
-
-async function loadMemory(showLoading = true){
-  const recent = $("recentMemory");
-  if(showLoading) recent.textContent = "Loading memory...";
-
+async function loadMemory(showLoading=true){
+  if(showLoading) $("recentMemory").textContent = "Loading memory...";
   try{
     const res = await fetch(API + "/memory");
     const data = await res.json();
     const items = data.memory || [];
-
     $("memoryStatus").textContent = items.length ? "Memory: active" : "Memory: ready";
-    $("memoryStatus").classList.add("good");
-
-    if(!items.length){
-      recent.textContent = "No memory yet.";
-      return;
-    }
-
-    recent.innerHTML = items.slice(0,3).map(i=>`<div style="margin-bottom:8px">${esc(i.next_move || i.decision || "Memory")}</div>`).join("");
+    $("recentMemory").innerHTML = items.length
+      ? items.slice(0,3).map(i => `<div class="queue-item">${esc(i.next_move || i.decision || i.input || "Memory")}</div>`).join("")
+      : "No memory yet.";
   }catch(e){
     $("memoryStatus").textContent = "Memory: unavailable";
-    recent.textContent = "Memory endpoint unavailable.";
+    $("recentMemory").textContent = "Memory endpoint unavailable.";
   }
 }
+
+function focusInput(){ $("input").focus(); }
+function scrollToExecution(){ $("executionCard").scrollIntoView({behavior:"smooth", block:"center"}); }
 
 healthCheck();
 loadMemory(false);
