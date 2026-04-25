@@ -1,257 +1,27 @@
-<!-- /frontend/index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Inter', sans-serif;
-    background: #f5f7fb;
-    color: #1f2937;
-}
-
-/* TOP NAV */
-.topbar {
-    height: 56px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-}
-.topbar-left {
-    font-weight: 600;
-}
-.topbar-right {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-.live-badge {
-    background: #e6f9ed;
-    color: #16a34a;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-/* LAYOUT */
-.container {
-    display: flex;
-    height: calc(100vh - 56px);
-}
-
-/* SIDEBAR */
-.sidebar {
-    width: 240px;
-    background: #0f172a;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-}
-.sidebar h2 {
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-.nav-section {
-    margin-bottom: 20px;
-}
-.nav-title {
-    font-size: 11px;
-    opacity: 0.6;
-    margin-bottom: 8px;
-}
-.nav-item {
-    padding: 10px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-bottom: 6px;
-}
-.nav-item.active {
-    background: #2563eb;
-}
-
-/* MAIN */
-.main {
-    flex: 1;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* CENTER */
-.center {
-    width: 640px;
-    text-align: center;
-}
-.center h1 {
-    font-size: 26px;
-    margin-bottom: 10px;
-}
-.center p {
-    color: #6b7280;
-    margin-bottom: 20px;
-}
-
-/* INPUT */
-.input-box {
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    padding: 16px;
-    text-align: left;
-}
-textarea {
-    width: 100%;
-    border: none;
-    resize: none;
-    outline: none;
-    font-size: 14px;
-    min-height: 80px;
-}
-.input-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-}
-.run-btn {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-/* QUICK */
-.quick {
-    margin-top: 16px;
-}
-.quick button {
-    margin: 4px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    cursor: pointer;
-}
-
-/* RIGHT PANEL */
-.right {
-    width: 300px;
-    padding: 20px;
-}
-.card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 14px;
-    border: 1px solid #e5e7eb;
-}
-.card.dark {
-    background: #0f172a;
-    color: #fff;
-}
-</style>
+<meta charset="UTF-8">
+<title>Executive Engine</title>
 </head>
-
 <body>
+<textarea id="input"></textarea>
+<button onclick="run()">Run</button>
+<pre id="output"></pre>
 
-<!-- TOP NAV -->
-<div class="topbar">
-    <div class="topbar-left">Executive Flow System</div>
-    <div class="topbar-right">
-        <div class="live-badge">LIVE</div>
-    </div>
-</div>
+<script>
+const API = "https://executive-engine-os-v2.onrender.com";
 
-<div class="container">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>Executive Engine OS</h2>
-
-    <div class="nav-section">
-        <div class="nav-title">COMMAND</div>
-        <div class="nav-item active">Command Center</div>
-        <div class="nav-item">Daily Brief</div>
-        <div class="nav-item">Decisions</div>
-        <div class="nav-item">Meeting Prep</div>
-    </div>
-
-    <div class="nav-section">
-        <div class="nav-title">INTELLIGENCE</div>
-        <div class="nav-item">Insights</div>
-        <div class="nav-item">Strategy Board</div>
-        <div class="nav-item">Risk Monitor</div>
-        <div class="nav-item">Team Pulse</div>
-        <div class="nav-item">Financial Snapshot</div>
-    </div>
-
-    <div class="nav-section">
-        <div class="nav-title">RESOURCES</div>
-        <div class="nav-item">Active Projects</div>
-        <div class="nav-item">Files</div>
-        <div class="nav-item">Notes</div>
-        <div class="nav-item">Upload Context</div>
-    </div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<div class="center">
-    <h1>How can I help you execute today?</h1>
-    <p>Drop the situation. I'll turn it into one clear decision, the next move, risk, and priority.</p>
-
-    <div class="input-box">
-        <textarea placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
-
-        <div class="input-footer">
-            <span style="font-size:12px;color:#9ca3af;">Press ⌘ + Enter to submit</span>
-            <button class="run-btn">Run Engine</button>
-        </div>
-    </div>
-
-    <div class="quick">
-        <button>Decide what to focus on this week</button>
-        <button>Prepare for a meeting</button>
-        <button>Turn an idea into action</button>
-    </div>
-</div>
-
-</div>
-
-<!-- RIGHT PANEL -->
-<div class="right">
-    <div class="card">
-        <b>Critical Milestones</b>
-        <p style="margin-top:8px;font-size:13px;">Q2 Board Meeting</p>
-    </div>
-
-    <div class="card" style="background:#ecfdf5;">
-        <b>Focus Today</b>
-        <p style="font-size:13px;">Finalize Q2 financial strategy</p>
-    </div>
-
-    <div class="card dark">
-        <b>AI Recommendations</b>
-        <p style="font-size:13px;margin-top:8px;">Prioritize board prep</p>
-    </div>
-</div>
-
-</div>
-
+async function run(){
+  const input = document.getElementById("input").value;
+  const res = await fetch(API + "/run", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({input, mode:"execution"})
+  });
+  const data = await res.json();
+  document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+}
+</script>
 </body>
 </html>
