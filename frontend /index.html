@@ -1,1 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Executive Engine OS</title>
 
+  <style>
+    :root {
+      --navy:#081426;
+      --bg:#f3f6fb;
+      --white:#ffffff;
+      --border:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --blue:#2f80ed;
+      --orange:#ff7a1a;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+      background:var(--bg);
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .app {
+      display:grid;
+      grid-template-columns:240px 1fr 300px;
+      height:100vh;
+    }
+
+    .sidebar {
+      background:var(--navy);
+      color:white;
+      padding:20px;
+    }
+
+    .main {
+      display:flex;
+      flex-direction:column;
+      background:white;
+    }
+
+    .chat {
+      flex:1;
+      overflow-y:auto;
+      padding:20px;
+      padding-bottom:120px;
+    }
+
+    .message {
+      max-width:700px;
+      margin-bottom:16px;
+      padding:14px;
+      border-radius:12px;
+    }
+
+    .user {
+      margin-left:auto;
+      background:var(--blue);
+      color:white;
+    }
+
+    .assistant {
+      background:white;
+      border:1px solid var(--border);
+    }
+
+    .card {
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      margin-top:8px;
+      background:#fafafa;
+    }
+
+    .label {
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:4px;
+      text-transform:uppercase;
+    }
+
+    .input-bar {
+      position:fixed;
+      bottom:0;
+      left:240px;
+      right:300px;
+      background:white;
+      border-top:1px solid var(--border);
+      padding:10px;
+      display:flex;
+      gap:10px;
+    }
+
+    textarea {
+      flex:1;
+      resize:none;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+    }
+
+    button {
+      padding:10px 16px;
+      background:var(--orange);
+      border:none;
+      color:white;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .right {
+      background:#f8fafc;
+      border-left:1px solid var(--border);
+      padding:16px;
+      overflow:auto;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="sidebar">
+    Executive Engine
+  </div>
+
+  <div class="main">
+
+    <div id="chat" class="chat"></div>
+
+    <div class="input-bar">
+      <textarea id="input" placeholder="Run your next move..."></textarea>
+      <button onclick="send()">Run</button>
+      <button onclick="clearChat()">Clear</button>
+    </div>
+
+  </div>
+
+  <div class="right">
+    <h4>Archive</h4>
+    <div id="archive"></div>
+
+    <h4>Memory</h4>
+    <div id="memory"></div>
+  </div>
+
+</div>
+
+<script>
+const API = "https://executive-engine-os.onrender.com";
+
+let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+
+const chat = document.getElementById("chat");
+
+function save() {
+  localStorage.setItem("messages", JSON.stringify(messages));
+}
+
+function render() {
+  chat.innerHTML = "";
+
+  messages.forEach((m, i) => {
+    const div = document.createElement("div");
+    div.className = "message " + m.role;
+    div.id = "msg-" + i;
+
+    if (m.role === "user") {
+      div.textContent = m.content;
+    } else {
+      const d = m.content || {};
+
+      div.innerHTML = `
+        ${d.what_to_do_now ? card("What To Do Now", d.what_to_do_now) : ""}
+        ${d.decision ? card("Decision", d.decision) : ""}
+        ${d.next_move ? card("Next Move", d.next_move) : ""}
+        ${d.actions ? card("Actions", "<ul>"+d.actions.map(a=>"<li>"+a+"</li>").join("")+"</ul>") : ""}
+        ${d.risk ? card("Risk", d.risk) : ""}
+        ${d.priority ? card("Priority", d.priority) : ""}
+        ${d.reality_check ? card("Reality Check", d.reality_check) : ""}
+        ${d.clarifying_question ? card("Clarifying Question", d.clarifying_question) : ""}
+      `;
+    }
+
+    chat.appendChild(div);
+  });
+
+  chat.scrollTop = chat.scrollHeight;
+  renderArchive();
+}
+
+function card(label, value) {
+  return `
+    <div class="card">
+      <div class="label">${label}</div>
+      <div>${value}</div>
+    </div>
+  `;
+}
+
+async function send() {
+  const inputEl = document.getElementById("input");
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  messages.push({
+    role: "user",
+    content: text,
+    timestamp: new Date().toISOString()
+  });
+
+  inputEl.value = "";
+  render();
+  save();
+
+  try {
+    const res = await fetch(API + "/run", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        input:text,
+        mode:"execution"
+      })
+    });
+
+    const data = await res.json();
+
+    messages.push({
+      role:"assistant",
+      content:data,
+      timestamp:new Date().toISOString()
+    });
+
+  } catch {
+    messages.push({
+      role:"assistant",
+      content:{
+        decision:"Backend error. Confirm /run is live.",
+        next_move:"Check backend",
+        actions:["Check API","Check server"],
+        risk:"No response",
+        priority:"High"
+      }
+    });
+  }
+
+  render();
+  save();
+}
+
+function clearChat() {
+  messages = [];
+  save();
+  render();
+}
+
+function renderArchive() {
+  const archive = document.getElementById("archive");
+  const users = messages.filter(m=>m.role==="user").reverse();
+
+  archive.innerHTML = users.map((m,i)=>`
+    <div onclick="scrollToMsg(${messages.indexOf(m)})">
+      ${m.content.substring(0,50)}
+    </div>
+  `).join("");
+}
+
+function scrollToMsg(i) {
+  const el = document.getElementById("msg-"+i);
+  if (el) el.scrollIntoView({behavior:"smooth"});
+}
+
+async function loadMemory() {
+  try {
+    const res = await fetch(API + "/memory");
+    const data = await res.json();
+
+    document.getElementById("memory").innerHTML =
+      data.memory.map(m=>`<div>${m.input}</div>`).join("");
+  } catch {
+    document.getElementById("memory").innerText = "Memory unavailable";
+  }
+}
+
+document.getElementById("input").addEventListener("keydown", e=>{
+  if (e.key==="Enter" && (e.ctrlKey || e.metaKey || !e.shiftKey)) {
+    e.preventDefault();
+    send();
+  }
+});
+
+render();
+loadMemory();
+</script>
+
+</body>
+</html>
