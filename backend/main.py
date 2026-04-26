@@ -1,2 +1,1 @@
-import os
-print("Placeholder - replace with provided main.py content")
+from fastapi.middleware.cors import CORSMiddleware
