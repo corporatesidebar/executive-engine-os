@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Executive Engine OS V43</title>
+
+<style>
+:root{
+  --nav:#061226;
+  --nav2:#0b1f42;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+  --blue:#2563eb;
+  --blue2:#1d4ed8;
+  --orange:#ff6a1a;
+  --green:#16a34a;
+  --red:#dc2626;
+  --amber:#f59e0b;
+  --soft:#f8fafc;
+  --shadow:0 18px 48px rgba(15,23,42,.10);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  height:100%;
+  margin:0;
+}
+
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+
+.app{
+  display:grid;
+  grid-template-columns:252px minmax(0,1fr) 350px;
+  height:100vh;
+}
+
+/* LEFT */
+.sidebar{
+  background:linear-gradient(180deg,var(--nav),#030814);
+  color:#e5edf9;
+  padding:18px 14px;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.brand{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:8px 8px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),#38bdf8);
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  color:#fff;
+}
+
+.brand h1{
+  margin:0;
+  font-size:14px;
+  color:#fff;
+}
+
+.brand p{
+  margin:4px 0 0;
+  color:#9fb1cf;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.nav-scroll{
+  flex:1;
+  overflow:auto;
+  padding-top:16px;
+}
+
+.nav-label{
+  color:#7f92b4;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  margin:16px 10px 8px;
+  font-weight:800;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#dce8fb;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:14px;
+  text-align:left;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:rgba(37,99,235,.22);
+  color:#fff;
+}
+
+.nav-ico{
+  width:22px;
+  height:22px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.08);
+  font-size:12px;
+}
+
+.left-actions{
+  display:grid;
+  gap:8px;
+  margin:14px 0;
+}
+
+.left-action{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  border-radius:12px;
+  padding:11px 12px;
+  text-align:left;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.left-action:hover{
+  background:rgba(37,99,235,.22);
+}
+
+.mode-card{
+  margin-top:8px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+}
+
+.mode-card strong{
+  display:block;
+  color:#fff;
+  font-size:13px;
+}
+
+.mode-card span{
+  display:block;
+  color:#9fb1cf;
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* MAIN */
+.main{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  background:#f8fafc;
+}
+
+.topbar{
+  height:62px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+}
+
+.topbar h2{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+
+.topbar span{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.live{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#ecfdf5;
+  border:1px solid #bbf7d0;
+  color:#047857;
+  font-size:12px;
+  font-weight:800;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+.small-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:12px;
+  padding:9px 12px;
+  cursor:pointer;
+  font-weight:850;
+}
+
+.small-btn:hover{
+  background:#f8fafc;
+}
+
+.top-nav{
+  height:48px;
+  background:#ffffff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 22px;
+  overflow-x:auto;
+  flex:0 0 auto;
+}
+
+.top-nav-left,
+.top-nav-right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+
+.top-tab{
+  border:1px solid transparent;
+  background:transparent;
+  color:#475569;
+  border-radius:999px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.top-tab:hover,
+.top-tab.active{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+}
+
+.global-search{
+  width:240px;
+  max-width:32vw;
+  border:1px solid var(--line);
+  background:#f8fafc;
+  border-radius:999px;
+  padding:9px 12px;
+  outline:0;
+  font-size:13px;
+}
+
+.search-results{
+  position:fixed;
+  top:112px;
+  right:370px;
+  width:min(520px,calc(100vw - 40px));
+  max-height:420px;
+  overflow:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(15,23,42,.18);
+  padding:10px;
+  z-index:45;
+  display:none;
+}
+
+.search-results.show{
+  display:block;
+}
+
+.search-result{
+  padding:11px;
+  border-radius:12px;
+  cursor:pointer;
+  border:1px solid transparent;
+  font-size:13px;
+  color:#334155;
+}
+
+.search-result:hover{
+  background:#f8fafc;
+  border-color:#edf2f7;
+}
+
+.search-result strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:3px;
+}
+
+.function-grid{
+  display:grid;
+  gap:8px;
+}
+
+.function-btn{
+  width:100%;
+  border:1px solid var(--line);
+  background:#f8fafc;
+  color:#334155;
+  border-radius:12px;
+  padding:10px;
+  text-align:left;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.function-btn:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  color:#1d4ed8;
+}
+
+/* CHAT */
+.chat-wrap{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.chat-shell{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  padding:18px 28px 0;
+}
+
+.chat{
+  max-width:920px;
+  margin:0 auto;
+}
+
+.message{
+  display:flex;
+  margin-bottom:16px;
+}
+
+.message.user{
+  justify-content:flex-end;
+}
+
+.message.assistant{
+  justify-content:flex-start;
+}
+
+.bubble{
+  max-width:min(760px,90%);
+  border-radius:18px;
+  padding:14px 16px;
+  font-size:15px;
+  line-height:1.55;
+  word-break:break-word;
+}
+
+.user .bubble{
+  background:var(--blue);
+  color:#fff;
+  border-bottom-right-radius:6px;
+  box-shadow:0 10px 24px rgba(37,99,235,.18);
+}
+
+.assistant .bubble{
+  background:#fff;
+  color:var(--text);
+  border:1px solid var(--line);
+  border-bottom-left-radius:6px;
+  box-shadow:0 10px 24px rgba(15,23,42,.05);
+}
+
+/* CENTER */
+.center-stage{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+
+.center-inner{
+  width:100%;
+  max-width:900px;
+  text-align:center;
+}
+
+.center-inner h1{
+  margin:0 0 10px;
+  font-size:42px;
+  letter-spacing:-.04em;
+}
+
+.center-inner p{
+  margin:0 0 22px;
+  color:var(--muted);
+  font-size:16px;
+}
+
+.quick-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.quick-pill{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:999px;
+  padding:10px 13px;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.quick-pill:hover{
+  border-color:#bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* RESPONSE */
+.response-grid{
+  display:grid;
+  gap:10px;
+}
+
+.response-card{
+  background:#f8fafc;
+  border:1px solid #edf2f7;
+  border-radius:14px;
+  padding:12px;
+}
+
+.response-card.primary{
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+  border-color:#fed7aa;
+}
+
+.response-label{
+  color:#64748b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.response-value{
+  color:#0f172a;
+  font-weight:600;
+}
+
+.response-value ol{
+  margin:0;
+  padding-left:20px;
+}
+
+.response-value li{
+  margin:5px 0;
+}
+
+.priority-pill{
+  display:inline-flex;
+  padding:7px 10px;
+  border-radius:999px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-weight:900;
+}
+
+.copy-response{
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:8px 10px;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.error-box{
+  display:none;
+  max-width:920px;
+  margin:0 auto 12px;
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.error-box.show{
+  display:block;
+}
+
+/* COMPOSER */
+.composer-area{
+  padding:14px 28px 16px;
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+}
+
+.composer-area.bottom{
+  position:sticky;
+  bottom:0;
+}
+
+.composer{
+  max-width:920px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid #dbe4f0;
+  box-shadow:var(--shadow);
+  border-radius:22px;
+  overflow:hidden;
+}
+
+textarea{
+  width:100%;
+  min-height:70px;
+  max-height:180px;
+  resize:vertical;
+  border:0;
+  outline:0;
+  padding:18px 20px;
+  font-size:15px;
+  line-height:1.5;
+  font-family:inherit;
+}
+
+.composer-foot{
+  border-top:1px solid #eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+}
+
+.left-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+select{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+  border-radius:999px;
+  padding:9px 11px;
+  font-weight:850;
+  outline:0;
+}
+
+.hint{
+  color:#94a3b8;
+  font-size:12px;
+  font-weight:650;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:11px 16px;
+  cursor:pointer;
+  font-weight:900;
+}
+
+.run{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;
+  min-width:120px;
+}
+
+.run:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
+.clear{
+  background:#fff;
+  border:1px solid var(--line);
+  color:#475569;
+}
+
+/* RIGHT */
+.right{
+  background:#fff;
+  border-left:1px solid var(--line);
+  padding:18px;
+  overflow:auto;
+}
+
+.panel{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
+.panel h3{
+  margin:0 0 10px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#64748b;
+}
+
+.current-mode{
+  display:inline-flex;
+  padding:8px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#c2410c;
+  font-weight:900;
+}
+
+.item{
+  padding:10px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #edf2f7;
+  margin-bottom:8px;
+  font-size:13px;
+  color:#334155;
+  cursor:pointer;
+  position:relative;
+}
+
+.item.active-thread{
+  border-color:#bfdbfe;
+  background:#eff6ff;
+}
+
+.item strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:3px;
+}
+
+.item-actions{
+  display:flex;
+  gap:6px;
+  margin-top:8px;
+}
+
+.thread-action{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#475569;
+  border-radius:8px;
+  padding:5px 8px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:800;
+}
+
+.thread-action.delete{
+  color:#b91c1c;
+  border-color:#fecaca;
+  background:#fff5f5;
+}
+
+.empty{
+  color:#94a3b8;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.kpi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.kpi{
+  background:#f8fafc;
+  border:1px solid #edf2f7;
+  border-radius:12px;
+  padding:10px;
+}
+
+.kpi strong{
+  display:block;
+  font-size:18px;
+  color:#0f172a;
+}
+
+.kpi span{
+  display:block;
+  font-size:11px;
+  color:#64748b;
+  margin-top:2px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.thread-search{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 11px;
+  outline:0;
+  font-size:13px;
+  margin-bottom:10px;
+  background:#f8fafc;
+}
+
+.pin-badge{
+  display:inline-flex;
+  margin-left:6px;
+  padding:2px 6px;
+  border-radius:999px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#c2410c;
+  font-size:10px;
+  font-weight:900;
+}
+
+.status-line{
+  font-size:12px;
+  color:#64748b;
+  margin-top:6px;
+}
+
+/* MODAL */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(2,6,23,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+
+.modal-backdrop.show{
+  display:flex;
+}
+
+.modal{
+  width:min(760px,92vw);
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--line);
+  box-shadow:0 30px 80px rgba(15,23,42,.3);
+  padding:18px;
+}
+
+.modal h3{
+  margin:0 0 10px;
+}
+
+.modal pre{
+  background:#0f172a;
+  color:#e5edf9;
+  border-radius:14px;
+  padding:14px;
+  white-space:pre-wrap;
+  max-height:55vh;
+  overflow:auto;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:12px;
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#0f172a;
+  color:#fff;
+  padding:12px 14px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:800;
+  display:none;
+  z-index:80;
+  box-shadow:0 16px 40px rgba(15,23,42,.24);
+}
+
+.toast.show{
+  display:block;
+}
+
+@media(max-width:1150px){
+  .app{grid-template-columns:240px 1fr}
+  .right{display:none}
+}
+
+@media(max-width:760px){
+  body{overflow:auto}
+  .app{display:block;height:auto}
+  .sidebar{display:none}
+  .main{height:auto;min-height:100vh}
+  .chat-shell{padding:14px}
+  .center-stage{padding:20px 14px}
+  .center-inner h1{font-size:30px}
+  .composer-area{padding:12px 14px 16px}
+  .composer-foot{flex-direction:column;align-items:stretch}
+  .btn{width:100%}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">EE</div>
+      <div>
+        <h1>Executive Engine OS</h1>
+        <p>Decision-ready execution system</p>
+      </div>
+    </div>
+
+    <div class="nav-scroll">
+      <div class="nav-label">Command</div>
+      <button class="nav-btn active" data-mode="execution"><span class="nav-ico">⌘</span>Command Center</button>
+      <button class="nav-btn" data-mode="daily_brief"><span class="nav-ico">◷</span>Daily Brief</button>
+      <button class="nav-btn" data-mode="decision"><span class="nav-ico">◆</span>Decisions</button>
+      <button class="nav-btn" data-mode="meeting"><span class="nav-ico">◉</span>Meeting Prep</button>
+
+      <div class="nav-label">Intelligence</div>
+      <button class="nav-btn" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
+      <button class="nav-btn" data-mode="risk_review"><span class="nav-ico">!</span>Risk Review</button>
+      <button class="nav-btn" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
+    </div>
+
+    <div class="left-actions">
+      <button id="newThreadLeft" class="left-action">+ New Chat</button>
+      <button id="dailyRunLeft" class="left-action">Run My Day</button>
+      <button id="weeklyPlanLeft" class="left-action">Weekly Plan</button>
+      <button id="exportLeft" class="left-action">Export Current Thread</button>
+      <button id="exportAllLeft" class="left-action">Export All Threads</button>
+      <button id="clearAllLeft" class="left-action">Clear All History</button>
+      <button id="refreshMemoryLeft" class="left-action">Refresh Memory</button>
+    </div>
+
+    <div class="mode-card">
+      <strong>Executive Mode</strong>
+      <span>V43 · navigation + command search</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2>Executive Flow System</h2>
+        <span id="threadTitle">ChatGPT-style execution OS</span>
+      </div>
+
+      <div class="top-actions">
+        <button id="exportTop" class="small-btn">Export</button>
+        <button id="renameTop" class="small-btn">Rename</button>
+        <button id="duplicateTop" class="small-btn">Duplicate</button>
+        <button id="newTop" class="small-btn">New</button>
+        <div class="live"><span class="dot"></span><span id="healthText">LIVE</span></div>
+      </div>
+    </div>
+
+    <div class="top-nav">
+      <div class="top-nav-left">
+        <button class="top-tab active" data-mode="execution">Command</button>
+        <button class="top-tab" data-mode="daily_brief">Daily Brief</button>
+        <button class="top-tab" data-mode="decision">Decisions</button>
+        <button class="top-tab" data-mode="meeting">Meetings</button>
+        <button class="top-tab" data-mode="strategy">Strategy</button>
+        <button class="top-tab" data-mode="risk_review">Risk</button>
+      </div>
+      <div class="top-nav-right">
+        <input id="globalSearch" class="global-search" placeholder="Search chats, actions, decisions..." />
+      </div>
+    </div>
+
+    <div id="searchResults" class="search-results"></div>
+
+    <div class="chat-wrap">
+      <div id="centerStage" class="center-stage">
+        <div class="center-inner">
+          <h1>What needs to move forward?</h1>
+          <p>Drop the situation. V43 turns it into a clearer executive decision, next move, action queue, risk, and priority.</p>
+          <div id="centerComposerMount"></div>
+          <div class="quick-row">
+            <button class="quick-pill" data-mode="daily_brief" data-prompt="Run my day. Give me the highest priority, what to ignore, top risks, and the execution queue.">Run my day</button>
+            <button class="quick-pill" data-mode="meeting" data-prompt="Prepare me for a meeting. Give me agenda, risks, questions to ask, likely objections, and follow-up actions.">Prep meeting</button>
+            <button class="quick-pill" data-mode="strategy" data-prompt="Turn this idea into a strategy with the decision, execution path, risks, and first 5 moves.">Strategy</button>
+            <button class="quick-pill" data-mode="risk_review" data-prompt="Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.">Reality check</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="chatShell" class="chat-shell hidden">
+        <div id="chat" class="chat"></div>
+      </div>
+
+      <div id="composerArea" class="composer-area hidden">
+        <div id="errorBox" class="error-box"></div>
+        <div id="composer" class="composer">
+          <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
+          <div class="composer-foot">
+            <div class="left-controls">
+              <select id="mode">
+                <option value="execution">Execution</option>
+                <option value="strategy">Strategy</option>
+                <option value="decision">Decision</option>
+                <option value="meeting">Meeting Prep</option>
+                <option value="daily_brief">Daily Brief</option>
+                <option value="proposal">Proposal</option>
+                <option value="risk_review">Risk Review</option>
+              </select>
+              <span class="hint">Enter = send · Shift+Enter = new line</span>
+            </div>
+            <div class="left-controls">
+              <button id="clearBtn" class="btn clear">New Chat</button>
+              <button id="runBtn" class="btn run">Run Engine</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="panel">
+      <h3>Current Mode</h3>
+      <span id="currentMode" class="current-mode">Execution</span>
+    </div>
+
+    <div class="panel">
+      <h3>Metrics</h3>
+      <div class="kpi-grid">
+        <div class="kpi"><strong id="metricThreads">0</strong><span>Threads</span></div>
+        <div class="kpi"><strong id="metricMessages">0</strong><span>Messages</span></div>
+        <div class="kpi"><strong id="metricActions">0</strong><span>Actions</span></div>
+        <div class="kpi"><strong id="metricPriority">—</strong><span>Priority</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Archive / Threads</h3>
+      <input id="threadSearch" class="thread-search" placeholder="Search threads..." />
+      <div id="archive"><div class="empty">No messages yet.</div></div>
+      <button id="viewAll" class="btn clear" style="width:100%;margin-top:10px;">View All</button>
+    </div>
+
+    <div class="panel">
+      <h3>Execution Queue</h3>
+      <div id="queue"><div class="empty">No actions yet.</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Memory Snapshot</h3>
+      <div id="localMemory"><div class="empty">No local memory yet.</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Backend Memory</h3>
+      <div id="memory"><div class="empty">Loading memory...</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Functions</h3>
+      <div class="function-grid">
+        <button class="function-btn" id="fnRunDay">Run My Day</button>
+        <button class="function-btn" id="fnMeeting">Meeting Prep</button>
+        <button class="function-btn" id="fnStrategy">Strategy Sprint</button>
+        <button class="function-btn" id="fnRisk">Risk Review</button>
+        <button class="function-btn" id="fnProposal">Draft Proposal</button>
+        <button class="function-btn" id="fnFollowup">Follow-Up Plan</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>AI Recommendations</h3>
+      <div id="recommendations"></div>
+    </div>
+  </aside>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Export</h3>
+    <pre id="modalContent"></pre>
+    <div class="modal-actions">
+      <button id="copyModal" class="btn run">Copy</button>
+      <button id="downloadModal" class="btn clear">Download TXT</button>
+      <button id="closeModal" class="btn clear">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = "https://executive-engine-os.onrender.com";
+const STORAGE_KEY = "eeos_v43_threads";
+const ACTIVE_THREAD_KEY = "eeos_v43_active_thread";
+const MEMORY_KEY = "eeos_v43_local_memory";
+const DRAFT_KEY = "eeos_v43_draft";
+
+const input = document.getElementById("input");
+const modeEl = document.getElementById("mode");
+const runBtn = document.getElementById("runBtn");
+const clearBtn = document.getElementById("clearBtn");
+const errorBox = document.getElementById("errorBox");
+const archive = document.getElementById("archive");
+const queue = document.getElementById("queue");
+const memory = document.getElementById("memory");
+const localMemoryEl = document.getElementById("localMemory");
+const currentMode = document.getElementById("currentMode");
+const healthText = document.getElementById("healthText");
+const viewAll = document.getElementById("viewAll");
+const chat = document.getElementById("chat");
+const chatShell = document.getElementById("chatShell");
+const centerStage = document.getElementById("centerStage");
+const composerArea = document.getElementById("composerArea");
+const composer = document.getElementById("composer");
+const centerComposerMount = document.getElementById("centerComposerMount");
+const threadTitle = document.getElementById("threadTitle");
+const newTop = document.getElementById("newTop");
+const renameTop = document.getElementById("renameTop");
+const duplicateTop = document.getElementById("duplicateTop");
+const exportTop = document.getElementById("exportTop");
+const newThreadLeft = document.getElementById("newThreadLeft");
+const dailyRunLeft = document.getElementById("dailyRunLeft");
+const weeklyPlanLeft = document.getElementById("weeklyPlanLeft");
+const exportLeft = document.getElementById("exportLeft");
+const exportAllLeft = document.getElementById("exportAllLeft");
+const clearAllLeft = document.getElementById("clearAllLeft");
+const refreshMemoryLeft = document.getElementById("refreshMemoryLeft");
+const modalBackdrop = document.getElementById("modalBackdrop");
+const modalContent = document.getElementById("modalContent");
+const modalTitle = document.getElementById("modalTitle");
+const copyModal = document.getElementById("copyModal");
+const downloadModal = document.getElementById("downloadModal");
+const closeModal = document.getElementById("closeModal");
+const toast = document.getElementById("toast");
+const globalSearch = document.getElementById("globalSearch");
+const searchResults = document.getElementById("searchResults");
+const fnRunDay = document.getElementById("fnRunDay");
+const fnMeeting = document.getElementById("fnMeeting");
+const fnStrategy = document.getElementById("fnStrategy");
+const fnRisk = document.getElementById("fnRisk");
+const fnProposal = document.getElementById("fnProposal");
+const fnFollowup = document.getElementById("fnFollowup");
+const threadSearch = document.getElementById("threadSearch");
+
+let threads = loadThreads();
+let activeThreadId = localStorage.getItem(ACTIVE_THREAD_KEY) || null;
+let typingTimer = null;
+let currentExportText = "";
+
+if(!activeThreadId || !threads[activeThreadId]){
+  activeThreadId = createThread();
+}
+
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),1800);
+}
+
+function loadThreads(){
+  try{return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");}
+  catch{return {};}
+}
+
+function saveThreads(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+  localStorage.setItem(ACTIVE_THREAD_KEY, activeThreadId);
+}
+
+function createThread(){
+  const id = "thread_" + Date.now();
+  threads[id] = {
+    id,
+    title:"New Chat",
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+    messages:[],
+    pinned:false
+  };
+  activeThreadId = id;
+  saveThreads();
+  return id;
+}
+
+function duplicateThread(){
+  const current = threads[activeThreadId];
+  if(!current) return;
+  const id = "thread_" + Date.now();
+  threads[id] = {
+    ...JSON.parse(JSON.stringify(current)),
+    id,
+    title:(current.title || "Thread") + " copy",
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  activeThreadId = id;
+  saveThreads();
+  render();
+  showToast("Thread duplicated");
+}
+
+function togglePinThread(id){
+  if(!threads[id]) return;
+  threads[id].pinned = !threads[id].pinned;
+  threads[id].updatedAt = new Date().toISOString();
+  saveThreads();
+  render();
+  showToast(threads[id].pinned ? "Thread pinned" : "Thread unpinned");
+}
+
+function deleteThread(id){
+  if(!confirm("Delete this chat thread?")) return;
+  delete threads[id];
+
+  const remaining = Object.values(threads).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt));
+
+  if(activeThreadId === id){
+    activeThreadId = remaining[0]?.id || createThread();
+  }
+
+  saveThreads();
+  render();
+}
+
+function renameThread(id){
+  const current = threads[id]?.title || "New Chat";
+  const next = prompt("Rename chat:", current);
+
+  if(!next || !next.trim()) return;
+
+  threads[id].title = next.trim().slice(0,80);
+  threads[id].updatedAt = new Date().toISOString();
+
+  saveThreads();
+  render();
+}
+
+function clearAllThreads(){
+  if(!confirm("Clear all chat history?")) return;
+
+  threads = {};
+  activeThreadId = createThread();
+
+  saveThreads();
+  render();
+}
+
+function getMessages(){
+  return threads[activeThreadId]?.messages || [];
+}
+
+function setMessages(messages){
+  threads[activeThreadId].messages = messages;
+  threads[activeThreadId].updatedAt = new Date().toISOString();
+  saveThreads();
+}
+
+function esc(v){
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function labelMode(v){
+  return ({
+    execution:"Execution",
+    strategy:"Strategy",
+    decision:"Decision",
+    meeting:"Meeting Prep",
+    daily_brief:"Daily Brief",
+    proposal:"Proposal",
+    risk_review:"Risk Review"
+  })[v] || "Execution";
+}
+
+function setMode(mode){
+  modeEl.value = mode;
+  currentMode.textContent = labelMode(mode);
+
+  document.querySelectorAll(".nav-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.mode === mode);
+  });
+
+  document.querySelectorAll(".top-tab").forEach(b => {
+    b.classList.toggle("active", b.dataset.mode === mode);
+  });
+
+  input.focus();
+}
+
+function normalize(data){
+  const actions = Array.isArray(data.actions) ? data.actions : [];
+
+  return {
+    what_to_do_now:data.what_to_do_now || "Execute next step.",
+    decision:data.decision || "Proceed.",
+    next_move:data.next_move || "Continue.",
+    actions:actions.length ? actions : ["Clarify objective"],
+    risk:data.risk || "None",
+    priority:data.priority || "medium",
+    reality_check:data.reality_check || "",
+    leverage:data.leverage || "",
+    hidden_opportunity:data.hidden_opportunity || "",
+    meeting_agenda:data.meeting_agenda || "",
+    follow_up:data.follow_up || "",
+    clarifying_question:data.clarifying_question || ""
+  };
+}
+
+function toPlainText(data){
+  const d = normalize(data);
+
+  return [
+    `WHAT TO DO NOW: ${d.what_to_do_now}`,
+    `DECISION: ${d.decision}`,
+    `NEXT MOVE: ${d.next_move}`,
+    `ACTIONS:\n${d.actions.map((a,i)=>`${i+1}. ${a}`).join("\n")}`,
+    `RISK: ${d.risk}`,
+    `PRIORITY: ${d.priority}`,
+    d.reality_check ? `REALITY CHECK: ${d.reality_check}` : "",
+    d.leverage ? `LEVERAGE: ${d.leverage}` : "",
+    d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : "",
+    d.meeting_agenda ? `MEETING AGENDA: ${d.meeting_agenda}` : "",
+    d.follow_up ? `FOLLOW UP: ${d.follow_up}` : "",
+    d.clarifying_question ? `QUESTION: ${d.clarifying_question}` : ""
+  ].filter(Boolean).join("\n\n");
+}
+
+function renderAssistant(data){
+  const d = normalize(data);
+
+  const optional = [
+    ["Reality Check", d.reality_check],
+    ["Leverage", d.leverage],
+    ["Hidden Opportunity", d.hidden_opportunity],
+    ["Meeting Agenda", d.meeting_agenda],
+    ["Follow Up", d.follow_up],
+    ["Clarifying Question", d.clarifying_question]
+  ].filter(x => x[1]);
+
+  return `
+    <div class="response-grid">
+      <div class="response-card primary">
+        <div class="response-label">What To Do Now</div>
+        <div class="response-value">${esc(d.what_to_do_now)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Decision</div>
+        <div class="response-value">${esc(d.decision)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Next Move</div>
+        <div class="response-value">${esc(d.next_move)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Actions</div>
+        <div class="response-value"><ol>${d.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ol></div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Risk</div>
+        <div class="response-value">${esc(d.risk)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Priority</div>
+        <div class="response-value"><span class="priority-pill">${esc(d.priority)}</span></div>
+      </div>
+
+      ${optional.map(([label,value]) => `
+        <div class="response-card">
+          <div class="response-label">${esc(label)}</div>
+          <div class="response-value">${esc(value)}</div>
+        </div>
+      `).join("")}
+
+      <button class="copy-response" onclick='copyResponse(${JSON.stringify(JSON.stringify(d))})'>Copy Response</button>
+    </div>
+  `;
+}
+
+async function copyResponse(jsonString){
+  const data = JSON.parse(jsonString);
+  await navigator.clipboard.writeText(toPlainText(data));
+  showToast("Copied");
+}
+
+function updateComposerPosition(){
+  const hasMessages = getMessages().length > 0;
+
+  if(hasMessages){
+    centerStage.classList.add("hidden");
+    chatShell.classList.remove("hidden");
+    composerArea.classList.remove("hidden");
+    composerArea.classList.add("bottom");
+
+    if(composer.parentElement !== composerArea){
+      composerArea.appendChild(composer);
+    }
+  }else{
+    chatShell.classList.add("hidden");
+    centerStage.classList.remove("hidden");
+    composerArea.classList.remove("bottom");
+    composerArea.classList.add("hidden");
+
+    if(composer.parentElement !== centerComposerMount){
+      centerComposerMount.appendChild(composer);
+    }
+  }
+}
+
+function renderArchive(showAll=false){
+  const query = (threadSearch?.value || "").toLowerCase().trim();
+
+  let allThreads = Object.values(threads)
+    .sort((a,b) => {
+      if(Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+      return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
+    });
+
+  if(query){
+    allThreads = allThreads.filter(t => {
+      const haystack = [
+        t.title || "",
+        ...(t.messages || []).map(m => m.text || m.data?.decision || m.data?.next_move || "")
+      ].join(" ").toLowerCase();
+      return haystack.includes(query);
+    });
+  }
+
+  const visible = showAll ? allThreads : allThreads.slice(0,10);
+
+  archive.innerHTML = visible.length
+    ? visible.map(t => `
+      <div class="item ${t.id === activeThreadId ? "active-thread" : ""}">
+        <div onclick="openThread('${t.id}')">
+          <strong>${esc(t.title || "New Chat")}${t.pinned ? '<span class="pin-badge">PINNED</span>' : ''}</strong>
+          ${esc((t.messages?.[0]?.text || "No messages yet")).slice(0,90)}
+          <div class="status-line">${(t.messages || []).length} messages · ${new Date(t.updatedAt || t.createdAt).toLocaleDateString()}</div>
+        </div>
+        <div class="item-actions">
+          <button class="thread-action" onclick="event.stopPropagation(); togglePinThread('${t.id}')">${t.pinned ? "Unpin" : "Pin"}</button>
+          <button class="thread-action" onclick="event.stopPropagation(); renameThread('${t.id}')">Rename</button>
+          <button class="thread-action" onclick="event.stopPropagation(); activeThreadId='${t.id}'; saveThreads(); duplicateThread()">Copy</button>
+          <button class="thread-action delete" onclick="event.stopPropagation(); deleteThread('${t.id}')">Delete</button>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="empty">${query ? "No matching threads." : "No messages yet."}</div>`;
+}
+
+function openThread(id){
+  activeThreadId = id;
+  saveThreads();
+  render();
+}
+
+function latestAssistant(){
+  const messages = getMessages();
+
+  for(let i=messages.length-1; i>=0; i--){
+    if(messages[i].role === "assistant"){
+      return normalize(messages[i].data || {});
+    }
+  }
+
+  return null;
+}
+
+function renderQueue(){
+  const d = latestAssistant();
+
+  queue.innerHTML = d && d.actions.length
+    ? d.actions.map((a,i) => `
+      <div class="item">
+        <strong>${i+1}. Action</strong>
+        ${esc(a)}
+      </div>
+    `).join("")
+    : `<div class="empty">No actions yet.</div>`;
+}
+
+function renderRecommendations(){
+  const d = latestAssistant();
+  const target = document.getElementById("recommendations");
+
+  if(!d){
+    target.innerHTML = `
+      <div class="item">
+        <strong>Give stronger context</strong>
+        Include stakes, deadline, people involved, and the decision you need made.
+      </div>
+    `;
+    return;
+  }
+
+  target.innerHTML = `
+    <div class="item">
+      <strong>Next leverage point</strong>
+      ${esc(d.next_move)}
+    </div>
+    <div class="item">
+      <strong>Watch the risk</strong>
+      ${esc(d.risk)}
+    </div>
+  `;
+}
+
+function renderMetrics(){
+  const allThreads = Object.values(threads);
+  const msgs = getMessages();
+  const d = latestAssistant();
+
+  document.getElementById("metricThreads").textContent = allThreads.length;
+  document.getElementById("metricMessages").textContent = msgs.length;
+  document.getElementById("metricActions").textContent = d?.actions?.length || 0;
+  document.getElementById("metricPriority").textContent = d?.priority || "—";
+}
+
+function extractLocalMemory(){
+  const all = Object.values(threads)
+    .flatMap(t => (t.messages || []).map(m => ({...m, thread:t.title})))
+    .filter(m => m.role === "assistant" && m.data)
+    .slice(-12)
+    .reverse();
+
+  const memoryItems = all.map(m => {
+    const d = normalize(m.data);
+    return {
+      thread:m.thread || "Thread",
+      decision:d.decision,
+      next_move:d.next_move,
+      priority:d.priority,
+      ts:m.ts || ""
+    };
+  });
+
+  localStorage.setItem(MEMORY_KEY, JSON.stringify(memoryItems));
+  return memoryItems;
+}
+
+function renderLocalMemory(){
+  let items = [];
+  try{
+    items = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
+  }catch{
+    items = [];
+  }
+
+  if(!items.length){
+    items = extractLocalMemory();
+  }
+
+  localMemoryEl.innerHTML = items.length
+    ? items.slice(0,5).map(m => `
+      <div class="item">
+        <strong>${esc(m.priority || "Memory")}</strong>
+        ${esc(m.decision || m.next_move || "Saved execution")}
+      </div>
+    `).join("")
+    : `<div class="empty">No local memory yet.</div>`;
+}
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.classList.add("show");
+}
+
+function clearError(){
+  errorBox.textContent = "";
+  errorBox.classList.remove("show");
+}
+
+function render(){
+  const messages = getMessages();
+
+  threadTitle.textContent = threads[activeThreadId]?.title || "ChatGPT-style execution OS";
+
+  updateComposerPosition();
+
+  chat.innerHTML = "";
+
+  messages.forEach((m, i) => {
+    const row = document.createElement("div");
+    row.className = "message " + m.role;
+    row.id = "msg-" + i;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    if(m.role === "user"){
+      bubble.textContent = m.text;
+    }else{
+      bubble.innerHTML = m.html || renderAssistant(m.data || {});
+    }
+
+    row.appendChild(bubble);
+    chat.appendChild(row);
+  });
+
+  renderArchive(false);
+  renderQueue();
+  renderRecommendations();
+  renderMetrics();
+  renderLocalMemory();
+  saveThreads();
+
+  requestAnimationFrame(() => {
+    chatShell.scrollTop = chatShell.scrollHeight;
+  });
+}
+
+function streamAssistant(index, data){
+  const finalHtml = renderAssistant(data);
+  const tempText = toPlainText(data);
+
+  let messages = getMessages();
+
+  messages[index] = {
+    role:"assistant",
+    data,
+    html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Writing response...</div></div></div>`,
+    ts:new Date().toISOString()
+  };
+
+  setMessages(messages);
+  render();
+
+  let i = 0;
+  clearInterval(typingTimer);
+
+  typingTimer = setInterval(() => {
+    i += 24;
+    const shown = tempText.slice(0, i);
+    const current = getMessages();
+
+    if(!current[index]){
+      clearInterval(typingTimer);
+      return;
+    }
+
+    current[index].html = `
+      <div class="response-grid">
+        <div class="response-card primary">
+          <div class="response-label">Streaming Preview</div>
+          <div class="response-value" style="white-space:pre-wrap">${esc(shown)}</div>
+        </div>
+      </div>
+    `;
+
+    setMessages(current);
+    render();
+
+    if(i >= tempText.length){
+      clearInterval(typingTimer);
+      const done = getMessages();
+
+      done[index].html = finalHtml;
+      done[index].data = data;
+
+      setMessages(done);
+      extractLocalMemory();
+      render();
+    }
+  },18);
+}
+
+function buildRequestContext(){
+  const localMemory = extractLocalMemory().slice(0,8);
+  const current = threads[activeThreadId];
+  const currentMessages = getMessages().slice(-8);
+
+  return [
+    `Executive Engine OS V43 Context`,
+    `Thread: ${current?.title || "New Chat"}`,
+    `Current Mode: ${labelMode(modeEl.value)}`,
+    ``,
+    `Rules for output quality:`,
+    `- Be specific, tactical, and executive-level`,
+    `- No generic advice`,
+    `- Each action must be executable today`,
+    `- Prioritize real operations, revenue, speed, leverage, and risk`,
+    `- Do not say Proceed or Continue unless tied to a specific action`,
+    `- If the input is vague, still give the best next move and ask one clarifying question if needed`,
+    ``,
+    `Recent local memory:`,
+    ...localMemory.map((m,i)=>`${i+1}. ${m.decision || m.next_move || ""}`),
+    ``,
+    `Recent thread context:`,
+    ...currentMessages.map((m,i)=>`${i+1}. ${m.role}: ${m.text || (m.data?.decision || m.data?.next_move || "")}`)
+  ].join("\n");
+}
+
+async function send(){
+  const text = input.value.trim();
+  const mode = modeEl.value;
+
+  if(!text){
+    showError("Enter something first.");
+    return;
+  }
+
+  clearError();
+
+  const messages = getMessages();
+
+  if(threads[activeThreadId].title === "New Chat"){
+    threads[activeThreadId].title = text.slice(0,42);
+  }
+
+  messages.push({
+    role:"user",
+    text,
+    mode,
+    ts:new Date().toISOString()
+  });
+
+  setMessages(messages);
+  input.value = "";
+  localStorage.removeItem(DRAFT_KEY);
+  render();
+
+  const loadingIndex = messages.length;
+
+  messages.push({
+    role:"assistant",
+    html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Thinking...</div></div></div>`,
+    data:{},
+    ts:new Date().toISOString()
+  });
+
+  setMessages(messages);
+  render();
+
+  runBtn.disabled = true;
+  runBtn.textContent = "Running...";
+
+  try{
+    const res = await fetch(API + "/run", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        input:text,
+        context:buildRequestContext(),
+        mode:mode || "execution"
+      })
+    });
+
+    if(!res.ok){
+      throw new Error("Backend returned " + res.status);
+    }
+
+    const data = await res.json();
+
+    streamAssistant(loadingIndex, data);
+    loadMemory();
+
+  }catch(e){
+    console.error(e);
+
+    const errorData = {
+      what_to_do_now:"Backend connection failed.",
+      decision:"Fix the API connection before continuing.",
+      next_move:"Check backend CORS, URL, and logs.",
+      actions:["Open backend /health","Test POST /run in /docs","Check browser console"],
+      risk:e.message,
+      priority:"high"
+    };
+
+    const current = getMessages();
+
+    current[loadingIndex] = {
+      role:"assistant",
+      data:errorData,
+      html:renderAssistant(errorData)
+    };
+
+    setMessages(current);
+    showError("Backend request failed. See console for details.");
+    render();
+  }finally{
+    runBtn.disabled = false;
+    runBtn.textContent = "Run Engine";
+  }
+}
+
+async function health(){
+  try{
+    const res = await fetch(API + "/health");
+    healthText.textContent = res.ok ? "LIVE" : "CHECK";
+  }catch{
+    healthText.textContent = "OFFLINE";
+  }
+}
+
+async function loadMemory(){
+  try{
+    const res = await fetch(API + "/memory");
+
+    if(!res.ok){
+      throw new Error("memory unavailable");
+    }
+
+    const data = await res.json();
+    const items = data.memory || data.items || [];
+
+    memory.innerHTML = items.length
+      ? items.slice(-5).reverse().map(m => `
+        <div class="item">
+          <strong>${esc(m.mode || m.priority || "Memory")}</strong>
+          ${esc(m.input || m.decision || m.next_move || "Saved item")}
+        </div>
+      `).join("")
+      : `<div class="empty">No backend memory yet.</div>`;
+
+  }catch{
+    memory.innerHTML = `<div class="empty">Backend memory unavailable.</div>`;
+  }
+}
+
+function runGlobalSearch(){
+  const q = (globalSearch.value || "").trim().toLowerCase();
+
+  if(!q){
+    searchResults.classList.remove("show");
+    searchResults.innerHTML = "";
+    return;
+  }
+
+  const results = [];
+
+  Object.values(threads).forEach(t => {
+    (t.messages || []).forEach((m, index) => {
+      const text = [
+        t.title || "",
+        m.text || "",
+        m.data?.decision || "",
+        m.data?.next_move || "",
+        Array.isArray(m.data?.actions) ? m.data.actions.join(" ") : "",
+        m.data?.risk || "",
+        m.data?.priority || ""
+      ].join(" ").toLowerCase();
+
+      if(text.includes(q)){
+        results.push({
+          threadId:t.id,
+          threadTitle:t.title || "New Chat",
+          index,
+          role:m.role,
+          preview:m.text || m.data?.decision || m.data?.next_move || "Matched response"
+        });
+      }
+    });
+  });
+
+  searchResults.innerHTML = results.length
+    ? results.slice(0,20).map(r => `
+      <div class="search-result" onclick="openSearchResult('${r.threadId}', ${r.index})">
+        <strong>${esc(r.threadTitle)} · ${esc(r.role)}</strong>
+        ${esc(r.preview).slice(0,160)}
+      </div>
+    `).join("")
+    : `<div class="search-result"><strong>No results</strong>Try a different search.</div>`;
+
+  searchResults.classList.add("show");
+}
+
+function openSearchResult(threadId, index){
+  activeThreadId = threadId;
+  saveThreads();
+  render();
+  searchResults.classList.remove("show");
+  globalSearch.value = "";
+
+  setTimeout(() => {
+    const el = document.getElementById("msg-" + index);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 100);
+}
+
+function fillFunctionPrompt(type){
+  const prompts = {
+    day:["daily_brief","Run my day. Give me priority, what to ignore, critical risks, exact next move, and execution queue."],
+    meeting:["meeting","Prepare me for this meeting. Build agenda, talking points, risks, questions to ask, objections, and follow-up actions."],
+    strategy:["strategy","Build a strategy sprint. Define objective, leverage, sequence, risks, resources, and first 5 execution moves."],
+    risk:["risk_review","Review this for risk. Identify weak logic, blind spots, downside, mitigation, and the best next move."],
+    proposal:["proposal","Draft a proposal structure. Include objective, value proposition, scope, deliverables, pricing logic, risks, and next step."],
+    followup:["execution","Create a follow-up plan. Include message, timing, next action, risk, and priority."]
+  };
+
+  const [mode, prompt] = prompts[type];
+  loadPrompt(prompt, mode);
+}
+
+function exportAllThreads(){
+  const lines = [];
+  lines.push("Executive Engine OS V43 Export — All Threads");
+  lines.push(`Date: ${new Date().toLocaleString()}`);
+  lines.push("");
+
+  Object.values(threads)
+    .sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt))
+    .forEach((t, ti) => {
+      lines.push(`THREAD ${ti+1}: ${t.title}`);
+      lines.push(`Created: ${t.createdAt}`);
+      lines.push("");
+
+      (t.messages || []).forEach((m,i) => {
+        if(m.role === "user"){
+          lines.push(`USER ${i+1}: ${m.text}`);
+        }else{
+          lines.push(`ASSISTANT ${i+1}:`);
+          lines.push(toPlainText(m.data || {}));
+        }
+        lines.push("");
+      });
+
+      lines.push("------------------------------------------------------------");
+      lines.push("");
+    });
+
+  currentExportText = lines.join("\n");
+  modalTitle.textContent = "All Threads Export";
+  modalContent.textContent = currentExportText;
+  modalBackdrop.classList.add("show");
+}
+
+function exportCurrentThread(){
+  const t = threads[activeThreadId];
+  const lines = [];
+
+  lines.push(`Executive Engine OS Export`);
+  lines.push(`Version: V43`);
+  lines.push(`Thread: ${t.title}`);
+  lines.push(`Date: ${new Date().toLocaleString()}`);
+  lines.push(``);
+
+  t.messages.forEach((m,i) => {
+    if(m.role === "user"){
+      lines.push(`USER ${i+1}: ${m.text}`);
+    }else{
+      lines.push(`ASSISTANT ${i+1}:`);
+      lines.push(toPlainText(m.data || {}));
+    }
+    lines.push(``);
+  });
+
+  currentExportText = lines.join("\n");
+  modalTitle.textContent = "Thread Export";
+  modalContent.textContent = currentExportText;
+  modalBackdrop.classList.add("show");
+}
+
+function downloadExport(){
+  const blob = new Blob([currentExportText || modalContent.textContent], {type:"text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = (threads[activeThreadId]?.title || "executive-engine-thread").replace(/[^a-z0-9]/gi,"-").toLowerCase() + ".txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function loadPrompt(text, mode){
+  setMode(mode || modeEl.value);
+  input.value = text;
+  input.focus();
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => setMode(btn.dataset.mode));
+});
+
+document.querySelectorAll(".top-tab").forEach(btn => {
+  btn.addEventListener("click", () => setMode(btn.dataset.mode));
+});
+
+document.querySelectorAll(".quick-pill").forEach(btn => {
+  btn.addEventListener("click", () => loadPrompt(btn.dataset.prompt, btn.dataset.mode));
+});
+
+modeEl.addEventListener("change", () => setMode(modeEl.value));
+
+runBtn.addEventListener("click", send);
+
+clearBtn.addEventListener("click", () => {
+  createThread();
+  render();
+  clearError();
+});
+
+newTop.addEventListener("click", () => {
+  createThread();
+  render();
+  input.focus();
+});
+
+newThreadLeft.addEventListener("click", () => {
+  createThread();
+  render();
+  input.focus();
+});
+
+duplicateTop.addEventListener("click", duplicateThread);
+
+dailyRunLeft.addEventListener("click", () => {
+  loadPrompt("Run my day. Give me the highest priority, what to ignore, top risks, execution queue, and one immediate next move.", "daily_brief");
+  send();
+});
+
+weeklyPlanLeft.addEventListener("click", () => {
+  loadPrompt("Build my weekly execution plan. Give me top 3 priorities, sequence, risks, meetings to prepare for, what to ignore, and the first action for today.", "strategy");
+  send();
+});
+
+clearAllLeft.addEventListener("click", clearAllThreads);
+
+refreshMemoryLeft.addEventListener("click", () => {
+  extractLocalMemory();
+  renderLocalMemory();
+  loadMemory();
+  showToast("Memory refreshed");
+});
+
+renameTop.addEventListener("click", () => renameThread(activeThreadId));
+
+exportTop.addEventListener("click", exportCurrentThread);
+exportLeft.addEventListener("click", exportCurrentThread);
+exportAllLeft.addEventListener("click", exportAllThreads);
+
+viewAll.addEventListener("click", () => renderArchive(true));
+threadSearch.addEventListener("input", () => renderArchive(true));
+globalSearch.addEventListener("input", runGlobalSearch);
+globalSearch.addEventListener("focus", runGlobalSearch);
+document.addEventListener("click", (e) => {
+  if(!searchResults.contains(e.target) && e.target !== globalSearch){
+    searchResults.classList.remove("show");
+  }
+});
+
+fnRunDay.addEventListener("click", () => fillFunctionPrompt("day"));
+fnMeeting.addEventListener("click", () => fillFunctionPrompt("meeting"));
+fnStrategy.addEventListener("click", () => fillFunctionPrompt("strategy"));
+fnRisk.addEventListener("click", () => fillFunctionPrompt("risk"));
+fnProposal.addEventListener("click", () => fillFunctionPrompt("proposal"));
+fnFollowup.addEventListener("click", () => fillFunctionPrompt("followup"));
+
+closeModal.addEventListener("click", () => modalBackdrop.classList.remove("show"));
+
+copyModal.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(modalContent.textContent);
+  showToast("Export copied");
+});
+
+downloadModal.addEventListener("click", downloadExport);
+
+input.value = localStorage.getItem(DRAFT_KEY) || "";
+
+input.addEventListener("input", () => {
+  localStorage.setItem(DRAFT_KEY, input.value);
+});
+
+input.addEventListener("keydown", (e) => {
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    send();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  const key = e.key.toLowerCase();
+
+  if((e.ctrlKey || e.metaKey) && key === "k"){
+    e.preventDefault();
+    createThread();
+    render();
+    input.focus();
+    showToast("New chat");
+  }
+
+  if((e.ctrlKey || e.metaKey) && key === "e"){
+    e.preventDefault();
+    exportCurrentThread();
+  }
+
+  if((e.ctrlKey || e.metaKey) && key === "f"){
+    e.preventDefault();
+    globalSearch.focus();
+  }
+});
+
+window.onload = () => {
+  setMode("execution");
+  render();
+  health();
+  loadMemory();
+  input.focus();
+};
+</script>
+</body>
+</html>
