@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V70"
+APP_NAME = "Executive Engine OS V75"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 
@@ -240,7 +240,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V70.
+You are Executive Engine OS V75.
 
 IDENTITY
 You are an elite CEO / President / COO operating partner.
@@ -276,6 +276,9 @@ RESPONSE QUALITY RULES
 - Prioritize signal over completeness.
 - Do not overfill optional fields unless they add real executive value.
 - Keep the core response readable and high-signal.
+- Make "what_to_do_now" the single most useful sentence in the response.
+- Make "actions" sequential and time-aware when possible.
+- Make "what_to_ignore" concrete, not philosophical.
 - Default to practical brevity unless depth is deep.
 - Avoid filling every optional field with weak content; only use optional fields when they add value.
 - If inputs are messy, clarify the real issue and move them forward.
@@ -385,6 +388,11 @@ def save_memory(req: RunRequest, output: Dict[str, Any]):
         "created_at": now(),
     })
     del MEMORY[:-30]
+
+
+@app.get("/robots.txt")
+async def robots_txt():
+    return "User-agent: *\nDisallow: /\n"
 
 
 @app.get("/")
@@ -508,6 +516,47 @@ async def automation_plan(req: RunRequest):
     return await run(automation_req)
 
 
+@app.get("/go-live-check")
+async def go_live_check():
+    return {
+        "ok": True,
+        "service": APP_NAME,
+        "backend": "live",
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+        "model": MODEL,
+        "features": {
+            "run_endpoint": True,
+            "health_endpoint": True,
+            "debug_endpoint": True,
+            "status_endpoint": True,
+            "system_check_endpoint": True,
+            "internal_automation_endpoints": True,
+            "elite_output_schema": True
+        },
+        "ready": bool(os.getenv("OPENAI_API_KEY")),
+        "message": "Backend is go-live ready when OPENAI_API_KEY is set."
+    }
+
+
+@app.get("/system-check")
+async def system_check():
+    return {
+        "ok": True,
+        "service": APP_NAME,
+        "backend": "live",
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+        "model": MODEL,
+        "memory_items": len(MEMORY),
+        "features": {
+            "profile_context": True,
+            "internal_automation": True,
+            "elite_output": True,
+            "command_palette": True,
+            "search": True
+        }
+    }
+
+
 @app.get("/debug")
 async def debug():
     return {
@@ -517,10 +566,11 @@ async def debug():
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "allowed_origins": ALLOWED_ORIGINS,
         "memory_items": len(MEMORY),
+        "version": "V75",
         "routes": [
             "/", "/status", "/health", "/run", "/memory", "/integrations",
             "/automation-plan", "/daily-brief", "/open-loops", "/follow-up",
-            "/action-queue", "/debug"
+            "/action-queue", "/go-live-check", "/system-check", "/debug"
         ]
     }
 
