@@ -1,2648 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V61</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Executive Engine OS V62</title>
 
-<style>
-:root{
-  --nav:#061226;
-  --nav2:#0b1f42;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --line:#e2e8f0;
-  --text:#0f172a;
-  --muted:#64748b;
-  --blue:#2563eb;
-  --blue2:#1d4ed8;
-  --orange:#ff6a1a;
-  --green:#16a34a;
-  --red:#dc2626;
-  --amber:#f59e0b;
-  --soft:#f8fafc;
-  --shadow:0 18px 48px rgba(15,23,42,.10);
-}
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --panel:#ffffff;
+      --nav:#071226;
+      --nav2:#0d1b34;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#dbe3ef;
+      --soft:#f1f5f9;
+      --blue:#2563eb;
+      --blue2:#1d4ed8;
+      --orange:#f97316;
+      --green:#059669;
+      --red:#dc2626;
+      --shadow:0 18px 45px rgba(15,23,42,.08);
+    }
 
-*{box-sizing:border-box}
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    button,input,textarea,select{font-family:inherit}
 
-html,body{
-  height:100%;
-  margin:0;
-}
+    .app{
+      height:100vh;
+      display:grid;
+      grid-template-columns:252px minmax(0,1fr) 330px;
+      grid-template-rows:52px minmax(0,1fr);
+      overflow:hidden;
+    }
 
-body{
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow:hidden;
-}
+    /* TOP BAR */
+    .topbar{
+      grid-column:1/-1;
+      grid-row:1;
+      height:52px;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      display:grid;
+      grid-template-columns:280px minmax(360px,680px) 250px;
+      align-items:center;
+      gap:18px;
+      padding:0 18px;
+      z-index:50;
+    }
 
-.app{
-  display:grid;
-  grid-template-columns:252px minmax(0,1fr) 350px;
-  height:100vh;
-}
+    .top-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .menu-btn{width:32px;height:32px;border:0;background:transparent;color:#334155;border-radius:8px;cursor:pointer;font-size:20px;display:grid;place-items:center}
+    .menu-btn:hover{background:#f1f5f9}
+    .brand-icon{width:30px;height:30px;border-radius:9px;background:#ef4444;color:white;display:grid;place-items:center;font-size:11px;font-weight:950}
+    .brand-title{font-size:19px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
 
-/* LEFT */
-.sidebar{
-  background:linear-gradient(180deg,var(--nav),#030814);
-  color:#e5edf9;
-  padding:18px 14px;
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-}
+    .top-search{
+      justify-self:center;
+      width:100%;
+      max-width:680px;
+      height:38px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      background:#fff;
+      border:1px solid #cbd5e1;
+      border-radius:6px;
+      padding:0 12px;
+      box-shadow:0 1px 1px rgba(15,23,42,.03);
+    }
+    .top-search span{color:#64748b}
+    .top-search input{width:100%;border:0;outline:0;background:transparent;color:#334155;font-size:14px}
+    .shortcut{font-size:12px;color:#64748b;white-space:nowrap}
 
-.brand{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:8px 8px 18px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
+    .top-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+    .pill{height:30px;border:1px solid #dbeafe;background:#eff6ff;color:#075985;border-radius:999px;padding:0 12px;font-size:13px;font-weight:800;cursor:pointer}
+    .pill:hover{background:#dbeafe}
+    .spark{width:32px;height:32px;border:0;background:transparent;color:#a855f7;border-radius:999px;font-size:18px;cursor:pointer}
+    .spark:hover{background:#f3e8ff}
+    .avatar{width:32px;height:32px;border-radius:999px;background:#059669;color:white;display:grid;place-items:center;font-weight:900;font-size:13px}
 
-.logo{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--blue),#38bdf8);
-  display:grid;
-  place-items:center;
-  font-weight:900;
-  color:#fff;
-}
+    /* LEFT */
+    .sidebar{
+      grid-column:1;
+      grid-row:2;
+      background:linear-gradient(180deg,#081426,#020817);
+      color:white;
+      overflow:auto;
+      border-right:1px solid rgba(255,255,255,.08);
+      padding:14px 12px;
+    }
+    .new-left{height:46px;border:0;background:rgba(255,255,255,.08);color:#fff;border-radius:12px;width:100%;text-align:left;padding:0 18px;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:24px}
+    .new-left:hover{background:rgba(255,255,255,.13)}
+    .nav-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8ea2c4;font-weight:900;margin:18px 8px 8px}
+    .nav-btn{width:100%;height:40px;border:0;background:transparent;color:#dbeafe;border-radius:11px;display:flex;align-items:center;gap:10px;padding:0 10px;font-weight:800;cursor:pointer;margin:2px 0;text-align:left}
+    .nav-btn:hover,.nav-btn.active{background:#15356f;color:white}
+    .ico{width:22px;height:22px;border-radius:7px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:12px;flex:0 0 auto}
+    .side-card{margin-top:24px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:14px;padding:14px;color:#dbeafe;font-size:12px;line-height:1.4}
+    .side-card strong{display:block;color:#fff;margin-bottom:5px;font-size:13px}
 
-.brand h1{
-  margin:0;
-  font-size:14px;
-  color:#fff;
-}
+    /* MAIN */
+    .main{
+      grid-column:2;
+      grid-row:2;
+      min-width:0;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      background:var(--bg);
+    }
 
-.brand p{
-  margin:4px 0 0;
-  color:#9fb1cf;
-  font-size:12px;
-  line-height:1.4;
-}
+    .hero{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:34px 24px;
+      overflow:auto;
+    }
+    .hero-inner{width:100%;max-width:940px;text-align:center;transform:translateY(-10px)}
+    .hero h1{font-size:34px;letter-spacing:-.055em;line-height:1.08;margin:0 0 12px;color:#071226}
+    .hero p{margin:0 0 18px;color:#64748b;font-size:15px}
+    .quick-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+    .quick{border:1px solid var(--line);background:#fff;color:#0f172a;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;box-shadow:0 2px 5px rgba(15,23,42,.03)}
+    .quick:hover{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
 
-.nav-scroll{
-  flex:1;
-  overflow:auto;
-  padding-top:16px;
-}
+    /* COMPOSER ALWAYS VISIBLE */
+    .composer{
+      width:100%;
+      max-width:880px;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid #cbd5e1;
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(15,23,42,.13);
+      overflow:hidden;
+      text-align:left;
+    }
+    .composer textarea{
+      width:100%;
+      min-height:126px;
+      max-height:310px;
+      resize:vertical;
+      border:0;
+      outline:0;
+      padding:21px 23px;
+      font-size:16px;
+      line-height:1.5;
+      color:#0f172a;
+      background:#fff;
+      display:block;
+    }
+    .composer textarea::placeholder{color:#64748b}
+    .composer-foot{
+      border-top:1px solid #e5e7eb;
+      padding:13px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#fff;
+    }
+    .composer-left,.composer-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .mode-select{height:40px;border-radius:999px;border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;font-weight:900;padding:0 13px;outline:0}
+    .hint{font-size:12px;color:#64748b}
+    .btn{height:40px;border-radius:12px;border:1px solid #dbe3ef;background:#fff;color:#334155;font-weight:900;padding:0 14px;cursor:pointer}
+    .btn:hover{background:#f8fafc}
+    .btn.primary{border:0;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;min-width:118px}
+    .btn.primary:disabled{opacity:.65;cursor:not-allowed}
 
-.nav-label{
-  color:#7f92b4;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.14em;
-  margin:16px 10px 8px;
-  font-weight:800;
-}
+    .chat-shell{
+      flex:1;
+      display:none;
+      overflow:auto;
+      padding:24px;
+      min-width:0;
+    }
+    .chat-shell.show{display:block}
+    .chat{max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:18px;padding-bottom:18px}
+    .msg{display:flex;width:100%}
+    .msg.user{justify-content:flex-end}
+    .bubble{max-width:760px;border-radius:18px;padding:15px 17px;font-size:15px;line-height:1.5;word-break:break-word}
+    .user .bubble{background:#2563eb;color:white;border-bottom-right-radius:6px}
+    .assistant .bubble{background:#fff;border:1px solid var(--line);box-shadow:0 8px 22px rgba(15,23,42,.06);border-bottom-left-radius:6px;width:min(760px,100%)}
+    .response-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .response-card{border:1px solid #e8eef6;background:#f8fafc;border-radius:14px;padding:13px}
+    .response-card.full{grid-column:1/-1}
+    .label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#64748b;font-weight:950;margin-bottom:7px}
+    .value{font-weight:700;color:#0f172a;line-height:1.5}
+    .value ol{margin:0;padding-left:18px}
+    .priority{display:inline-flex;border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:950}
 
-.nav-btn{
-  width:100%;
-  border:0;
-  background:transparent;
-  color:#dce8fb;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:14px;
-  text-align:left;
-}
+    .bottom-composer{
+      display:none;
+      border-top:1px solid var(--line);
+      padding:14px 20px;
+      background:#f8fafc;
+    }
+    .bottom-composer.show{display:block}
+    .bottom-composer .composer textarea{min-height:78px}
 
-.nav-btn:hover,
-.nav-btn.active{
-  background:rgba(37,99,235,.22);
-  color:#fff;
-}
+    /* RIGHT */
+    .right{
+      grid-column:3;
+      grid-row:2;
+      background:#fff;
+      border-left:1px solid var(--line);
+      overflow:auto;
+      padding:18px 14px;
+    }
+    .panel{border:1px solid var(--line);border-radius:18px;padding:15px;background:#fff;margin-bottom:12px}
+    .panel h3{margin:0 0 12px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#64748b}
+    .mode-pill{display:inline-flex;border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:8px 12px;font-weight:950}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .metric{border:1px solid #edf2f7;background:#f8fafc;border-radius:12px;padding:12px}
+    .metric strong{display:block;font-size:18px}
+    .metric span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-top:4px;font-weight:900}
+    .thread-search{width:100%;height:38px;border:1px solid var(--line);border-radius:12px;outline:0;padding:0 12px;margin-bottom:10px}
+    .archive-item{border:1px solid #edf2f7;background:#f8fafc;border-radius:12px;padding:11px;margin:8px 0;cursor:pointer}
+    .archive-item:hover{background:#eff6ff;border-color:#bfdbfe}
+    .archive-item strong{display:block;margin-bottom:4px}
+    .archive-item span{font-size:12px;color:#64748b}
+    .empty{color:#94a3b8;font-size:13px;line-height:1.4}
+    .mini-btn{height:36px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:0 12px;font-weight:900;cursor:pointer}
+    .function-btn{width:100%;height:38px;border:1px solid var(--line);background:#f8fafc;border-radius:11px;text-align:left;padding:0 12px;font-weight:900;margin:6px 0;cursor:pointer}
+    .function-btn:hover{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
 
-.nav-ico{
-  width:22px;
-  height:22px;
-  border-radius:8px;
-  display:grid;
-  place-items:center;
-  background:rgba(255,255,255,.08);
-  font-size:12px;
-}
+    /* PROFILE */
+    .profile-form{display:grid;gap:12px;text-align:left}
+    .profile-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{display:grid;gap:6px}
+    .field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#64748b;font-weight:950}
+    .field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:0;font-size:14px;background:#fff}
+    .field textarea{min-height:88px;resize:vertical}
+    .upload-box{border:1px dashed #bfdbfe;background:#eff6ff;border-radius:16px;padding:14px;text-align:left}
+    .profile-actions{display:flex;gap:10px;flex-wrap:wrap}
 
-.left-actions{
-  display:grid;
-  gap:8px;
-  margin:14px 0;
-}
+    /* MORE + SEARCH RESULTS */
+    .more-menu{display:none;position:fixed;top:58px;right:58px;width:230px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 70px rgba(15,23,42,.18);padding:8px;z-index:100}
+    .more-menu.show{display:grid;gap:4px}
+    .more-menu button{width:100%;text-align:left;border:1px solid transparent;background:#fff;border-radius:10px;padding:10px 12px;font-weight:850;cursor:pointer}
+    .more-menu button:hover{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+    .search-results{display:none;position:fixed;top:58px;left:50%;transform:translateX(-50%);width:min(680px,calc(100vw - 40px));max-height:430px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 70px rgba(15,23,42,.18);padding:10px;z-index:110}
+    .search-results.show{display:block}
+    .search-result{padding:12px;border-radius:12px;cursor:pointer;border:1px solid transparent;font-size:13px;color:#334155}
+    .search-result:hover{background:#f8fafc;border-color:#edf2f7}
+    .search-result strong{display:block;color:#0f172a;margin-bottom:4px}
 
-.left-action{
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  border-radius:12px;
-  padding:11px 12px;
-  text-align:left;
-  font-weight:800;
-  cursor:pointer;
-}
+    .notice{display:none;position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;box-shadow:0 18px 40px rgba(15,23,42,.25);z-index:200}
+    .notice.show{display:block}
 
-.left-action:hover{
-  background:rgba(37,99,235,.22);
-}
-
-.left-action.subtle{
-  background:rgba(255,255,255,.025);
-  color:#b9c7dc;
-}
-
-.left-action.danger{
-  color:#fecaca;
-  border-color:rgba(248,113,113,.25);
-}
-
-.extra-tools{
-  display:grid;
-  gap:8px;
-}
-
-.sidebar-help{
-  margin:10px 8px 0;
-  color:#8ea2c4;
-  font-size:12px;
-  line-height:1.4;
-}
-
-.mode-card{
-  margin-top:8px;
-  padding:14px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.05);
-}
-
-.mode-card strong{
-  display:block;
-  color:#fff;
-  font-size:13px;
-}
-
-.mode-card span{
-  display:block;
-  color:#9fb1cf;
-  font-size:12px;
-  margin-top:4px;
-}
-
-/* MAIN */
-.main{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  background:#f8fafc;
-}
-
-.topbar{
-  height:48px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 22px;
-}
-
-.thread-title-mini{
-  color:#64748b;
-  font-size:13px;
-  font-weight:850;
-}
-
-.top-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.live{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  border-radius:999px;
-  background:#ecfdf5;
-  border:1px solid #bbf7d0;
-  color:#047857;
-  font-size:12px;
-  font-weight:800;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-}
-
-.small-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:12px;
-  padding:9px 12px;
-  cursor:pointer;
-  font-weight:850;
-}
-
-.small-btn:hover{
-  background:#f8fafc;
-}
-
-.top-nav{
-  min-height:50px;
-  background:#ffffff;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:7px 22px;
-  overflow-x:auto;
-  flex:0 0 auto;
-}
-
-.top-nav-left,
-.top-nav-right{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:nowrap;
-}
-
-.top-tab{
-  border:1px solid transparent;
-  background:transparent;
-  color:#475569;
-  border-radius:999px;
-  padding:8px 12px;
-  cursor:pointer;
-  font-weight:850;
-  white-space:nowrap;
-}
-
-.top-tab:hover,
-.top-tab.active{
-  background:#eff6ff;
-  color:#1d4ed8;
-  border-color:#bfdbfe;
-}
-
-.global-search{
-  display:none !important;
-}
-
-.search-results{
-  position:fixed;
-  top:112px;
-  right:370px;
-  width:min(520px,calc(100vw - 40px));
-  max-height:420px;
-  overflow:auto;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:0 24px 70px rgba(15,23,42,.18);
-  padding:10px;
-  z-index:45;
-  display:none;
-}
-
-.search-results.show{
-  display:none !important;
-}
-
-.search-result{
-  padding:11px;
-  border-radius:12px;
-  cursor:pointer;
-  border:1px solid transparent;
-  font-size:13px;
-  color:#334155;
-}
-
-.search-result:hover{
-  background:#f8fafc;
-  border-color:#edf2f7;
-}
-
-.search-result strong{
-  display:block;
-  color:#0f172a;
-  margin-bottom:3px;
-}
-
-.function-grid{
-  display:grid;
-  gap:8px;
-}
-
-.function-btn{
-  width:100%;
-  border:1px solid var(--line);
-  background:#f8fafc;
-  color:#334155;
-  border-radius:12px;
-  padding:10px;
-  text-align:left;
-  cursor:pointer;
-  font-weight:800;
-}
-
-.function-btn:hover{
-  background:#eff6ff;
-  border-color:#bfdbfe;
-  color:#1d4ed8;
-}
-
-/* CHAT */
-.chat-wrap{
-  flex:1;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  position:relative;
-}
-
-.chat-shell{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  padding:18px 28px 0;
-}
-
-.chat{
-  max-width:920px;
-  margin:0 auto;
-}
-
-.message{
-  display:flex;
-  margin-bottom:16px;
-}
-
-.message.user{
-  justify-content:flex-end;
-}
-
-.message.assistant{
-  justify-content:flex-start;
-}
-
-.bubble{
-  max-width:min(760px,90%);
-  border-radius:18px;
-  padding:14px 16px;
-  font-size:15px;
-  line-height:1.55;
-  word-break:break-word;
-}
-
-.user .bubble{
-  background:var(--blue);
-  color:#fff;
-  border-bottom-right-radius:6px;
-  box-shadow:0 10px 24px rgba(37,99,235,.18);
-}
-
-.assistant .bubble{
-  background:#fff;
-  color:var(--text);
-  border:1px solid var(--line);
-  border-bottom-left-radius:6px;
-  box-shadow:0 10px 24px rgba(15,23,42,.05);
-}
-
-/* CENTER */
-.center-stage{
-  flex:1;
+    @media(max-width:1180px){
+      .app{grid-template-columns:230px minmax(0,1fr);grid-template-rows:52px minmax(0,1fr)}
+      .right{display:none}
+      .topbar{grid-template-columns:240px minmax(240px,1fr) 170px}
+    }
+    @media(max-width:760px){
+      .app{display:block;height:auto;overflow:auto}
+      .topbar{position:sticky;top:0;display:flex;gap:8px;padding:0 10px}
+      .brand-title{display:none}
+      .top-search{min-width:0;flex:1}
+      .shortcut,.pill{display:none}
+      .sidebar{display:none}
+      .main{min-height:calc(100vh - 52px)}
+      .hero{min-height:calc(100vh - 52px);padding:18px 14px}
+      .hero-inner{transform:none}
+      .hero h1{font-size:28px}
+      .composer-foot{flex-direction:column;align-items:stretch}
+      .composer-left,.composer-right{width:100%}
+      .btn{width:100%}
+      .response-grid{grid-template-columns:1fr}
+      .profile-row{grid-template-columns:1fr}
+    }
+  
+/* V62 POLISH */
+.status-strip{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:30px;
-}
-
-.center-inner{
-  width:100%;
-  max-width:900px;
-  text-align:center;
-}
-
-.center-inner h1{
-  margin:0 0 10px;
-  font-size:42px;
-  letter-spacing:-.04em;
-}
-
-.center-inner p{
-  margin:0 0 22px;
-  color:var(--muted);
-  font-size:16px;
-}
-
-.quick-row{
-  display:flex;
   gap:10px;
-  justify-content:center;
+  margin:0 auto 18px;
   flex-wrap:wrap;
-  margin-top:14px;
 }
 
-.quick-pill{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:999px;
-  padding:10px 13px;
-  cursor:pointer;
-  font-weight:800;
-}
-
-.quick-pill:hover{
-  border-color:#bfdbfe;
-  background:#eff6ff;
-  color:#1d4ed8;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* RESPONSE */
-.response-grid{
-  display:grid;
-  gap:10px;
-}
-
-.response-card{
-  background:#f8fafc;
-  border:1px solid #edf2f7;
-  border-radius:14px;
-  padding:12px;
-}
-
-.response-card.primary{
-  background:linear-gradient(135deg,#fff7ed,#ffffff);
-  border-color:#fed7aa;
-}
-
-.response-label{
-  color:#64748b;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  font-weight:900;
-  margin-bottom:6px;
-}
-
-.response-value{
-  color:#0f172a;
-  font-weight:600;
-}
-
-.response-value ol{
-  margin:0;
-  padding-left:20px;
-}
-
-.response-value li{
-  margin:5px 0;
-}
-
-.priority-pill{
+.status-chip{
   display:inline-flex;
-  padding:7px 10px;
-  border-radius:999px;
+  align-items:center;
+  gap:7px;
+  border:1px solid #dbeafe;
   background:#eff6ff;
   color:#1d4ed8;
-  border:1px solid #bfdbfe;
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:12px;
   font-weight:900;
 }
 
-.copy-response{
-  margin-top:10px;
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:8px 10px;
-  cursor:pointer;
-  font-weight:800;
+.status-chip.green{
+  border-color:#bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
 }
 
-.error-box{
-  display:none;
-  max-width:920px;
-  margin:0 auto 12px;
-  background:#fef2f2;
-  color:#991b1b;
-  border:1px solid #fecaca;
-  border-radius:14px;
-  padding:12px 14px;
-  font-size:14px;
-  font-weight:700;
-}
-
-.error-box.show{
-  display:block;
-}
-
-/* COMPOSER */
-.composer-area{
-  padding:14px 28px 16px;
-  border-top:1px solid #e2e8f0;
-  background:#f8fafc;
-}
-
-.composer-area.bottom{
-  position:sticky;
-  bottom:0;
-}
-
-.composer{
-  max-width:920px;
-  margin:0 auto;
-  background:#fff;
-  border:1px solid #dbe4f0;
-  box-shadow:var(--shadow);
-  border-radius:22px;
-  overflow:hidden;
-}
-
-textarea{
-  width:100%;
-  min-height:70px;
-  max-height:180px;
-  resize:vertical;
-  border:0;
-  outline:0;
-  padding:18px 20px;
-  font-size:15px;
-  line-height:1.5;
-  font-family:inherit;
-}
-
-.composer-foot{
-  border-top:1px solid #eef2f7;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 14px;
-}
-
-.left-controls{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-select{
-  border:1px solid #fed7aa;
+.status-chip.orange{
+  border-color:#fed7aa;
   background:#fff7ed;
   color:#c2410c;
-  border-radius:999px;
-  padding:9px 11px;
-  font-weight:850;
-  outline:0;
 }
 
-.hint{
-  color:#94a3b8;
-  font-size:12px;
-  font-weight:650;
+.empty-examples{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  max-width:880px;
+  margin:18px auto 0;
 }
 
-.btn{
-  border:0;
-  border-radius:12px;
-  padding:11px 16px;
+.example-card{
+  border:1px solid #e2e8f0;
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  text-align:left;
   cursor:pointer;
-  font-weight:900;
-}
-
-.run{
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:#fff;
-  min-width:120px;
-}
-
-.run:disabled{
-  opacity:.65;
-  cursor:not-allowed;
-}
-
-.clear{
-  background:#fff;
-  border:1px solid var(--line);
-  color:#475569;
-}
-
-/* RIGHT */
-.right{
-  background:#fff;
-  border-left:1px solid var(--line);
-  padding:18px;
-  overflow:auto;
-}
-
-.panel{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:14px;
   box-shadow:0 8px 20px rgba(15,23,42,.04);
 }
 
-.panel h3{
-  margin:0 0 10px;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:.1em;
-  color:#64748b;
-}
-
-.current-mode{
-  display:inline-flex;
-  padding:8px 10px;
-  border-radius:999px;
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  color:#c2410c;
-  font-weight:900;
-}
-
-.item{
-  padding:10px;
-  border-radius:12px;
-  background:#f8fafc;
-  border:1px solid #edf2f7;
-  margin-bottom:8px;
-  font-size:13px;
-  color:#334155;
-  cursor:pointer;
-  position:relative;
-}
-
-.item.active-thread{
-  border-color:#bfdbfe;
+.example-card:hover{
   background:#eff6ff;
+  border-color:#bfdbfe;
 }
 
-.item strong{
+.example-card strong{
   display:block;
   color:#0f172a;
-  margin-bottom:3px;
-}
-
-.item-actions{
-  display:flex;
-  gap:6px;
-  margin-top:8px;
-}
-
-.thread-action{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#475569;
-  border-radius:8px;
-  padding:5px 8px;
-  cursor:pointer;
-  font-size:11px;
-  font-weight:800;
-}
-
-.thread-action.delete{
-  color:#b91c1c;
-  border-color:#fecaca;
-  background:#fff5f5;
-}
-
-.empty{
-  color:#94a3b8;
   font-size:13px;
-  line-height:1.45;
-}
-
-.kpi-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.kpi{
-  background:#f8fafc;
-  border:1px solid #edf2f7;
-  border-radius:12px;
-  padding:10px;
-}
-
-.kpi strong{
-  display:block;
-  font-size:18px;
-  color:#0f172a;
-}
-
-.kpi span{
-  display:block;
-  font-size:11px;
-  color:#64748b;
-  margin-top:2px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.thread-search{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:10px 11px;
-  outline:0;
-  font-size:13px;
-  margin-bottom:10px;
-  background:#f8fafc;
-}
-
-.pin-badge{
-  display:inline-flex;
-  margin-left:6px;
-  padding:2px 6px;
-  border-radius:999px;
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  color:#c2410c;
-  font-size:10px;
-  font-weight:900;
-}
-
-.status-line{
-  font-size:12px;
-  color:#64748b;
-  margin-top:6px;
-}
-
-.personal-highlight{
-  border-color:#fed7aa !important;
-  background:#fff7ed !important;
-}
-
-.page-panel{
-  max-width:920px;
-  margin:0 auto 18px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:0 10px 30px rgba(15,23,42,.06);
-}
-
-.page-panel h2{
-  margin:0 0 8px;
-  font-size:22px;
-  letter-spacing:-.03em;
-}
-
-.page-panel p{
-  margin:0 0 14px;
-  color:#64748b;
-  line-height:1.45;
-}
-
-.page-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-}
-
-.page-card{
-  border:1px solid #edf2f7;
-  background:#f8fafc;
-  border-radius:15px;
-  padding:14px;
-  cursor:pointer;
-}
-
-.page-card:hover{
-  border-color:#bfdbfe;
-  background:#eff6ff;
-}
-
-.page-card strong{
-  display:block;
   margin-bottom:5px;
-  color:#0f172a;
 }
 
-.page-card span{
-  display:block;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.4;
-}
-
-.smart-badge{
-  display:inline-flex;
-  padding:6px 9px;
-  border-radius:999px;
-  background:#ecfdf5;
-  color:#047857;
-  border:1px solid #bbf7d0;
-  font-size:12px;
-  font-weight:900;
-  margin-bottom:10px;
-}
-
-@media(max-width:760px){
-  .page-grid{grid-template-columns:1fr}
-}
-
-.command-insights{
-  max-width:920px;
-  margin:0 auto 12px;
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
-}
-
-.insight-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:12px;
-  box-shadow:0 8px 22px rgba(15,23,42,.045);
-}
-
-.insight-card strong{
-  display:block;
-  color:#0f172a;
-  font-size:15px;
-  margin-bottom:3px;
-}
-
-.insight-card span{
+.example-card span{
   color:#64748b;
   font-size:12px;
   line-height:1.35;
 }
 
-.command-bar{
-  max-width:920px;
-  margin:0 auto 12px;
+.thread-tools{
   display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.command-chip{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:999px;
-  padding:8px 11px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:850;
-}
-
-.command-chip:hover{
-  background:#eff6ff;
-  border-color:#bfdbfe;
-  color:#1d4ed8;
-}
-
-.focus-card{
-  max-width:920px;
-  margin:0 auto 14px;
-  border:1px solid #fed7aa;
-  background:linear-gradient(135deg,#fff7ed,#ffffff);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:0 12px 30px rgba(251,146,60,.10);
-}
-
-.focus-card strong{
-  display:block;
-  color:#9a3412;
-  margin-bottom:5px;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.focus-card div{
-  color:#0f172a;
-  font-weight:700;
-  line-height:1.45;
-}
-
-.quality-meter{
-  height:8px;
-  background:#e2e8f0;
-  border-radius:999px;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.quality-meter span{
-  display:block;
-  height:100%;
-  background:linear-gradient(90deg,#f97316,#22c55e);
-  width:0%;
-}
-
-@media(max-width:900px){
-  .command-insights{grid-template-columns:1fr 1fr}
-}
-
-@media(max-width:620px){
-  .command-insights{grid-template-columns:1fr}
-}
-
-.exec-score-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px;
-  margin-top:10px;
-}
-
-.exec-score{
-  background:#fff;
-  border:1px solid #edf2f7;
-  border-radius:12px;
-  padding:10px;
-}
-
-.exec-score strong{
-  display:block;
-  font-size:16px;
-  color:#0f172a;
-}
-
-.exec-score span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.07em;
-  margin-top:2px;
-}
-
-.workflow-strip{
-  max-width:920px;
-  margin:0 auto 12px;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding-bottom:2px;
-}
-
-.workflow-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:999px;
-  padding:9px 12px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:850;
-  white-space:nowrap;
-}
-
-.workflow-btn:hover{
-  background:#eff6ff;
-  color:#1d4ed8;
-  border-color:#bfdbfe;
-}
-
-.exec-brief{
-  background:linear-gradient(135deg,#eff6ff,#ffffff);
-  border-color:#bfdbfe;
-}
-
-.integrations-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:8px;
-}
-
-.integration-item{
-  border:1px solid #edf2f7;
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-  font-size:13px;
-  color:#334155;
-}
-
-.integration-item strong{
-  display:block;
-  color:#0f172a;
-  margin-bottom:3px;
-}
-
-.integration-item span{
-  display:block;
-  color:#64748b;
-  font-size:12px;
-}
-
-.exec-level{
-  background:linear-gradient(135deg,#0f172a,#1e3a8a);
-  color:white;
-  border:0;
-}
-
-.exec-level h3{
-  color:#bfdbfe !important;
-}
-
-.exec-level .item{
-  background:rgba(255,255,255,.08);
-  border-color:rgba(255,255,255,.12);
-  color:#e5edf9;
-}
-
-.exec-level .item strong{
-  color:#fff;
-}
-
-.cockpit-grid{
-  max-width:920px;
-  margin:0 auto 14px;
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
-}
-
-.cockpit-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:12px;
-  box-shadow:0 8px 22px rgba(15,23,42,.045);
-}
-
-.cockpit-card strong{
-  display:block;
-  font-size:18px;
-  color:#0f172a;
-}
-
-.cockpit-card span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.07em;
-  margin-top:2px;
-}
-
-.priority-alert{
-  max-width:920px;
-  margin:0 auto 12px;
-  border:1px solid #fecaca;
-  background:#fef2f2;
-  color:#991b1b;
-  border-radius:16px;
-  padding:12px 14px;
-  font-size:13px;
-  font-weight:800;
-  display:none;
-}
-
-.priority-alert.show{
-  display:block;
-}
-
-.memory-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
   gap:8px;
   margin-top:8px;
 }
 
-.memory-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:8px 10px;
-  cursor:pointer;
-  font-weight:800;
-  font-size:12px;
-}
-
-.memory-btn:hover{
-  background:#eff6ff;
-  border-color:#bfdbfe;
-  color:#1d4ed8;
-}
-
-.system-tag{
-  display:inline-flex;
-  margin:3px 4px 0 0;
-  padding:4px 7px;
-  border-radius:999px;
-  background:#eff6ff;
-  color:#1d4ed8;
-  border:1px solid #bfdbfe;
-  font-size:11px;
-  font-weight:900;
-}
-
-@media(max-width:900px){
-  .cockpit-grid{grid-template-columns:1fr 1fr}
-}
-
-@media(max-width:620px){
-  .cockpit-grid{grid-template-columns:1fr}
-}
-
-.service-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:8px;
-}
-
-.service-row{
-  border:1px solid #edf2f7;
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.service-row strong{
-  display:block;
-  color:#0f172a;
-  margin-bottom:3px;
-}
-
-.service-row span{
-  display:block;
-  color:#64748b;
-  font-size:12px;
-}
-
-.service-status{
-  display:inline-flex;
-  padding:5px 8px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:900;
-  background:#fff7ed;
-  color:#c2410c;
-  border:1px solid #fed7aa;
-  white-space:nowrap;
-}
-
-.service-status.ready{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-
-.automation-list{
-  display:grid;
-  gap:8px;
-}
-
-.automation-card{
-  border:1px solid #edf2f7;
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-  font-size:13px;
-  color:#334155;
-}
-
-.automation-card strong{
-  display:block;
-  color:#0f172a;
-  margin-bottom:4px;
-}
-
-.automation-card button{
-  margin-top:8px;
-  border:1px solid var(--line);
-  background:#fff;
-  color:#334155;
-  border-radius:8px;
-  padding:7px 9px;
-  cursor:pointer;
-  font-weight:800;
-  font-size:12px;
-}
-
-.profile-form{
-  display:grid;
-  gap:12px;
-}
-
-.profile-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.profile-field{
-  display:grid;
-  gap:6px;
-}
-
-.profile-field label{
-  color:#475569;
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.profile-field input,
-.profile-field textarea,
-.profile-field select{
-  width:100%;
-  border:1px solid var(--line);
-  background:#fff;
-  color:#0f172a;
-  border-radius:12px;
-  padding:11px 12px;
-  outline:0;
-  font-size:14px;
-  font-family:inherit;
-}
-
-.profile-field textarea{
-  min-height:88px;
-  resize:vertical;
-}
-
-.profile-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:4px;
-}
-
-.upload-box{
-  border:1px dashed #bfdbfe;
-  background:#eff6ff;
-  border-radius:16px;
-  padding:14px;
-}
-
-.upload-box input{
-  margin-top:8px;
-}
-
-.profile-status{
-  margin-top:8px;
-  font-size:13px;
-  color:#047857;
-  font-weight:800;
-}
-
-.profile-summary{
-  display:grid;
-  gap:8px;
-}
-
-.profile-pill{
-  display:inline-flex;
-  padding:6px 9px;
-  background:#f8fafc;
-  color:#334155;
-  border:1px solid var(--line);
-  border-radius:999px;
-  font-size:12px;
-  font-weight:800;
-  margin:3px 4px 0 0;
-}
-
-@media(max-width:760px){
-  .profile-row{grid-template-columns:1fr}
-}
-
-/* MODAL */
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(2,6,23,.45);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:50;
-}
-
-.modal-backdrop.show{
-  display:flex;
-}
-
-.modal{
-  width:min(760px,92vw);
-  background:#fff;
-  border-radius:20px;
-  border:1px solid var(--line);
-  box-shadow:0 30px 80px rgba(15,23,42,.3);
-  padding:18px;
-}
-
-.modal h3{
-  margin:0 0 10px;
-}
-
-.modal pre{
-  background:#0f172a;
-  color:#e5edf9;
-  border-radius:14px;
-  padding:14px;
-  white-space:pre-wrap;
-  max-height:55vh;
-  overflow:auto;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.modal-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-top:12px;
-}
-
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  background:#0f172a;
-  color:#fff;
-  padding:12px 14px;
-  border-radius:12px;
-  font-size:13px;
-  font-weight:800;
-  display:none;
-  z-index:80;
-  box-shadow:0 16px 40px rgba(15,23,42,.24);
-}
-
-.toast.show{
-  display:block;
-}
-
-@media(max-width:1150px){
-  .app{grid-template-columns:240px 1fr}
-  .right{display:none}
-}
-
-@media(max-width:760px){
-  body{overflow:auto}
-  .app{display:block;height:auto}
-  .sidebar{display:none}
-  .main{height:auto;min-height:100vh}
-  .chat-shell{padding:14px}
-  .center-stage{padding:20px 14px}
-  .center-inner h1{font-size:30px}
-  .composer-area{padding:12px 14px 16px}
-  .composer-foot{flex-direction:column;align-items:stretch}
-  .btn{width:100%}
-}
-
-/* V56 INPUT + TOP NAV FIX */
-.compact-topbar{
-  height:44px !important;
-  min-height:44px !important;
-  padding:0 22px !important;
-}
-
-.compact-topbar > div:first-child{
-  display:none !important;
-}
-
-.top-nav{
-  min-height:50px !important;
-  padding:7px 22px !important;
-  border-bottom:1px solid var(--line) !important;
-  background:#fff !important;
-}
-
-.center-stage{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  min-height:calc(100vh - 160px) !important;
-  padding:30px !important;
-}
-
-.center-inner{
-  width:100% !important;
-  max-width:920px !important;
-  text-align:center !important;
-}
-
-#centerComposerMount{
-  width:100% !important;
-  max-width:920px !important;
-  margin:18px auto 0 !important;
-}
-
-#centerComposerMount .composer{
-  display:block !important;
-  width:100% !important;
-  margin:0 auto !important;
-}
-
-.composer{
-  display:block !important;
-  max-width:920px !important;
-  width:100% !important;
-  background:#fff !important;
-  border:1px solid #dbe4f0 !important;
-  border-radius:22px !important;
-  box-shadow:0 18px 48px rgba(15,23,42,.10) !important;
-  overflow:hidden !important;
-}
-
-.composer textarea,
-#input{
-  display:block !important;
-  width:100% !important;
-  min-height:118px !important;
-  border:0 !important;
-  outline:0 !important;
-  resize:vertical !important;
-  padding:20px 22px !important;
-  font-size:16px !important;
-  line-height:1.5 !important;
-  font-family:inherit !important;
-  color:#0f172a !important;
-  background:#fff !important;
-}
-
-.composer-foot{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  gap:12px !important;
-  padding:12px 14px !important;
-  border-top:1px solid #eef2f7 !important;
-  background:#fff !important;
-}
-
-.composer-area{
-  display:block !important;
-}
-
-.composer-area.hidden{
-  display:none !important;
-}
-
-.center-stage.hidden{
-  display:none !important;
-}
-
-.chat-shell.hidden{
-  display:none !important;
-}
-
-.run{
-  background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;
-  color:#fff !important;
-  min-width:120px !important;
-}
-
-.clear{
-  background:#fff !important;
-  border:1px solid var(--line) !important;
-  color:#475569 !important;
-}
-
-@media(max-width:760px){
-  .center-stage{padding:18px 14px !important; min-height:calc(100vh - 120px) !important;}
-  .composer-foot{flex-direction:column !important; align-items:stretch !important;}
-  .composer-foot .btn{width:100% !important;}
-}
-
-
-/* V57 DATABRICKS-STYLE GLOBAL TOP NAV */
-.app{
-  display:grid !important;
-  grid-template-columns:252px minmax(0,1fr) 350px !important;
-  grid-template-rows:52px minmax(0,1fr) !important;
-  height:100vh !important;
-}
-
-.global-header{
-  grid-column:1 / -1;
-  grid-row:1;
-  height:52px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:0 14px;
-  min-width:0;
-  z-index:50;
-}
-
-.global-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex:0 0 auto;
-  min-width:245px;
-}
-
-.hamburger{
-  width:34px;
-  height:34px;
-  border:0;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:18px;
-}
-
-.hamburger:hover{
-  background:#f1f5f9;
-}
-
-.global-logo{
-  width:32px;
-  height:32px;
-  border-radius:10px;
-  background:linear-gradient(135deg,#2563eb,#38bdf8);
-  color:white;
-  display:grid;
-  place-items:center;
-  font-weight:900;
-  font-size:12px;
-}
-
-.global-brand strong{
-  display:block;
-  font-size:14px;
-  color:#0f172a;
-  line-height:1.1;
-}
-
-.global-brand span{
-  display:block;
-  font-size:11px;
-  color:#64748b;
-  margin-top:2px;
-}
-
-.global-tabs{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  overflow-x:auto;
-  min-width:0;
+.thread-tools .mini-btn{
   flex:1;
-  height:100%;
-  padding:7px 0;
 }
 
-.global-tabs .top-tab{
-  border:1px solid transparent;
-  background:transparent;
-  color:#475569;
-  border-radius:999px;
-  padding:8px 11px;
-  cursor:pointer;
-  font-weight:850;
-  white-space:nowrap;
-  font-size:13px;
-}
-
-.global-tabs .top-tab:hover,
-.global-tabs .top-tab.active{
-  background:#eff6ff;
-  color:#1d4ed8;
-  border-color:#bfdbfe;
-}
-
-.global-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex:0 0 auto;
-}
-
-.sidebar{
-  grid-column:1;
-  grid-row:2;
-  height:calc(100vh - 52px) !important;
-}
-
-.main{
-  grid-column:2;
-  grid-row:2;
-  height:calc(100vh - 52px) !important;
-}
-
-.right{
-  grid-column:3;
-  grid-row:2;
-  height:calc(100vh - 52px) !important;
-}
-
-.hidden-topbar{
-  display:none !important;
-}
-
-.top-nav,
-.top-nav-raised{
-  display:none !important;
-}
-
-.brand{
-  display:none !important;
-}
-
-.nav-scroll{
-  padding-top:4px !important;
-}
-
-.center-stage{
-  min-height:calc(100vh - 150px) !important;
-}
-
-@media(max-width:1150px){
-  .app{
-    grid-template-columns:240px minmax(0,1fr) !important;
-  }
-  .right{
-    display:none !important;
-  }
-  .global-actions{
-    display:none;
-  }
-}
-
-@media(max-width:760px){
-  .app{
-    display:block !important;
-    height:auto !important;
-  }
-  .global-header{
-    position:sticky;
-    top:0;
-    overflow-x:auto;
-  }
-  .global-left{
-    min-width:auto;
-  }
-  .global-brand span{
-    display:none;
-  }
-  .sidebar{
-    display:none !important;
-  }
-  .main{
-    height:auto !important;
-    min-height:calc(100vh - 52px) !important;
-  }
-}
-
-
-/* V58 CLEAN SEARCH + LESS BUSY UI */
-.clean-global-header{
-  display:grid !important;
-  grid-template-columns:280px minmax(260px,680px) auto auto !important;
-  gap:14px !important;
-  padding:0 16px !important;
-}
-
-.global-search-wrap{
-  height:36px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  border:1px solid #cbd5e1;
+.copy-btn{
+  margin-top:10px;
+  height:34px;
+  border:1px solid #dbe3ef;
   background:#fff;
-  border-radius:7px;
+  color:#334155;
+  border-radius:10px;
   padding:0 10px;
-  min-width:260px;
-  max-width:680px;
-  width:100%;
-  justify-self:center;
-}
-
-.search-icon{
-  color:#64748b;
-  font-size:18px;
-  line-height:1;
-}
-
-.global-search-input{
-  width:100%;
-  border:0;
-  outline:0;
-  background:transparent;
-  font-size:14px;
-  color:#0f172a;
-  font-family:inherit;
-}
-
-.search-shortcut{
-  color:#64748b;
+  font-weight:900;
+  cursor:pointer;
   font-size:12px;
-  white-space:nowrap;
-  border-left:1px solid #e2e8f0;
-  padding-left:8px;
 }
 
-.clean-tabs{
-  flex:0 1 auto !important;
-  overflow:visible !important;
-  gap:4px !important;
-}
-
-.clean-tabs .top-tab{
-  padding:7px 10px !important;
-}
-
-.more-tab{
-  background:#f8fafc !important;
-  border-color:#e2e8f0 !important;
-}
-
-.more-nav-menu{
-  position:fixed;
-  top:58px;
-  right:96px;
-  width:220px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:0 24px 70px rgba(15,23,42,.18);
-  padding:8px;
-  z-index:80;
-  display:none;
-}
-
-.more-nav-menu.show{
-  display:grid;
-  gap:4px;
-}
-
-.more-nav-menu .top-tab{
-  width:100%;
-  justify-content:flex-start;
-  text-align:left;
-  border:1px solid transparent;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:10px 12px;
-  cursor:pointer;
-  font-weight:800;
-}
-
-.more-nav-menu .top-tab:hover,
-.more-nav-menu .top-tab.active{
-  background:#eff6ff;
-  color:#1d4ed8;
-  border-color:#bfdbfe;
-}
-
-.global-search-results{
-  position:fixed;
-  top:58px;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(680px,calc(100vw - 40px));
-  max-height:430px;
-  overflow:auto;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:0 24px 70px rgba(15,23,42,.18);
-  padding:10px;
-  z-index:90;
-  display:none;
-}
-
-.global-search-results.show{
-  display:block;
-}
-
-.search-result{
-  padding:12px;
-  border-radius:12px;
-  cursor:pointer;
-  border:1px solid transparent;
-  font-size:13px;
-  color:#334155;
-}
-
-.search-result:hover{
+.copy-btn:hover{
   background:#f8fafc;
-  border-color:#edf2f7;
 }
 
-.search-result strong{
-  display:block;
-  color:#0f172a;
-  margin-bottom:4px;
+.backend-ok{
+  color:#047857 !important;
 }
 
-/* reduce sidebar noise */
-.sidebar{
-  width:auto !important;
-}
-
-.nav-label{
-  margin-top:18px !important;
-  font-size:10px !important;
-  letter-spacing:.12em !important;
-  opacity:.75 !important;
-}
-
-.nav-btn{
-  min-height:38px !important;
-  padding:9px 10px !important;
-  font-size:13px !important;
-}
-
-.sidebar-help,
-.left-actions,
-.extra-tools{
-  display:none !important;
-}
-
-.exec-level,
-#servicesPanel,
-#automationPanel{
-  font-size:13px;
-}
-
-.panel{
-  padding:14px !important;
-}
-
-.function-grid .function-btn:nth-child(n+6){
-  display:none;
-}
-
-/* keep layout clean */
-.right{
-  width:330px !important;
-}
-
-@media(max-width:1250px){
-  .clean-global-header{
-    grid-template-columns:250px minmax(240px,1fr) auto !important;
-  }
-  .global-actions{
-    display:none !important;
-  }
-}
-
-@media(max-width:980px){
-  .clean-tabs .top-tab:not(.more-tab):nth-child(n+4){
-    display:none;
-  }
-  .clean-global-header{
-    grid-template-columns:220px minmax(220px,1fr) auto !important;
-  }
-}
-
-@media(max-width:760px){
-  .clean-global-header{
-    display:flex !important;
-    gap:8px !important;
-  }
-  .global-brand span{
-    display:none !important;
-  }
-  .global-search-wrap{
-    min-width:0;
-    flex:1;
-  }
-  .clean-tabs{
-    display:none !important;
-  }
-}
-
-
-/* V59 FUNCTIONAL STABILITY */
-.system-notice{
-  position:fixed;
-  left:50%;
-  bottom:22px;
-  transform:translateX(-50%);
-  background:#0f172a;
-  color:#fff;
-  border-radius:999px;
-  padding:10px 14px;
-  font-size:13px;
-  font-weight:800;
-  box-shadow:0 18px 40px rgba(15,23,42,.25);
-  z-index:120;
-  display:none;
-}
-
-.system-notice.show{
-  display:block;
-}
-
-.btn:disabled,
-.small-btn:disabled,
-.function-btn:disabled{
-  opacity:.58;
-  cursor:not-allowed;
-}
-
-.live.offline{
-  background:#fef2f2 !important;
+.backend-bad{
   color:#b91c1c !important;
-  border-color:#fecaca !important;
 }
 
-.live.checking{
-  background:#fffbeb !important;
-  color:#92400e !important;
-  border-color:#fde68a !important;
-}
-
-.message-error{
-  border:1px solid #fecaca !important;
-  background:#fef2f2 !important;
-}
-
-.output-json-toggle{
-  margin-top:10px;
-  border:1px solid var(--line);
-  background:#fff;
-  color:#475569;
-  border-radius:10px;
-  padding:8px 10px;
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-.output-json{
-  margin-top:10px;
-  white-space:pre-wrap;
-  background:#0f172a;
-  color:#e5e7eb;
-  border-radius:12px;
-  padding:12px;
-  font-size:12px;
-  overflow:auto;
-  max-height:260px;
-  display:none;
-}
-
-.output-json.show{
-  display:block;
-}
-
-.functional-checklist{
-  display:grid;
-  gap:8px;
-}
-
-.check-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  border:1px solid #edf2f7;
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-  font-size:13px;
-}
-
-.check-row strong{
-  color:#0f172a;
-}
-
-.check-ok{
-  color:#047857;
-  font-weight:900;
-}
-
-.check-bad{
-  color:#b91c1c;
-  font-weight:900;
-}
-
-
-/* V60 TOP NAV — MATCH SCREENSHOT STYLE */
-.app{
-  display:grid !important;
-  grid-template-columns:252px minmax(0,1fr) 350px !important;
-  grid-template-rows:52px minmax(0,1fr) !important;
-  height:100vh !important;
-  background:#f8fafc !important;
-}
-
-.databricks-header{
-  grid-column:1 / -1 !important;
-  grid-row:1 !important;
-  height:52px !important;
-  min-height:52px !important;
-  background:#f8fafc !important;
-  border-bottom:1px solid #e2e8f0 !important;
-  display:grid !important;
-  grid-template-columns:300px minmax(360px,680px) 300px !important;
-  align-items:center !important;
-  gap:18px !important;
-  padding:0 22px !important;
-  z-index:100 !important;
-}
-
-.db-left{
-  display:flex !important;
-  align-items:center !important;
-  gap:13px !important;
-  min-width:0 !important;
-}
-
-.db-menu{
-  width:32px !important;
-  height:32px !important;
-  border:0 !important;
-  background:transparent !important;
-  color:#334155 !important;
-  border-radius:8px !important;
-  cursor:pointer !important;
-  font-size:18px !important;
-  display:grid !important;
-  place-items:center !important;
-}
-
-.db-menu:hover{ background:#e2e8f0 !important; }
-
-.db-mark{
-  width:28px !important;
-  height:28px !important;
-  border-radius:8px !important;
-  background:#ef4444 !important;
-  color:white !important;
-  display:grid !important;
-  place-items:center !important;
-  font-size:11px !important;
-  font-weight:950 !important;
-  letter-spacing:-.04em !important;
-}
-
-.db-brand{
-  color:#111827 !important;
-  font-size:20px !important;
-  font-weight:850 !important;
-  letter-spacing:-.035em !important;
-  white-space:nowrap !important;
-}
-
-.db-search{
-  justify-self:center !important;
-  width:100% !important;
-  max-width:680px !important;
-  height:38px !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:10px !important;
-  background:#fff !important;
-  border:1px solid #cbd5e1 !important;
-  border-radius:5px !important;
-  padding:0 12px !important;
-  box-shadow:0 1px 1px rgba(15,23,42,.03) !important;
-}
-
-.db-search-icon{
-  color:#64748b !important;
-  font-size:20px !important;
-  line-height:1 !important;
-}
-
-.db-search-input{
-  width:100% !important;
-  border:0 !important;
-  outline:0 !important;
-  background:transparent !important;
-  color:#334155 !important;
-  font-size:15px !important;
-  font-family:inherit !important;
-}
-
-.db-search-input::placeholder{ color:#64748b !important; }
-
-.db-shortcut{
-  color:#64748b !important;
-  font-size:12px !important;
-  white-space:nowrap !important;
-}
-
-.db-right{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:flex-end !important;
-  gap:12px !important;
-  min-width:0 !important;
-}
-
-.db-pill{
-  height:30px !important;
-  border:1px solid #dbeafe !important;
-  background:#eff6ff !important;
-  color:#075985 !important;
-  border-radius:999px !important;
-  padding:0 12px !important;
-  font-size:13px !important;
-  font-weight:750 !important;
-  cursor:pointer !important;
-}
-
-.db-pill:hover{ background:#dbeafe !important; }
-
-.db-spark{
-  width:32px !important;
-  height:32px !important;
-  border:0 !important;
-  background:transparent !important;
-  color:#a855f7 !important;
-  border-radius:999px !important;
-  cursor:pointer !important;
-  font-size:18px !important;
-}
-
-.db-spark:hover{ background:#f3e8ff !important; }
-
-.db-avatar{
-  width:32px !important;
-  height:32px !important;
-  border-radius:999px !important;
-  background:#059669 !important;
-  color:white !important;
-  display:grid !important;
-  place-items:center !important;
-  font-size:13px !important;
-  font-weight:900 !important;
-}
-
-.sidebar{
-  grid-column:1 !important;
-  grid-row:2 !important;
-  height:calc(100vh - 52px) !important;
-  border-right:1px solid #e2e8f0 !important;
-}
-
-.main{
-  grid-column:2 !important;
-  grid-row:2 !important;
-  height:calc(100vh - 52px) !important;
-}
-
-.right{
-  grid-column:3 !important;
-  grid-row:2 !important;
-  height:calc(100vh - 52px) !important;
-}
-
-.hidden-topbar,
-.top-nav,
-.top-nav-raised,
-.global-tabs,
-.clean-tabs{
-  display:none !important;
-}
-
-.brand{
-  display:none !important;
-}
-
-/* menu from top-right spark */
-.db-more-menu{
-  position:fixed !important;
-  top:58px !important;
-  right:66px !important;
-  width:230px !important;
-  background:#fff !important;
-  border:1px solid var(--line) !important;
-  border-radius:16px !important;
-  box-shadow:0 24px 70px rgba(15,23,42,.18) !important;
-  padding:8px !important;
-  z-index:130 !important;
-  display:none !important;
-}
-
-.db-more-menu.show{
-  display:grid !important;
-  gap:4px !important;
-}
-
-.db-more-menu .top-tab{
-  width:100% !important;
-  text-align:left !important;
-  border:1px solid transparent !important;
-  background:#fff !important;
-  color:#334155 !important;
-  border-radius:10px !important;
-  padding:10px 12px !important;
-  cursor:pointer !important;
-  font-weight:800 !important;
-}
-
-.db-more-menu .top-tab:hover,
-.db-more-menu .top-tab.active{
-  background:#eff6ff !important;
-  color:#1d4ed8 !important;
-  border-color:#bfdbfe !important;
-}
-
-/* search result dropdown centered under top search */
-.global-search-results{
-  position:fixed !important;
-  top:58px !important;
-  left:50% !important;
-  transform:translateX(-50%) !important;
-  width:min(680px,calc(100vw - 40px)) !important;
-  max-height:430px !important;
-  overflow:auto !important;
-  background:#fff !important;
-  border:1px solid var(--line) !important;
-  border-radius:16px !important;
-  box-shadow:0 24px 70px rgba(15,23,42,.18) !important;
-  padding:10px !important;
-  z-index:140 !important;
-  display:none !important;
-}
-
-.global-search-results.show{ display:block !important; }
-
-.search-result{
-  padding:12px !important;
-  border-radius:12px !important;
-  cursor:pointer !important;
-  border:1px solid transparent !important;
-  font-size:13px !important;
-  color:#334155 !important;
-}
-
-.search-result:hover{
-  background:#f8fafc !important;
-  border-color:#edf2f7 !important;
-}
-
-.search-result strong{
-  display:block !important;
-  color:#0f172a !important;
-  margin-bottom:4px !important;
-}
-
-/* Make left area less busy under Databricks header */
-.sidebar-help,
-.left-actions,
-.extra-tools{
-  display:none !important;
-}
-
-.nav-scroll{
-  padding-top:10px !important;
-}
-
-.nav-label{
-  margin-top:18px !important;
-  font-size:10px !important;
-  letter-spacing:.12em !important;
-  opacity:.72 !important;
-}
-
-.nav-btn{
-  min-height:38px !important;
-  padding:9px 10px !important;
-  font-size:13px !important;
-}
-
-.center-stage{
-  min-height:calc(100vh - 150px) !important;
-}
-
-@media(max-width:1200px){
-  .databricks-header{
-    grid-template-columns:250px minmax(300px,1fr) 170px !important;
-  }
-  .db-pill:first-child{display:none !important;}
-}
-
-@media(max-width:980px){
-  .app{
-    grid-template-columns:230px minmax(0,1fr) !important;
-  }
-  .right{
-    display:none !important;
-  }
-  .databricks-header{
-    grid-template-columns:220px minmax(240px,1fr) 110px !important;
-  }
-  .db-brand{
-    font-size:18px !important;
-  }
-  .db-shortcut{
-    display:none !important;
-  }
-}
-
-@media(max-width:760px){
-  .app{
-    display:block !important;
-    height:auto !important;
-  }
-  .databricks-header{
-    position:sticky !important;
-    top:0 !important;
-    display:flex !important;
-    gap:8px !important;
-    padding:0 10px !important;
-  }
-  .db-brand{
-    display:none !important;
-  }
-  .db-search{
-    min-width:0 !important;
-    flex:1 !important;
-  }
-  .db-right{
-    gap:6px !important;
-  }
-  .db-pill{
-    display:none !important;
-  }
-  .sidebar{
-    display:none !important;
-  }
-  .main{
-    height:auto !important;
-    min-height:calc(100vh - 52px) !important;
-  }
-}
-
-
-/* V61 LAYOUT + INPUT FIX */
-.app{
-  grid-template-columns:252px minmax(760px,1fr) 320px !important;
-  grid-template-rows:52px minmax(0,1fr) !important;
-}
-
-.databricks-header{
-  grid-template-columns:300px minmax(420px,680px) 240px !important;
-}
-
-.main{
-  background:#f8fafc !important;
-  overflow:auto !important;
-}
-
-.right{
-  width:320px !important;
-  overflow:auto !important;
-  background:#fff !important;
-}
-
-.center-stage{
-  min-height:calc(100vh - 52px) !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:34px 28px !important;
-}
-
-.center-inner{
-  width:100% !important;
-  max-width:920px !important;
-  margin:0 auto !important;
-  transform:translateY(-18px) !important;
-}
-
-.center-inner h1{
-  font-size:32px !important;
-  letter-spacing:-.045em !important;
-  margin-bottom:10px !important;
-}
-
-.center-inner p{
-  margin-bottom:18px !important;
-}
-
-#centerComposerMount{
-  display:block !important;
-  width:100% !important;
-  max-width:880px !important;
-  margin:22px auto 0 !important;
-}
-
-#centerComposerMount:empty::after{
-  content:"";
-  display:none;
-}
-
-.composer{
-  display:block !important;
-  width:100% !important;
-  max-width:880px !important;
-  margin:0 auto !important;
-  background:#fff !important;
-  border:1px solid #cbd5e1 !important;
-  border-radius:18px !important;
-  box-shadow:0 20px 60px rgba(15,23,42,.13) !important;
-  overflow:hidden !important;
-  position:relative !important;
-  z-index:10 !important;
-}
-
-.composer.hidden,
-.composer-area.hidden .composer{
-  display:block !important;
-}
-
-.composer textarea,
-#input{
-  display:block !important;
-  width:100% !important;
-  min-height:112px !important;
-  max-height:300px !important;
-  border:0 !important;
-  outline:0 !important;
-  resize:vertical !important;
-  padding:20px 22px !important;
-  font-size:16px !important;
-  line-height:1.5 !important;
-  color:#0f172a !important;
-  background:#fff !important;
-  font-family:inherit !important;
-}
-
-.composer textarea::placeholder,
-#input::placeholder{
-  color:#64748b !important;
-}
-
-.composer-foot{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  gap:12px !important;
-  padding:13px 14px !important;
-  border-top:1px solid #e5e7eb !important;
-  background:#fff !important;
-}
-
-.composer-left,
-.composer-right{
-  display:flex !important;
-  align-items:center !important;
-  gap:10px !important;
-  flex-wrap:wrap !important;
-}
-
-.mode-select,
-#modeEl{
-  height:40px !important;
-  border-radius:999px !important;
-  border:1px solid #fed7aa !important;
-  background:#fff7ed !important;
-  color:#c2410c !important;
-  padding:0 13px !important;
-  font-weight:850 !important;
-}
-
-.btn.run,
-.run{
-  min-width:116px !important;
-  height:40px !important;
-  background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;
-  color:#fff !important;
-  border:0 !important;
-  border-radius:12px !important;
-  font-weight:900 !important;
-}
-
-.btn.clear,
-.clear{
-  height:40px !important;
-  border:1px solid #dbe3ef !important;
-  background:#fff !important;
-  color:#334155 !important;
-  border-radius:12px !important;
-  font-weight:850 !important;
-}
-
-.composer-area{
-  display:block !important;
-  position:sticky !important;
-  bottom:0 !important;
-  background:#f8fafc !important;
-  border-top:1px solid #e2e8f0 !important;
-  padding:14px 22px !important;
-  z-index:30 !important;
-}
-
-.composer-area.hidden{
-  display:none !important;
-}
-
-.chat-shell{
-  min-height:100% !important;
-  padding-bottom:0 !important;
-}
-
-.chat{
-  padding-bottom:20px !important;
-}
-
-/* Reduce right rail clutter while preserving function */
-.right .panel:nth-of-type(n+7){
-  display:none !important;
-}
-
-.panel{
-  margin-bottom:10px !important;
-  border-radius:16px !important;
-}
-
-.function-grid .function-btn:nth-child(n+6){
-  display:none !important;
-}
-
-/* Make New on left closer to reference style */
-.sidebar::before{
-  content:"+  New";
-  display:flex;
-  align-items:center;
-  margin:12px 12px 18px;
-  height:44px;
-  border-radius:12px;
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  padding:0 16px;
-  font-weight:900;
-  letter-spacing:.01em;
-}
-
-/* On wide screens, keep center content lower but input visible */
-@media(min-width:1200px){
-  .center-stage{
-    padding-top:20px !important;
-  }
-}
-
-@media(max-width:1100px){
-  .app{
-    grid-template-columns:230px minmax(0,1fr) !important;
-  }
-  .right{
-    display:none !important;
-  }
-  .databricks-header{
-    grid-template-columns:250px minmax(280px,1fr) 160px !important;
-  }
-}
-
-@media(max-width:760px){
-  .center-stage{
-    min-height:calc(100vh - 52px) !important;
-    padding:18px 14px !important;
-  }
-  .center-inner{
-    transform:none !important;
-  }
-  .composer-foot{
-    flex-direction:column !important;
-    align-items:stretch !important;
-  }
-  .composer-left,
-  .composer-right{
-    width:100% !important;
-  }
-  .btn.run,
-  .btn.clear{
-    width:100% !important;
-  }
+@media(max-width:900px){
+  .empty-examples{grid-template-columns:1fr}
 }
 
 </style>
@@ -2650,765 +392,534 @@ select{
 
 <body>
 <div class="app">
-  <header class="global-header databricks-header">
-    <div class="db-left">
-      <button class="db-menu" type="button" aria-label="Menu">☰</button>
-      <div class="db-mark">EE</div>
-      <div class="db-brand">Executive Engine</div>
+  <header class="topbar">
+    <div class="top-left">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div class="brand-icon">EE</div>
+      <div class="brand-title">Executive Engine</div>
     </div>
 
-    <div class="db-search">
-      <span class="db-search-icon">⌕</span>
-      <input id="globalSearch" class="db-search-input" placeholder="Search chats, decisions, profile, actions, and more..." />
-      <span class="db-shortcut">⌘ + P</span>
+    <div class="top-search">
+      <span>⌕</span>
+      <input id="globalSearch" placeholder="Search chats, decisions, profile, actions, and more..." />
+      <div class="shortcut">⌘ + P</div>
     </div>
 
-    <div class="db-right">
-      <button id="testBackendGlobal" class="db-pill">Test</button>
-      <button id="newTopGlobal" class="db-pill">New</button>
-      <button id="moreNavBtn" class="db-spark" type="button">✦</button>
-      <div class="db-avatar">A</div>
+    <div class="top-actions">
+      <button class="pill" id="testBtn">Test</button>
+      <button class="pill" id="newTopBtn">New</button>
+      <button class="spark" id="moreBtn">✦</button>
+      <div class="avatar">A</div>
     </div>
   </header>
 
-  <div id="moreNavMenu" class="more-nav-menu db-more-menu">
-    <button class="top-tab active" data-page="command" data-mode="execution">Command</button>
-    <button class="top-tab" data-page="daily" data-mode="daily_brief">Plan Today</button>
-    <button class="top-tab" data-page="decisions" data-mode="decision">Make Decision</button>
-    <button class="top-tab" data-page="meetings" data-mode="meeting">Meetings</button>
-    <button class="top-tab" data-page="strategy" data-mode="strategy">Strategy</button>
-    <button class="top-tab" data-page="risk" data-mode="risk_review">Risk</button>
-    <button class="top-tab" data-page="personal" data-mode="personal">Personal</button>
-    <button class="top-tab" data-page="capital" data-mode="strategy">Capital</button>
-    <button class="top-tab" data-page="sales" data-mode="strategy">Sales</button>
-    <button class="top-tab" data-page="ops" data-mode="execution">Operations</button>
-    <button class="top-tab" data-page="automation" data-mode="execution">Automation</button>
-    <button class="top-tab" data-page="services" data-mode="execution">Systems</button>
-    <button class="top-tab" data-page="profile" data-mode="personal">Your Profile</button>
-  </div>
+  <aside class="sidebar" id="sidebar">
+    <button class="new-left" id="newLeftBtn">+ New</button>
 
-  <div id="searchResults" class="global-search-results"></div>
+    <div class="nav-label">Workflows</div>
+    <button class="nav-btn active" data-page="command" data-mode="execution"><span class="ico">⌘</span>Ask / Execute</button>
+    <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="ico">◷</span>Plan Today</button>
+    <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="ico">◆</span>Make Decision</button>
+    <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="ico">◉</span>Prepare Meeting</button>
+    <button class="nav-btn" data-page="personal" data-mode="personal"><span class="ico">★</span>Personal</button>
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="logo">EE</div>
-      <div>
-        <h1>Executive Engine OS</h1>
-        <p>Decision-ready execution system</p>
-      </div>
-    </div>
+    <div class="nav-label">Tools</div>
+    <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="ico">✦</span>Strategy</button>
+    <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="ico">!</span>Check Risk</button>
+    <button class="nav-btn" data-page="proposal" data-mode="proposal"><span class="ico">▣</span>Proposal</button>
 
-    <div class="nav-scroll">
-      <div class="nav-label">Workflows</div>
-      <button class="nav-btn active" data-page="command" data-mode="execution"><span class="nav-ico">⌘</span>Ask / Execute</button>
-      <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="nav-ico">◷</span>Plan Today</button>
-      <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="nav-ico">◆</span>Make Decision</button>
-      <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="nav-ico">◉</span>Prepare Meeting</button>
-      <button class="nav-btn" data-page="personal" data-mode="personal"><span class="nav-ico">★</span>Personal</button>
+    <div class="nav-label">Executive Systems</div>
+    <button class="nav-btn" data-page="capital" data-mode="strategy"><span class="ico">$</span>Capital</button>
+    <button class="nav-btn" data-page="sales" data-mode="strategy"><span class="ico">↗</span>Sales</button>
+    <button class="nav-btn" data-page="team" data-mode="meeting"><span class="ico">●</span>Team</button>
+    <button class="nav-btn" data-page="ops" data-mode="execution"><span class="ico">⚙</span>Operations</button>
+    <button class="nav-btn" data-page="automation" data-mode="execution"><span class="ico">⚡</span>Automation</button>
+    <button class="nav-btn" data-page="services" data-mode="execution"><span class="ico">◆</span>Systems</button>
+    <button class="nav-btn" data-page="profile" data-mode="personal"><span class="ico">☰</span>Your Profile</button>
 
-      <div class="nav-label">Tools</div>
-      <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
-      <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="nav-ico">!</span>Check Risk</button>
-      <button class="nav-btn" data-page="proposal" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
-
-      <div class="nav-label">Executive Systems</div>
-      <button class="nav-btn" data-page="capital" data-mode="strategy"><span class="nav-ico">$</span>Capital</button>
-      <button class="nav-btn" data-page="sales" data-mode="strategy"><span class="nav-ico">↗</span>Sales</button>
-      <button class="nav-btn" data-page="team" data-mode="meeting"><span class="nav-ico">●</span>Team</button>
-      <button class="nav-btn" data-page="ops" data-mode="execution"><span class="nav-ico">⚙</span>Operations</button>
-      <button class="nav-btn" data-page="automation" data-mode="execution"><span class="nav-ico">⚡</span>Automation</button>
-      <button class="nav-btn" data-page="services" data-mode="execution"><span class="nav-ico">◆</span>Systems</button>
-      <button class="nav-btn" data-page="profile" data-mode="personal"><span class="nav-ico">☰</span>Your Profile</button>
-    </div>
-
-    <div class="sidebar-help">Start with Ask / Execute. Use the others only when you know the workflow.</div>
-
-    <div class="left-actions">
-      <button id="newThreadLeft" class="left-action">+ New Chat</button>
-      <button id="dailyRunLeft" class="left-action">Plan My Day</button>
-      <button id="weeklyPlanLeft" class="left-action">Plan My Week</button>
-      <button id="moreToolsLeft" class="left-action subtle">More Tools</button>
-      <div id="extraTools" class="extra-tools hidden">
-        <button id="personalResetLeft" class="left-action">Personal Reset</button>
-        <button id="exportLeft" class="left-action">Export Thread</button>
-        <button id="exportAllLeft" class="left-action">Export All</button>
-        <button id="refreshMemoryLeft" class="left-action">Refresh Memory</button>
-        <button id="clearAllLeft" class="left-action danger">Clear History</button>
-      </div>
-    </div>
-
-    <div class="mode-card">
+    <div class="side-card">
       <strong>Executive Mode</strong>
-      <span>V61 · layout/input fix</span>
+      V62 · stable executive cockpit
     </div>
   </aside>
 
   <main class="main">
-    <div class="topbar compact-topbar hidden-topbar">
-      <div id="threadTitle" class="thread-title-mini">Executive Engine OS</div>
-      <div class="top-actions">
-        <button id="exportTop" class="small-btn">Export</button>
-        <button id="renameTop" class="small-btn">Rename</button>
-        <button id="duplicateTop" class="small-btn">Duplicate</button>
-        <button id="newTop" class="small-btn">New</button>
-        <div class="live"><span class="dot"></span><span id="healthText">LIVE</span></div>
-      </div>
-    </div>
+    <section class="hero" id="hero">
+      <div class="hero-inner" id="heroInner">
+        <h1 id="pageTitle">What needs to move forward?</h1>
+        <p id="pageDesc">Start simple. Type what you need decided, fixed, planned, or moved forward.</p>
 
-    <div class="chat-wrap">
-      <div id="centerStage" class="center-stage">
-        <div class="center-inner">
-          <h1>What needs to move forward?</h1>
-          <p>Start simple. Type what you need decided, fixed, planned, or moved forward.</p>
-          <div id="centerComposerMount"></div>
-          <div class="quick-row">
-            <button class="quick-pill" data-mode="daily_brief" data-prompt="Run my day. Give me the highest priority, what to ignore, top risks, and the execution queue.">Run my day</button>
-            <button class="quick-pill" data-mode="meeting" data-prompt="Prepare me for a meeting. Give me agenda, risks, questions to ask, likely objections, and follow-up actions.">Prep meeting</button>
-            <button class="quick-pill" data-mode="strategy" data-prompt="Turn this idea into a strategy with the decision, execution path, risks, and first 5 moves.">Strategy</button>
-            <button class="quick-pill" data-mode="risk_review" data-prompt="Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.">Reality check</button>
-            <button class="quick-pill" data-mode="personal" data-prompt="Help me organize my personal life today. Give me priorities, what to handle first, what to ignore, and one immediate next move.">Personal reset</button>
-            <button class="quick-pill" data-mode="execution" data-prompt="Convert this into a 30-minute execution sprint with exact steps and what to ignore.">30-min sprint</button>
-            <button class="quick-pill" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review of this situation: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
+        <div class="status-strip">
+          <span class="status-chip green" id="backendChip">● Backend</span>
+          <span class="status-chip orange">CEO / COO Output</span>
+          <span class="status-chip">Profile-Aware</span>
+        </div>
+
+        <div class="quick-row" id="quickRow">
+          <button class="quick" data-mode="daily_brief" data-prompt="Run my day. Give me priorities, what to ignore, risks, and the first action.">Run my day</button>
+          <button class="quick" data-mode="meeting" data-prompt="Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.">Prep meeting</button>
+          <button class="quick" data-mode="strategy" data-prompt="Build a strategy sprint. Define objective, leverage, sequence, risks, and first 5 moves.">Strategy</button>
+          <button class="quick" data-mode="risk_review" data-prompt="Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.">Reality check</button>
+          <button class="quick" data-mode="personal" data-prompt="Help me organize my personal life today. Give me priorities, what to ignore, and one immediate next move.">Personal reset</button>
+          <button class="quick" data-mode="execution" data-prompt="Convert this into a 30-minute execution sprint with exact steps and what to ignore.">30-min sprint</button>
+          <button class="quick" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
+        </div>
+
+        <div class="empty-examples" id="exampleGrid">
+          <div class="example-card" data-mode="execution" data-prompt="What should I focus on today to move my business and career forward?">
+            <strong>Daily Focus</strong>
+            <span>Get priority, risk, first action, and what to ignore.</span>
+          </div>
+          <div class="example-card" data-mode="decision" data-prompt="Help me make a CEO-level decision on this situation: ">
+            <strong>Decision</strong>
+            <span>Force a clear call with tradeoffs and next move.</span>
+          </div>
+          <div class="example-card" data-mode="strategy" data-prompt="Build a high-leverage strategy plan for: ">
+            <strong>Strategy</strong>
+            <span>Turn direction into sequence, cadence, and execution.</span>
           </div>
         </div>
-      </div>
 
-      <div id="chatShell" class="chat-shell hidden">
-        <div id="priorityAlert" class="priority-alert"></div>
-        <div id="cockpitGrid" class="cockpit-grid hidden"></div>
-        <div id="focusCard" class="focus-card hidden">
-          <strong>Executive Focus</strong>
-          <div id="focusText">No focus yet.</div>
-        </div>
-        <div id="commandInsights" class="command-insights hidden"></div>
-        <div id="commandBar" class="command-bar hidden"></div>
-        <div id="workflowStrip" class="workflow-strip hidden"></div>
-        <div id="pageContent"></div>
-        <div id="chat" class="chat"></div>
-      </div>
+        <div id="pagePanel"></div>
 
-      <div id="composerArea" class="composer-area hidden">
-        <div id="errorBox" class="error-box"></div>
-        <div id="composer" class="composer">
+        <div class="composer" id="composer">
           <textarea id="input" placeholder="Ask anything. Example: What should I focus on today?"></textarea>
           <div class="composer-foot">
-            <div class="left-controls">
-              <select id="mode">
+            <div class="composer-left">
+              <select id="modeSelect" class="mode-select">
                 <option value="execution">Execution</option>
-                <option value="strategy">Strategy</option>
-                <option value="decision">Decision</option>
-                <option value="meeting">Meeting Prep</option>
                 <option value="daily_brief">Daily Brief</option>
-                <option value="proposal">Proposal</option>
+                <option value="decision">Decision</option>
+                <option value="meeting">Meeting</option>
+                <option value="strategy">Strategy</option>
                 <option value="risk_review">Risk Review</option>
+                <option value="proposal">Proposal</option>
                 <option value="personal">Personal</option>
               </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
             </div>
-            <div class="left-controls">
-              <button id="clearBtn" class="btn clear">New Chat</button>
-              <button id="runBtn" class="btn run">Run Engine</button>
+            <div class="composer-right">
+              <button class="btn" id="clearBtn">Clear</button>
+              <button class="btn primary" id="runBtn">Run Engine</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="chat-shell" id="chatShell">
+      <div class="chat" id="chat"></div>
+    </section>
+
+    <div class="bottom-composer" id="bottomComposer"></div>
   </main>
 
   <aside class="right">
-    <div class="panel">
+    <section class="panel">
+      <h3>System Status</h3>
+      <div class="mode-pill" id="backendStatus">Checking...</div>
+      <div class="thread-tools">
+        <button class="mini-btn" id="debugBtn">Debug</button>
+        <button class="mini-btn" id="exportBtn">Export</button>
+      </div>
+    </section>
+
+    <section class="panel">
       <h3>Current Mode</h3>
-      <span id="currentMode" class="current-mode">Execution</span>
-    </div>
+      <div class="mode-pill" id="currentMode">Execution</div>
+    </section>
 
-    <div class="panel">
+    <section class="panel">
       <h3>Metrics</h3>
-      <div class="kpi-grid">
-        <div class="kpi"><strong id="metricThreads">0</strong><span>Threads</span></div>
-        <div class="kpi"><strong id="metricMessages">0</strong><span>Messages</span></div>
-        <div class="kpi"><strong id="metricActions">0</strong><span>Actions</span></div>
-        <div class="kpi"><strong id="metricPriority">—</strong><span>Priority</span></div>
+      <div class="metrics">
+        <div class="metric"><strong id="metricThreads">0</strong><span>Threads</span></div>
+        <div class="metric"><strong id="metricMessages">0</strong><span>Messages</span></div>
+        <div class="metric"><strong id="metricActions">0</strong><span>Actions</span></div>
+        <div class="metric"><strong id="metricPriority">—</strong><span>Priority</span></div>
       </div>
-    </div>
+    </section>
 
-    <div class="panel">
+    <section class="panel">
       <h3>Archive / Threads</h3>
-      <input id="threadSearch" class="thread-search" placeholder="Search threads..." />
-      <div id="archive"><div class="empty">No messages yet.</div></div>
-      <button id="viewAll" class="btn clear" style="width:100%;margin-top:10px;">View All</button>
-    </div>
+      <input class="thread-search" id="threadSearch" placeholder="Search threads..." />
+      <div id="archiveList"><div class="empty">No messages yet.</div></div>
+      <button class="mini-btn" id="viewAllBtn" style="width:100%;margin-top:8px;">View All</button>
+    </section>
 
-    <div class="panel">
+    <section class="panel">
       <h3>Execution Queue</h3>
-      <div id="queue"><div class="empty">No actions yet.</div></div>
-    </div>
+      <div id="queueList"><div class="empty">No actions yet.</div></div>
+    </section>
 
-    <div class="panel">
+    <section class="panel">
       <h3>Memory Snapshot</h3>
-      <div id="localMemory"><div class="empty">No local memory yet.</div></div>
-      <div class="memory-actions">
-        <button id="summarizeMemoryBtn" class="memory-btn">Summarize</button>
-        <button id="clearMemoryBtn" class="memory-btn">Clear</button>
+      <div id="memoryList"><div class="empty">No local memory yet.</div></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="mini-btn" id="summarizeBtn" style="flex:1;">Summarize</button>
+        <button class="mini-btn" id="clearMemoryBtn" style="flex:1;">Clear</button>
       </div>
-    </div>
+    </section>
 
-    <div class="panel">
-      <h3>Personal Snapshot</h3>
-      <div id="personalSnapshot">
-        <div class="item">
-          <strong>Personal Mode</strong>
-          Use this for focus, energy, routines, people, admin, and life execution.
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Backend Memory</h3>
-      <div id="memory"><div class="empty">Loading memory...</div></div>
-    </div>
-
-    <div class="panel">
+    <section class="panel">
       <h3>Functions</h3>
-      <div class="function-grid">
-        <button class="function-btn" id="fnRunDay">Run My Day</button>
-        <button class="function-btn" id="fnMeeting">Prepare Meeting</button>
-        <button class="function-btn" id="fnStrategy">Strategy Sprint</button>
-        <button class="function-btn" id="fnRisk">Check Risk</button>
-        <button class="function-btn" id="fnProposal">Draft Proposal</button>
-        <button class="function-btn" id="fnFollowup">Follow-Up Plan</button>
-        <button class="function-btn" id="fnPersonal">Personal Reset</button>
-        <button class="function-btn" id="fnHealth">Energy / Health Check</button>
-        <button class="function-btn" id="fnRelationship">Relationship / People</button>
-        <button class="function-btn" id="fnNextLevel">Next-Level Review</button>
-        <button class="function-btn" id="fnBoard">Board Summary</button>
-        <button class="function-btn" id="fnDelegate">Delegation Plan</button>
-        <button class="function-btn" id="fnScore">Decision Score</button>
-        <button class="function-btn" id="fnCapital">Capital Allocation</button>
-        <button class="function-btn" id="fnSales">Revenue Sprint</button>
-        <button class="function-btn" id="fnTeam">Team / Delegation</button>
-        <button class="function-btn" id="fnAutomation">Automation Map</button>
-        <button class="function-btn" id="fnCockpit">Operating Cockpit</button>
-        <button class="function-btn" id="fnIntegration">Systems Plan</button>
-        <button class="function-btn" id="fnAutomationBuild">Build Automation</button>
-        <button class="function-btn" id="fnServiceMap">System Map</button>
-        <button class="function-btn" id="fnProfile">Analyze Profile</button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>AI Recommendations</h3>
-      <div id="recommendations"></div>
-    </div>
+      <button class="function-btn" data-function="day">Run My Day</button>
+      <button class="function-btn" data-function="meeting">Prepare Meeting</button>
+      <button class="function-btn" data-function="strategy">Strategy Sprint</button>
+      <button class="function-btn" data-function="risk">Check Risk</button>
+      <button class="function-btn" data-function="profile">Your Profile</button>
+    </section>
   </aside>
 </div>
 
-<div id="modalBackdrop" class="modal-backdrop">
-  <div class="modal">
-    <h3 id="modalTitle">Export</h3>
-    <pre id="modalContent"></pre>
-    <div class="modal-actions">
-      <button id="copyModal" class="btn run">Copy</button>
-      <button id="downloadModal" class="btn clear">Download TXT</button>
-      <button id="closeModal" class="btn clear">Close</button>
-    </div>
-  </div>
+<div class="more-menu" id="moreMenu">
+  <button data-page="command" data-mode="execution">Command</button>
+  <button data-page="daily" data-mode="daily_brief">Plan Today</button>
+  <button data-page="decisions" data-mode="decision">Make Decision</button>
+  <button data-page="meetings" data-mode="meeting">Meetings</button>
+  <button data-page="strategy" data-mode="strategy">Strategy</button>
+  <button data-page="risk" data-mode="risk_review">Risk</button>
+  <button data-page="personal" data-mode="personal">Personal</button>
+  <button data-page="capital" data-mode="strategy">Capital</button>
+  <button data-page="sales" data-mode="strategy">Sales</button>
+  <button data-page="ops" data-mode="execution">Operations</button>
+  <button data-page="automation" data-mode="execution">Automation</button>
+  <button data-page="services" data-mode="execution">Systems</button>
+  <button data-page="profile" data-mode="personal">Your Profile</button>
 </div>
 
-<div id="toast" class="toast"></div>
+<div class="search-results" id="searchResults"></div>
+<div class="notice" id="notice"></div>
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v61_threads";
-const ACTIVE_THREAD_KEY = "eeos_v61_active_thread";
-const MEMORY_KEY = "eeos_v61_local_memory";
-const DRAFT_KEY = "eeos_v61_draft";
-const PROFILE_KEY = "eeos_v61_user_profile";
+const STORAGE_KEY = "eeos_v62_threads";
+const ACTIVE_KEY = "eeos_v62_active_thread";
+const PROFILE_KEY = "eeos_v62_profile";
+const MEMORY_KEY = "eeos_v62_memory";
 
-const input = document.getElementById("input");
-const modeEl = document.getElementById("mode");
-const runBtn = document.getElementById("runBtn");
-const clearBtn = document.getElementById("clearBtn");
-const errorBox = document.getElementById("errorBox");
-const archive = document.getElementById("archive");
-const queue = document.getElementById("queue");
-const memory = document.getElementById("memory");
-const localMemoryEl = document.getElementById("localMemory");
-const currentMode = document.getElementById("currentMode");
-const healthText = document.getElementById("healthText");
-const viewAll = document.getElementById("viewAll");
-const chat = document.getElementById("chat");
-const chatShell = document.getElementById("chatShell");
-const centerStage = document.getElementById("centerStage");
-const composerArea = document.getElementById("composerArea");
-const composer = document.getElementById("composer");
-const centerComposerMount = document.getElementById("centerComposerMount");
-const threadTitle = document.getElementById("threadTitle");
-const newTop = document.getElementById("newTop");
-const newTopGlobal = document.getElementById("newTopGlobal");
-const exportTopGlobal = document.getElementById("exportTopGlobal");
-const healthTextGlobal = document.getElementById("healthTextGlobal");
-const testBackendGlobal = document.getElementById("testBackendGlobal");
-const systemNotice = document.getElementById("systemNotice");
-const globalSearch = document.getElementById("globalSearch");
-const searchResults = document.getElementById("searchResults");
-const moreNavBtn = document.getElementById("moreNavBtn");
-const moreNavMenu = document.getElementById("moreNavMenu");
-const renameTop = document.getElementById("renameTop");
-const duplicateTop = document.getElementById("duplicateTop");
-const exportTop = document.getElementById("exportTop");
-const newThreadLeft = document.getElementById("newThreadLeft");
-const dailyRunLeft = document.getElementById("dailyRunLeft");
-const weeklyPlanLeft = document.getElementById("weeklyPlanLeft");
-const personalResetLeft = document.getElementById("personalResetLeft");
-const exportLeft = document.getElementById("exportLeft");
-const exportAllLeft = document.getElementById("exportAllLeft");
-const clearAllLeft = document.getElementById("clearAllLeft");
-const refreshMemoryLeft = document.getElementById("refreshMemoryLeft");
-const modalBackdrop = document.getElementById("modalBackdrop");
-const modalContent = document.getElementById("modalContent");
-const modalTitle = document.getElementById("modalTitle");
-const copyModal = document.getElementById("copyModal");
-const downloadModal = document.getElementById("downloadModal");
-const closeModal = document.getElementById("closeModal");
-const toast = document.getElementById("toast");
-const pageContent = document.getElementById("pageContent");
-const servicesPanel = document.getElementById("servicesPanel");
-const automationPanel = document.getElementById("automationPanel");
-const cockpitGrid = document.getElementById("cockpitGrid");
-const priorityAlert = document.getElementById("priorityAlert");
-const summarizeMemoryBtn = document.getElementById("summarizeMemoryBtn");
-const clearMemoryBtn = document.getElementById("clearMemoryBtn");
-const focusCard = document.getElementById("focusCard");
-const focusText = document.getElementById("focusText");
-const commandInsights = document.getElementById("commandInsights");
-const commandBar = document.getElementById("commandBar");
-const workflowStrip = document.getElementById("workflowStrip");
-const globalSearch = document.getElementById("globalSearch");
-const searchResults = document.getElementById("searchResults");
-const fnRunDay = document.getElementById("fnRunDay");
-const fnMeeting = document.getElementById("fnMeeting");
-const fnStrategy = document.getElementById("fnStrategy");
-const fnRisk = document.getElementById("fnRisk");
-const fnProposal = document.getElementById("fnProposal");
-const fnFollowup = document.getElementById("fnFollowup");
-const fnPersonal = document.getElementById("fnPersonal");
-const fnHealth = document.getElementById("fnHealth");
-const fnRelationship = document.getElementById("fnRelationship");
-const fnNextLevel = document.getElementById("fnNextLevel");
-const fnBoard = document.getElementById("fnBoard");
-const fnDelegate = document.getElementById("fnDelegate");
-const fnScore = document.getElementById("fnScore");
-const fnCapital = document.getElementById("fnCapital");
-const fnSales = document.getElementById("fnSales");
-const fnTeam = document.getElementById("fnTeam");
-const fnAutomation = document.getElementById("fnAutomation");
-const fnCockpit = document.getElementById("fnCockpit");
-const fnIntegration = document.getElementById("fnIntegration");
-const fnAutomationBuild = document.getElementById("fnAutomationBuild");
-const fnServiceMap = document.getElementById("fnServiceMap");
-const fnProfile = document.getElementById("fnProfile");
-const moreToolsLeft = document.getElementById("moreToolsLeft");
-const extraTools = document.getElementById("extraTools");
-const fnMoreActions = document.getElementById("fnMoreActions");
-const moreActionButtons = document.getElementById("moreActionButtons");
-const threadSearch = document.getElementById("threadSearch");
+const $ = id => document.getElementById(id);
+const input = $("input");
+const runBtn = $("runBtn");
+const clearBtn = $("clearBtn");
+const modeSelect = $("modeSelect");
+const hero = $("hero");
+const chatShell = $("chatShell");
+const chat = $("chat");
+const composer = $("composer");
+const bottomComposer = $("bottomComposer");
+const currentMode = $("currentMode");
+const archiveList = $("archiveList");
+const queueList = $("queueList");
+const memoryList = $("memoryList");
+const notice = $("notice");
+const globalSearch = $("globalSearch");
+const searchResults = $("searchResults");
+const moreMenu = $("moreMenu");
+const pageTitle = $("pageTitle");
+const pageDesc = $("pageDesc");
+const quickRow = $("quickRow");
+const pagePanel = $("pagePanel");
+const backendStatus = $("backendStatus");
+const backendChip = $("backendChip");
+const debugBtn = $("debugBtn");
+const exportBtn = $("exportBtn");
 
 let threads = loadThreads();
-let activeThreadId = localStorage.getItem(ACTIVE_THREAD_KEY) || null;
-let typingTimer = null;
-let currentExportText = "";
-let activePage = localStorage.getItem("eeos_v45_active_page") || "command";
+let activeThreadId = localStorage.getItem(ACTIVE_KEY) || Object.keys(threads)[0];
 
 if(!activeThreadId || !threads[activeThreadId]){
-  activeThreadId = createThread();
+  activeThreadId = createThread(false);
 }
 
-function apiUrl(path){
-  return API.replace(/\/$/, "") + path;
+const modeLabels = {
+  execution:"Execution",
+  daily_brief:"Daily Brief",
+  decision:"Decision",
+  meeting:"Meeting",
+  strategy:"Strategy",
+  risk_review:"Risk Review",
+  proposal:"Proposal",
+  personal:"Personal"
+};
+
+const pageConfigs = {
+  command:["What needs to move forward?","Start simple. Type what you need decided, fixed, planned, or moved forward.","execution"],
+  daily:["Plan Today","Decide what matters today, what to ignore, and your first move.","daily_brief"],
+  decisions:["Make Decision","Force clarity. Choose a direction and move.","decision"],
+  meetings:["Prepare Meeting","Build agenda, talking points, questions, risks, and follow-up.","meeting"],
+  strategy:["Strategy","Turn direction into leverage, sequence, and execution.","strategy"],
+  risk:["Check Risk","Find downside, weak assumptions, mitigation, and next move.","risk_review"],
+  proposal:["Proposal","Build offer, scope, deliverables, and next step.","proposal"],
+  personal:["Personal","Handle life execution: energy, people, routines, and priorities.","personal"],
+  capital:["Capital","Make better capital, cash, margin, and ROI decisions.","strategy"],
+  sales:["Sales","Drive revenue, pipeline, offers, follow-up, and closing moves.","strategy"],
+  team:["Team","Handle delegation, accountability, performance, and leadership.","meeting"],
+  ops:["Operations","Remove bottlenecks, improve process, and increase speed.","execution"],
+  automation:["Automation","Turn repeatable work into native workflows.","execution"],
+  services:["Systems","Map the operating systems that support execution.","execution"],
+  profile:["Your Profile","Save your context so the engine gives sharper advice.","personal"]
+};
+
+function esc(v){
+  return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
-function notifySystem(message){
-  if(systemNotice){
-    systemNotice.textContent = message;
-    systemNotice.classList.add("show");
-    setTimeout(() => systemNotice.classList.remove("show"), 2600);
-  }
-  if(typeof showToast === "function") showToast(message);
-}
-
-function showToast(message){
-  toast.textContent = message;
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),1800);
+function notify(msg){
+  notice.textContent = msg;
+  notice.classList.add("show");
+  setTimeout(()=>notice.classList.remove("show"),2400);
 }
 
 function loadThreads(){
-  try{return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");}
-  catch{return {};}
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return saved && typeof saved === "object" ? saved : {};
+  }catch{return {};}
 }
 
 function saveThreads(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
-  localStorage.setItem(ACTIVE_THREAD_KEY, activeThreadId);
+  localStorage.setItem(ACTIVE_KEY, activeThreadId);
 }
 
-function createThread(){
-  const id = "thread_" + Date.now();
-  threads[id] = {
-    id,
-    title:"New Chat",
-    createdAt:new Date().toISOString(),
-    updatedAt:new Date().toISOString(),
-    messages:[],
-    pinned:false
-  };
+function createThread(renderNow=true){
+  const id = "t_" + Date.now();
+  threads[id] = {id,title:"New Chat",messages:[],createdAt:new Date().toISOString()};
   activeThreadId = id;
   saveThreads();
+  if(renderNow) render();
   return id;
 }
 
-function duplicateThread(){
-  const current = threads[activeThreadId];
-  if(!current) return;
-  const id = "thread_" + Date.now();
-  threads[id] = {
-    ...JSON.parse(JSON.stringify(current)),
-    id,
-    title:(current.title || "Thread") + " copy",
-    createdAt:new Date().toISOString(),
-    updatedAt:new Date().toISOString()
+function getThread(){ return threads[activeThreadId]; }
+function getMessages(){ return getThread()?.messages || []; }
+
+function normalizeOutput(data){
+  data = data || {};
+  return {
+    what_to_do_now: data.what_to_do_now || "Execute the highest-leverage next move.",
+    decision: data.decision || "Proceed with the clearest execution path.",
+    next_move: data.next_move || "Clarify the objective and act.",
+    actions: Array.isArray(data.actions) ? data.actions : [],
+    risk: data.risk || "Unclear execution creates wasted time.",
+    priority: data.priority || "high",
+    reality_check: data.reality_check || "",
+    leverage: data.leverage || "",
+    hidden_opportunity: data.hidden_opportunity || "",
+    financial_impact: data.financial_impact || "",
+    leadership_implication: data.leadership_implication || "",
+    owner: data.owner || "",
+    operating_cadence: data.operating_cadence || "",
+    key_metric: data.key_metric || "",
+    decision_confidence: data.decision_confidence || "",
+    execution_score: data.execution_score || "",
+    time_horizon: data.time_horizon || "",
+    systems_to_connect: Array.isArray(data.systems_to_connect) ? data.systems_to_connect : [],
+    automation_opportunity: data.automation_opportunity || "",
+    delegation_opportunity: data.delegation_opportunity || "",
+    clarifying_question: data.clarifying_question || ""
   };
-  activeThreadId = id;
-  saveThreads();
-  render();
-  showToast("Thread duplicated");
 }
 
-function togglePinThread(id){
-  if(!threads[id]) return;
-  threads[id].pinned = !threads[id].pinned;
-  threads[id].updatedAt = new Date().toISOString();
-  saveThreads();
-  render();
-  showToast(threads[id].pinned ? "Thread pinned" : "Thread unpinned");
+function profile(){
+  try{return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");}catch{return {};}
 }
 
-function deleteThread(id){
-  if(!confirm("Delete this chat thread?")) return;
-  delete threads[id];
-
-  const remaining = Object.values(threads).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt));
-
-  if(activeThreadId === id){
-    activeThreadId = remaining[0]?.id || createThread();
-  }
-
-  saveThreads();
-  render();
+function profileText(){
+  const p = profile();
+  return Object.entries(p).filter(([k,v])=>v).map(([k,v])=>`${k}: ${v}`).join("\n");
 }
 
-function renameThread(id){
-  const current = threads[id]?.title || "New Chat";
-  const next = prompt("Rename chat:", current);
-
-  if(!next || !next.trim()) return;
-
-  threads[id].title = next.trim().slice(0,80);
-  threads[id].updatedAt = new Date().toISOString();
-
-  saveThreads();
-  render();
-}
-
-function clearAllThreads(){
-  if(!confirm("Clear all chat history?")) return;
-
-  threads = {};
-  activeThreadId = createThread();
-
-  saveThreads();
-  render();
-}
-
-function getMessages(){
-  return threads[activeThreadId]?.messages || [];
-}
-
-function setMessages(messages){
-  threads[activeThreadId].messages = messages;
-  threads[activeThreadId].updatedAt = new Date().toISOString();
-  saveThreads();
-}
-
-function esc(v){
-  return String(v ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function labelMode(v){
-  return ({
-    execution:"Execution",
-    strategy:"Strategy",
-    decision:"Decision",
-    meeting:"Meeting Prep",
-    daily_brief:"Daily Brief",
-    proposal:"Proposal",
-    risk_review:"Risk Review",personal:"Personal"
-  })[v] || "Execution";
-}
-
-function setMode(mode){
-  modeEl.value = mode;
-  currentMode.textContent = labelMode(mode);
-  input.focus();
+function buildContext(){
+  const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
+  return [
+    "Executive Engine OS V62 Context",
+    "Mode: " + modeLabels[modeSelect.value],
+    "User profile:",
+    profileText() || "No profile saved.",
+    "Recent thread:",
+    recent || "No recent messages."
+  ].join("\n");
 }
 
 function setPage(page, mode){
-  activePage = page || "command";
-  localStorage.setItem("eeos_v45_active_page", activePage);
+  const cfg = pageConfigs[page] || pageConfigs.command;
+  pageTitle.textContent = cfg[0];
+  pageDesc.textContent = cfg[1];
+  modeSelect.value = mode || cfg[2];
+  currentMode.textContent = modeLabels[modeSelect.value] || "Execution";
 
-  if(mode) setMode(mode);
-
-  document.querySelectorAll(".nav-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.page === activePage);
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === page);
   });
 
-  document.querySelectorAll(".top-tab").forEach(b => {
-    b.classList.toggle("active", b.dataset.page === activePage);
-  });
+  if(page === "profile"){
+    renderProfilePanel();
+  }else{
+    pagePanel.innerHTML = "";
+    quickRow.style.display = "";
+  }
 
-  renderPage();
   input.focus();
+  moreMenu.classList.remove("show");
 }
 
-function normalize(data){
-  const actions = Array.isArray(data.actions) ? data.actions : [];
+function renderProfilePanel(){
+  quickRow.style.display = "none";
+  const p = profile();
+  pagePanel.innerHTML = `
+    <div class="composer" style="box-shadow:none;margin-bottom:18px;">
+      <div class="profile-form" style="padding:18px;">
+        <div class="profile-row">
+          <div class="field"><label>Name</label><input id="p_name" value="${esc(p.name||"")}" placeholder="Your name"></div>
+          <div class="field"><label>Target Role</label><input id="p_target" value="${esc(p.target||"")}" placeholder="CEO / COO / President / Founder"></div>
+        </div>
+        <div class="profile-row">
+          <div class="field"><label>Current Role</label><input id="p_role" value="${esc(p.role||"")}" placeholder="Founder / Operator"></div>
+          <div class="field"><label>Industries</label><input id="p_industries" value="${esc(p.industries||"")}" placeholder="SaaS, finance, alcohol, marketing"></div>
+        </div>
+        <div class="field"><label>Experience / Wins</label><textarea id="p_experience" placeholder="Paste career highlights, companies, wins...">${esc(p.experience||"")}</textarea></div>
+        <div class="profile-row">
+          <div class="field"><label>Strengths</label><textarea id="p_strengths">${esc(p.strengths||"")}</textarea></div>
+          <div class="field"><label>Goals</label><textarea id="p_goals">${esc(p.goals||"")}</textarea></div>
+        </div>
+        <div class="upload-box">
+          <strong>Upload Resume</strong>
+          <div class="empty">Best: TXT/MD. For PDF/DOCX, paste resume text below.</div>
+          <input id="resumeFile" type="file" accept=".txt,.md,.pdf,.doc,.docx">
+        </div>
+        <div class="field"><label>Resume Text</label><textarea id="p_resume" placeholder="Paste resume / LinkedIn bio here...">${esc(p.resume||"")}</textarea></div>
+        <div class="profile-actions">
+          <button class="btn primary" onclick="saveProfile()">Save Profile</button>
+          <button class="btn" onclick="analyzeProfile()">Analyze Profile</button>
+          <button class="btn" onclick="clearProfile()">Clear Profile</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const file = $("resumeFile");
+  file.addEventListener("change", async e => {
+    const f = e.target.files[0];
+    if(!f) return;
+    if(f.name.endsWith(".txt") || f.name.endsWith(".md")){
+      $("p_resume").value = await f.text();
+    }else{
+      $("p_resume").value = `[Uploaded: ${f.name}]\nPaste resume text here for best results.`;
+    }
+  });
+}
 
-  return {
-    what_to_do_now:data.what_to_do_now || "Execute next step.",
-    decision:data.decision || "Proceed.",
-    next_move:data.next_move || "Continue.",
-    actions:actions.length ? actions : ["Clarify objective"],
-    risk:data.risk || "None",
-    priority:data.priority || "medium",
-    reality_check:data.reality_check || "",
-    leverage:data.leverage || "",
-    hidden_opportunity:data.hidden_opportunity || "",
-    meeting_agenda:data.meeting_agenda || "",
-    follow_up:data.follow_up || "",
-    clarifying_question:data.clarifying_question || "",
-    executive_summary:data.executive_summary || "",
-    financial_impact:data.financial_impact || "",
-    leadership_implication:data.leadership_implication || "",
-    execution_score:data.execution_score || "",
-    decision_confidence:data.decision_confidence || "",
-    time_horizon:data.time_horizon || "",
-    systems_to_connect:Array.isArray(data.systems_to_connect) ? data.systems_to_connect : [],
-    automation_opportunity:data.automation_opportunity || "",
-    delegation_opportunity:data.delegation_opportunity || "",
-    owner:data.owner || "",
-    operating_cadence:data.operating_cadence || "",
-    key_metric:data.key_metric || "",
-    decision_type:data.decision_type || "",
-    urgency:data.urgency || "",
-    automation_plan:Array.isArray(data.automation_plan) ? data.automation_plan : [],
-    service_actions:Array.isArray(data.service_actions) ? data.service_actions : [],
-    trigger:data.trigger || "",
-    required_services:Array.isArray(data.required_services) ? data.required_services : []
+function saveProfile(){
+  const p = {
+    name:$("p_name")?.value || "",
+    target:$("p_target")?.value || "",
+    role:$("p_role")?.value || "",
+    industries:$("p_industries")?.value || "",
+    experience:$("p_experience")?.value || "",
+    strengths:$("p_strengths")?.value || "",
+    goals:$("p_goals")?.value || "",
+    resume:$("p_resume")?.value || ""
   };
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
+  notify("Profile saved");
 }
 
-function toPlainText(data){
-  const d = normalize(data);
-
-  return [
-    `WHAT TO DO NOW: ${d.what_to_do_now}`,
-    `DECISION: ${d.decision}`,
-    `NEXT MOVE: ${d.next_move}`,
-    `ACTIONS:\n${d.actions.map((a,i)=>`${i+1}. ${a}`).join("\n")}`,
-    `RISK: ${d.risk}`,
-    `PRIORITY: ${d.priority}`,
-    d.reality_check ? `REALITY CHECK: ${d.reality_check}` : "",
-    d.leverage ? `LEVERAGE: ${d.leverage}` : "",
-    d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : "",
-    d.meeting_agenda ? `MEETING AGENDA: ${d.meeting_agenda}` : "",
-    d.follow_up ? `FOLLOW UP: ${d.follow_up}` : "",
-    d.clarifying_question ? `QUESTION: ${d.clarifying_question}` : "",
-    d.executive_summary ? `EXECUTIVE SUMMARY: ${d.executive_summary}` : "",
-    d.financial_impact ? `FINANCIAL IMPACT: ${d.financial_impact}` : "",
-    d.leadership_implication ? `LEADERSHIP IMPLICATION: ${d.leadership_implication}` : "",
-    d.execution_score ? `EXECUTION SCORE: ${d.execution_score}` : "",
-    d.decision_confidence ? `DECISION CONFIDENCE: ${d.decision_confidence}` : "",
-    d.time_horizon ? `TIME HORIZON: ${d.time_horizon}` : "",
-    d.systems_to_connect?.length ? `SYSTEMS TO CONNECT: ${d.systems_to_connect.join(", ")}` : "",
-    d.automation_opportunity ? `AUTOMATION OPPORTUNITY: ${d.automation_opportunity}` : "",
-    d.delegation_opportunity ? `DELEGATION OPPORTUNITY: ${d.delegation_opportunity}` : "",
-    d.owner ? `OWNER: ${d.owner}` : "",
-    d.operating_cadence ? `OPERATING CADENCE: ${d.operating_cadence}` : "",
-    d.key_metric ? `KEY METRIC: ${d.key_metric}` : "",
-    d.decision_type ? `DECISION TYPE: ${d.decision_type}` : "",
-    d.urgency ? `URGENCY: ${d.urgency}` : "",
-    d.trigger ? `TRIGGER: ${d.trigger}` : "",
-    d.required_services?.length ? `REQUIRED SERVICES: ${d.required_services.join(", ")}` : "",
-    d.service_actions?.length ? `SERVICE ACTIONS: ${d.service_actions.join(", ")}` : "",
-    d.automation_plan?.length ? `AUTOMATION PLAN: ${d.automation_plan.join(" -> ")}` : ""
-  ].filter(Boolean).join("\n\n");
+function clearProfile(){
+  localStorage.removeItem(PROFILE_KEY);
+  renderProfilePanel();
+  notify("Profile cleared");
 }
 
-function renderAssistant(data){
-  const d = normalize(data);
+function analyzeProfile(){
+  saveProfile();
+  input.value = "Based on my profile, identify my highest-leverage direction, strongest positioning, risks, and next move.\n\n" + profileText();
+  modeSelect.value = "personal";
+  send();
+}
 
-  const optional = [
+function renderAssistant(d){
+  d = normalizeOutput(d);
+  const extra = [
     ["Reality Check", d.reality_check],
     ["Leverage", d.leverage],
     ["Hidden Opportunity", d.hidden_opportunity],
-    ["Meeting Agenda", d.meeting_agenda],
-    ["Follow Up", d.follow_up],
-    ["Clarifying Question", d.clarifying_question],
-    ["Executive Summary", d.executive_summary],
     ["Financial Impact", d.financial_impact],
     ["Leadership Implication", d.leadership_implication],
-    ["Execution Score", d.execution_score],
-    ["Decision Confidence", d.decision_confidence],
-    ["Time Horizon", d.time_horizon],
-    ["Systems To Connect", d.systems_to_connect.join(", ")],
-    ["Automation Opportunity", d.automation_opportunity],
-    ["Delegation Opportunity", d.delegation_opportunity],
     ["Owner", d.owner],
     ["Operating Cadence", d.operating_cadence],
     ["Key Metric", d.key_metric],
-    ["Decision Type", d.decision_type],
-    ["Urgency", d.urgency],
-    ["Trigger", d.trigger],
-    ["Required Systems", d.required_services.join(", ")],
-    ["System Actions", d.service_actions.join(", ")],
-    ["Automation Plan", d.automation_plan.join(" → ")]
-  ].filter(x => x[1]);
+    ["Systems", d.systems_to_connect.join(", ")],
+    ["Automation", d.automation_opportunity],
+    ["Delegation", d.delegation_opportunity],
+    ["Question", d.clarifying_question]
+  ].filter(x=>x[1]);
 
   return `
     <div class="response-grid">
-      <div class="response-card primary">
-        <div class="response-label">What To Do Now</div>
-        <div class="response-value">${esc(d.what_to_do_now)}</div>
-      </div>
-
-      <div class="response-card">
-        <div class="response-label">Decision</div>
-        <div class="response-value">${esc(d.decision)}</div>
-      </div>
-
-      <div class="response-card">
-        <div class="response-label">Next Move</div>
-        <div class="response-value">${esc(d.next_move)}</div>
-      </div>
-
-      <div class="response-card">
-        <div class="response-label">Actions</div>
-        <div class="response-value"><ol>${d.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ol></div>
-      </div>
-
-      <div class="response-card">
-        <div class="response-label">Risk</div>
-        <div class="response-value">${esc(d.risk)}</div>
-      </div>
-
-      <div class="response-card">
-        <div class="response-label">Priority</div>
-        <div class="response-value"><span class="priority-pill">${esc(d.priority)}</span></div>
-        <div class="exec-score-grid">
-          <div class="exec-score"><strong>${esc(d.decision_confidence || "—")}</strong><span>Confidence</span></div>
-          <div class="exec-score"><strong>${esc(d.execution_score || "—")}</strong><span>Exec Score</span></div>
-          <div class="exec-score"><strong>${esc(d.time_horizon || "—")}</strong><span>Time</span></div>
-        </div>
-      </div>
-
-      ${optional.map(([label,value]) => `
-        <div class="response-card">
-          <div class="response-label">${esc(label)}</div>
-          <div class="response-value">${esc(value)}</div>
-        </div>
-      `).join("")}
-
-      <button class="copy-response" onclick='copyResponse(${JSON.stringify(JSON.stringify(d))})'>Copy Response</button>
+      <div class="response-card full"><div class="label">What To Do Now</div><div class="value">${esc(d.what_to_do_now)}</div></div>
+      <div class="response-card"><div class="label">Decision</div><div class="value">${esc(d.decision)}</div></div>
+      <div class="response-card"><div class="label">Next Move</div><div class="value">${esc(d.next_move)}</div></div>
+      <div class="response-card full"><div class="label">Actions</div><div class="value"><ol>${d.actions.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div></div>
+      <div class="response-card"><div class="label">Risk</div><div class="value">${esc(d.risk)}</div></div>
+      <div class="response-card"><div class="label">Priority</div><div class="value"><span class="priority">${esc(d.priority)}</span></div></div>
+      ${extra.map(([k,v])=>`<div class="response-card"><div class="label">${esc(k)}</div><div class="value">${esc(v)}</div></div>`).join("")}
     </div>
+    <button class="copy-btn" onclick="copyLatestResponse()">Copy Response</button>
   `;
 }
 
-async function copyResponse(jsonString){
-  const data = JSON.parse(jsonString);
-  await navigator.clipboard.writeText(toPlainText(data));
-  showToast("Copied");
-}
-
-function updateComposerPosition(){
-  const hasMessages = getMessages().length > 0;
+function render(){
+  const messages = getMessages();
+  const hasMessages = messages.length > 0;
 
   if(hasMessages){
-    centerStage.classList.add("hidden");
-    chatShell.classList.remove("hidden");
-    composerArea.classList.remove("hidden");
-    composerArea.classList.add("bottom");
-
-    if(composer && composer.parentElement !== composerArea){
-      composerArea.appendChild(composer);
-    }
+    hero.style.display = "none";
+    chatShell.classList.add("show");
+    bottomComposer.classList.add("show");
+    if(composer.parentElement !== bottomComposer) bottomComposer.appendChild(composer);
   }else{
-    chatShell.classList.add("hidden");
-    centerStage.classList.remove("hidden");
-    composerArea.classList.remove("bottom");
-    composerArea.classList.add("hidden");
-
-    if(composer && centerComposerMount && composer.parentElement !== centerComposerMount){
-      centerComposerMount.appendChild(composer);
-    }
-
-    if(composer) composer.style.display = "block";
-    if(input) input.style.display = "block";
+    hero.style.display = "flex";
+    chatShell.classList.remove("show");
+    bottomComposer.classList.remove("show");
+    if(composer.parentElement !== $("heroInner")) $("heroInner").appendChild(composer);
   }
+
+  chat.innerHTML = messages.map(m => {
+    if(m.role === "user"){
+      return `<div class="msg user"><div class="bubble">${esc(m.text)}</div></div>`;
+    }
+    return `<div class="msg assistant"><div class="bubble">${renderAssistant(m.data)}</div></div>`;
+  }).join("");
+
+  chatShell.scrollTop = chatShell.scrollHeight;
+  renderRight();
+  saveThreads();
 }
 
-function renderArchive(showAll=false){
-  const query = (threadSearch?.value || "").toLowerCase().trim();
+function renderRight(){
+  const allThreads = Object.values(threads);
+  const messages = getMessages();
+  const latest = [...messages].reverse().find(m => m.role === "assistant")?.data;
+  const actions = latest?.actions || [];
 
-  let allThreads = Object.values(threads)
-    .sort((a,b) => {
-      if(Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
-      return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
-    });
+  $("metricThreads").textContent = allThreads.length;
+  $("metricMessages").textContent = messages.length;
+  $("metricActions").textContent = actions.length;
+  $("metricPriority").textContent = latest?.priority || "—";
 
-  if(query){
-    allThreads = allThreads.filter(t => {
-      const haystack = [
-        t.title || "",
-        ...(t.messages || []).map(m => m.text || m.data?.decision || m.data?.next_move || "")
-      ].join(" ").toLowerCase();
-      return haystack.includes(query);
-    });
-  }
+  queueList.innerHTML = actions.length ? `<ol>${actions.map(a=>`<li>${esc(a)}</li>`).join("")}</ol>` : `<div class="empty">No actions yet.</div>`;
 
-  const visible = showAll ? allThreads : allThreads.slice(0,10);
+  const filter = ($("threadSearch").value || "").toLowerCase();
+  const visible = allThreads.filter(t => (t.title || "").toLowerCase().includes(filter)).slice(-10).reverse();
+  archiveList.innerHTML = visible.length ? visible.map(t => `
+    <div class="archive-item" onclick="openThread('${t.id}')">
+      <strong>${esc(t.title || "New Chat")}</strong>
+      <span>${t.messages.length} messages</span>
+    </div>
+  `).join("") : `<div class="empty">No messages yet.</div>`;
 
-  archive.innerHTML = visible.length
-    ? visible.map(t => `
-      <div class="item ${t.id === activeThreadId ? "active-thread" : ""}">
-        <div onclick="openThread('${t.id}')">
-          <strong>${esc(t.title || "New Chat")}${t.pinned ? '<span class="pin-badge">PINNED</span>' : ''}</strong>
-          ${esc((t.messages?.[0]?.text || "No messages yet")).slice(0,90)}
-          <div class="status-line">${(t.messages || []).length} messages · ${new Date(t.updatedAt || t.createdAt).toLocaleDateString()}</div>
-        </div>
-        <div class="item-actions">
-          <button class="thread-action" onclick="event.stopPropagation(); togglePinThread('${t.id}')">${t.pinned ? "Unpin" : "Pin"}</button>
-          <button class="thread-action" onclick="event.stopPropagation(); renameThread('${t.id}')">Rename</button>
-          <button class="thread-action" onclick="event.stopPropagation(); activeThreadId='${t.id}'; saveThreads(); duplicateThread()">Copy</button>
-          <button class="thread-action delete" onclick="event.stopPropagation(); deleteThread('${t.id}')">Delete</button>
-        </div>
-      </div>
-    `).join("")
-    : `<div class="empty">${query ? "No matching threads." : "No messages yet."}</div>`;
+  const memory = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
+  memoryList.innerHTML = memory.length ? memory.slice(-3).reverse().map(x=>`<div class="archive-item"><strong>${esc(x.decision)}</strong><span>${esc(x.next_move)}</span></div>`).join("") : `<div class="empty">No local memory yet.</div>`;
 }
 
 function openThread(id){
@@ -3417,1491 +928,249 @@ function openThread(id){
   render();
 }
 
-function latestAssistant(){
-  const messages = getMessages();
-
-  for(let i=messages.length-1; i>=0; i--){
-    if(messages[i].role === "assistant"){
-      return normalize(messages[i].data || {});
-    }
-  }
-
-  return null;
-}
-
-function renderQueue(){
-  const d = latestAssistant();
-
-  queue.innerHTML = d && d.actions.length
-    ? d.actions.map((a,i) => `
-      <div class="item">
-        <strong>${i+1}. Action</strong>
-        ${esc(a)}
-      </div>
-    `).join("")
-    : `<div class="empty">No actions yet.</div>`;
-}
-
-function renderRecommendations(){
-  const d = latestAssistant();
-  const target = document.getElementById("recommendations");
-
-  if(!d){
-    target.innerHTML = `
-      <div class="item">
-        <strong>Give stronger context</strong>
-        Include stakes, deadline, people involved, and the decision you need made.
-      </div>
-    `;
-    return;
-  }
-
-  const personalNote = modeEl.value === "personal"
-    ? `<div class="item personal-highlight"><strong>Personal execution</strong>Keep it practical: one action, one conversation, one routine adjustment, or one admin task.</div>`
-    : "";
-
-  target.innerHTML = `
-    ${personalNote}
-    <div class="item">
-      <strong>Next leverage point</strong>
-      ${esc(d.next_move)}
-    </div>
-    <div class="item">
-      <strong>Watch the risk</strong>
-      ${esc(d.risk)}
-    </div>
-  `;
-}
-
-function renderMetrics(){
-  const allThreads = Object.values(threads);
-  const msgs = getMessages();
-  const d = latestAssistant();
-
-  document.getElementById("metricThreads").textContent = allThreads.length;
-  document.getElementById("metricMessages").textContent = msgs.length;
-  document.getElementById("metricActions").textContent = d?.actions?.length || 0;
-  document.getElementById("metricPriority").textContent = d?.priority || "—";
-}
-
-function extractLocalMemory(){
-  const all = Object.values(threads)
-    .flatMap(t => (t.messages || []).map(m => ({...m, thread:t.title})))
-    .filter(m => m.role === "assistant" && m.data)
-    .slice(-12)
-    .reverse();
-
-  const memoryItems = all.map(m => {
-    const d = normalize(m.data);
-    return {
-      thread:m.thread || "Thread",
-      decision:d.decision,
-      next_move:d.next_move,
-      priority:d.priority,
-      ts:m.ts || ""
-    };
-  });
-
-  localStorage.setItem(MEMORY_KEY, JSON.stringify(memoryItems));
-  return memoryItems;
-}
-
-function renderLocalMemory(){
-  let items = [];
-  try{
-    items = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
-  }catch{
-    items = [];
-  }
-
-  if(!items.length){
-    items = extractLocalMemory();
-  }
-
-  localMemoryEl.innerHTML = items.length
-    ? items.slice(0,5).map(m => `
-      <div class="item">
-        <strong>${esc(m.priority || "Memory")}</strong>
-        ${esc(m.decision || m.next_move || "Saved execution")}
-      </div>
-    `).join("")
-    : `<div class="empty">No local memory yet.</div>`;
-}
-
-function showError(msg){
-  errorBox.textContent = msg;
-  errorBox.classList.add("show");
-}
-
-function clearError(){
-  errorBox.textContent = "";
-  errorBox.classList.remove("show");
-}
-
-function commandQualityScore(text){
-  let score = 0;
-  const value = (text || "").toLowerCase();
-
-  if(value.length > 40) score += 25;
-  if(value.includes("because") || value.includes("goal") || value.includes("objective")) score += 20;
-  if(value.includes("today") || value.includes("this week") || value.includes("deadline")) score += 20;
-  if(value.includes("risk") || value.includes("problem") || value.includes("blocked")) score += 15;
-  if(value.includes("revenue") || value.includes("growth") || value.includes("client") || value.includes("money")) score += 20;
-
-  return Math.min(score, 100);
-}
-
-function detectIntent(text){
-  const value = (text || "").toLowerCase();
-
-  if(value.includes("meeting") || value.includes("call") || value.includes("conversation")) return "Meeting";
-  if(value.includes("risk") || value.includes("worried") || value.includes("problem") || value.includes("blocked")) return "Risk";
-  if(value.includes("strategy") || value.includes("growth") || value.includes("scale")) return "Strategy";
-  if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return "Proposal";
-  if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return "Personal";
-  if(value.includes("today") || value.includes("priority") || value.includes("focus")) return "Daily Execution";
-  if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return "Decision";
-
-  return "Execution";
-}
-
-function getLastUserInput(){
-  const msgs = getMessages();
-  for(let i=msgs.length-1;i>=0;i--){
-    if(msgs[i].role === "user") return msgs[i].text || "";
-  }
-  return "";
-}
-
-function renderCockpit(){
-  const d = latestAssistant();
-
-  if(!getMessages().length || !d){
-    cockpitGrid.classList.add("hidden");
-    priorityAlert.classList.remove("show");
-    priorityAlert.textContent = "";
-    return;
-  }
-
-  cockpitGrid.classList.remove("hidden");
-
-  const systems = Array.isArray(d.systems_to_connect) ? d.systems_to_connect.length : 0;
-  const priority = String(d.priority || "—");
-  const urgency = d.urgency || (priority === "critical" ? "Critical" : priority);
-
-  cockpitGrid.innerHTML = `
-    <div class="cockpit-card"><strong>${esc(priority)}</strong><span>Priority</span></div>
-    <div class="cockpit-card"><strong>${esc(d.decision_confidence || "—")}</strong><span>Confidence</span></div>
-    <div class="cockpit-card"><strong>${esc(d.execution_score || "—")}</strong><span>Execution</span></div>
-    <div class="cockpit-card"><strong>${esc(systems)}</strong><span>Systems</span></div>
-  `;
-
-  if(priority === "critical" || String(urgency).toLowerCase() === "critical"){
-    priorityAlert.textContent = "Critical: handle this before adding more work.";
-    priorityAlert.classList.add("show");
-  }else{
-    priorityAlert.classList.remove("show");
-    priorityAlert.textContent = "";
-  }
-}
-
-function renderCommandIntelligence(){
-  const lastInput = getLastUserInput();
-  const d = latestAssistant();
-
-  if(!getMessages().length){
-    commandInsights.classList.add("hidden");
-    commandBar.classList.add("hidden");
-    focusCard.classList.add("hidden");
-    return;
-  }
-
-  const quality = commandQualityScore(lastInput);
-  const intent = detectIntent(lastInput);
-
-  focusCard.classList.remove("hidden");
-  focusText.textContent = d?.what_to_do_now || "Clarify the highest leverage move and execute the first step.";
-
-  commandInsights.classList.remove("hidden");
-  commandInsights.innerHTML = `
-    <div class="insight-card">
-      <strong>${esc(intent)}</strong>
-      <span>Detected intent</span>
-    </div>
-    <div class="insight-card">
-      <strong>${quality}%</strong>
-      <span>Input quality</span>
-      <div class="quality-meter"><span style="width:${quality}%"></span></div>
-    </div>
-    <div class="insight-card">
-      <strong>${esc(d?.priority || "—")}</strong>
-      <span>Priority</span>
-    </div>
-    <div class="insight-card">
-      <strong>${esc(d?.actions?.length || 0)}</strong>
-      <span>Current actions</span>
-    </div>
-  `;
-
-  commandBar.classList.remove("hidden");
-  commandBar.innerHTML = `
-    <button class="command-chip" onclick="runFollowup('Make this more specific and operational.')">Sharpen</button>
-    <button class="command-chip" onclick="runFollowup('Turn this into a 30-minute sprint.')">30-min Sprint</button>
-    <button class="command-chip" onclick="runFollowup('Identify what I should ignore or stop doing.')">What to Ignore</button>
-    <button class="command-chip" onclick="runFollowup('Create the follow-up message or next communication.')">Follow-Up</button>
-    <button class="command-chip" onclick="runFollowup('Find hidden risk and blind spots.')">Risk Check</button>
-  `;
-}
-
-function runFollowup(prompt){
-  input.value = prompt;
-  input.focus();
-  send();
-}
-
-function renderWorkflowStrip(){
-  if(!getMessages().length){
-    workflowStrip.classList.add("hidden");
-    return;
-  }
-
-  workflowStrip.classList.remove("hidden");
-
-  workflowStrip.innerHTML = `
-    <button class="workflow-btn" onclick="runFollowup('Create an executive brief from this thread.')">Executive Brief</button>
-    <button class="workflow-btn" onclick="runFollowup('Score this decision for risk, upside, speed, and execution difficulty.')">Score Decision</button>
-    <button class="workflow-btn" onclick="runFollowup('Convert this into an operating cadence with owners, timing, and checkpoints.')">Operating Cadence</button>
-    <button class="workflow-btn" onclick="runFollowup('Create a board-level summary with decision, impact, risk, and next move.')">Board Summary</button>
-    <button class="workflow-btn" onclick="runFollowup('Create a delegation plan: who does what, in what order, by when.')">Delegation Plan</button>
-    <button class="workflow-btn" onclick="runFollowup('Create a ruthless prioritization: what to do, delay, delegate, and delete.')">Prioritize</button>
-    <button class="workflow-btn" onclick="runFollowup('Turn this into a CEO operating dashboard: owner, metric, cadence, risk, and next review.')">Operating Dashboard</button>
-    <button class="workflow-btn" onclick="runFollowup('Create an executive systems plan across calendar, email, revenue, finance, execution, team, and automation.')">Systems Plan</button>
-  `;
-}
-
-function pageConfig(page){
-  const configs = {
-    command:{
-      title:"Command Center",
-      desc:"Run anything through the engine. Best for immediate decisions and execution.",
-      mode:"execution",
-      cards:[
-        ["Run execution command","Turn the current situation into a decision, next move, action queue, risk, and priority.","I need to execute: "],
-        ["Fix a blocker","Identify the real blocker, decision, risk, and fastest move.","I am blocked by: "],
-        ["Create action queue","Build a tight action queue from this situation.","Create an execution queue for: "],
-        ["30-minute sprint","Force the next 30 minutes into concrete execution.","Convert this into a 30-minute sprint: "]
-      ]
-    },
-    daily:{
-      title:"Daily Brief",
-      desc:"Decide what matters today, what to ignore, and what needs action now.",
-      mode:"daily_brief",
-      cards:[
-        ["Run my day","Give me top priority, what to ignore, risk, and execution order.","Run my day. Give me the highest priority, what to ignore, top risks, execution queue, and one immediate next move."],
-        ["Morning reset","Organize today around leverage and momentum.","Give me a morning execution reset for today."],
-        ["End of day review","Review what moved, what stalled, and tomorrow's first action.","Run an end-of-day review and set tomorrow's first move."],
-        ["What to ignore","Cut low-leverage tasks for the day.","Tell me what to ignore today based on: "]
-      ]
-    },
-    decisions:{
-      title:"Decisions",
-      desc:"Force clarity. Choose a direction and commit to the next move.",
-      mode:"decision",
-      cards:[
-        ["Make a decision","Compare options and choose the best move.","Help me decide: "],
-        ["Decision audit","Find weak logic, risk, and the real tradeoff.","Audit this decision: "],
-        ["Opportunity decision","Decide whether this opportunity is worth pursuing.","Should I pursue this opportunity: "],
-        ["Tradeoff call","Compare the tradeoff and force a direction.","Make the tradeoff clear for: "]
-      ]
-    },
-    meetings:{
-      title:"Meeting Prep",
-      desc:"Build agendas, talking points, risks, objections, and follow-ups.",
-      mode:"meeting",
-      cards:[
-        ["Prepare meeting","Build agenda, questions, risks, and follow-up.","Prepare me for this meeting: "],
-        ["Difficult conversation","Plan the message, tone, risk, and next action.","Help me handle this difficult conversation: "],
-        ["Follow-up note","Create a sharp follow-up plan and message.","Create a follow-up for this meeting: "],
-        ["Objection prep","Prepare for objections and pushback.","Prepare objections for this meeting: "]
-      ]
-    },
-    strategy:{
-      title:"Strategy",
-      desc:"Turn direction into a practical plan with leverage, sequence, and risk.",
-      mode:"strategy",
-      cards:[
-        ["Strategy sprint","Build objective, leverage, sequence, risk, and first moves.","Build a strategy sprint for: "],
-        ["Growth plan","Focus on growth levers and execution order.","Create a growth plan for: "],
-        ["Simplify strategy","Cut noise and identify the highest-leverage move.","Simplify this strategy: "],
-        ["Leverage map","Identify the highest leverage points.","Map leverage for: "]
-      ]
-    },
-    risk:{
-      title:"Risk Review",
-      desc:"Find downside, blind spots, weak assumptions, and mitigation.",
-      mode:"risk_review",
-      cards:[
-        ["Risk review","Find risks, weak logic, mitigation, and next move.","Review the risk in: "],
-        ["Reality check","Give me the blunt truth and best next action.","Reality check this: "],
-        ["Pre-mortem","Assume this fails and explain why.","Run a pre-mortem on: "],
-        ["Mitigation plan","Create a practical risk mitigation plan.","Build a mitigation plan for: "]
-      ]
-    },
-    proposal:{
-      title:"Proposal",
-      desc:"Create proposal structure, scope, deliverables, pricing logic, and next step.",
-      mode:"proposal",
-      cards:[
-        ["Draft proposal","Build a clean proposal outline.","Draft a proposal for: "],
-        ["Offer structure","Clarify value, scope, pricing logic, and risk.","Structure this offer: "],
-        ["Client next step","Define the next move to close or advance the deal.","Create client next steps for: "],
-        ["Scope clarity","Tighten scope and deliverables.","Clarify proposal scope for: "]
-      ]
-    },
-    personal:{
-      title:"Personal",
-      desc:"Handle life execution: energy, routines, people, admin, focus, and priorities.",
-      mode:"personal",
-      cards:[
-        ["Personal reset","Organize personal priorities and next action.","Help me organize my personal life today."],
-        ["Energy check","Create a practical energy and health reset.","Help me reset my energy and routine today."],
-        ["People situation","Plan the best next message/action and what not to do.","Help me handle this people situation: "],
-        ["Admin cleanup","Organize personal admin into a simple sequence.","Help me clean up personal admin: "]
-      ]
-    },
-    capital:{
-      title:"Capital",
-      desc:"Make capital allocation decisions like a high-level operator: cash, margin, risk, opportunity cost, and ROI.",
-      mode:"strategy",
-      cards:[
-        ["Capital allocation","Decide where money, time, and resources should go.","Review this capital allocation decision: "],
-        ["Margin review","Find margin risk and profit upside.","Review margin and profit impact for: "],
-        ["Investment decision","Decide whether this investment is worth it.","Evaluate this investment decision: "],
-        ["Opportunity cost","Identify what this choice prevents or delays.","Review opportunity cost for: "]
-      ]
-    },
-    sales:{
-      title:"Sales",
-      desc:"Drive revenue with pipeline clarity, offer structure, follow-up, objections, and closing moves.",
-      mode:"strategy",
-      cards:[
-        ["Revenue sprint","Find the fastest path to revenue.","Build a revenue sprint for: "],
-        ["Pipeline review","Prioritize deals and next actions.","Review this sales pipeline: "],
-        ["Close strategy","Create a closing sequence and risk review.","Create a close strategy for: "],
-        ["Offer sharpen","Improve value proposition and offer logic.","Sharpen this offer: "]
-      ]
-    },
-    team:{
-      title:"Team",
-      desc:"Improve leadership execution: delegation, performance, communication, accountability, and meetings.",
-      mode:"meeting",
-      cards:[
-        ["Delegation plan","Clarify who owns what and by when.","Create a delegation plan for: "],
-        ["Performance conversation","Plan a direct but constructive leadership conversation.","Prepare a performance conversation for: "],
-        ["Accountability system","Build checkpoints and ownership.","Create accountability system for: "],
-        ["Leadership message","Draft the leadership message and follow-up.","Draft leadership communication for: "]
-      ]
-    },
-    ops:{
-      title:"Operations",
-      desc:"Remove bottlenecks, improve process, reduce drag, and increase execution speed.",
-      mode:"execution",
-      cards:[
-        ["Find bottleneck","Identify the constraint slowing execution.","Find the operating bottleneck in: "],
-        ["Process fix","Improve workflow and reduce friction.","Fix this process: "],
-        ["Execution cadence","Create cadence, checkpoints, and owners.","Build operating cadence for: "],
-        ["Remove drag","Find what to stop, simplify, or automate.","Remove operational drag from: "]
-      ]
-    },
-    automation:{
-      title:"Automation",
-      desc:"Map repeatable work into native automation opportunities, triggers, workflows, and execution systems.",
-      mode:"execution",
-      cards:[
-        ["Automation map","Find what should be automated first.","Create an automation map for: "],
-        ["Workflow design","Turn this workflow into steps, triggers, and outputs.","Design an automation workflow for: "],
-        ["Tool stack","Recommend tool categories and integration order.","Suggest tool stack and integration plan for: "],
-        ["Systemize task","Turn this recurring task into a system.","Systemize this task: "]
-      ]
-    },
-    services:{
-      title:"Systems",
-      desc:"Map the executive operating system: calendar, email, revenue, finance, execution, knowledge, and automation.",
-      mode:"execution",
-      cards:[
-        ["System map","Identify which operating systems support this workflow.","Map systems needed for: "],
-        ["Calendar workflow","Create meeting and scheduling operating rhythm.","Create calendar workflow for: "],
-        ["Email workflow","Create follow-up, drafting, and response workflows.","Create email workflow for: "],
-        ["Revenue workflow","Create sales pipeline and follow-up workflows.","Create revenue workflow for: "]
-      ]
-    },
-    profile:{
-      title:"Your Profile",
-      desc:"Build your operating profile so the engine gives advice that fits your experience, goals, strengths, role, and constraints.",
-      mode:"personal",
-      cards:[
-        ["Profile review","Use my profile to tell me what my highest-leverage focus should be.","Review my profile and identify my highest-leverage direction."],
-        ["Career positioning","Turn my profile into executive positioning.","Use my profile to create executive positioning for me."],
-        ["Opportunity filter","Create a decision filter based on my goals and strengths.","Create an opportunity filter based on my profile."],
-        ["Resume strategy","Analyze my resume/profile and suggest positioning improvements.","Analyze my resume/profile and suggest improvements."]
-      ]
-    }
-  };
-
-  return configs[page] || configs.command;
-}
-
-function defaultProfile(){
-  return {
-    name:"",
-    current_role:"",
-    target_role:"",
-    industries:"",
-    experience:"",
-    strengths:"",
-    goals:"",
-    constraints:"",
-    work_style:"",
-    decision_style:"",
-    values:"",
-    resume_text:"",
-    resume_file_name:"",
-    updated_at:""
-  };
-}
-
-function loadProfile(){
-  try{
-    return {...defaultProfile(), ...JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}")};
-  }catch{
-    return defaultProfile();
-  }
-}
-
-function saveProfileData(data){
-  const profile = {...loadProfile(), ...data, updated_at:new Date().toISOString()};
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  return profile;
-}
-
-function profileText(){
-  const p = loadProfile();
-  return [
-    `Name: ${p.name}`,
-    `Current role: ${p.current_role}`,
-    `Target role: ${p.target_role}`,
-    `Industries: ${p.industries}`,
-    `Experience: ${p.experience}`,
-    `Strengths: ${p.strengths}`,
-    `Goals: ${p.goals}`,
-    `Constraints: ${p.constraints}`,
-    `Work style: ${p.work_style}`,
-    `Decision style: ${p.decision_style}`,
-    `Values: ${p.values}`,
-    `Resume file: ${p.resume_file_name}`,
-    `Resume text: ${p.resume_text ? p.resume_text.slice(0,3500) : ""}`
-  ].filter(line => !line.endsWith(": ")).join("\n");
-}
-
-function saveProfileFromForm(){
-  const data = {
-    name:document.getElementById("profileName")?.value || "",
-    current_role:document.getElementById("profileCurrentRole")?.value || "",
-    target_role:document.getElementById("profileTargetRole")?.value || "",
-    industries:document.getElementById("profileIndustries")?.value || "",
-    experience:document.getElementById("profileExperience")?.value || "",
-    strengths:document.getElementById("profileStrengths")?.value || "",
-    goals:document.getElementById("profileGoals")?.value || "",
-    constraints:document.getElementById("profileConstraints")?.value || "",
-    work_style:document.getElementById("profileWorkStyle")?.value || "",
-    decision_style:document.getElementById("profileDecisionStyle")?.value || "",
-    values:document.getElementById("profileValues")?.value || ""
-  };
-
-  saveProfileData(data);
-  render();
-  showToast("Profile saved");
-}
-
-function clearProfile(){
-  if(!confirm("Clear your profile?")) return;
-  localStorage.removeItem(PROFILE_KEY);
-  render();
-  showToast("Profile cleared");
-}
-
-function useProfilePrompt(type){
-  const p = profileText();
-  const prompts = {
-    review:"Use my profile to identify my highest-leverage direction, blind spots, best opportunities, and next move.\n\nPROFILE:\n",
-    career:"Turn my profile into executive-level positioning for CEO / COO / CMO / President opportunities.\n\nPROFILE:\n",
-    resume:"Analyze my resume/profile. Improve positioning, strengths, gaps, and next career/business moves.\n\nPROFILE:\n",
-    filter:"Create an opportunity filter based on my profile: what to pursue, ignore, delegate, and say no to.\n\nPROFILE:\n"
-  };
-
-  loadPrompt((prompts[type] || prompts.review) + p, "personal");
-}
-
-function renderProfilePage(){
-  const p = loadProfile();
-
-  return `
-    <div class="page-panel">
-      <span class="smart-badge">Personal Intelligence · Your Profile</span>
-      <h2>Your Profile</h2>
-      <p>Answer what matters. Upload or paste your resume. The engine will use this profile as context for sharper decisions.</p>
-
-      <div class="profile-form">
-        <div class="profile-row">
-          <div class="profile-field">
-            <label>Name</label>
-            <input id="profileName" value="${esc(p.name)}" placeholder="Will Webb" />
-          </div>
-          <div class="profile-field">
-            <label>Current Role / Identity</label>
-            <input id="profileCurrentRole" value="${esc(p.current_role)}" placeholder="Founder / COO / Operator" />
-          </div>
-        </div>
-
-        <div class="profile-row">
-          <div class="profile-field">
-            <label>Target Role / Direction</label>
-            <input id="profileTargetRole" value="${esc(p.target_role)}" placeholder="CEO, COO, President, SaaS founder..." />
-          </div>
-          <div class="profile-field">
-            <label>Industries</label>
-            <input id="profileIndustries" value="${esc(p.industries)}" placeholder="Finance, SaaS, alcohol, marketing..." />
-          </div>
-        </div>
-
-        <div class="profile-field">
-          <label>Experience Summary</label>
-          <textarea id="profileExperience" placeholder="Summarize your background, wins, businesses, career history...">${esc(p.experience)}</textarea>
-        </div>
-
-        <div class="profile-row">
-          <div class="profile-field">
-            <label>Strengths</label>
-            <textarea id="profileStrengths" placeholder="Growth, operations, sales, leadership, product...">${esc(p.strengths)}</textarea>
-          </div>
-          <div class="profile-field">
-            <label>Goals</label>
-            <textarea id="profileGoals" placeholder="What are you trying to build, become, earn, or achieve?">${esc(p.goals)}</textarea>
-          </div>
-        </div>
-
-        <div class="profile-row">
-          <div class="profile-field">
-            <label>Constraints</label>
-            <textarea id="profileConstraints" placeholder="Time, money, team, stress, legal, focus, skill gaps...">${esc(p.constraints)}</textarea>
-          </div>
-          <div class="profile-field">
-            <label>Values / Standards</label>
-            <textarea id="profileValues" placeholder="Integrity, speed, quality, family, freedom, impact...">${esc(p.values)}</textarea>
-          </div>
-        </div>
-
-        <div class="profile-row">
-          <div class="profile-field">
-            <label>Work Style</label>
-            <select id="profileWorkStyle">
-              <option value="">Choose...</option>
-              <option ${p.work_style==="Fast / decisive"?"selected":""}>Fast / decisive</option>
-              <option ${p.work_style==="Strategic / reflective"?"selected":""}>Strategic / reflective</option>
-              <option ${p.work_style==="Creative / builder"?"selected":""}>Creative / builder</option>
-              <option ${p.work_style==="Operator / execution"?"selected":""}>Operator / execution</option>
-            </select>
-          </div>
-          <div class="profile-field">
-            <label>Decision Style</label>
-            <select id="profileDecisionStyle">
-              <option value="">Choose...</option>
-              <option ${p.decision_style==="Direct recommendation"?"selected":""}>Direct recommendation</option>
-              <option ${p.decision_style==="Options + tradeoffs"?"selected":""}>Options + tradeoffs</option>
-              <option ${p.decision_style==="Blunt reality check"?"selected":""}>Blunt reality check</option>
-              <option ${p.decision_style==="Step-by-step execution"?"selected":""}>Step-by-step execution</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="upload-box">
-          <strong>Upload Resume</strong>
-          <div class="empty">Best: .txt resume. PDF/DOCX may not fully parse in browser; you can paste text below too.</div>
-          <input id="resumeUpload" type="file" accept=".txt,.md,.pdf,.doc,.docx" />
-          <div id="resumeStatus" class="profile-status">${p.resume_file_name ? "Loaded: " + esc(p.resume_file_name) : ""}</div>
-        </div>
-
-        <div class="profile-field">
-          <label>Resume Text / Bio / LinkedIn Copy</label>
-          <textarea id="resumeText" placeholder="Paste your resume, LinkedIn bio, career notes, or achievements here...">${esc(p.resume_text)}</textarea>
-        </div>
-
-        <div class="profile-actions">
-          <button class="btn run" onclick="saveProfileFromForm()">Save Profile</button>
-          <button class="btn clear" onclick="useProfilePrompt('review')">Analyze Profile</button>
-          <button class="btn clear" onclick="useProfilePrompt('career')">Executive Positioning</button>
-          <button class="btn clear" onclick="useProfilePrompt('resume')">Resume Strategy</button>
-          <button class="btn clear" onclick="useProfilePrompt('filter')">Opportunity Filter</button>
-          <button class="btn clear" onclick="clearProfile()">Clear Profile</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function bindProfileEvents(){
-  const resumeUpload = document.getElementById("resumeUpload");
-  const resumeText = document.getElementById("resumeText");
-
-  if(resumeUpload){
-    resumeUpload.addEventListener("change", async (e) => {
-      const file = e.target.files?.[0];
-      if(!file) return;
-
-      let text = "";
-
-      try{
-        if(file.type === "text/plain" || file.name.endsWith(".txt") || file.name.endsWith(".md")){
-          text = await file.text();
-        }else{
-          text = `[Uploaded file: ${file.name}]\nBrowser preview may not parse this file type. Paste resume text here for best results.`;
-        }
-
-        resumeText.value = text;
-        saveProfileData({resume_text:text, resume_file_name:file.name});
-        document.getElementById("resumeStatus").textContent = "Loaded: " + file.name;
-        showToast("Resume loaded");
-      }catch(err){
-        document.getElementById("resumeStatus").textContent = "Could not read file. Paste resume text instead.";
-      }
-    });
-  }
-}
-
-function renderPage(){
-  const cfg = pageConfig(activePage);
-
-  if(!getMessages().length){
-    pageContent.innerHTML = "";
-    return;
-  }
-
-  if(activePage === "profile"){
-    pageContent.innerHTML = renderProfilePage();
-    bindProfileEvents();
-    return;
-  }
-
-  pageContent.innerHTML = `
-    <div class="page-panel">
-      <span class="smart-badge">Smart Page · ${esc(labelMode(cfg.mode))}</span>
-      <h2>${esc(cfg.title)}</h2>
-      <p>${esc(cfg.desc)}</p>
-      <div class="page-grid">
-        ${cfg.cards.map(card => `
-          <div class="page-card" onclick="loadPrompt(${JSON.stringify(card[2])}, '${cfg.mode}')">
-            <strong>${esc(card[0])}</strong>
-            <span>${esc(card[1])}</span>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function smartRoutePrompt(text){
-  const value = text.toLowerCase();
-
-  if(value.includes("meeting") || value.includes("call") || value.includes("conversation")) return ["meetings","meeting"];
-  if(value.includes("risk") || value.includes("worried") || value.includes("issue") || value.includes("problem")) return ["risk","risk_review"];
-  if(value.includes("capital") || value.includes("cash") || value.includes("margin") || value.includes("roi") || value.includes("investment")) return ["capital","strategy"];
-  if(value.includes("sales") || value.includes("revenue") || value.includes("pipeline") || value.includes("close") || value.includes("deal")) return ["sales","strategy"];
-  if(value.includes("team") || value.includes("employee") || value.includes("delegate") || value.includes("staff")) return ["team","meeting"];
-  if(value.includes("operations") || value.includes("process") || value.includes("bottleneck") || value.includes("workflow")) return ["ops","execution"];
-  if(value.includes("service") || value.includes("integration") || value.includes("connect")) return ["services","execution"];
-  if(value.includes("automation") || value.includes("automate") || value.includes("systemize")) return ["automation","execution"];
-  if(value.includes("strategy") || value.includes("growth") || value.includes("plan")) return ["strategy","strategy"];
-  if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return ["proposal","proposal"];
-  if(value.includes("profile") || value.includes("resume") || value.includes("career") || value.includes("linkedin")) return ["profile","personal"];
-  if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return ["personal","personal"];
-  if(value.includes("today") || value.includes("day") || value.includes("priority")) return ["daily","daily_brief"];
-  if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return ["decisions","decision"];
-
-  return [activePage, modeEl.value];
-}
-
-function renderServices(status){
-  const services = status?.services || [
-    {name:"Calendar", status:"ready", purpose:"Meeting prep, daily brief, reminders"},
-    {name:"Email", status:"ready", purpose:"Follow-ups, draft replies, summaries"},
-    {name:"Revenue System", status:"ready", purpose:"Pipeline, deal actions, client follow-up"},
-    {name:"Finance System", status:"ready", purpose:"Capital allocation, margin, cash risk"},
-    {name:"Execution System", status:"ready", purpose:"Execution queue, owners, deadlines"},
-    {name:"Knowledge Base", status:"ready", purpose:"Context, docs, prior decisions"},
-    {name:"Automation", status:"ready", purpose:"Triggers, workflows, recurring tasks"}
-  ];
-
-  servicesPanel.innerHTML = services.map(s => `
-    <div class="service-row">
-      <div><strong>${esc(s.name)}</strong><span>${esc(s.purpose || "")}</span></div>
-      <span class="service-status ${s.status === "ready" ? "ready" : ""}">${esc(s.status || "mapped")}</span>
-    </div>
-  `).join("");
-}
-
-function renderAutomationPanel(){
-  const d = latestAssistant();
-
-  if(!d || (!d.automation_plan?.length && !d.service_actions?.length && !d.automation_opportunity)){
-    automationPanel.innerHTML = `<div class="empty">No native automation opportunities yet.</div>`;
-    return;
-  }
-
-  const plan = d.automation_plan?.length ? d.automation_plan : [d.automation_opportunity || "Create automation blueprint"];
-
-  automationPanel.innerHTML = `
-    <div class="automation-card">
-      <strong>${esc(d.trigger || "Suggested automation")}</strong>
-      ${esc(d.automation_opportunity || "Turn this workflow into a repeatable system.")}
-      <button onclick="loadPrompt('Build this automation blueprint: ${esc((d.automation_opportunity || "").replaceAll("'",""))}', 'execution')">Build Native Workflow</button>
-    </div>
-    ${plan.map((p,i)=>`<div class="automation-card"><strong>Step ${i+1}</strong>${esc(p)}</div>`).join("")}
-  `;
-}
-
-async function loadServices(){
-  try{
-    const res = await fetch(apiUrl("/integrations"));
-    if(!res.ok) throw new Error("services unavailable");
-    const data = await res.json();
-    renderServices(data);
-  }catch{
-    renderServices(null);
-  }
-}
-
-function toggleJson(idx){
-  const el = document.getElementById("json-" + idx);
-  if(el) el.classList.toggle("show");
-}
-
-function ensureComposerVisible(){
-  try{
-    if(!getMessages().length && composer && centerComposerMount && composer.parentElement !== centerComposerMount){
-      centerComposerMount.appendChild(composer);
-    }
-    if(composer) composer.style.display = "block";
-    if(input) input.style.display = "block";
-  }catch(e){}
-}
-
-function render(){
-  const messages = getMessages();
-
-  threadTitle.textContent = threads[activeThreadId]?.title || "Executive Engine OS";
-
-  updateComposerPosition();
-  ensureComposerVisible();
-
-  chat.innerHTML = "";
-
-  messages.forEach((m, i) => {
-    const row = document.createElement("div");
-    row.className = "message " + m.role;
-    row.id = "msg-" + i;
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-
-    if(m.role === "user"){
-      bubble.textContent = m.text;
-    }else{
-      bubble.innerHTML = m.html || renderAssistant(m.data || {});
-    }
-
-    row.appendChild(bubble);
-    chat.appendChild(row);
-  });
-
-  renderPage();
-  renderArchive(false);
-  renderQueue();
-  renderRecommendations();
-  renderMetrics();
-  renderLocalMemory();
-  renderAutomationPanel();
-  renderCockpit();
-  renderCommandIntelligence();
-  renderWorkflowStrip();
-  saveThreads();
-
-  requestAnimationFrame(() => {
-    chatShell.scrollTop = chatShell.scrollHeight;
-  });
-}
-
-function streamAssistant(index, data){
-  const finalHtml = renderAssistant(data);
-  const tempText = toPlainText(data);
-
-  let messages = getMessages();
-
-  messages[index] = {
-    role:"assistant",
-    data,
-    html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Writing response...</div></div></div>`,
-    ts:new Date().toISOString()
-  };
-
-  setMessages(messages);
-  render();
-
-  let i = 0;
-  clearInterval(typingTimer);
-
-  typingTimer = setInterval(() => {
-    i += 24;
-    const shown = tempText.slice(0, i);
-    const current = getMessages();
-
-    if(!current[index]){
-      clearInterval(typingTimer);
-      return;
-    }
-
-    current[index].html = `
-      <div class="response-grid">
-        <div class="response-card primary">
-          <div class="response-label">Streaming Preview</div>
-          <div class="response-value" style="white-space:pre-wrap">${esc(shown)}</div>
-        </div>
-      </div>
-    `;
-
-    setMessages(current);
-    render();
-
-    if(i >= tempText.length){
-      clearInterval(typingTimer);
-      const done = getMessages();
-
-      done[index].html = finalHtml;
-      done[index].data = data;
-
-      setMessages(done);
-      extractLocalMemory();
-      render();
-    }
-  },18);
-}
-
-function buildRequestContext(){
-  const localMemory = extractLocalMemory().slice(0,8);
-  const current = threads[activeThreadId];
-  const currentMessages = getMessages().slice(-8);
-
-  return [
-    `Executive Engine OS V61 Context`,
-    `Thread: ${current?.title || "New Chat"}`,
-    `Current Page: ${activePage}`,
-    `Current Mode: ${labelMode(modeEl.value)}`,
-    `Detected Intent: ${detectIntent(getLastUserInput())}`,
-    `Input Quality Score: ${commandQualityScore(getLastUserInput())}/100`,
-    ``,
-    `Rules for output quality:`,
-    `- Be specific, tactical, and executive-level`,
-    `- No generic advice`,
-    `- Each action must be executable today`,
-    `- Prioritize real operations, revenue, speed, leverage, and risk`,
-    `- Do not say Proceed or Continue unless tied to a specific action`,
-    `- If mode is Personal, focus on real life execution: energy, relationships, admin, health, routines, focus, and priorities`,
-    `- Personal mode must be practical, respectful, direct, and action-based`,
-    `- Use the active page context to tailor output: command, daily, decisions, meetings, strategy, risk, proposal, or personal`,
-    `- If input quality is low, produce useful output but include a sharper clarifying question if supported by backend`,
-    `- Always identify the highest leverage next move, not a generic next step`,
-    `- Actions should be sequential and small enough to start immediately`,
-    `- Output must be CEO / President / COO quality for executives making millions per year: decisive, strategic, operational, financially aware, and execution-ready`,
-    `- Keep the output easy to use; do not overload the user with unnecessary complexity`,
-    `- Think like an executive protecting time, capital, reputation, growth, leadership capacity, and operational momentum`,
-    `- Integrate other systems conceptually when relevant: calendar, email, CRM/sales, finance, projects, team workflows, automation, and knowledge base`,
-    `- V53 should behave like a native automation-aware executive OS: define owner, key metric, cadence, urgency, systems involved, automation trigger, and next review when possible`,
-    `- Make automation feel native to the operating system: workflow, trigger, owner, cadence, output, and review`,
-    `- Use clean executive wording; avoid technical integration warnings unless there is an actual error`,
-    `- Include implications for leadership, revenue, execution, risk, decision velocity, delegation, and time horizon`,
-    `- When possible, include board-level clarity: executive summary, financial impact, leadership implication, and decision confidence`,
-    `- Avoid junior advice, motivational language, obvious suggestions, and surface-level recommendations`,
-    `- If the input is vague, still give the best next move and ask one clarifying question if needed`,
-    ``,
-    `User Profile:`,
-    profileText() || "No profile saved yet.",
-    ``,
-    `Recent local memory:`,
-    ...localMemory.map((m,i)=>`${i+1}. ${m.decision || m.next_move || ""}`),
-    ``,
-    `Recent thread context:`,
-    ...currentMessages.map((m,i)=>`${i+1}. ${m.role}: ${m.text || (m.data?.decision || m.data?.next_move || "")}`)
-  ].join("\n");
-}
-
 async function send(){
-  const text = (input?.value || "").trim();
-  if(!text){
-    notifySystem("Enter something first");
-    return;
-  }
+  const text = input.value.trim();
+  if(!text) return notify("Enter something first");
 
-  const mode = modeEl?.value || "execution";
-  const routed = smartRoutePrompt(text);
+  const thread = getThread();
+  if(thread.title === "New Chat") thread.title = text.slice(0, 52);
 
-  if(routed[0] !== activePage || routed[1] !== mode){
-    setPage(routed[0], routed[1]);
-  }
-
-  const messages = getMessages();
-
-  if(threads[activeThreadId].title === "New Chat"){
-    threads[activeThreadId].title = text.slice(0, 48);
-  }
-
-  messages.push({
-    role:"user",
-    text,
-    mode:modeEl?.value || "execution",
-    createdAt:new Date().toISOString()
-  });
-
-  setMessages(messages);
+  thread.messages.push({role:"user",text,mode:modeSelect.value,createdAt:new Date().toISOString()});
   input.value = "";
-  localStorage.removeItem(DRAFT_KEY);
   render();
 
-  const buttons = document.querySelectorAll(".run, #runBtn, [data-run]");
-  buttons.forEach(b => {
-    b.disabled = true;
-    if(b.textContent && b.textContent.toLowerCase().includes("run")) b.dataset.oldText = b.textContent;
-    if(b.dataset.oldText) b.textContent = "Running...";
-  });
+  runBtn.disabled = true;
+  runBtn.textContent = "Running...";
 
   try{
-    const payload = {
-      input:text,
-      context:buildRequestContext(),
-      mode:modeEl?.value || "execution"
-    };
-
-    const res = await fetch(apiUrl("/run"), {
+    const res = await fetch(API + "/run", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
+      body:JSON.stringify({input:text, mode:modeSelect.value, context:buildContext()})
     });
 
-    let data;
     const raw = await res.text();
-
-    try{
-      data = JSON.parse(raw);
-    }catch(parseErr){
-      throw new Error("Backend returned non-JSON response");
-    }
-
-    if(!res.ok){
-      throw new Error(data.detail || data.error || "Backend error " + res.status);
-    }
+    let data;
+    try{ data = JSON.parse(raw); }catch{ throw new Error("Backend returned non-JSON"); }
+    if(!res.ok) throw new Error(data.detail || "Backend error");
 
     const clean = normalizeOutput(data);
+    thread.messages.push({role:"assistant",data:clean,createdAt:new Date().toISOString()});
 
-    messages.push({
-      role:"assistant",
-      data:clean,
-      createdAt:new Date().toISOString()
-    });
+    const mem = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
+    mem.push({decision:clean.decision,next_move:clean.next_move,createdAt:new Date().toISOString()});
+    localStorage.setItem(MEMORY_KEY, JSON.stringify(mem.slice(-20)));
 
-    setMessages(messages);
-    extractLocalMemory();
     render();
-    notifySystem("Response ready");
   }catch(err){
-    console.error("Run failed:", err);
-
-    const fallback = normalizeOutput({
-      what_to_do_now:"Fix the system connection before adding more features.",
-      decision:"The frontend is loaded, but the backend request failed.",
-      next_move:"Run the backend health check and verify the /run endpoint.",
-      actions:[
-        "Open backend /health",
-        "Open backend /docs",
-        "Test POST /run from docs",
-        "Check Render backend logs",
-        "Confirm frontend API URL points to the backend service"
-      ],
-      risk:"If this connection is unstable, new UI features will appear broken even when the backend exists.",
-      priority:"critical",
-      reality_check:String(err.message || err),
-      leverage:"Stabilize API connectivity first.",
-      hidden_opportunity:"Once /run is stable, all pages and workflows become immediately useful.",
-      owner:"System owner",
-      operating_cadence:"Check after every deploy",
-      key_metric:"Successful POST /run response",
-      decision_type:"Operating",
-      urgency:"critical"
-    });
-
-    messages.push({
-      role:"assistant",
-      data:fallback,
-      error:true,
-      createdAt:new Date().toISOString()
-    });
-
-    setMessages(messages);
+    thread.messages.push({role:"assistant",data:normalizeOutput({
+      what_to_do_now:"Fix the backend connection first.",
+      decision:"The frontend is working, but the backend request failed.",
+      next_move:"Open backend /health and /debug, then test POST /run.",
+      actions:["Open backend /health","Open backend /debug","Test POST /run in /docs","Check Render logs","Confirm API URL"],
+      risk:String(err.message || err),
+      priority:"critical"
+    })});
     render();
-    notifySystem("Backend request failed");
   }finally{
-    buttons.forEach(b => {
-      b.disabled = false;
-      if(b.dataset.oldText){
-        b.textContent = b.dataset.oldText;
-        delete b.dataset.oldText;
-      }
-    });
+    runBtn.disabled = false;
+    runBtn.textContent = "Run Engine";
     input.focus();
   }
 }
 
-async function health(){
-  try{
-    const res = await fetch(apiUrl("/health"));
-    healthText.textContent = res.ok ? "LIVE" : "CHECK";
-    if(healthTextGlobal) healthTextGlobal.textContent = res.ok ? "LIVE" : "CHECK";
-  }catch{
-    healthText.textContent = "OFFLINE";
-    if(healthTextGlobal) healthTextGlobal.textContent = "OFFLINE";
-  }
-}
-
-async function loadMemory(){
-  try{
-    const res = await fetch(apiUrl("/memory"));
-
-    if(!res.ok){
-      throw new Error("memory unavailable");
-    }
-
-    const data = await res.json();
-    const items = data.memory || data.items || [];
-
-    memory.innerHTML = items.length
-      ? items.slice(-5).reverse().map(m => `
-        <div class="item">
-          <strong>${esc(m.mode || m.priority || "Memory")}</strong>
-          ${esc(m.input || m.decision || m.next_move || "Saved item")}
-        </div>
-      `).join("")
-      : `<div class="empty">No saved backend memory yet.</div>`;
-
-  }catch{
-    memory.innerHTML = `<div class="empty">Saved memory unavailable.</div>`;
-  }
-}
-
-function runGlobalSearch(){
-  if(!globalSearch || !searchResults) return;
-
-  const q = (globalSearch.value || "").trim().toLowerCase();
-
-  if(!q){
-    searchResults.classList.remove("show");
-    searchResults.innerHTML = "";
-    return;
-  }
-
+function runSearch(){
+  const q = globalSearch.value.trim().toLowerCase();
+  if(!q){searchResults.classList.remove("show");searchResults.innerHTML="";return;}
   const results = [];
-
   Object.values(threads).forEach(t => {
-    (t.messages || []).forEach((m, index) => {
-      const text = [
-        t.title || "",
-        m.text || "",
-        m.data?.what_to_do_now || "",
-        m.data?.decision || "",
-        m.data?.next_move || "",
-        Array.isArray(m.data?.actions) ? m.data.actions.join(" ") : "",
-        m.data?.risk || "",
-        m.data?.priority || ""
-      ].join(" ").toLowerCase();
-
-      if(text.includes(q)){
-        results.push({
-          threadId:t.id,
-          threadTitle:t.title || "New Chat",
-          index,
-          role:m.role,
-          preview:m.text || m.data?.decision || m.data?.next_move || "Matched response"
-        });
-      }
+    t.messages.forEach((m,i)=>{
+      const text = [t.title,m.text,m.data?.decision,m.data?.next_move,(m.data?.actions||[]).join(" ")].join(" ").toLowerCase();
+      if(text.includes(q)) results.push({thread:t,index:i,preview:m.text || m.data?.decision || m.data?.next_move || "Match"});
     });
   });
-
-  searchResults.innerHTML = results.length
-    ? results.slice(0,20).map(r => `
-      <div class="search-result" onclick="openSearchResult('${r.threadId}', ${r.index})">
-        <strong>${esc(r.threadTitle)} · ${esc(r.role)}</strong>
-        ${esc(r.preview).slice(0,180)}
-      </div>
-    `).join("")
-    : `<div class="search-result"><strong>No results</strong>Try another search.</div>`;
-
+  searchResults.innerHTML = results.length ? results.slice(0,20).map(r=>`
+    <div class="search-result" onclick="openSearch('${r.thread.id}',${r.index})">
+      <strong>${esc(r.thread.title)}</strong>${esc(r.preview).slice(0,180)}
+    </div>`).join("") : `<div class="search-result"><strong>No results</strong>Try another search.</div>`;
   searchResults.classList.add("show");
 }
 
-function openSearchResult(threadId, index){
-  activeThreadId = threadId;
-  saveThreads();
+function openSearch(id,index){
+  activeThreadId = id;
   render();
-  if(searchResults) searchResults.classList.remove("show");
-  if(globalSearch) globalSearch.value = "";
-
-  setTimeout(() => {
-    const el = document.getElementById("msg-" + index);
-    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
-  }, 100);
+  searchResults.classList.remove("show");
+  globalSearch.value = "";
 }
 
-function fillFunctionPrompt(type){
+async function testBackend(){
+  try{
+    const res = await fetch(API + "/health");
+    const data = await res.json();
+    notify(res.ok ? "Backend live" : "Backend check failed");
+  }catch{ notify("Backend offline or sleeping"); }
+}
+
+function loadPrompt(prompt,mode){
+  input.value = prompt;
+  modeSelect.value = mode || "execution";
+  input.focus();
+}
+
+function handleFunction(type){
   const prompts = {
-    day:["daily_brief","Run my day. Give me priority, what to ignore, critical risks, exact next move, and execution queue."],
-    meeting:["meeting","Prepare me for this meeting. Build agenda, talking points, risks, questions to ask, objections, and follow-up actions."],
-    strategy:["strategy","Build a strategy sprint. Define objective, leverage, sequence, risks, resources, and first 5 execution moves."],
-    risk:["risk_review","Review this for risk. Identify weak logic, blind spots, downside, mitigation, and the best next move."],
-    proposal:["proposal","Draft a proposal structure. Include objective, value proposition, scope, deliverables, pricing logic, risks, and next step."],
-    followup:["execution","Create a follow-up plan. Include message, timing, next action, risk, and priority."],
-    personal:["personal","Help me organize my personal life today. Give me the top priorities, one immediate action, what to ignore, risk, and a realistic execution sequence."],
-    health:["personal","Help me review my energy and health routine today. Give me a practical reset plan, what to avoid, and the first action I should take."],
-    relationship:["personal","Help me handle this relationship or people situation. Give me the best next message/action, risk, what not to do, and the priority."],
-    nextlevel:["execution","Give me a CEO / President / COO quality review. Challenge weak points, identify the highest leverage move, financial/operational implications, what to ignore, and the exact first action."],
-    board:["execution","Create a board-level summary: executive summary, decision, financial impact, operational risk, leadership implication, and next move."],
-    delegate:["execution","Create a delegation plan: what I should own, what to delegate, who/role should own it, sequence, checkpoint, and risk."],
-    score:["decision","Score this decision for upside, risk, speed, execution difficulty, capital impact, and decision confidence."],
-    capital:["strategy","Give me a capital allocation review: ROI, margin, cash risk, opportunity cost, downside, and highest leverage deployment."],
-    sales:["strategy","Build a revenue sprint: best offer, fastest prospects, follow-up sequence, objections, close path, and revenue risk."],
-    team:["meeting","Build a team/delegation plan: ownership, accountability, communication, blockers, and checkpoints."],
-    automation:["execution","Map this into automation: repeatable workflow, trigger, tools, data needed, output, risk, and first build step."],
-    cockpit:["execution","Build an operating cockpit for this: owner, key metric, cadence, next review, risk, decision, and immediate action."],
-    integration:["execution","Create an executive systems plan across calendar, email, revenue, finance, execution, team workflows, automation, and memory."],
-    automationbuild:["execution","Build a native automation blueprint: trigger, systems involved, data required, steps, outputs, failure points, and first build action."],
-    servicemap:["execution","Map the operating systems this should use: calendar, email, revenue, finance, execution, knowledge, automation, and memory. Explain what each system should do."]
+    day:["Run my day. Give me priorities, what to ignore, risks, and first action.","daily_brief"],
+    meeting:["Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.","meeting"],
+    strategy:["Build a strategy sprint. Define objective, leverage, sequence, risks, and first 5 moves.","strategy"],
+    risk:["Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.","risk_review"],
+    profile:["Open profile","personal"]
   };
-
-  const [mode, prompt] = prompts[type];
-  loadPrompt(prompt, mode);
+  if(type === "profile"){setPage("profile","personal");return;}
+  loadPrompt(prompts[type][0],prompts[type][1]);
 }
 
-function exportAllThreads(){
-  const lines = [];
-  lines.push("Executive Engine OS V61 Export — All Threads");
-  lines.push(`Date: ${new Date().toLocaleString()}`);
-  lines.push("");
-
-  Object.values(threads)
-    .sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt))
-    .forEach((t, ti) => {
-      lines.push(`THREAD ${ti+1}: ${t.title}`);
-      lines.push(`Created: ${t.createdAt}`);
-      lines.push("");
-
-      (t.messages || []).forEach((m,i) => {
-        if(m.role === "user"){
-          lines.push(`USER ${i+1}: ${m.text}`);
-        }else{
-          lines.push(`ASSISTANT ${i+1}:`);
-          lines.push(toPlainText(m.data || {}));
-        }
-        lines.push("");
-      });
-
-      lines.push("------------------------------------------------------------");
-      lines.push("");
-    });
-
-  currentExportText = lines.join("\n");
-  modalTitle.textContent = "All Threads Export";
-  modalContent.textContent = currentExportText;
-  modalBackdrop.classList.add("show");
+function clearAll(){
+  if(!confirm("Clear this thread?")) return;
+  getThread().messages = [];
+  getThread().title = "New Chat";
+  render();
 }
 
-function exportCurrentThread(){
-  const t = threads[activeThreadId];
-  const lines = [];
+function summarizeMemory(){
+  const memory = localStorage.getItem(MEMORY_KEY) || "[]";
+  loadPrompt("Summarize this memory into patterns, leverage points, repeated risks, and my next move:\n" + memory, "strategy");
+}
 
-  lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V61`);
-  lines.push(`Thread: ${t.title}`);
-  lines.push(`Date: ${new Date().toLocaleString()}`);
-  lines.push(``);
+async function checkBackend(){
+  try{
+    const res = await fetch(API + "/health", {cache:"no-store"});
+    const data = await res.json();
 
-  t.messages.forEach((m,i) => {
-    if(m.role === "user"){
-      lines.push(`USER ${i+1}: ${m.text}`);
-    }else{
-      lines.push(`ASSISTANT ${i+1}:`);
-      lines.push(toPlainText(m.data || {}));
+    if(res.ok && data.ok){
+      backendStatus.textContent = "Backend live";
+      backendStatus.classList.add("backend-ok");
+      backendStatus.classList.remove("backend-bad");
+      backendChip.textContent = "● Backend Live";
+      backendChip.classList.add("green");
+      return true;
     }
-    lines.push(``);
-  });
-
-  currentExportText = lines.join("\n");
-  modalTitle.textContent = "Thread Export";
-  modalContent.textContent = currentExportText;
-  modalBackdrop.classList.add("show");
+    throw new Error("Health failed");
+  }catch(e){
+    backendStatus.textContent = "Backend sleeping/offline";
+    backendStatus.classList.add("backend-bad");
+    backendStatus.classList.remove("backend-ok");
+    backendChip.textContent = "● Backend Check";
+    backendChip.classList.remove("green");
+    notify("Backend sleeping or offline");
+    return false;
+  }
 }
 
-function downloadExport(){
-  const blob = new Blob([currentExportText || modalContent.textContent], {type:"text/plain"});
+async function openDebug(){
+  window.open(API + "/debug", "_blank");
+}
+
+function exportThread(){
+  const t = getThread();
+  const payload = {
+    exported_at:new Date().toISOString(),
+    app:"Executive Engine OS V62",
+    thread:t
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = (threads[activeThreadId]?.title || "executive-engine-thread").replace(/[^a-z0-9]/gi,"-").toLowerCase() + ".txt";
+  a.download = (t.title || "executive-engine-thread").replace(/[^a-z0-9]/gi,"_").toLowerCase() + ".json";
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+  notify("Thread exported");
 }
 
-function loadPrompt(text, mode){
-  setMode(mode || modeEl.value);
-  input.value = text;
-  input.focus();
+function latestAssistantText(){
+  const msg = [...getMessages()].reverse().find(m => m.role === "assistant");
+  if(!msg) return "";
+  const d = normalizeOutput(msg.data);
+  return [
+    `WHAT TO DO NOW: ${d.what_to_do_now}`,
+    `DECISION: ${d.decision}`,
+    `NEXT MOVE: ${d.next_move}`,
+    `ACTIONS:`,
+    ...d.actions.map((a,i)=>`${i+1}. ${a}`),
+    `RISK: ${d.risk}`,
+    `PRIORITY: ${d.priority}`,
+    d.reality_check ? `REALITY CHECK: ${d.reality_check}` : "",
+    d.leverage ? `LEVERAGE: ${d.leverage}` : "",
+    d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : ""
+  ].filter(Boolean).join("\n");
 }
 
-document.querySelectorAll(".nav-btn").forEach(btn => {
-  btn.addEventListener("click", () => setPage(btn.dataset.page, btn.dataset.mode));
-});
+async function copyLatestResponse(){
+  const text = latestAssistantText();
+  if(!text) return notify("No response to copy");
+  try{
+    await navigator.clipboard.writeText(text);
+    notify("Response copied");
+  }catch{
+    notify("Copy failed");
+  }
+}
 
-document.querySelectorAll(".top-tab").forEach(btn => {
-  if(btn.id === "moreNavBtn") return;
-  btn.addEventListener("click", () => {
-    if(!btn.dataset.page) return;
-    setPage(btn.dataset.page, btn.dataset.mode);
-    if(moreNavMenu) moreNavMenu.classList.remove("show");
+function initEvents(){
+  runBtn.addEventListener("click", send);
+  clearBtn.addEventListener("click", clearAll);
+  newTopBtn.addEventListener("click", ()=>createThread(true));
+  newLeftBtn.addEventListener("click", ()=>createThread(true));
+  testBtn.addEventListener("click", testBackend);
+  moreBtn.addEventListener("click", e => {e.stopPropagation(); moreMenu.classList.toggle("show");});
+  menuBtn.addEventListener("click", ()=>sidebar.style.display = sidebar.style.display === "none" ? "" : "none");
+
+  input.addEventListener("keydown", e => {
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      send();
+    }
   });
-});
 
-document.querySelectorAll(".quick-pill").forEach(btn => {
-  btn.addEventListener("click", () => loadPrompt(btn.dataset.prompt, btn.dataset.mode));
-});
-
-modeEl.addEventListener("change", () => setMode(modeEl.value));
-
-runBtn.addEventListener("click", send);
-
-clearBtn.addEventListener("click", () => {
-  createThread();
-  render();
-  clearError();
-});
-
-if(newTop) newTop.addEventListener("click", () => {
-  createThread();
-  render();
-  input.focus();
-});
-
-if(newTopGlobal){
-  newTopGlobal.addEventListener("click", () => {
-    createThread();
-    render();
-    input.focus();
+  input.addEventListener("input", () => {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 310) + "px";
   });
-}
 
-if(exportTopGlobal){
-  exportTopGlobal.addEventListener("click", exportCurrentThread);
-}
+  globalSearch.addEventListener("input", runSearch);
+  globalSearch.addEventListener("focus", runSearch);
+  threadSearch.addEventListener("input", renderRight);
+  summarizeBtn.addEventListener("click", summarizeMemory);
+  clearMemoryBtn.addEventListener("click", ()=>{localStorage.removeItem(MEMORY_KEY);renderRight();notify("Memory cleared");});
 
-if(testBackendGlobal){
-  testBackendGlobal.addEventListener("click", async () => {
-    const ok = await checkHealth();
-    if(ok){
-      notifySystem("Backend is live");
-    }else{
-      notifySystem("Backend offline or sleeping");
+  document.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
+  document.querySelectorAll(".more-menu button").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
+  document.querySelectorAll(".quick").forEach(btn => btn.addEventListener("click",()=>loadPrompt(btn.dataset.prompt,btn.dataset.mode)));
+  document.querySelectorAll(".example-card").forEach(card => card.addEventListener("click",()=>loadPrompt(card.dataset.prompt,card.dataset.mode)));
+  document.querySelectorAll(".function-btn").forEach(btn => btn.addEventListener("click",()=>handleFunction(btn.dataset.function)));
+  debugBtn.addEventListener("click", openDebug);
+  exportBtn.addEventListener("click", exportThread);
+
+  document.addEventListener("click", e => {
+    if(!moreMenu.contains(e.target) && e.target !== moreBtn) moreMenu.classList.remove("show");
+    if(!searchResults.contains(e.target) && e.target !== globalSearch) searchResults.classList.remove("show");
+  });
+
+  document.addEventListener("keydown", e => {
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f"){
+      e.preventDefault();
+      globalSearch.focus();
     }
   });
 }
 
-if(globalSearch && searchResults){
-  globalSearch.addEventListener("input", runGlobalSearch);
-  globalSearch.addEventListener("focus", runGlobalSearch);
-}
-
-if(moreNavBtn && moreNavMenu){
-  moreNavBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    moreNavMenu.classList.toggle("show");
-  });
-}
-
-document.addEventListener("click", (e) => {
-  if(searchResults && globalSearch && !searchResults.contains(e.target) && e.target !== globalSearch){
-    searchResults.classList.remove("show");
-  }
-  if(moreNavMenu && moreNavBtn && !moreNavMenu.contains(e.target) && e.target !== moreNavBtn){
-    moreNavMenu.classList.remove("show");
-  }
-});
-
-if(newThreadLeft) newThreadLeft.addEventListener("click", () => {
-  createThread();
-  render();
-  input.focus();
-});
-
-if(duplicateTop) duplicateTop.addEventListener("click", duplicateThread);
-
-if(dailyRunLeft) dailyRunLeft.addEventListener("click", () => {
-  loadPrompt("Run my day. Give me the highest priority, what to ignore, top risks, execution queue, and one immediate next move.", "daily_brief");
-  send();
-});
-
-if(weeklyPlanLeft) weeklyPlanLeft.addEventListener("click", () => {
-  loadPrompt("Build my weekly execution plan. Give me top 3 priorities, sequence, risks, meetings to prepare for, what to ignore, and the first action for today.", "strategy");
-  send();
-});
-
-if(personalResetLeft) personalResetLeft.addEventListener("click", () => {
-  loadPrompt("Help me organize my personal life today. Give me the top priorities, what to ignore, one immediate action, and a realistic sequence.", "personal");
-  send();
-});
-
-if(clearAllLeft) clearAllLeft.addEventListener("click", clearAllThreads);
-
-if(refreshMemoryLeft) refreshMemoryLeft.addEventListener("click", () => {
-  extractLocalMemory();
-  renderLocalMemory();
-  loadMemory();
-  showToast("Memory refreshed");
-});
-
-summarizeMemoryBtn.addEventListener("click", () => {
-  const items = extractLocalMemory();
-  const text = items.map((m,i)=>`${i+1}. ${m.decision || m.next_move || ""}`).join("\n");
-  loadPrompt("Summarize this memory into patterns, repeated risks, leverage points, and what I should do next:\n" + text, "strategy");
-});
-
-clearMemoryBtn.addEventListener("click", () => {
-  if(!confirm("Clear local memory snapshot?")) return;
-  localStorage.removeItem(MEMORY_KEY);
-  renderLocalMemory();
-  showToast("Local memory cleared");
-});
-
-if(renameTop) renameTop.addEventListener("click", () => renameThread(activeThreadId));
-
-if(exportTop) exportTop.addEventListener("click", exportCurrentThread);
-if(exportLeft) exportLeft.addEventListener("click", exportCurrentThread);
-if(exportAllLeft) exportAllLeft.addEventListener("click", exportAllThreads);
-
-viewAll.addEventListener("click", () => renderArchive(true));
-threadSearch.addEventListener("input", () => renderArchive(true));
-if(globalSearch && searchResults){
-  globalSearch.addEventListener("input", runGlobalSearch);
-  globalSearch.addEventListener("focus", runGlobalSearch);
-  document.addEventListener("click", (e) => {
-    if(!searchResults.contains(e.target) && e.target !== globalSearch){
-      searchResults.classList.remove("show");
-    }
-  });
-}
-
-fnRunDay.addEventListener("click", () => fillFunctionPrompt("day"));
-fnMeeting.addEventListener("click", () => fillFunctionPrompt("meeting"));
-fnStrategy.addEventListener("click", () => fillFunctionPrompt("strategy"));
-fnRisk.addEventListener("click", () => fillFunctionPrompt("risk"));
-fnProposal.addEventListener("click", () => fillFunctionPrompt("proposal"));
-fnFollowup.addEventListener("click", () => fillFunctionPrompt("followup"));
-fnPersonal.addEventListener("click", () => fillFunctionPrompt("personal"));
-fnHealth.addEventListener("click", () => fillFunctionPrompt("health"));
-fnRelationship.addEventListener("click", () => fillFunctionPrompt("relationship"));
-fnNextLevel.addEventListener("click", () => fillFunctionPrompt("nextlevel"));
-fnBoard.addEventListener("click", () => fillFunctionPrompt("board"));
-fnDelegate.addEventListener("click", () => fillFunctionPrompt("delegate"));
-fnScore.addEventListener("click", () => fillFunctionPrompt("score"));
-fnCapital.addEventListener("click", () => fillFunctionPrompt("capital"));
-fnSales.addEventListener("click", () => fillFunctionPrompt("sales"));
-fnTeam.addEventListener("click", () => fillFunctionPrompt("team"));
-fnAutomation.addEventListener("click", () => fillFunctionPrompt("automation"));
-fnCockpit.addEventListener("click", () => fillFunctionPrompt("cockpit"));
-fnIntegration.addEventListener("click", () => fillFunctionPrompt("integration"));
-fnAutomationBuild.addEventListener("click", () => fillFunctionPrompt("automationbuild"));
-fnServiceMap.addEventListener("click", () => fillFunctionPrompt("servicemap"));
-fnProfile.addEventListener("click", () => setPage("profile", "personal"));
-
-moreToolsLeft.addEventListener("click", () => {
-  extraTools.classList.toggle("hidden");
-});
-
-fnMoreActions.addEventListener("click", () => {
-  moreActionButtons.classList.toggle("hidden");
-});
-
-closeModal.addEventListener("click", () => modalBackdrop.classList.remove("show"));
-
-copyModal.addEventListener("click", async () => {
-  await navigator.clipboard.writeText(modalContent.textContent);
-  showToast("Export copied");
-});
-
-downloadModal.addEventListener("click", downloadExport);
-
-input.value = localStorage.getItem(DRAFT_KEY) || "";
-
-input.addEventListener("input", () => {
-  localStorage.setItem(DRAFT_KEY, input.value);
-});
-
-input.addEventListener("keydown", (e) => {
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    send();
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  const key = e.key.toLowerCase();
-
-  if((e.ctrlKey || e.metaKey) && key === "k"){
-    e.preventDefault();
-    createThread();
-    render();
-    input.focus();
-    showToast("New chat");
-  }
-
-  if((e.ctrlKey || e.metaKey) && key === "e"){
-    e.preventDefault();
-    exportCurrentThread();
-  }
-
-  if((e.ctrlKey || e.metaKey) && key === "f"){
-    e.preventDefault();
-    if(globalSearch) globalSearch.focus(); else if(threadSearch) threadSearch.focus();
-  }
-
-  if((e.ctrlKey || e.metaKey) && key === "l"){
-    e.preventDefault();
-    loadPrompt("Give me a CEO / President / COO quality review. Challenge weak points, identify the highest leverage move, financial/operational implications, what to ignore, and the exact first action.", "execution");
-  }
-});
-
-window.onload = () => {
-  setPage(activePage, pageConfig(activePage).mode);
-  render();
-  health();
-  loadMemory();
-  loadServices();
-  input.focus();
-};
+initEvents();
+setPage("command","execution");
+render();
+checkBackend();
+input.focus();
 </script>
-<div id="systemNotice" class="system-notice"></div>
 </body>
 </html>
