@@ -18,8 +18,8 @@
       --green: #16a34a;
       --orange: #f97316;
       --red: #dc2626;
-      --soft: 0 8px 24px rgba(15, 23, 42, 0.06);
-      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --soft: 0 6px 18px rgba(15, 23, 42, 0.06);
+      --shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -33,18 +33,12 @@
       color: var(--ink);
     }
 
-    button, textarea {
-      font: inherit;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-    }
+    button, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; }
 
     .app {
       display: grid;
-      grid-template-columns: 270px minmax(0, 1fr) 350px;
+      grid-template-columns: 260px minmax(0, 1fr) 330px;
       height: 100vh;
       width: 100vw;
     }
@@ -52,10 +46,10 @@
     .sidebar {
       background: var(--nav);
       color: #dbe7ff;
-      padding: 18px;
+      padding: 18px 14px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
       overflow-y: auto;
     }
 
@@ -63,7 +57,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding-bottom: 12px;
+      padding: 4px 6px 12px;
     }
 
     .brand-icon {
@@ -90,7 +84,7 @@
     }
 
     .section-label {
-      margin: 18px 0 8px;
+      margin: 14px 8px 7px;
       color: #6f819d;
       font-size: 11px;
       font-weight: 950;
@@ -105,20 +99,14 @@
       background: transparent;
       color: #dbe7ff;
       border-radius: 9px;
-      padding: 11px 12px;
+      padding: 10px 11px;
       font-size: 13px;
       font-weight: 850;
       text-align: left;
     }
 
-    .nav-item:hover {
-      background: rgba(255,255,255,.06);
-    }
-
-    .nav-item.active {
-      background: var(--blue);
-      color: white;
-    }
+    .nav-item:hover { background: rgba(255,255,255,.06); }
+    .nav-item.active { background: var(--blue); color: white; }
 
     .badge {
       margin-left: auto;
@@ -134,6 +122,7 @@
       display: grid;
       gap: 8px;
       margin-top: 6px;
+      padding: 0 4px;
     }
 
     .side-button {
@@ -141,9 +130,10 @@
       color: #dbe7ff;
       border: 1px solid rgba(255,255,255,.08);
       border-radius: 10px;
-      padding: 11px 12px;
+      padding: 10px 11px;
       font-weight: 850;
       text-align: left;
+      font-size: 13px;
     }
 
     .profile {
@@ -151,27 +141,28 @@
       background: var(--nav2);
       border: 1px solid rgba(255,255,255,.08);
       border-radius: 14px;
-      padding: 14px;
+      padding: 13px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
     .avatar {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
       display: grid;
       place-items: center;
       background: var(--orange);
       color: white;
       font-weight: 950;
+      font-size: 13px;
     }
 
     .main {
       min-width: 0;
       display: grid;
-      grid-template-rows: 76px 1fr auto;
+      grid-template-rows: 72px 1fr auto;
       background: white;
       border-right: 1px solid var(--line);
     }
@@ -182,12 +173,12 @@
       justify-content: space-between;
       padding: 0 28px;
       border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,.94);
+      background: rgba(255,255,255,.96);
       backdrop-filter: blur(10px);
     }
 
     .page-title {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 950;
       letter-spacing: -.03em;
     }
@@ -219,45 +210,46 @@
       color: #344054;
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 9px 12px;
+      font-size: 13px;
       font-weight: 850;
     }
 
     .chat {
       overflow-y: auto;
-      padding: 28px;
+      padding: 22px 28px;
       background:
-        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, .06), transparent 32%),
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, .05), transparent 30%),
         #fff;
     }
 
     .hero {
-      max-width: 840px;
-      margin: 0 auto 24px;
+      max-width: 820px;
+      margin: 0 auto 20px;
       text-align: center;
-      padding: 32px 10px 12px;
+      padding: 22px 10px 8px;
     }
 
     .hero h1 {
       margin: 0;
-      font-size: 34px;
+      font-size: 31px;
       letter-spacing: -.045em;
       line-height: 1.08;
     }
 
     .hero p {
-      margin: 12px 0 0;
+      margin: 10px 0 0;
       color: var(--muted);
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .messages {
-      max-width: 930px;
+      max-width: 900px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      padding-bottom: 12px;
+      gap: 14px;
+      padding-bottom: 8px;
     }
 
     .msg {
@@ -266,16 +258,14 @@
       gap: 12px;
     }
 
-    .msg.user {
-      justify-content: flex-end;
-    }
+    .msg.user { justify-content: flex-end; }
 
     .bubble {
-      max-width: 78%;
-      border-radius: 18px;
-      padding: 14px 16px;
+      max-width: 76%;
+      border-radius: 16px;
+      padding: 13px 15px;
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.5;
       white-space: pre-wrap;
       box-shadow: var(--soft);
     }
@@ -283,25 +273,30 @@
     .user .bubble {
       background: var(--blue);
       color: white;
-      border-bottom-right-radius: 6px;
+      border-bottom-right-radius: 5px;
     }
 
     .assistant .bubble {
       background: #f8fafc;
       border: 1px solid var(--line);
       color: var(--ink);
-      border-bottom-left-radius: 6px;
+      border-bottom-left-radius: 5px;
       max-width: 100%;
       width: 100%;
       padding: 0;
       overflow: hidden;
     }
 
+    .error .bubble {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
     .response-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--line);
       background: white;
     }
@@ -309,6 +304,7 @@
     .response-title {
       font-weight: 950;
       letter-spacing: -.02em;
+      font-size: 14px;
     }
 
     .response-actions {
@@ -320,9 +316,9 @@
     .priority {
       text-transform: uppercase;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 950;
-      padding: 6px 9px;
+      padding: 5px 8px;
       background: #eef2ff;
       color: #3730a3;
     }
@@ -346,9 +342,9 @@
       background: #f8fafc;
       border: 1px solid var(--line);
       color: #344054;
-      padding: 8px 10px;
-      border-radius: 9px;
-      font-size: 12px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      font-size: 11px;
       font-weight: 900;
     }
 
@@ -358,15 +354,13 @@
     }
 
     .card {
-      padding: 16px;
+      padding: 13px 14px;
       border-right: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
-      min-height: 104px;
+      min-height: 76px;
     }
 
-    .card:nth-child(even) {
-      border-right: 0;
-    }
+    .card:nth-child(even) { border-right: 0; }
 
     .card.wide {
       grid-column: 1 / -1;
@@ -375,18 +369,18 @@
 
     .label {
       color: #667085;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: .11em;
       font-weight: 950;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .value {
       color: #101828;
-      font-size: 14px;
-      font-weight: 750;
-      line-height: 1.52;
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.45;
     }
 
     .value ul {
@@ -394,32 +388,30 @@
       padding-left: 18px;
     }
 
-    .value li {
-      margin-bottom: 7px;
-    }
+    .value li { margin-bottom: 5px; }
 
     .composer-wrap {
       border-top: 1px solid var(--line);
-      background: rgba(255,255,255,.96);
-      padding: 14px 28px 18px;
+      background: rgba(255,255,255,.97);
+      padding: 12px 28px 16px;
       backdrop-filter: blur(10px);
     }
 
     .composer {
-      max-width: 930px;
+      max-width: 900px;
       margin: 0 auto;
       background: white;
       border: 1px solid #d8e0ec;
       box-shadow: var(--shadow);
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
     }
 
     .mode-row {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
-      padding: 12px 14px 0;
+      padding: 10px 12px 0;
     }
 
     .mode-chip {
@@ -427,7 +419,7 @@
       background: #fff;
       color: #344054;
       border-radius: 999px;
-      padding: 8px 11px;
+      padding: 7px 10px;
       font-size: 12px;
       font-weight: 850;
     }
@@ -440,32 +432,32 @@
 
     .quick-row {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
-      padding: 10px 14px 0;
+      padding: 9px 12px 0;
     }
 
     .quick {
       background: #f8fafc;
       border: 1px solid var(--line);
       color: #344054;
-      padding: 8px 10px;
+      padding: 7px 9px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 850;
     }
 
     textarea#prompt {
       width: 100%;
-      min-height: 78px;
-      max-height: 190px;
+      min-height: 68px;
+      max-height: 170px;
       resize: none;
       border: 0;
       outline: 0;
-      padding: 15px 16px;
+      padding: 13px 14px;
       color: var(--ink);
-      font-size: 15px;
-      line-height: 1.5;
+      font-size: 14.5px;
+      line-height: 1.45;
     }
 
     .composer-footer {
@@ -473,7 +465,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 14px;
+      padding: 10px 12px;
     }
 
     .hint {
@@ -484,15 +476,14 @@
     .send {
       background: var(--blue);
       color: white;
-      padding: 12px 18px;
-      border-radius: 12px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-size: 13px;
       font-weight: 950;
-      box-shadow: 0 10px 22px rgba(37,99,235,.25);
+      box-shadow: 0 10px 22px rgba(37,99,235,.22);
     }
 
-    .send:hover {
-      background: var(--blue2);
-    }
+    .send:hover { background: var(--blue2); }
 
     .send:disabled {
       opacity: .65;
@@ -501,16 +492,16 @@
 
     .rightbar {
       overflow-y: auto;
-      padding: 20px;
+      padding: 18px;
       background: #f8fafc;
     }
 
     .panel {
       background: white;
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
       box-shadow: 0 2px 10px rgba(15,23,42,.03);
     }
 
@@ -522,23 +513,22 @@
 
     .panel-title {
       font-weight: 950;
-      margin-bottom: 13px;
+      margin-bottom: 11px;
       letter-spacing: -.02em;
+      font-size: 14px;
     }
 
     .stat, .archive-item {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 9px;
+      border-radius: 11px;
+      padding: 10px;
+      margin-bottom: 8px;
       background: white;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12.5px;
+      line-height: 1.4;
     }
 
-    .archive-item {
-      cursor: pointer;
-    }
+    .archive-item { cursor: pointer; }
 
     .archive-item:hover {
       border-color: #bfdbfe;
@@ -560,40 +550,33 @@
     .queue-item {
       display: flex;
       gap: 8px;
-      margin-bottom: 9px;
-      font-size: 13px;
-      line-height: 1.45;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      line-height: 1.4;
     }
 
     .dot {
       width: 7px;
       height: 7px;
-      margin-top: 6px;
+      margin-top: 5px;
       border-radius: 999px;
       background: var(--blue);
       flex: 0 0 auto;
     }
 
-    .error {
+    .error-box {
       color: #be123c;
       background: #fff1f2;
       border-color: #fecdd3;
     }
 
     @media (max-width: 1180px) {
-      .app {
-        grid-template-columns: 230px 1fr;
-      }
-
-      .rightbar {
-        display: none;
-      }
+      .app { grid-template-columns: 230px 1fr; }
+      .rightbar { display: none; }
     }
 
     @media (max-width: 780px) {
-      body {
-        overflow: auto;
-      }
+      body { overflow: auto; }
 
       .app {
         display: block;
@@ -601,40 +584,20 @@
         min-height: 100vh;
       }
 
-      .sidebar {
-        display: none;
-      }
+      .sidebar { display: none; }
+      .main { min-height: 100vh; }
 
-      .main {
-        min-height: 100vh;
-      }
+      .topbar { padding: 0 16px; }
+      .chat { padding: 16px; }
+      .hero h1 { font-size: 27px; }
 
-      .topbar {
-        padding: 0 16px;
-      }
+      .cards { grid-template-columns: 1fr; }
+      .card { border-right: 0; }
 
-      .chat {
-        padding: 18px;
-      }
-
-      .hero h1 {
-        font-size: 28px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .card {
-        border-right: 0;
-      }
-
-      .bubble {
-        max-width: 92%;
-      }
+      .bubble { max-width: 92%; }
 
       .composer-wrap {
-        padding: 12px;
+        padding: 10px;
         position: sticky;
         bottom: 0;
       }
@@ -768,34 +731,34 @@
 
   <script>
     const API = "https://executive-engine-os.onrender.com";
-    const STORAGE_KEY = "executive_engine_os_v13_history";
-    const MODE_KEY = "executive_engine_os_v13_mode";
+    const STORAGE_KEY = "executive_engine_os_v14_history";
+    const MODE_KEY = "executive_engine_os_v14_mode";
 
     const modes = {
       execution: {
         label: "Execution",
         subtitle: "Execution Mode",
         prompts: [
-          "Build my execution plan for tomorrow: priorities, decisions, next actions, risks.",
-          "Turn this messy situation into an execution plan.",
-          "Tell me what to do now and what to ignore."
+          "Build my execution plan for tomorrow.",
+          "Turn this into an execution plan.",
+          "Tell me what to do now."
         ]
       },
       strategy: {
         label: "Strategy",
         subtitle: "Strategy Mode",
         prompts: [
-          "Build a strategy from this goal with tradeoffs and next moves.",
-          "Pressure-test this strategy and show risks.",
-          "Find the highest-leverage path forward."
+          "Build a strategy from this goal.",
+          "Pressure-test this strategy.",
+          "Find the highest-leverage path."
         ]
       },
       decision: {
         label: "Decision",
         subtitle: "Decision Mode",
         prompts: [
-          "Help me make this decision with options, tradeoffs, and recommendation.",
-          "Choose the best path and explain the next move.",
+          "Help me make this decision.",
+          "Choose the best path.",
           "Turn this uncertainty into one decision."
         ]
       },
@@ -803,16 +766,16 @@
         label: "Meeting Prep",
         subtitle: "Meeting Prep Mode",
         prompts: [
-          "Prepare me for a meeting: agenda, talking points, decisions, risks.",
-          "Create a 15-minute meeting plan with expected outcomes.",
-          "What should I ask, decide, and avoid in this meeting?"
+          "Prepare me for a meeting.",
+          "Create a 15-minute meeting plan.",
+          "What should I ask and decide?"
         ]
       },
       daily_brief: {
         label: "Daily Brief",
         subtitle: "Daily Brief Mode",
         prompts: [
-          "Create my daily brief: focus, decisions, meetings, actions.",
+          "Create my daily brief.",
           "What should I prioritize today?",
           "Build an executive brief for today."
         ]
@@ -822,17 +785,17 @@
         subtitle: "Proposal Mode",
         prompts: [
           "Turn this idea into a sharp proposal.",
-          "Create a proposal with objective, value, risks, and next steps.",
-          "Rewrite this proposal into executive-level language."
+          "Create a proposal with risks and next steps.",
+          "Rewrite this proposal for executives."
         ]
       },
       risk_review: {
         label: "Risk Review",
         subtitle: "Risk Review Mode",
         prompts: [
-          "Identify the biggest risks and what to do now.",
-          "Show me what can break and how to prevent it.",
-          "Create a risk review with mitigation actions."
+          "Identify the biggest risks.",
+          "Show me what can break.",
+          "Create a risk mitigation plan."
         ]
       }
     };
@@ -850,7 +813,7 @@
     }
 
     function saveHistory() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-80)));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-100)));
     }
 
     function escapeHtml(value) {
@@ -919,10 +882,36 @@
       scrollToBottom();
     }
 
+    function normalizeArray(value) {
+      if (Array.isArray(value)) return value.filter(Boolean);
+      if (typeof value === "string" && value.trim()) return [value.trim()];
+      return [];
+    }
+
+    function renderField(label, value, wide = false) {
+      if (value === undefined || value === null || value === "") return "";
+
+      if (Array.isArray(value)) {
+        return `
+          <div class="card ${wide ? "wide" : ""}">
+            <div class="label">${escapeHtml(label)}</div>
+            <div class="value"><ul>${value.map(v => `<li>${escapeHtml(v)}</li>`).join("")}</ul></div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card ${wide ? "wide" : ""}">
+          <div class="label">${escapeHtml(label)}</div>
+          <div class="value">${escapeHtml(value)}</div>
+        </div>
+      `;
+    }
+
     function renderAssistantMessage(item, index) {
       const data = item.data || {};
-      const priority = String(data.priority || "medium").toLowerCase();
-      const actions = Array.isArray(data.actions) ? data.actions : [data.actions || ""];
+      const priority = String(data.priority || "unknown").toLowerCase();
+      const actions = normalizeArray(data.actions);
 
       const optionalFields = [
         ["Reality Check", data.reality_check],
@@ -930,13 +919,15 @@
         ["Hidden Opportunity", data.hidden_opportunity],
         ["Meeting Agenda", data.meeting_agenda],
         ["Follow Up", data.follow_up]
-      ].filter(([, value]) => value);
+      ].filter(([, value]) => value !== undefined && value !== null && value !== "");
+
+      const isError = item.error === true;
 
       return `
-        <div class="msg assistant" id="msg-${index}">
+        <div class="msg assistant ${isError ? "error" : ""}" id="msg-${index}">
           <div class="bubble">
             <div class="response-head">
-              <div class="response-title">${escapeHtml(modes[item.mode]?.label || "Executive Output")}</div>
+              <div class="response-title">${isError ? "Connection Error" : escapeHtml(modes[item.mode]?.label || "Executive Output")}</div>
               <div class="response-actions">
                 <span class="priority ${priority}">${escapeHtml(priority)}</span>
                 <button class="copy-btn" onclick="copyOutput(${index})">Copy</button>
@@ -944,40 +935,13 @@
             </div>
 
             <div class="cards">
-              <div class="card">
-                <div class="label">What To Do Now</div>
-                <div class="value">${escapeHtml(data.what_to_do_now)}</div>
-              </div>
-              <div class="card">
-                <div class="label">Decision</div>
-                <div class="value">${escapeHtml(data.decision)}</div>
-              </div>
-              <div class="card">
-                <div class="label">Next Move</div>
-                <div class="value">${escapeHtml(data.next_move)}</div>
-              </div>
-              <div class="card">
-                <div class="label">Priority</div>
-                <div class="value">${escapeHtml(data.priority)}</div>
-              </div>
-              <div class="card wide">
-                <div class="label">Actions</div>
-                <div class="value"><ul>${actions.map(a => `<li>${escapeHtml(a)}</li>`).join("")}</ul></div>
-              </div>
-              <div class="card wide">
-                <div class="label">Risk</div>
-                <div class="value">${escapeHtml(data.risk)}</div>
-              </div>
-
-              ${optionalFields.map(([label, value]) => `
-                <div class="card wide">
-                  <div class="label">${escapeHtml(label)}</div>
-                  <div class="value">${Array.isArray(value)
-                    ? `<ul>${value.map(v => `<li>${escapeHtml(v)}</li>`).join("")}</ul>`
-                    : escapeHtml(value)
-                  }</div>
-                </div>
-              `).join("")}
+              ${renderField("What To Do Now", data.what_to_do_now)}
+              ${renderField("Decision", data.decision)}
+              ${renderField("Next Move", data.next_move)}
+              ${renderField("Priority", data.priority)}
+              ${actions.length ? renderField("Actions", actions, true) : ""}
+              ${renderField("Risk", data.risk, true)}
+              ${optionalFields.map(([label, value]) => renderField(label, value, true)).join("")}
             </div>
           </div>
         </div>
@@ -999,7 +963,7 @@
 
       archive.innerHTML = userItems.map(item => `
         <div class="archive-item" onclick="scrollToMessage(${item.index})">
-          ${escapeHtml(item.text).slice(0, 70)}${item.text.length > 70 ? "..." : ""}
+          ${escapeHtml(item.text).slice(0, 74)}${item.text.length > 74 ? "..." : ""}
           <small>${escapeHtml(modes[item.mode]?.label || "Execution")}</small>
         </div>
       `).join("");
@@ -1007,7 +971,7 @@
 
     function renderRecentDecisions() {
       const decisions = history
-        .filter(item => item.role === "assistant" && item.data?.decision)
+        .filter(item => item.role === "assistant" && item.data?.decision && !item.error)
         .slice(-4)
         .reverse();
 
@@ -1021,14 +985,14 @@
       el.innerHTML = decisions.map(item => `
         <div class="stat">
           ${escapeHtml(item.data.decision)}
-          <small>${escapeHtml(item.data.priority || "medium")} priority</small>
+          <small>${escapeHtml(item.data.priority || "unknown")} priority</small>
         </div>
       `).join("");
     }
 
     function renderExecutionQueue() {
-      const latest = history.filter(item => item.role === "assistant").at(-1);
-      const actions = latest && Array.isArray(latest.data?.actions) ? latest.data.actions : [];
+      const latest = history.filter(item => item.role === "assistant" && !item.error).at(-1);
+      const actions = latest ? normalizeArray(latest.data?.actions) : [];
 
       const el = document.getElementById("executionQueue");
 
@@ -1047,8 +1011,10 @@
 
       try {
         const res = await fetch(API + "/memory");
-        const data = await res.json();
 
+        if (!res.ok) throw new Error(`Memory returned ${res.status}`);
+
+        const data = await res.json();
         const memory = Array.isArray(data.memory) ? data.memory : [];
 
         if (!memory.length) {
@@ -1064,7 +1030,7 @@
         `).join("");
       } catch (err) {
         console.error("Memory fetch failed", err);
-        el.innerHTML = `<div class="stat error">Memory unavailable<small>Backend /memory could not be reached</small></div>`;
+        el.innerHTML = `<div class="stat error-box">Memory unavailable<small>Backend /memory could not be reached</small></div>`;
       }
     }
 
@@ -1122,14 +1088,16 @@
           role: "assistant",
           mode: selectedMode,
           ts: Date.now(),
+          error: true,
           data: {
-            what_to_do_now: "Check backend connection.",
-            decision: "The request failed safely.",
-            next_move: "Verify backend URL, deployment, and CORS.",
+            what_to_do_now: "Backend request failed.",
+            decision: "No fake output generated.",
+            next_move: "Check backend health, frontend URL, and CORS.",
             actions: [
-              "Confirm backend is live at https://executive-engine-os.onrender.com/health",
-              "Confirm frontend domain is allowed in backend CORS",
-              "Redeploy backend and frontend"
+              "Open https://executive-engine-os.onrender.com/health",
+              "Confirm backend returns ok true",
+              "Confirm frontend domain is allowed in CORS",
+              "Redeploy frontend after code update"
             ],
             risk: err.message,
             priority: "critical"
@@ -1169,8 +1137,8 @@
     }
 
     function clearHistory() {
+      localStorage.removeItem(STORAGE_KEY);
       history = [];
-      saveHistory();
       renderHistory();
     }
 
