@@ -1,18 +1,12 @@
-Executive Engine OS V75
+Executive Engine OS V76
 
 Purpose:
-- Smooth GUI transitions
-- Refined interaction polish
-- Autosave draft input
-- Rename current thread
-- Duplicate current thread
-- Better copy notification
-- Search Escape clears search
-- More command palette commands
-- Frontend robots.txt disallows indexing
-- Meta robots noindex/nofollow
-- Static _headers includes X-Robots-Tag
-- Backend /robots.txt disallows indexing
+- Adds clear Processing / Thinking state after Run Engine is pressed
+- Adds processing overlay so user knows request is working
+- Adds composer processing highlight
+- Adds Run button loading state
+- Changes top navigation background to black/navy to match left sidebar
+- Keeps V75 smooth GUI, robots/noindex, thread rename/duplicate, autosave, command palette, go-live checks
 
 Upload:
 - frontend/index.html
@@ -27,15 +21,8 @@ Deploy:
 3. Render frontend -> Clear cache & deploy
 4. Hard refresh: Ctrl + Shift + R
 
-Go-live privacy:
-- robots.txt disallows all crawlers
-- meta robots blocks indexing
-- X-Robots-Tag blocks indexing where supported
-
 Test:
-1. Open /robots.txt on frontend
-2. Run prompt
-3. Rename thread
-4. Duplicate thread
-5. Search then press Escape
-6. Refresh page and confirm draft restores
+1. Press Run Engine
+2. Confirm Processing request overlay appears
+3. Confirm Run button says Running
+4. Confirm top nav is dark/navy

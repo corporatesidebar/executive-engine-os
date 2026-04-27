@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V75</title>
+  <title>Executive Engine OS V76</title>
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
 
   <style>
@@ -2336,6 +2336,200 @@ body.compact-ui .page-chip-row{
   }
 }
 
+
+/* V76 — BLACK TOP NAV + CLEAR PROCESSING STATE */
+.fixed-topbar,
+.topbar{
+  background:linear-gradient(180deg,#081426,#071226) !important;
+  border-bottom:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:0 10px 28px rgba(2,8,23,.22) !important;
+}
+
+.menu-btn{
+  color:#e5edf8 !important;
+}
+
+.menu-btn:hover{
+  background:rgba(255,255,255,.08) !important;
+}
+
+.brand-title{
+  color:#ffffff !important;
+}
+
+.brand-home:hover .brand-title{
+  color:#93c5fd !important;
+}
+
+.top-nav-main{
+  background:rgba(255,255,255,.06) !important;
+  border-color:rgba(255,255,255,.10) !important;
+}
+
+.top-nav-btn{
+  color:#dbeafe !important;
+}
+
+.top-nav-btn:hover,
+.top-nav-btn.active{
+  background:#2563eb !important;
+  color:#ffffff !important;
+  border-color:#3b82f6 !important;
+  box-shadow:0 8px 18px rgba(37,99,235,.28) !important;
+}
+
+.top-search{
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+
+.shortcut{
+  color:#64748b !important;
+}
+
+.pill{
+  background:rgba(255,255,255,.08) !important;
+  border-color:rgba(255,255,255,.14) !important;
+  color:#ffffff !important;
+}
+
+.pill:hover{
+  background:rgba(255,255,255,.14) !important;
+}
+
+.live-ready-pill{
+  background:#ecfdf5 !important;
+  border-color:#86efac !important;
+  color:#047857 !important;
+}
+
+.spark{
+  color:#c084fc !important;
+}
+
+.spark:hover{
+  background:rgba(168,85,247,.14) !important;
+}
+
+.avatar{
+  box-shadow:0 0 0 3px rgba(255,255,255,.10);
+}
+
+.processing-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.18);
+  backdrop-filter:blur(2px);
+  z-index:260;
+  align-items:flex-end;
+  justify-content:center;
+  padding:0 18px 96px;
+  pointer-events:none;
+}
+
+.processing-overlay.show{
+  display:flex;
+}
+
+.processing-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#071226;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  padding:14px 16px;
+  box-shadow:0 30px 90px rgba(2,8,23,.30);
+  min-width:min(420px,calc(100vw - 36px));
+  animation:processingIn .16s ease;
+}
+
+.processing-card strong{
+  display:block;
+  font-size:14px;
+  line-height:1.2;
+}
+
+.processing-card span{
+  display:block;
+  margin-top:3px;
+  color:#bfdbfe;
+  font-size:12px;
+  font-weight:750;
+}
+
+.processing-spinner{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  border:3px solid rgba(147,197,253,.35);
+  border-top-color:#60a5fa;
+  animation:spin .75s linear infinite;
+  flex:0 0 auto;
+}
+
+@keyframes processingIn{
+  from{opacity:0; transform:translateY(8px) scale(.98)}
+  to{opacity:1; transform:none}
+}
+
+.composer.is-processing{
+  border-color:#93c5fd !important;
+  box-shadow:0 0 0 4px rgba(37,99,235,.12), 0 24px 70px rgba(15,23,42,.14) !important;
+}
+
+.composer.is-processing textarea{
+  background:#f8fbff !important;
+}
+
+#runBtn.is-processing{
+  background:linear-gradient(135deg,#1d4ed8,#1e40af) !important;
+  position:relative;
+  overflow:hidden;
+}
+
+#runBtn.is-processing::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:translateX(-100%);
+  animation:buttonSweep 1.1s infinite;
+}
+
+@keyframes buttonSweep{
+  to{transform:translateX(100%)}
+}
+
+.run-status.show{
+  color:#1d4ed8 !important;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  border-radius:999px;
+  padding:6px 9px;
+}
+
+body.processing{
+  cursor:progress;
+}
+
+body.processing .quick,
+body.processing .page-chip,
+body.processing .nav-btn,
+body.processing .top-nav-btn,
+body.processing .function-btn{
+  pointer-events:none;
+  opacity:.72;
+}
+
+@media(max-width:760px){
+  .processing-overlay{
+    padding-bottom:84px;
+  }
+}
+
 </style>
 </head>
 
@@ -2402,7 +2596,7 @@ body.compact-ui .page-chip-row{
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V75 · smoother GUI
+      V76 · processing + black nav
     </div>
   </aside>
 
@@ -2623,15 +2817,25 @@ body.compact-ui .page-chip-row{
   </div>
 </div>
 
+<div class="processing-overlay" id="processingOverlay">
+  <div class="processing-card">
+    <div class="processing-spinner"></div>
+    <div>
+      <strong>Processing request</strong>
+      <span>Executive Engine is thinking. Do not refresh.</span>
+    </div>
+  </div>
+</div>
+
 <div class="notice" id="notice"></div>
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v75_threads";
-const ACTIVE_KEY = "eeos_v75_active_thread";
-const PROFILE_KEY = "eeos_v75_profile";
-const MEMORY_KEY = "eeos_v75_memory";
-const DRAFT_KEY = "eeos_v75_draft";
+const STORAGE_KEY = "eeos_v76_threads";
+const ACTIVE_KEY = "eeos_v76_active_thread";
+const PROFILE_KEY = "eeos_v76_profile";
+const MEMORY_KEY = "eeos_v76_memory";
+const DRAFT_KEY = "eeos_v76_draft";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -2679,6 +2883,7 @@ const goLiveTopBtn = $("goLiveTopBtn");
 const goLiveList = $("goLiveList");
 const renameThreadBtn = $("renameThreadBtn");
 const duplicateThreadBtn = $("duplicateThreadBtn");
+const processingOverlay = $("processingOverlay");
 const brandHome = $("brandHome");
 const topNavButtons = document.querySelectorAll(".top-nav-btn");
 const execOutputChip = $("execOutputChip");
@@ -2808,7 +3013,7 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V75 Context",
+    "Executive Engine OS V76 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "Output depth: " + (depthSelect ? depthSelect.value : "standard"),
     "User profile:",
@@ -3109,8 +3314,9 @@ async function send(){
   render();
 
   runBtn.disabled = true;
-  runBtn.textContent = "Run";
-  if(runStatus) runStatus.classList.add("show");
+  runBtn.textContent = "Running";
+  setProcessing(true);
+  notify("Processing request...", "success");
 
   try{
     const res = await fetch(API + "/run", {
@@ -3145,7 +3351,7 @@ async function send(){
   }finally{
     runBtn.disabled = false;
     runBtn.textContent = "Run Engine";
-    if(runStatus) runStatus.classList.remove("show");
+    setProcessing(false);
     input.focus();
   }
 }
@@ -3261,7 +3467,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V75",
+    app:"Executive Engine OS V76",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -3329,12 +3535,12 @@ function openInternalAutomation(){
 
 function toggleCompact(){
   document.body.classList.toggle("compact-ui");
-  localStorage.setItem("eeos_v75_compact", document.body.classList.contains("compact-ui") ? "1" : "0");
+  localStorage.setItem("eeos_v76_compact", document.body.classList.contains("compact-ui") ? "1" : "0");
   if(compactBtn) compactBtn.textContent = document.body.classList.contains("compact-ui") ? "Full View" : "Compact View";
 }
 
 function restoreCompact(){
-  if(localStorage.getItem("eeos_v75_compact") === "1"){
+  if(localStorage.getItem("eeos_v76_compact") === "1"){
     document.body.classList.add("compact-ui");
     if(compactBtn) compactBtn.textContent = "Full View";
   }
@@ -3342,12 +3548,12 @@ function restoreCompact(){
 
 function toggleFocusMode(){
   document.body.classList.toggle("focus-ui");
-  localStorage.setItem("eeos_v75_focus", document.body.classList.contains("focus-ui") ? "1" : "0");
+  localStorage.setItem("eeos_v76_focus", document.body.classList.contains("focus-ui") ? "1" : "0");
   if(focusBtn) focusBtn.textContent = document.body.classList.contains("focus-ui") ? "Full UI" : "Focus Mode";
 }
 
 function restoreFocusMode(){
-  if(localStorage.getItem("eeos_v75_focus") === "1"){
+  if(localStorage.getItem("eeos_v76_focus") === "1"){
     document.body.classList.add("focus-ui");
     if(focusBtn) focusBtn.textContent = "Full UI";
   }
@@ -3372,8 +3578,8 @@ function resetAllLocal(){
   localStorage.removeItem(ACTIVE_KEY);
   localStorage.removeItem(PROFILE_KEY);
   localStorage.removeItem(MEMORY_KEY);
-  localStorage.removeItem("eeos_v75_compact");
-  localStorage.removeItem("eeos_v75_focus");
+  localStorage.removeItem("eeos_v76_compact");
+  localStorage.removeItem("eeos_v76_focus");
   threads = {};
   activeThreadId = createThread(false);
   document.body.classList.remove("compact-ui","focus-ui");
@@ -3597,6 +3803,14 @@ function clearSearch(){
     globalSearch.value = "";
     searchResults.classList.remove("show");
   }
+}
+
+function setProcessing(isProcessing){
+  document.body.classList.toggle("processing", !!isProcessing);
+  if(processingOverlay) processingOverlay.classList.toggle("show", !!isProcessing);
+  if(composer) composer.classList.toggle("is-processing", !!isProcessing);
+  if(runBtn) runBtn.classList.toggle("is-processing", !!isProcessing);
+  if(runStatus) runStatus.classList.toggle("show", !!isProcessing);
 }
 
 function initEvents(){
