@@ -1,74 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Executive Engine OS</title>
-<style>
-:root{--navy:#101b2e;--blue:#1f6af2;--run:#155eea;--orange:#ff681a;--green:#16a34a;--red:#dc2626;--text:#07111f;--muted:#697386;--border:#e5e7eb;--right:#f8fafc}
-*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text);overflow:hidden;background:#fff}button,textarea{font:inherit}button{cursor:pointer}
-.app{display:grid;grid-template-columns:240px minmax(0,1fr)360px;height:100vh;width:100vw;background:#fff}
-.sidebar{background:var(--navy);color:#fff;padding:22px 15px 12px;overflow-y:auto}.sidebar::-webkit-scrollbar{width:12px}.sidebar::-webkit-scrollbar-track{background:#f3f4f6}.sidebar::-webkit-scrollbar-thumb{background:#8b8f97;border-radius:8px;border:3px solid #f3f4f6}
-.brand{display:flex;gap:12px;align-items:center;margin-bottom:30px}.logo{width:33px;height:33px;border-radius:9px;background:#2563eb;display:grid;place-items:center;font-weight:900;font-size:18px}.brand strong{display:block;font-size:13px;line-height:1.1;font-weight:900}.brand span{display:block;margin-top:8px;color:#9aaabd;font-size:11px}
-.group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8da0ba;margin:28px 13px 12px;font-weight:800}.nav-item{height:38px;width:100%;border:0;background:transparent;color:#dbe6f5;text-align:left;padding:0 14px;display:flex;align-items:center;gap:13px;font-size:13px;font-weight:760}.nav-item.active{background:var(--blue);color:white}.nav-item:hover{background:#182740}.nav-item.active:hover{background:var(--blue)}.icon{width:16px;text-align:center}.badge{margin-left:auto;width:20px;height:20px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-size:10px;font-weight:900;color:#fff}.mode{position:sticky;bottom:0;margin-top:22px;height:56px;background:#203149;border-radius:10px;display:flex;align-items:center;gap:11px;padding:0 12px}.ww{width:30px;height:30px;border-radius:50%;background:#ff5b00;display:grid;place-items:center;font-size:10px;font-weight:900}.mode strong{font-size:13px;display:block}.mode span{font-size:11px;color:#9aaabd}
-.main{background:#fff;border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;flex-direction:column;min-width:0}.header{height:78px;min-height:78px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 30px;background:#fff}.header h1{margin:0;font-size:20px;font-weight:850;letter-spacing:-.02em}.header p{margin:6px 0 0;color:#667085;font-size:12px}.live{height:28px;border:1px solid #bbf7d0;background:#ecfdf5;color:#16a34a;border-radius:999px;padding:0 14px;display:flex;align-items:center;gap:7px;font-size:10px;font-weight:900}.live.offline{border-color:#fecaca;background:#fef2f2;color:#dc2626}.live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e}.live.offline .live-dot{background:#dc2626}
-.top-nav{height:48px;min-height:48px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 30px;background:#fbfcfe;overflow-x:auto}.top-nav button{height:31px;border:1px solid #e1e7ef;background:#fff;color:#334155;border-radius:999px;padding:0 13px;font-size:12px;font-weight:800;white-space:nowrap}.top-nav button.active{background:#101b2e;color:#fff;border-color:#101b2e}.top-nav .spacer{flex:1}.top-nav .status{color:#64748b;font-size:12px;white-space:nowrap}
-.workspace{flex:1;overflow-y:auto;background:#fff;padding-bottom:40px}.workspace::-webkit-scrollbar,.right::-webkit-scrollbar{width:10px}.workspace::-webkit-scrollbar-track,.right::-webkit-scrollbar-track{background:#f1f5f9}.workspace::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:#9ca3af;border-radius:999px}.hero{max-width:760px;margin:68px auto 0;text-align:center}.hero h2{font-size:34px;line-height:1.05;margin:0 0 18px;letter-spacing:-.04em;font-weight:780}.hero p{font-size:16px;color:#5f6b7a;margin:0 0 48px}
-.engine-card{width:660px;height:190px;border:2px solid #dfe4eb;border-radius:14px;background:#fff;margin:0 auto;overflow:hidden;text-align:left;box-shadow:0 2px 5px rgba(15,23,42,.035)}#prompt{height:125px;width:100%;border:0;outline:0;resize:none;padding:23px 25px;font-size:14px;color:#111827;line-height:1.45}#prompt::placeholder{color:#a0a8b6}.engine-bottom{height:65px;border-top:1px solid #e6e8ec;display:flex;align-items:center;justify-content:space-between;padding:0 16px}.hint{font-size:11px;color:#64748b;display:flex;align-items:center;gap:7px}.key{height:19px;border:1px solid #d4d9e2;background:#f1f5f9;border-radius:4px;padding:1px 7px;line-height:16px;color:#64748b}.run-btn{height:38px;background:var(--run);color:#fff;border:0;border-radius:8px;padding:0 20px;font-size:13px;font-weight:850;display:flex;align-items:center;gap:8px}.run-btn:disabled{opacity:.65;cursor:not-allowed}
-.quick{width:660px;margin:31px auto 0;text-align:left}.quick-label{font-size:12px;color:#697386;margin-bottom:12px}.quick-row{display:flex;gap:9px;flex-wrap:wrap}.quick-row button{height:36px;border:1px solid #e0e5ec;background:#fff;border-radius:8px;padding:0 16px;font-size:12px;color:#334155;font-weight:760}
-.chat-output{width:760px;margin:34px auto 80px;display:grid;gap:14px}.message{border-radius:14px;padding:14px 16px;box-shadow:0 8px 24px rgba(15,23,42,.045)}.message.user{background:var(--blue);color:#fff;margin-left:auto;max-width:70%;white-space:pre-wrap}.message.assistant{background:#fff;border:1px solid var(--border);max-width:100%}.card-grid{display:grid;gap:10px}.result-card{border:1px solid var(--border);border-radius:10px;background:#fbfdff;padding:11px}.result-card.primary{border-color:#c7d7fe;background:#f8fbff}.label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:900;margin-bottom:6px}.value{font-size:14px;line-height:1.45;color:#111827}.value ul{margin:0;padding-left:18px}
-.right{background:var(--right);overflow-y:auto;padding:0 24px 28px}.archive-card{height:62px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;padding:13px 14px}.archive-card:first-child{margin-top:-19px}.archive-card strong{display:block;font-size:12px;color:#334155;font-weight:500;line-height:1.25}.archive-card span{display:block;font-size:10px;color:#64748b;margin-top:8px}.panel-title{font-size:14px;font-weight:850;margin:26px 0 13px;color:#111827;display:flex;gap:9px;align-items:center}
-.milestone{height:62px;border:1px solid #e2e8f0;background:#fff;border-radius:8px;margin-bottom:8px;padding:13px 14px;position:relative}.milestone.hot{background:#fff7ed;border-color:#fed7aa}.milestone strong{font-size:12px;color:#334155;font-weight:500}.milestone span{display:block;font-size:10px;color:#64748b;margin-top:8px}.alert{position:absolute;right:12px;top:18px;width:14px;height:14px;border:2px solid var(--orange);border-radius:50%;color:var(--orange);font-size:9px;line-height:10px;text-align:center;font-weight:900}.focus{height:108px;border-radius:12px;background:#dcfce7;border:1px solid #bbf7d0;margin-top:22px;padding:22px 18px;color:#166534}.focus strong{display:block;font-size:13px;margin-bottom:16px}.focus p{margin:0;font-size:12px;line-height:1.45;color:#166534}.ai{height:206px;background:#0b1628;border-radius:12px;margin-top:22px;padding:24px 18px;color:#fff}.ai h3{font-size:14px;margin:0 0 19px}.ai-row{display:grid;grid-template-columns:22px 1fr;font-size:12px;line-height:1.35;margin-bottom:14px;color:#fff}.memory-card{border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:12px;margin-bottom:8px;font-size:12px;color:#334155;line-height:1.35}.memory-card b{display:block;margin-bottom:5px}.muted{font-size:12px;color:#64748b;line-height:1.4}.link-card{display:block;text-decoration:none;color:#334155;border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:12px;margin-bottom:8px;font-size:12px}.link-card:hover{border-color:var(--blue)}
-@media(max-width:1200px){.app{grid-template-columns:240px 1fr}.right{display:none}}@media(max-width:780px){html,body{overflow:auto}.app{display:block;height:auto}.sidebar{display:none}.main{min-height:100vh}.header{padding:0 16px}.top-nav{padding:0 16px}.hero{margin:42px 16px 0}.hero h2{font-size:29px}.engine-card,.quick,.chat-output{width:calc(100vw - 32px)}.message.user{max-width:92%}}
-</style>
+  <title>Executive Engine</title>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-<div class="brand"><div class="logo">⌘</div><div><strong>Executive Engine OS</strong><span>Decision-ready execution system</span></div></div>
-<div class="group-title">Command</div><button class="nav-item active"><span class="icon">⌘</span>Command Center</button><button class="nav-item"><span class="icon">▤</span>Daily Brief <span class="badge">3</span></button><button class="nav-item"><span class="icon">◎</span>Decisions <span class="badge">2</span></button><button class="nav-item"><span class="icon">□</span>Meeting Prep</button>
-<div class="group-title">Intelligence</div><button class="nav-item"><span class="icon">♟</span>Insights</button><button class="nav-item"><span class="icon">⌁</span>Strategy Board</button><button class="nav-item"><span class="icon">♢</span>Risk Monitor <span class="badge">4</span></button><button class="nav-item"><span class="icon">♧</span>Team Pulse</button><button class="nav-item"><span class="icon">$</span>Financial Snapshot</button>
-<div class="group-title">Resources</div><button class="nav-item"><span class="icon">▥</span>Active Projects</button><button class="nav-item"><span class="icon">□</span>Files</button><button class="nav-item"><span class="icon">▤</span>Notes</button><button class="nav-item"><span class="icon">▣</span>Upload Context</button>
-<div class="mode"><div class="ww">WW</div><div><strong>Executive Mode</strong><span>Decision-ready</span></div></div>
-</aside>
-<main class="main">
-<header class="header"><div><h1>Executive Flow System</h1><p>Executive Engine</p></div><div id="liveStatus" class="live"><span class="live-dot"></span><span>LIVE</span></div></header>
-<nav class="top-nav"><button class="active" type="button">Command</button><button type="button">Output</button><button type="button">Memory</button><button type="button">Decisions</button><button type="button">Meetings</button><button type="button">Strategy</button><button type="button">Risk</button><button type="button">Files</button><span class="spacer"></span><span id="backendNote" class="status">Backend: checking...</span></nav>
-<section id="workspace" class="workspace">
-<div class="hero">
-<h2>How can I help you execute today?</h2>
-<p>Drop the situation. I'll turn it into one clear decision, the next move, risk, and priority.</p>
-<div class="engine-card"><textarea id="prompt" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea><div class="engine-bottom"><div class="hint">Press <span class="key">⌘</span> + <span class="key">Enter</span> to submit</div><button id="runBtn" class="run-btn" type="button">⚡ Run Engine</button></div></div>
-<div class="quick"><div class="quick-label">Quick prompts:</div><div class="quick-row"><button type="button" data-prompt="Decide what to focus on this week">Decide what to focus on this week</button><button type="button" data-prompt="Prepare for a meeting">Prepare for a meeting</button><button type="button" data-prompt="Turn an idea into action">Turn an idea into action</button></div></div>
-</div>
-<div id="chatOutput" class="chat-output"></div>
-</section>
-</main>
-<aside class="right">
-<div id="archiveList"><div class="archive-card"><strong>Approve Q2 marketing budget increase</strong><span>2 hours ago</span></div><div class="archive-card"><strong>Postpone product launch to Q3</strong><span>5 hours ago</span></div><div class="archive-card"><strong>Hire senior engineer for Platform team</strong><span>Yesterday</span></div></div>
-<div class="panel-title">▣ Critical Milestones</div><div class="milestone hot"><strong>Q2 Board Meeting</strong><span>Today, 2:00 PM</span><div class="alert">!</div></div><div class="milestone"><strong>Product Launch</strong><span>May 15</span></div><div class="milestone hot"><strong>Series B Deadline</strong><span>Jun 30</span><div class="alert">!</div></div>
-<div class="focus"><strong>◎ Focus Today</strong><p>Finalize Q2 financial strategy and secure board approval for key initiatives.</p></div>
-<div class="ai"><h3>AI Recommendations</h3><div class="ai-row"><span>⚡</span><span>Prioritize board prep - meeting in 15<br/>minutes</span></div><div class="ai-row"><span>♧</span><span>Sales team morale dipped - schedule 1:1<br/>with Jennifer</span></div><div class="ai-row"><span>$</span><span>Burn rate trending up - review Q2<br/>spending plan</span></div></div>
-<div class="panel-title">Memory</div><div id="memoryList"><div class="muted">Loading memory...</div></div>
-<div class="panel-title">Links</div><a class="link-card" href="https://executive-engine-os.onrender.com/health" target="_blank">Backend Health</a><a class="link-card" href="https://executive-engine-os.onrender.com/memory" target="_blank">Backend Memory</a>
-</aside>
-</div>
+
+<h2>Executive Engine</h2>
+
+<input id="input" placeholder="Enter task" style="width:300px;">
+<button onclick="run()">Run</button>
+
+<pre id="output"></pre>
+
 <script>
-const API="https://executive-engine-os.onrender.com";const KEY="executive_engine_messages_v39";let messages=JSON.parse(localStorage.getItem(KEY)||"[]");let running=false;
-const promptEl=document.getElementById("prompt"),runBtn=document.getElementById("runBtn"),output=document.getElementById("chatOutput"),workspace=document.getElementById("workspace"),backendNote=document.getElementById("backendNote"),memoryList=document.getElementById("memoryList"),liveStatus=document.getElementById("liveStatus"),archiveList=document.getElementById("archiveList");
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function save(){localStorage.setItem(KEY,JSON.stringify(messages))}
-function normalizeActions(a){if(Array.isArray(a))return a.filter(Boolean);if(typeof a==="string"&&a.trim())return[a.trim()];return[]}
-function card(l,v,p=false){if(v===undefined||v===null||v==="")return"";return `<div class="result-card ${p?"primary":""}"><div class="label">${l}</div><div class="value">${v}</div></div>`}
-function renderAssistant(d){d=d&&typeof d==="object"?d:{};const a=normalizeActions(d.actions);let html="";html+=card("What To Do Now",esc(d.what_to_do_now),true);html+=card("Decision",esc(d.decision));html+=card("Next Move",esc(d.next_move));if(a.length)html+=card("Actions",`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`);html+=card("Risk",esc(d.risk));html+=card("Priority",esc(d.priority));return `<div class="card-grid">${html||card("Response",esc(JSON.stringify(d)))}</div>`}
-function render(){output.innerHTML="";messages.forEach(m=>{const div=document.createElement("div");div.className="message "+m.role;div.innerHTML=m.role==="user"?esc(m.content):renderAssistant(m.content);output.appendChild(div)});save();renderArchive();setTimeout(()=>workspace.scrollTop=workspace.scrollHeight,0)}
-function renderArchive(){const u=messages.filter(m=>m.role==="user").slice(-3).reverse();if(!u.length)return;archiveList.innerHTML=u.map(m=>`<div class="archive-card"><strong>${esc(m.content).slice(0,70)}</strong><span>Saved locally</span></div>`).join("")}
-function fallback(){return{what_to_do_now:"Fix backend configuration before continuing",decision:"The frontend loaded, but the backend request failed or returned invalid data",next_move:"Open /health, verify OpenAI key, redeploy backend, then test /run",actions:["Open Render backend logs","Confirm OPENAI_API_KEY is set","Redeploy backend/main.py","Open /health in browser","Run one prompt again"],risk:"The interface will show fallback output until /run returns valid JSON",priority:"High"}}
-async function send(){const text=promptEl.value.trim();if(!text||running)return;running=true;runBtn.disabled=true;runBtn.textContent="Running...";messages.push({role:"user",content:text,timestamp:new Date().toISOString()});promptEl.value="";render();try{const res=await fetch(API+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:text,mode:"execution"})});if(!res.ok)throw new Error("bad response");const data=await res.json();messages.push({role:"assistant",content:data,timestamp:new Date().toISOString()})}catch(e){messages.push({role:"assistant",content:fallback(),timestamp:new Date().toISOString()})}running=false;runBtn.disabled=false;runBtn.textContent="⚡ Run Engine";render();loadMemory()}
-async function health(){try{const res=await fetch(API+"/health");if(!res.ok)throw new Error();const data=await res.json();backendNote.textContent=`Backend: live / DB: ${data.database||"unknown"} / OpenAI: ${data.openai||"unknown"}`;liveStatus.classList.remove("offline");liveStatus.innerHTML='<span class="live-dot"></span><span>LIVE</span>'}catch{backendNote.textContent="Backend: offline";liveStatus.classList.add("offline");liveStatus.innerHTML='<span class="live-dot"></span><span>CHECK</span>'}}
-async function loadMemory(){try{const res=await fetch(API+"/memory");if(!res.ok)throw new Error();const data=await res.json();const items=Array.isArray(data.memory)?data.memory.slice(0,5):[];if(!items.length){memoryList.innerHTML='<div class="muted">No memory yet.</div>';return}memoryList.innerHTML=items.map(i=>`<div class="memory-card"><b>${esc(i.input||"Memory item")}</b>${esc(i.next_move||i.decision||"")}</div>`).join("")}catch{memoryList.innerHTML='<div class="muted">Memory unavailable</div>'}}
-runBtn.addEventListener("click",send);promptEl.addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.metaKey||e.ctrlKey||!e.shiftKey)){e.preventDefault();send()}});document.querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>{promptEl.value=b.dataset.prompt;promptEl.focus()}));document.querySelectorAll(".top-nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".top-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}));
-render();health();loadMemory();
+const API = "https://executive-engine-os.onrender.com";
+
+async function run() {
+  const text = document.getElementById("input").value;
+
+  const res = await fetch(API + "/run", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      input: text,
+      mode: "execution"
+    })
+  });
+
+  const data = await res.json();
+  document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+}
 </script>
+
 </body>
 </html>
