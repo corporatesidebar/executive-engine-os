@@ -1,38 +1,595 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Executive Engine</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine OS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 268px 1fr 360px;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+    }
+
+    .brand-title {
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #94a3b8;
+    }
+
+    .section-label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
+      letter-spacing: .08em;
+      margin: 6px 0 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 2px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #dbeafe;
+    }
+
+    .nav-item.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .badge {
+      margin-left: auto;
+      background: #f97316;
+      color: white;
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-weight: 800;
+    }
+
+    .profile {
+      margin-top: auto;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      background: #f97316;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .main {
+      background: white;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .topbar {
+      height: 88px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 34px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    .live {
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+      background: #f0fdf4;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .center {
+      max-width: 760px;
+      margin: 70px auto 0;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin: 0 0 14px;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: #64748b;
+      margin-bottom: 44px;
+    }
+
+    .input-card {
+      border: 1px solid #dbe3ee;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, .08);
+      background: white;
+      text-align: left;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      resize: none;
+      border: none;
+      outline: none;
+      padding: 24px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #0f172a;
+    }
+
+    textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .input-footer {
+      border-top: 1px solid #e2e8f0;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      border-radius: 10px;
+      padding: 13px 24px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, .25);
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .quick {
+      text-align: left;
+      margin-top: 28px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #334155;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .output {
+      margin-top: 32px;
+      display: none;
+      text-align: left;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      background: #f8fafc;
+      overflow: hidden;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .output-card {
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .output-card:nth-child(even) {
+      border-right: none;
+    }
+
+    .output-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: .08em;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .output-value {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #0f172a;
+      font-weight: 650;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .rightbar {
+      background: #f8fafc;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+
+    .activity {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: white;
+    }
+
+    .activity small {
+      display: block;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .milestone.warn {
+      background: #fff7ed;
+      border-color: #fed7aa;
+    }
+
+    .focus {
+      background: #dcfce7;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .ai {
+      background: #0f172a;
+      color: white;
+      border: none;
+    }
+
+    .ai ul {
+      color: #e2e8f0;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 220px 1fr;
+      }
+
+      .rightbar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0 20px;
+      }
+
+      .center {
+        margin-top: 42px;
+      }
+
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .output-card {
+        border-right: none;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⌘</div>
+        <div>
+          <div class="brand-title">Executive Engine OS</div>
+          <div class="brand-subtitle">Decision-ready execution system</div>
+        </div>
+      </div>
 
-<h2>Executive Engine</h2>
+      <div>
+        <div class="section-label">COMMAND</div>
+        <div class="nav-item active">⌘ Command Center</div>
+        <div class="nav-item">▤ Daily Brief <span class="badge">3</span></div>
+        <div class="nav-item">◎ Decisions <span class="badge">2</span></div>
+        <div class="nav-item">▣ Meeting Prep</div>
+      </div>
 
-<input id="input" placeholder="Enter task" style="width:300px;">
-<button onclick="run()">Run</button>
+      <div>
+        <div class="section-label">INTELLIGENCE</div>
+        <div class="nav-item">♙ Insights</div>
+        <div class="nav-item">⌁ Strategy Board</div>
+        <div class="nav-item">◇ Risk Monitor <span class="badge">4</span></div>
+        <div class="nav-item">♧ Team Pulse</div>
+        <div class="nav-item">$ Financial Snapshot</div>
+      </div>
 
-<pre id="output"></pre>
+      <div>
+        <div class="section-label">RESOURCES</div>
+        <div class="nav-item">▣ Active Projects</div>
+        <div class="nav-item">▢ Files</div>
+        <div class="nav-item">▤ Notes</div>
+        <div class="nav-item">⇧ Upload Context</div>
+      </div>
 
-<script>
-const API = "https://executive-engine-os.onrender.com";
+      <div class="profile">
+        <div class="avatar">WW</div>
+        <div>
+          <div class="brand-title">Executive Mode</div>
+          <div class="brand-subtitle">Decision-ready</div>
+        </div>
+      </div>
+    </aside>
 
-async function run() {
-  const text = document.getElementById("input").value;
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">Executive Flow System</div>
+          <div class="subtitle">Executive Engine</div>
+        </div>
+        <div class="live">● LIVE</div>
+      </div>
 
-  const res = await fetch(API + "/run", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      input: text,
-      mode: "execution"
-    })
-  });
+      <section class="center">
+        <h1>How can I help you execute today?</h1>
+        <div class="hero-sub">
+          Drop the situation. I'll turn it into one clear decision, the next move, risk, and priority.
+        </div>
 
-  const data = await res.json();
-  document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-}
-</script>
+        <div class="input-card">
+          <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
+          <div class="input-footer">
+            <div>Press ⌘ + Enter to submit</div>
+            <button id="runBtn" onclick="runEngine()">⚡ Run Engine</button>
+          </div>
+        </div>
 
+        <div class="quick">
+          Quick prompts:
+          <div class="chips">
+            <div class="chip" onclick="setPrompt('Decide what to focus on this week')">Decide what to focus on this week</div>
+            <div class="chip" onclick="setPrompt('Prepare me for a meeting')">Prepare for a meeting</div>
+            <div class="chip" onclick="setPrompt('Turn this idea into action')">Turn an idea into action</div>
+          </div>
+        </div>
+
+        <div id="output" class="output">
+          <div class="output-grid">
+            <div class="output-card">
+              <div class="output-label">What To Do Now</div>
+              <div id="what_to_do_now" class="output-value"></div>
+            </div>
+            <div class="output-card">
+              <div class="output-label">Decision</div>
+              <div id="decision" class="output-value"></div>
+            </div>
+            <div class="output-card">
+              <div class="output-label">Next Move</div>
+              <div id="next_move" class="output-value"></div>
+            </div>
+            <div class="output-card">
+              <div class="output-label">Priority</div>
+              <div id="priority" class="output-value"></div>
+            </div>
+            <div class="output-card">
+              <div class="output-label">Actions</div>
+              <div id="actions" class="output-value"></div>
+            </div>
+            <div class="output-card">
+              <div class="output-label">Risk</div>
+              <div id="risk" class="output-value"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="rightbar">
+      <div class="panel">
+        <div class="panel-title">Recent Decisions</div>
+        <div class="activity">Approve Q2 marketing budget increase<small>2 hours ago</small></div>
+        <div class="activity">Postpone product launch to Q3<small>5 hours ago</small></div>
+        <div class="activity">Hire senior engineer for Platform team<small>Yesterday</small></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Critical Milestones</div>
+        <div class="activity milestone warn">Q2 Board Meeting<small>Today, 2:00 PM</small></div>
+        <div class="activity">Product Launch<small>May 15</small></div>
+        <div class="activity milestone warn">Series B Deadline<small>Jun 30</small></div>
+      </div>
+
+      <div class="panel focus">
+        <div class="panel-title">◎ Focus Today</div>
+        Finalize Q2 financial strategy and secure board approval for key initiatives.
+      </div>
+
+      <div class="panel ai">
+        <div class="panel-title">AI Recommendations</div>
+        <ul>
+          <li>Prioritize board prep — meeting in 15 minutes</li>
+          <li>Sales team morale dipped — schedule 1:1 with Jennifer</li>
+          <li>Burn rate trending up — review Q2 spending plan</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const API = "https://executive-engine-os.onrender.com";
+
+    function setPrompt(text) {
+      document.getElementById("input").value = text;
+    }
+
+    async function runEngine() {
+      const input = document.getElementById("input");
+      const button = document.getElementById("runBtn");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      button.disabled = true;
+      button.textContent = "Running...";
+
+      try {
+        const res = await fetch(API + "/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            input: text,
+            mode: "execution"
+          })
+        });
+
+        const data = await res.json();
+
+        document.getElementById("output").style.display = "block";
+        document.getElementById("what_to_do_now").textContent = data.what_to_do_now || "";
+        document.getElementById("decision").textContent = data.decision || "";
+        document.getElementById("next_move").textContent = data.next_move || "";
+        document.getElementById("priority").textContent = data.priority || "";
+
+        const actions = Array.isArray(data.actions) ? data.actions : [data.actions || ""];
+        document.getElementById("actions").innerHTML =
+          "<ul>" + actions.map(a => `<li>${a}</li>`).join("") + "</ul>";
+
+        document.getElementById("risk").textContent = data.risk || "";
+      } catch (err) {
+        document.getElementById("output").style.display = "block";
+        document.getElementById("what_to_do_now").textContent = "Connection failed.";
+        document.getElementById("decision").textContent = "Check frontend API URL and backend CORS.";
+        document.getElementById("next_move").textContent = "Redeploy frontend and backend.";
+        document.getElementById("priority").textContent = "critical";
+        document.getElementById("actions").innerHTML = "<ul><li>Verify backend URL</li><li>Verify ALLOWED_ORIGINS</li><li>Test /run directly</li></ul>";
+        document.getElementById("risk").textContent = err.message;
+      } finally {
+        button.disabled = false;
+        button.textContent = "⚡ Run Engine";
+      }
+    }
+
+    document.getElementById("input").addEventListener("keydown", function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        runEngine();
+      }
+    });
+  </script>
 </body>
 </html>
