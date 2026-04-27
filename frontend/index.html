@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V43</title>
+<title>Executive Engine OS V48</title>
 
 <style>
 :root{
@@ -787,6 +787,244 @@ select{
   margin-top:6px;
 }
 
+.personal-highlight{
+  border-color:#fed7aa !important;
+  background:#fff7ed !important;
+}
+
+.page-panel{
+  max-width:920px;
+  margin:0 auto 18px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 10px 30px rgba(15,23,42,.06);
+}
+
+.page-panel h2{
+  margin:0 0 8px;
+  font-size:22px;
+  letter-spacing:-.03em;
+}
+
+.page-panel p{
+  margin:0 0 14px;
+  color:#64748b;
+  line-height:1.45;
+}
+
+.page-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.page-card{
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:15px;
+  padding:14px;
+  cursor:pointer;
+}
+
+.page-card:hover{
+  border-color:#bfdbfe;
+  background:#eff6ff;
+}
+
+.page-card strong{
+  display:block;
+  margin-bottom:5px;
+  color:#0f172a;
+}
+
+.page-card span{
+  display:block;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.smart-badge{
+  display:inline-flex;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#ecfdf5;
+  color:#047857;
+  border:1px solid #bbf7d0;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+@media(max-width:760px){
+  .page-grid{grid-template-columns:1fr}
+}
+
+.command-insights{
+  max-width:920px;
+  margin:0 auto 12px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+
+.insight-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 8px 22px rgba(15,23,42,.045);
+}
+
+.insight-card strong{
+  display:block;
+  color:#0f172a;
+  font-size:15px;
+  margin-bottom:3px;
+}
+
+.insight-card span{
+  color:#64748b;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.command-bar{
+  max-width:920px;
+  margin:0 auto 12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.command-chip{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:999px;
+  padding:8px 11px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:850;
+}
+
+.command-chip:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  color:#1d4ed8;
+}
+
+.focus-card{
+  max-width:920px;
+  margin:0 auto 14px;
+  border:1px solid #fed7aa;
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 12px 30px rgba(251,146,60,.10);
+}
+
+.focus-card strong{
+  display:block;
+  color:#9a3412;
+  margin-bottom:5px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.focus-card div{
+  color:#0f172a;
+  font-weight:700;
+  line-height:1.45;
+}
+
+.quality-meter{
+  height:8px;
+  background:#e2e8f0;
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.quality-meter span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#f97316,#22c55e);
+  width:0%;
+}
+
+@media(max-width:900px){
+  .command-insights{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:620px){
+  .command-insights{grid-template-columns:1fr}
+}
+
+.exec-score-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:10px;
+}
+
+.exec-score{
+  background:#fff;
+  border:1px solid #edf2f7;
+  border-radius:12px;
+  padding:10px;
+}
+
+.exec-score strong{
+  display:block;
+  font-size:16px;
+  color:#0f172a;
+}
+
+.exec-score span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  margin-top:2px;
+}
+
+.workflow-strip{
+  max-width:920px;
+  margin:0 auto 12px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+
+.workflow-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:999px;
+  padding:9px 12px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.workflow-btn:hover{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+}
+
+.exec-brief{
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+  border-color:#bfdbfe;
+}
+
 /* MODAL */
 .modal-backdrop{
   position:fixed;
@@ -886,21 +1124,23 @@ select{
 
     <div class="nav-scroll">
       <div class="nav-label">Command</div>
-      <button class="nav-btn active" data-mode="execution"><span class="nav-ico">⌘</span>Command Center</button>
-      <button class="nav-btn" data-mode="daily_brief"><span class="nav-ico">◷</span>Daily Brief</button>
-      <button class="nav-btn" data-mode="decision"><span class="nav-ico">◆</span>Decisions</button>
-      <button class="nav-btn" data-mode="meeting"><span class="nav-ico">◉</span>Meeting Prep</button>
+      <button class="nav-btn active" data-page="command" data-mode="execution"><span class="nav-ico">⌘</span>Command Center</button>
+      <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="nav-ico">◷</span>Daily Brief</button>
+      <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="nav-ico">◆</span>Decisions</button>
+      <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="nav-ico">◉</span>Meeting Prep</button>
+      <button class="nav-btn" data-page="personal" data-mode="personal"><span class="nav-ico">★</span>Personal</button>
 
       <div class="nav-label">Intelligence</div>
-      <button class="nav-btn" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
-      <button class="nav-btn" data-mode="risk_review"><span class="nav-ico">!</span>Risk Review</button>
-      <button class="nav-btn" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
+      <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
+      <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="nav-ico">!</span>Risk Review</button>
+      <button class="nav-btn" data-page="proposal" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
     </div>
 
     <div class="left-actions">
       <button id="newThreadLeft" class="left-action">+ New Chat</button>
       <button id="dailyRunLeft" class="left-action">Run My Day</button>
       <button id="weeklyPlanLeft" class="left-action">Weekly Plan</button>
+      <button id="personalResetLeft" class="left-action">Personal Reset</button>
       <button id="exportLeft" class="left-action">Export Current Thread</button>
       <button id="exportAllLeft" class="left-action">Export All Threads</button>
       <button id="clearAllLeft" class="left-action">Clear All History</button>
@@ -909,7 +1149,7 @@ select{
 
     <div class="mode-card">
       <strong>Executive Mode</strong>
-      <span>V43 · navigation + command search</span>
+      <span>V48 · executive workflows + scoring</span>
     </div>
   </aside>
 
@@ -931,12 +1171,13 @@ select{
 
     <div class="top-nav">
       <div class="top-nav-left">
-        <button class="top-tab active" data-mode="execution">Command</button>
-        <button class="top-tab" data-mode="daily_brief">Daily Brief</button>
-        <button class="top-tab" data-mode="decision">Decisions</button>
-        <button class="top-tab" data-mode="meeting">Meetings</button>
-        <button class="top-tab" data-mode="strategy">Strategy</button>
-        <button class="top-tab" data-mode="risk_review">Risk</button>
+        <button class="top-tab active" data-page="command" data-mode="execution">Command</button>
+        <button class="top-tab" data-page="daily" data-mode="daily_brief">Daily Brief</button>
+        <button class="top-tab" data-page="decisions" data-mode="decision">Decisions</button>
+        <button class="top-tab" data-page="meetings" data-mode="meeting">Meetings</button>
+        <button class="top-tab" data-page="strategy" data-mode="strategy">Strategy</button>
+        <button class="top-tab" data-page="risk" data-mode="risk_review">Risk</button>
+        <button class="top-tab" data-page="personal" data-mode="personal">Personal</button>
       </div>
       <div class="top-nav-right">
         <input id="globalSearch" class="global-search" placeholder="Search chats, actions, decisions..." />
@@ -949,18 +1190,29 @@ select{
       <div id="centerStage" class="center-stage">
         <div class="center-inner">
           <h1>What needs to move forward?</h1>
-          <p>Drop the situation. V43 turns it into a clearer executive decision, next move, action queue, risk, and priority.</p>
+          <p>Drop the situation. V48 turns it into a clearer executive decision, next move, action queue, risk, and priority.</p>
           <div id="centerComposerMount"></div>
           <div class="quick-row">
             <button class="quick-pill" data-mode="daily_brief" data-prompt="Run my day. Give me the highest priority, what to ignore, top risks, and the execution queue.">Run my day</button>
             <button class="quick-pill" data-mode="meeting" data-prompt="Prepare me for a meeting. Give me agenda, risks, questions to ask, likely objections, and follow-up actions.">Prep meeting</button>
             <button class="quick-pill" data-mode="strategy" data-prompt="Turn this idea into a strategy with the decision, execution path, risks, and first 5 moves.">Strategy</button>
             <button class="quick-pill" data-mode="risk_review" data-prompt="Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.">Reality check</button>
+            <button class="quick-pill" data-mode="personal" data-prompt="Help me organize my personal life today. Give me priorities, what to handle first, what to ignore, and one immediate next move.">Personal reset</button>
+            <button class="quick-pill" data-mode="execution" data-prompt="Convert this into a 30-minute execution sprint with exact steps and what to ignore.">30-min sprint</button>
+            <button class="quick-pill" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review of this situation: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
           </div>
         </div>
       </div>
 
       <div id="chatShell" class="chat-shell hidden">
+        <div id="focusCard" class="focus-card hidden">
+          <strong>Executive Focus</strong>
+          <div id="focusText">No focus yet.</div>
+        </div>
+        <div id="commandInsights" class="command-insights hidden"></div>
+        <div id="commandBar" class="command-bar hidden"></div>
+        <div id="workflowStrip" class="workflow-strip hidden"></div>
+        <div id="pageContent"></div>
         <div id="chat" class="chat"></div>
       </div>
 
@@ -978,6 +1230,7 @@ select{
                 <option value="daily_brief">Daily Brief</option>
                 <option value="proposal">Proposal</option>
                 <option value="risk_review">Risk Review</option>
+                <option value="personal">Personal</option>
               </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
             </div>
@@ -1025,6 +1278,16 @@ select{
     </div>
 
     <div class="panel">
+      <h3>Personal Snapshot</h3>
+      <div id="personalSnapshot">
+        <div class="item">
+          <strong>Personal Mode</strong>
+          Use this for focus, energy, routines, people, admin, and life execution.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
       <h3>Backend Memory</h3>
       <div id="memory"><div class="empty">Loading memory...</div></div>
     </div>
@@ -1038,6 +1301,13 @@ select{
         <button class="function-btn" id="fnRisk">Risk Review</button>
         <button class="function-btn" id="fnProposal">Draft Proposal</button>
         <button class="function-btn" id="fnFollowup">Follow-Up Plan</button>
+        <button class="function-btn" id="fnPersonal">Personal Reset</button>
+        <button class="function-btn" id="fnHealth">Energy / Health Check</button>
+        <button class="function-btn" id="fnRelationship">Relationship / People</button>
+        <button class="function-btn" id="fnNextLevel">Next-Level Review</button>
+        <button class="function-btn" id="fnBoard">Board Summary</button>
+        <button class="function-btn" id="fnDelegate">Delegation Plan</button>
+        <button class="function-btn" id="fnScore">Decision Score</button>
       </div>
     </div>
 
@@ -1064,10 +1334,10 @@ select{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v43_threads";
-const ACTIVE_THREAD_KEY = "eeos_v43_active_thread";
-const MEMORY_KEY = "eeos_v43_local_memory";
-const DRAFT_KEY = "eeos_v43_draft";
+const STORAGE_KEY = "eeos_v48_threads";
+const ACTIVE_THREAD_KEY = "eeos_v48_active_thread";
+const MEMORY_KEY = "eeos_v48_local_memory";
+const DRAFT_KEY = "eeos_v48_draft";
 
 const input = document.getElementById("input");
 const modeEl = document.getElementById("mode");
@@ -1095,6 +1365,7 @@ const exportTop = document.getElementById("exportTop");
 const newThreadLeft = document.getElementById("newThreadLeft");
 const dailyRunLeft = document.getElementById("dailyRunLeft");
 const weeklyPlanLeft = document.getElementById("weeklyPlanLeft");
+const personalResetLeft = document.getElementById("personalResetLeft");
 const exportLeft = document.getElementById("exportLeft");
 const exportAllLeft = document.getElementById("exportAllLeft");
 const clearAllLeft = document.getElementById("clearAllLeft");
@@ -1106,6 +1377,12 @@ const copyModal = document.getElementById("copyModal");
 const downloadModal = document.getElementById("downloadModal");
 const closeModal = document.getElementById("closeModal");
 const toast = document.getElementById("toast");
+const pageContent = document.getElementById("pageContent");
+const focusCard = document.getElementById("focusCard");
+const focusText = document.getElementById("focusText");
+const commandInsights = document.getElementById("commandInsights");
+const commandBar = document.getElementById("commandBar");
+const workflowStrip = document.getElementById("workflowStrip");
 const globalSearch = document.getElementById("globalSearch");
 const searchResults = document.getElementById("searchResults");
 const fnRunDay = document.getElementById("fnRunDay");
@@ -1114,12 +1391,20 @@ const fnStrategy = document.getElementById("fnStrategy");
 const fnRisk = document.getElementById("fnRisk");
 const fnProposal = document.getElementById("fnProposal");
 const fnFollowup = document.getElementById("fnFollowup");
+const fnPersonal = document.getElementById("fnPersonal");
+const fnHealth = document.getElementById("fnHealth");
+const fnRelationship = document.getElementById("fnRelationship");
+const fnNextLevel = document.getElementById("fnNextLevel");
+const fnBoard = document.getElementById("fnBoard");
+const fnDelegate = document.getElementById("fnDelegate");
+const fnScore = document.getElementById("fnScore");
 const threadSearch = document.getElementById("threadSearch");
 
 let threads = loadThreads();
 let activeThreadId = localStorage.getItem(ACTIVE_THREAD_KEY) || null;
 let typingTimer = null;
 let currentExportText = "";
+let activePage = localStorage.getItem("eeos_v45_active_page") || "command";
 
 if(!activeThreadId || !threads[activeThreadId]){
   activeThreadId = createThread();
@@ -1246,22 +1531,31 @@ function labelMode(v){
     meeting:"Meeting Prep",
     daily_brief:"Daily Brief",
     proposal:"Proposal",
-    risk_review:"Risk Review"
+    risk_review:"Risk Review",personal:"Personal"
   })[v] || "Execution";
 }
 
 function setMode(mode){
   modeEl.value = mode;
   currentMode.textContent = labelMode(mode);
+  input.focus();
+}
+
+function setPage(page, mode){
+  activePage = page || "command";
+  localStorage.setItem("eeos_v45_active_page", activePage);
+
+  if(mode) setMode(mode);
 
   document.querySelectorAll(".nav-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.mode === mode);
+    b.classList.toggle("active", b.dataset.page === activePage);
   });
 
   document.querySelectorAll(".top-tab").forEach(b => {
-    b.classList.toggle("active", b.dataset.mode === mode);
+    b.classList.toggle("active", b.dataset.page === activePage);
   });
 
+  renderPage();
   input.focus();
 }
 
@@ -1280,7 +1574,13 @@ function normalize(data){
     hidden_opportunity:data.hidden_opportunity || "",
     meeting_agenda:data.meeting_agenda || "",
     follow_up:data.follow_up || "",
-    clarifying_question:data.clarifying_question || ""
+    clarifying_question:data.clarifying_question || "",
+    executive_summary:data.executive_summary || "",
+    financial_impact:data.financial_impact || "",
+    leadership_implication:data.leadership_implication || "",
+    execution_score:data.execution_score || "",
+    decision_confidence:data.decision_confidence || "",
+    time_horizon:data.time_horizon || ""
   };
 }
 
@@ -1299,7 +1599,13 @@ function toPlainText(data){
     d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : "",
     d.meeting_agenda ? `MEETING AGENDA: ${d.meeting_agenda}` : "",
     d.follow_up ? `FOLLOW UP: ${d.follow_up}` : "",
-    d.clarifying_question ? `QUESTION: ${d.clarifying_question}` : ""
+    d.clarifying_question ? `QUESTION: ${d.clarifying_question}` : "",
+    d.executive_summary ? `EXECUTIVE SUMMARY: ${d.executive_summary}` : "",
+    d.financial_impact ? `FINANCIAL IMPACT: ${d.financial_impact}` : "",
+    d.leadership_implication ? `LEADERSHIP IMPLICATION: ${d.leadership_implication}` : "",
+    d.execution_score ? `EXECUTION SCORE: ${d.execution_score}` : "",
+    d.decision_confidence ? `DECISION CONFIDENCE: ${d.decision_confidence}` : "",
+    d.time_horizon ? `TIME HORIZON: ${d.time_horizon}` : ""
   ].filter(Boolean).join("\n\n");
 }
 
@@ -1312,7 +1618,13 @@ function renderAssistant(data){
     ["Hidden Opportunity", d.hidden_opportunity],
     ["Meeting Agenda", d.meeting_agenda],
     ["Follow Up", d.follow_up],
-    ["Clarifying Question", d.clarifying_question]
+    ["Clarifying Question", d.clarifying_question],
+    ["Executive Summary", d.executive_summary],
+    ["Financial Impact", d.financial_impact],
+    ["Leadership Implication", d.leadership_implication],
+    ["Execution Score", d.execution_score],
+    ["Decision Confidence", d.decision_confidence],
+    ["Time Horizon", d.time_horizon]
   ].filter(x => x[1]);
 
   return `
@@ -1345,6 +1657,11 @@ function renderAssistant(data){
       <div class="response-card">
         <div class="response-label">Priority</div>
         <div class="response-value"><span class="priority-pill">${esc(d.priority)}</span></div>
+        <div class="exec-score-grid">
+          <div class="exec-score"><strong>${esc(d.decision_confidence || "—")}</strong><span>Confidence</span></div>
+          <div class="exec-score"><strong>${esc(d.execution_score || "—")}</strong><span>Exec Score</span></div>
+          <div class="exec-score"><strong>${esc(d.time_horizon || "—")}</strong><span>Time</span></div>
+        </div>
       </div>
 
       ${optional.map(([label,value]) => `
@@ -1474,7 +1791,12 @@ function renderRecommendations(){
     return;
   }
 
+  const personalNote = modeEl.value === "personal"
+    ? `<div class="item personal-highlight"><strong>Personal execution</strong>Keep it practical: one action, one conversation, one routine adjustment, or one admin task.</div>`
+    : "";
+
   target.innerHTML = `
+    ${personalNote}
     <div class="item">
       <strong>Next leverage point</strong>
       ${esc(d.next_move)}
@@ -1551,6 +1873,247 @@ function clearError(){
   errorBox.classList.remove("show");
 }
 
+function commandQualityScore(text){
+  let score = 0;
+  const value = (text || "").toLowerCase();
+
+  if(value.length > 40) score += 25;
+  if(value.includes("because") || value.includes("goal") || value.includes("objective")) score += 20;
+  if(value.includes("today") || value.includes("this week") || value.includes("deadline")) score += 20;
+  if(value.includes("risk") || value.includes("problem") || value.includes("blocked")) score += 15;
+  if(value.includes("revenue") || value.includes("growth") || value.includes("client") || value.includes("money")) score += 20;
+
+  return Math.min(score, 100);
+}
+
+function detectIntent(text){
+  const value = (text || "").toLowerCase();
+
+  if(value.includes("meeting") || value.includes("call") || value.includes("conversation")) return "Meeting";
+  if(value.includes("risk") || value.includes("worried") || value.includes("problem") || value.includes("blocked")) return "Risk";
+  if(value.includes("strategy") || value.includes("growth") || value.includes("scale")) return "Strategy";
+  if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return "Proposal";
+  if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return "Personal";
+  if(value.includes("today") || value.includes("priority") || value.includes("focus")) return "Daily Execution";
+  if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return "Decision";
+
+  return "Execution";
+}
+
+function getLastUserInput(){
+  const msgs = getMessages();
+  for(let i=msgs.length-1;i>=0;i--){
+    if(msgs[i].role === "user") return msgs[i].text || "";
+  }
+  return "";
+}
+
+function renderCommandIntelligence(){
+  const lastInput = getLastUserInput();
+  const d = latestAssistant();
+
+  if(!getMessages().length){
+    commandInsights.classList.add("hidden");
+    commandBar.classList.add("hidden");
+    focusCard.classList.add("hidden");
+    return;
+  }
+
+  const quality = commandQualityScore(lastInput);
+  const intent = detectIntent(lastInput);
+
+  focusCard.classList.remove("hidden");
+  focusText.textContent = d?.what_to_do_now || "Clarify the highest leverage move and execute the first step.";
+
+  commandInsights.classList.remove("hidden");
+  commandInsights.innerHTML = `
+    <div class="insight-card">
+      <strong>${esc(intent)}</strong>
+      <span>Detected intent</span>
+    </div>
+    <div class="insight-card">
+      <strong>${quality}%</strong>
+      <span>Input quality</span>
+      <div class="quality-meter"><span style="width:${quality}%"></span></div>
+    </div>
+    <div class="insight-card">
+      <strong>${esc(d?.priority || "—")}</strong>
+      <span>Priority</span>
+    </div>
+    <div class="insight-card">
+      <strong>${esc(d?.actions?.length || 0)}</strong>
+      <span>Current actions</span>
+    </div>
+  `;
+
+  commandBar.classList.remove("hidden");
+  commandBar.innerHTML = `
+    <button class="command-chip" onclick="runFollowup('Make this more specific and operational.')">Sharpen</button>
+    <button class="command-chip" onclick="runFollowup('Turn this into a 30-minute sprint.')">30-min Sprint</button>
+    <button class="command-chip" onclick="runFollowup('Identify what I should ignore or stop doing.')">What to Ignore</button>
+    <button class="command-chip" onclick="runFollowup('Create the follow-up message or next communication.')">Follow-Up</button>
+    <button class="command-chip" onclick="runFollowup('Find hidden risk and blind spots.')">Risk Check</button>
+  `;
+}
+
+function runFollowup(prompt){
+  input.value = prompt;
+  input.focus();
+  send();
+}
+
+function renderWorkflowStrip(){
+  if(!getMessages().length){
+    workflowStrip.classList.add("hidden");
+    return;
+  }
+
+  workflowStrip.classList.remove("hidden");
+
+  workflowStrip.innerHTML = `
+    <button class="workflow-btn" onclick="runFollowup('Create an executive brief from this thread.')">Executive Brief</button>
+    <button class="workflow-btn" onclick="runFollowup('Score this decision for risk, upside, speed, and execution difficulty.')">Score Decision</button>
+    <button class="workflow-btn" onclick="runFollowup('Convert this into an operating cadence with owners, timing, and checkpoints.')">Operating Cadence</button>
+    <button class="workflow-btn" onclick="runFollowup('Create a board-level summary with decision, impact, risk, and next move.')">Board Summary</button>
+    <button class="workflow-btn" onclick="runFollowup('Create a delegation plan: who does what, in what order, by when.')">Delegation Plan</button>
+    <button class="workflow-btn" onclick="runFollowup('Create a ruthless prioritization: what to do, delay, delegate, and delete.')">Prioritize</button>
+  `;
+}
+
+function pageConfig(page){
+  const configs = {
+    command:{
+      title:"Command Center",
+      desc:"Run anything through the engine. Best for immediate decisions and execution.",
+      mode:"execution",
+      cards:[
+        ["Run execution command","Turn the current situation into a decision, next move, action queue, risk, and priority.","I need to execute: "],
+        ["Fix a blocker","Identify the real blocker, decision, risk, and fastest move.","I am blocked by: "],
+        ["Create action queue","Build a tight action queue from this situation.","Create an execution queue for: "],
+        ["30-minute sprint","Force the next 30 minutes into concrete execution.","Convert this into a 30-minute sprint: "]
+      ]
+    },
+    daily:{
+      title:"Daily Brief",
+      desc:"Decide what matters today, what to ignore, and what needs action now.",
+      mode:"daily_brief",
+      cards:[
+        ["Run my day","Give me top priority, what to ignore, risk, and execution order.","Run my day. Give me the highest priority, what to ignore, top risks, execution queue, and one immediate next move."],
+        ["Morning reset","Organize today around leverage and momentum.","Give me a morning execution reset for today."],
+        ["End of day review","Review what moved, what stalled, and tomorrow's first action.","Run an end-of-day review and set tomorrow's first move."],
+        ["What to ignore","Cut low-leverage tasks for the day.","Tell me what to ignore today based on: "]
+      ]
+    },
+    decisions:{
+      title:"Decisions",
+      desc:"Force clarity. Choose a direction and commit to the next move.",
+      mode:"decision",
+      cards:[
+        ["Make a decision","Compare options and choose the best move.","Help me decide: "],
+        ["Decision audit","Find weak logic, risk, and the real tradeoff.","Audit this decision: "],
+        ["Opportunity decision","Decide whether this opportunity is worth pursuing.","Should I pursue this opportunity: "],
+        ["Tradeoff call","Compare the tradeoff and force a direction.","Make the tradeoff clear for: "]
+      ]
+    },
+    meetings:{
+      title:"Meeting Prep",
+      desc:"Build agendas, talking points, risks, objections, and follow-ups.",
+      mode:"meeting",
+      cards:[
+        ["Prepare meeting","Build agenda, questions, risks, and follow-up.","Prepare me for this meeting: "],
+        ["Difficult conversation","Plan the message, tone, risk, and next action.","Help me handle this difficult conversation: "],
+        ["Follow-up note","Create a sharp follow-up plan and message.","Create a follow-up for this meeting: "],
+        ["Objection prep","Prepare for objections and pushback.","Prepare objections for this meeting: "]
+      ]
+    },
+    strategy:{
+      title:"Strategy",
+      desc:"Turn direction into a practical plan with leverage, sequence, and risk.",
+      mode:"strategy",
+      cards:[
+        ["Strategy sprint","Build objective, leverage, sequence, risk, and first moves.","Build a strategy sprint for: "],
+        ["Growth plan","Focus on growth levers and execution order.","Create a growth plan for: "],
+        ["Simplify strategy","Cut noise and identify the highest-leverage move.","Simplify this strategy: "],
+        ["Leverage map","Identify the highest leverage points.","Map leverage for: "]
+      ]
+    },
+    risk:{
+      title:"Risk Review",
+      desc:"Find downside, blind spots, weak assumptions, and mitigation.",
+      mode:"risk_review",
+      cards:[
+        ["Risk review","Find risks, weak logic, mitigation, and next move.","Review the risk in: "],
+        ["Reality check","Give me the blunt truth and best next action.","Reality check this: "],
+        ["Pre-mortem","Assume this fails and explain why.","Run a pre-mortem on: "],
+        ["Mitigation plan","Create a practical risk mitigation plan.","Build a mitigation plan for: "]
+      ]
+    },
+    proposal:{
+      title:"Proposal",
+      desc:"Create proposal structure, scope, deliverables, pricing logic, and next step.",
+      mode:"proposal",
+      cards:[
+        ["Draft proposal","Build a clean proposal outline.","Draft a proposal for: "],
+        ["Offer structure","Clarify value, scope, pricing logic, and risk.","Structure this offer: "],
+        ["Client next step","Define the next move to close or advance the deal.","Create client next steps for: "],
+        ["Scope clarity","Tighten scope and deliverables.","Clarify proposal scope for: "]
+      ]
+    },
+    personal:{
+      title:"Personal",
+      desc:"Handle life execution: energy, routines, people, admin, focus, and priorities.",
+      mode:"personal",
+      cards:[
+        ["Personal reset","Organize personal priorities and next action.","Help me organize my personal life today."],
+        ["Energy check","Create a practical energy and health reset.","Help me reset my energy and routine today."],
+        ["People situation","Plan the best next message/action and what not to do.","Help me handle this people situation: "],
+        ["Admin cleanup","Organize personal admin into a simple sequence.","Help me clean up personal admin: "]
+      ]
+    }
+  };
+
+  return configs[page] || configs.command;
+}
+
+function renderPage(){
+  const cfg = pageConfig(activePage);
+
+  if(!getMessages().length){
+    pageContent.innerHTML = "";
+    return;
+  }
+
+  pageContent.innerHTML = `
+    <div class="page-panel">
+      <span class="smart-badge">Smart Page · ${esc(labelMode(cfg.mode))}</span>
+      <h2>${esc(cfg.title)}</h2>
+      <p>${esc(cfg.desc)}</p>
+      <div class="page-grid">
+        ${cfg.cards.map(card => `
+          <div class="page-card" onclick="loadPrompt(${JSON.stringify(card[2])}, '${cfg.mode}')">
+            <strong>${esc(card[0])}</strong>
+            <span>${esc(card[1])}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function smartRoutePrompt(text){
+  const value = text.toLowerCase();
+
+  if(value.includes("meeting") || value.includes("call") || value.includes("conversation")) return ["meetings","meeting"];
+  if(value.includes("risk") || value.includes("worried") || value.includes("issue") || value.includes("problem")) return ["risk","risk_review"];
+  if(value.includes("strategy") || value.includes("growth") || value.includes("plan")) return ["strategy","strategy"];
+  if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return ["proposal","proposal"];
+  if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return ["personal","personal"];
+  if(value.includes("today") || value.includes("day") || value.includes("priority")) return ["daily","daily_brief"];
+  if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return ["decisions","decision"];
+
+  return [activePage, modeEl.value];
+}
+
 function render(){
   const messages = getMessages();
 
@@ -1578,11 +2141,14 @@ function render(){
     chat.appendChild(row);
   });
 
+  renderPage();
   renderArchive(false);
   renderQueue();
   renderRecommendations();
   renderMetrics();
   renderLocalMemory();
+  renderCommandIntelligence();
+  renderWorkflowStrip();
   saveThreads();
 
   requestAnimationFrame(() => {
@@ -1651,9 +2217,12 @@ function buildRequestContext(){
   const currentMessages = getMessages().slice(-8);
 
   return [
-    `Executive Engine OS V43 Context`,
+    `Executive Engine OS V48 Context`,
     `Thread: ${current?.title || "New Chat"}`,
+    `Current Page: ${activePage}`,
     `Current Mode: ${labelMode(modeEl.value)}`,
+    `Detected Intent: ${detectIntent(getLastUserInput())}`,
+    `Input Quality Score: ${commandQualityScore(getLastUserInput())}/100`,
     ``,
     `Rules for output quality:`,
     `- Be specific, tactical, and executive-level`,
@@ -1661,6 +2230,17 @@ function buildRequestContext(){
     `- Each action must be executable today`,
     `- Prioritize real operations, revenue, speed, leverage, and risk`,
     `- Do not say Proceed or Continue unless tied to a specific action`,
+    `- If mode is Personal, focus on real life execution: energy, relationships, admin, health, routines, focus, and priorities`,
+    `- Personal mode must be practical, respectful, direct, and action-based`,
+    `- Use the active page context to tailor output: command, daily, decisions, meetings, strategy, risk, proposal, or personal`,
+    `- If input quality is low, produce useful output but include a sharper clarifying question if supported by backend`,
+    `- Always identify the highest leverage next move, not a generic next step`,
+    `- Actions should be sequential and small enough to start immediately`,
+    `- Output must be CEO / President / COO quality: decisive, strategic, operational, financially aware, and execution-ready`,
+    `- Think like an experienced executive protecting time, capital, reputation, growth, and operational momentum`,
+    `- Include implications for leadership, revenue, execution, risk, decision velocity, delegation, and time horizon`,
+    `- When possible, include board-level clarity: executive summary, financial impact, leadership implication, and decision confidence`,
+    `- Avoid junior advice, motivational language, obvious suggestions, and surface-level recommendations`,
     `- If the input is vague, still give the best next move and ask one clarifying question if needed`,
     ``,
     `Recent local memory:`,
@@ -1681,6 +2261,11 @@ async function send(){
   }
 
   clearError();
+
+  const routed = smartRoutePrompt(text);
+  if(routed[0] !== activePage || routed[1] !== modeEl.value){
+    setPage(routed[0], routed[1]);
+  }
 
   const messages = getMessages();
 
@@ -1865,7 +2450,14 @@ function fillFunctionPrompt(type){
     strategy:["strategy","Build a strategy sprint. Define objective, leverage, sequence, risks, resources, and first 5 execution moves."],
     risk:["risk_review","Review this for risk. Identify weak logic, blind spots, downside, mitigation, and the best next move."],
     proposal:["proposal","Draft a proposal structure. Include objective, value proposition, scope, deliverables, pricing logic, risks, and next step."],
-    followup:["execution","Create a follow-up plan. Include message, timing, next action, risk, and priority."]
+    followup:["execution","Create a follow-up plan. Include message, timing, next action, risk, and priority."],
+    personal:["personal","Help me organize my personal life today. Give me the top priorities, one immediate action, what to ignore, risk, and a realistic execution sequence."],
+    health:["personal","Help me review my energy and health routine today. Give me a practical reset plan, what to avoid, and the first action I should take."],
+    relationship:["personal","Help me handle this relationship or people situation. Give me the best next message/action, risk, what not to do, and the priority."],
+    nextlevel:["execution","Give me a CEO / President / COO quality review. Challenge weak points, identify the highest leverage move, financial/operational implications, what to ignore, and the exact first action."],
+    board:["execution","Create a board-level summary: executive summary, decision, financial impact, operational risk, leadership implication, and next move."],
+    delegate:["execution","Create a delegation plan: what I should own, what to delegate, who/role should own it, sequence, checkpoint, and risk."],
+    score:["decision","Score this decision for upside, risk, speed, execution difficulty, capital impact, and decision confidence."]
   };
 
   const [mode, prompt] = prompts[type];
@@ -1874,7 +2466,7 @@ function fillFunctionPrompt(type){
 
 function exportAllThreads(){
   const lines = [];
-  lines.push("Executive Engine OS V43 Export — All Threads");
+  lines.push("Executive Engine OS V48 Export — All Threads");
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push("");
 
@@ -1910,7 +2502,7 @@ function exportCurrentThread(){
   const lines = [];
 
   lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V43`);
+  lines.push(`Version: V48`);
   lines.push(`Thread: ${t.title}`);
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push(``);
@@ -1950,11 +2542,11 @@ function loadPrompt(text, mode){
 }
 
 document.querySelectorAll(".nav-btn").forEach(btn => {
-  btn.addEventListener("click", () => setMode(btn.dataset.mode));
+  btn.addEventListener("click", () => setPage(btn.dataset.page, btn.dataset.mode));
 });
 
 document.querySelectorAll(".top-tab").forEach(btn => {
-  btn.addEventListener("click", () => setMode(btn.dataset.mode));
+  btn.addEventListener("click", () => setPage(btn.dataset.page, btn.dataset.mode));
 });
 
 document.querySelectorAll(".quick-pill").forEach(btn => {
@@ -1995,6 +2587,11 @@ weeklyPlanLeft.addEventListener("click", () => {
   send();
 });
 
+personalResetLeft.addEventListener("click", () => {
+  loadPrompt("Help me organize my personal life today. Give me the top priorities, what to ignore, one immediate action, and a realistic sequence.", "personal");
+  send();
+});
+
 clearAllLeft.addEventListener("click", clearAllThreads);
 
 refreshMemoryLeft.addEventListener("click", () => {
@@ -2026,6 +2623,13 @@ fnStrategy.addEventListener("click", () => fillFunctionPrompt("strategy"));
 fnRisk.addEventListener("click", () => fillFunctionPrompt("risk"));
 fnProposal.addEventListener("click", () => fillFunctionPrompt("proposal"));
 fnFollowup.addEventListener("click", () => fillFunctionPrompt("followup"));
+fnPersonal.addEventListener("click", () => fillFunctionPrompt("personal"));
+fnHealth.addEventListener("click", () => fillFunctionPrompt("health"));
+fnRelationship.addEventListener("click", () => fillFunctionPrompt("relationship"));
+fnNextLevel.addEventListener("click", () => fillFunctionPrompt("nextlevel"));
+fnBoard.addEventListener("click", () => fillFunctionPrompt("board"));
+fnDelegate.addEventListener("click", () => fillFunctionPrompt("delegate"));
+fnScore.addEventListener("click", () => fillFunctionPrompt("score"));
 
 closeModal.addEventListener("click", () => modalBackdrop.classList.remove("show"));
 
@@ -2069,10 +2673,15 @@ document.addEventListener("keydown", (e) => {
     e.preventDefault();
     globalSearch.focus();
   }
+
+  if((e.ctrlKey || e.metaKey) && key === "l"){
+    e.preventDefault();
+    loadPrompt("Give me a CEO / President / COO quality review. Challenge weak points, identify the highest leverage move, financial/operational implications, what to ignore, and the exact first action.", "execution");
+  }
 });
 
 window.onload = () => {
-  setMode("execution");
+  setPage(activePage, pageConfig(activePage).mode);
   render();
   health();
   loadMemory();
