@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V63</title>
+  <title>Executive Engine OS V64</title>
 
   <style>
     :root{
@@ -473,6 +473,61 @@
   .automation-dashboard{grid-template-columns:1fr}
 }
 
+
+/* V64 CLICKABLE STATUS + FIXES */
+.status-chip{
+  cursor:pointer;
+  font-family:inherit;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+
+.status-chip:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(15,23,42,.08);
+}
+
+.status-chip:active{
+  transform:translateY(0);
+}
+
+.status-chip:focus{
+  outline:2px solid #bfdbfe;
+  outline-offset:2px;
+}
+
+.status-chip.bad{
+  border-color:#fecaca !important;
+  background:#fef2f2 !important;
+  color:#b91c1c !important;
+}
+
+.status-chip.ready{
+  border-color:#bbf7d0 !important;
+  background:#ecfdf5 !important;
+  color:#047857 !important;
+}
+
+.click-help{
+  font-size:11px;
+  color:#94a3b8;
+  margin-top:8px;
+}
+
+.loading-dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:currentColor;
+  margin-right:5px;
+  animation:pulseDot 1s infinite ease-in-out;
+}
+
+@keyframes pulseDot{
+  0%,100%{opacity:.35}
+  50%{opacity:1}
+}
+
 </style>
 </head>
 
@@ -525,7 +580,7 @@
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V63 · internal automation
+      V64 · clickable status + fixes
     </div>
   </aside>
 
@@ -536,10 +591,10 @@
         <p id="pageDesc">Start simple. Type what you need decided, fixed, planned, or moved forward.</p>
 
         <div class="status-strip">
-          <span class="status-chip green" id="backendChip">● Backend</span>
-          <span class="status-chip orange">CEO / COO Output</span>
-          <span class="status-chip">Profile-Aware</span>
-          <span class="status-chip green">Internal Automation</span>
+          <button class="status-chip green" id="backendChip" type="button">● Backend Live</button>
+          <button class="status-chip orange" id="execOutputChip" type="button">CEO / COO Output</button>
+          <button class="status-chip" id="profileChip" type="button">Profile-Aware</button>
+          <button class="status-chip green" id="automationChip" type="button">Internal Automation</button>
         </div>
 
         <div class="quick-row" id="quickRow">
@@ -690,10 +745,10 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v63_threads";
-const ACTIVE_KEY = "eeos_v63_active_thread";
-const PROFILE_KEY = "eeos_v63_profile";
-const MEMORY_KEY = "eeos_v63_memory";
+const STORAGE_KEY = "eeos_v64_threads";
+const ACTIVE_KEY = "eeos_v64_active_thread";
+const PROFILE_KEY = "eeos_v64_profile";
+const MEMORY_KEY = "eeos_v64_memory";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -721,6 +776,9 @@ const backendStatus = $("backendStatus");
 const backendChip = $("backendChip");
 const debugBtn = $("debugBtn");
 const exportBtn = $("exportBtn");
+const execOutputChip = $("execOutputChip");
+const profileChip = $("profileChip");
+const automationChip = $("automationChip");
 
 let threads = loadThreads();
 let activeThreadId = localStorage.getItem(ACTIVE_KEY) || Object.keys(threads)[0];
@@ -831,7 +889,7 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V63 Context",
+    "Executive Engine OS V64 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "User profile:",
     profileText() || "No profile saved.",
@@ -841,7 +899,8 @@ function buildContext(){
 }
 
 function renderAutomationPanel(){
-  quickRow.style.display = "none";
+  if(quickRow) quickRow.style.display = "none";
+  if(!pagePanel) return;
   pagePanel.innerHTML = `
     <div class="automation-dashboard">
       <div class="auto-card">
@@ -900,10 +959,10 @@ function runAutomation(type){
 
 function setPage(page, mode){
   const cfg = pageConfigs[page] || pageConfigs.command;
-  pageTitle.textContent = cfg[0];
-  pageDesc.textContent = cfg[1];
-  modeSelect.value = mode || cfg[2];
-  currentMode.textContent = modeLabels[modeSelect.value] || "Execution";
+  if(pageTitle) pageTitle.textContent = cfg[0];
+  if(pageDesc) pageDesc.textContent = cfg[1];
+  if(modeSelect) modeSelect.value = mode || cfg[2];
+  if(currentMode) currentMode.textContent = modeLabels[modeSelect.value] || "Execution";
 
   document.querySelectorAll(".nav-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.page === page);
@@ -914,16 +973,17 @@ function setPage(page, mode){
   }else if(page === "automation"){
     renderAutomationPanel();
   }else{
-    pagePanel.innerHTML = "";
-    quickRow.style.display = "";
+    if(pagePanel) pagePanel.innerHTML = "";
+    if(quickRow) quickRow.style.display = "";
   }
 
-  input.focus();
-  moreMenu.classList.remove("show");
+  if(input) input.focus();
+  if(moreMenu) moreMenu.classList.remove("show");
 }
 
 function renderProfilePanel(){
-  quickRow.style.display = "none";
+  if(quickRow) quickRow.style.display = "none";
+  if(!pagePanel) return;
   const p = profile();
   pagePanel.innerHTML = `
     <div class="composer" style="box-shadow:none;margin-bottom:18px;">
@@ -1211,8 +1271,11 @@ async function checkBackend(){
       backendStatus.textContent = "Backend live";
       backendStatus.classList.add("backend-ok");
       backendStatus.classList.remove("backend-bad");
-      backendChip.textContent = "● Backend Live";
-      backendChip.classList.add("green");
+      if(backendChip){
+        backendChip.textContent = "● Backend Live";
+        backendChip.classList.add("ready");
+        backendChip.classList.remove("bad");
+      }
       return true;
     }
     throw new Error("Health failed");
@@ -1220,8 +1283,11 @@ async function checkBackend(){
     backendStatus.textContent = "Backend sleeping/offline";
     backendStatus.classList.add("backend-bad");
     backendStatus.classList.remove("backend-ok");
-    backendChip.textContent = "● Backend Check";
-    backendChip.classList.remove("green");
+    if(backendChip){
+      backendChip.textContent = "● Backend Check";
+      backendChip.classList.remove("ready");
+      backendChip.classList.add("bad");
+    }
     notify("Backend sleeping or offline");
     return false;
   }
@@ -1235,7 +1301,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V63",
+    app:"Executive Engine OS V64",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -1279,6 +1345,21 @@ async function copyLatestResponse(){
   }
 }
 
+function openExecutiveOutputHelp(){
+  loadPrompt("Give me CEO / COO / President quality output for this situation. Include what to do now, decision, next move, actions, risk, priority, financial impact, leadership implication, owner, cadence, and key metric: ", "execution");
+  notify("CEO / COO output mode ready");
+}
+
+function openProfileAware(){
+  setPage("profile", "personal");
+  notify("Open Your Profile to improve personalization");
+}
+
+function openInternalAutomation(){
+  setPage("automation", "execution");
+  notify("Internal automation dashboard opened");
+}
+
 function initEvents(){
   runBtn.addEventListener("click", send);
   clearBtn.addEventListener("click", clearAll);
@@ -1311,8 +1392,12 @@ function initEvents(){
   document.querySelectorAll(".quick").forEach(btn => btn.addEventListener("click",()=>loadPrompt(btn.dataset.prompt,btn.dataset.mode)));
   document.querySelectorAll(".example-card").forEach(card => card.addEventListener("click",()=>loadPrompt(card.dataset.prompt,card.dataset.mode)));
   document.querySelectorAll(".function-btn").forEach(btn => btn.addEventListener("click",()=>handleFunction(btn.dataset.function)));
-  debugBtn.addEventListener("click", openDebug);
-  exportBtn.addEventListener("click", exportThread);
+  if(debugBtn) debugBtn.addEventListener("click", openDebug);
+  if(exportBtn) exportBtn.addEventListener("click", exportThread);
+  if(backendChip) backendChip.addEventListener("click", checkBackend);
+  if(execOutputChip) execOutputChip.addEventListener("click", openExecutiveOutputHelp);
+  if(profileChip) profileChip.addEventListener("click", openProfileAware);
+  if(automationChip) automationChip.addEventListener("click", openInternalAutomation);
 
   document.addEventListener("click", e => {
     if(!moreMenu.contains(e.target) && e.target !== moreBtn) moreMenu.classList.remove("show");
@@ -1331,7 +1416,7 @@ initEvents();
 setPage("command","execution");
 render();
 checkBackend();
-input.focus();
+if(input) input.focus();
 </script>
 </body>
 </html>

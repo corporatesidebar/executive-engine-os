@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V63"
+APP_NAME = "Executive Engine OS V64"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -156,7 +156,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V63.
+You are Executive Engine OS V64.
 
 You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
 
@@ -255,6 +255,20 @@ def save_memory(req: RunRequest, output: Dict[str, Any]):
 @app.get("/")
 async def root():
     return {"ok": True, "service": APP_NAME}
+
+
+@app.get("/status")
+async def status():
+    return {
+        "ok": True,
+        "service": APP_NAME,
+        "backend": "live",
+        "executive_output": "ready",
+        "profile_aware": "ready",
+        "internal_automation": "ready",
+        "model": MODEL,
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+    }
 
 
 @app.get("/health")
@@ -368,7 +382,7 @@ async def debug():
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "allowed_origins": ALLOWED_ORIGINS,
         "memory_items": len(MEMORY),
-        "routes": ["/", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/daily-brief", "/open-loops", "/follow-up", "/action-queue", "/debug"]
+        "routes": ["/", "/status", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/daily-brief", "/open-loops", "/follow-up", "/action-queue", "/debug"]
     }
 
 

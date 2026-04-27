@@ -1,15 +1,13 @@
-Executive Engine OS V63
+Executive Engine OS V64
 
 Purpose:
-- Adds internal automation only
-- No external integrations
-- Adds Daily Brief generator
-- Adds Follow-Up generator
-- Adds Open-Loop Detector
-- Adds Meeting Prep workflow
-- Adds Action Queue Builder
-- Adds Weekly Operator Review
-- Adds backend internal automation endpoints
+- Fix status chips that were not clickable
+- Backend Live now runs health check
+- CEO / COO Output now loads executive-quality prompt
+- Profile-Aware opens Your Profile
+- Internal Automation opens Automation dashboard
+- Adds /status backend route
+- Adds null-safe JS guards for common frontend errors
 
 Upload:
 - frontend/index.html
@@ -23,7 +21,8 @@ Deploy:
 4. Hard refresh: Ctrl + Shift + R
 
 Test:
-1. Click Automation in sidebar
-2. Click Run Daily Brief
-3. Click Detect Open Loops
-4. Run: Build my execution queue from this thread
+1. Click Backend Live
+2. Click CEO / COO Output
+3. Click Profile-Aware
+4. Click Internal Automation
+5. Run: What should I focus on today?
