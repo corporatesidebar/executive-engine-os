@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V62</title>
+  <title>Executive Engine OS V63</title>
 
   <style>
     :root{
@@ -387,6 +387,92 @@
   .empty-examples{grid-template-columns:1fr}
 }
 
+
+/* V63 INTERNAL AUTOMATION */
+.automation-dashboard{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  max-width:880px;
+  margin:18px auto 0;
+}
+
+.auto-card{
+  border:1px solid #dbe3ef;
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  text-align:left;
+  box-shadow:0 8px 22px rgba(15,23,42,.045);
+}
+
+.auto-card strong{
+  display:block;
+  color:#0f172a;
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+.auto-card span{
+  display:block;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+  margin-bottom:10px;
+}
+
+.auto-card button{
+  height:36px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:10px;
+  padding:0 12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.auto-card button:hover{
+  background:#dbeafe;
+}
+
+.auto-badge{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid #bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:11px;
+  font-weight:950;
+  margin-bottom:10px;
+}
+
+.auto-panel-list{
+  display:grid;
+  gap:8px;
+}
+
+.auto-panel-item{
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  color:#334155;
+}
+
+.auto-panel-item strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+
+@media(max-width:900px){
+  .automation-dashboard{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 
@@ -439,7 +525,7 @@
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V62 · stable executive cockpit
+      V63 · internal automation
     </div>
   </aside>
 
@@ -453,6 +539,7 @@
           <span class="status-chip green" id="backendChip">● Backend</span>
           <span class="status-chip orange">CEO / COO Output</span>
           <span class="status-chip">Profile-Aware</span>
+          <span class="status-chip green">Internal Automation</span>
         </div>
 
         <div class="quick-row" id="quickRow">
@@ -552,6 +639,15 @@
     </section>
 
     <section class="panel">
+      <h3>Automation</h3>
+      <div class="auto-panel-list">
+        <div class="auto-panel-item"><strong>Daily Brief</strong>Internal generator ready</div>
+        <div class="auto-panel-item"><strong>Open Loops</strong>Thread + memory review ready</div>
+        <div class="auto-panel-item"><strong>Action Queue</strong>Priority sequencing ready</div>
+      </div>
+    </section>
+
+    <section class="panel">
       <h3>Memory Snapshot</h3>
       <div id="memoryList"><div class="empty">No local memory yet.</div></div>
       <div style="display:flex;gap:8px;margin-top:10px;">
@@ -567,6 +663,8 @@
       <button class="function-btn" data-function="strategy">Strategy Sprint</button>
       <button class="function-btn" data-function="risk">Check Risk</button>
       <button class="function-btn" data-function="profile">Your Profile</button>
+      <button class="function-btn" data-function="automation">Automation</button>
+      <button class="function-btn" data-function="openloops">Open Loops</button>
     </section>
   </aside>
 </div>
@@ -592,10 +690,10 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v62_threads";
-const ACTIVE_KEY = "eeos_v62_active_thread";
-const PROFILE_KEY = "eeos_v62_profile";
-const MEMORY_KEY = "eeos_v62_memory";
+const STORAGE_KEY = "eeos_v63_threads";
+const ACTIVE_KEY = "eeos_v63_active_thread";
+const PROFILE_KEY = "eeos_v63_profile";
+const MEMORY_KEY = "eeos_v63_memory";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -733,13 +831,71 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V62 Context",
+    "Executive Engine OS V63 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "User profile:",
     profileText() || "No profile saved.",
     "Recent thread:",
     recent || "No recent messages."
   ].join("\n");
+}
+
+function renderAutomationPanel(){
+  quickRow.style.display = "none";
+  pagePanel.innerHTML = `
+    <div class="automation-dashboard">
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Daily Brief Generator</strong>
+        <span>Creates priorities, risks, open loops, and the first move of the day from your current context.</span>
+        <button onclick="runAutomation('daily')">Run Daily Brief</button>
+      </div>
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Follow-Up Generator</strong>
+        <span>Turns decisions and conversations into next actions, messages, owners, and timing.</span>
+        <button onclick="runAutomation('followup')">Build Follow-Up</button>
+      </div>
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Open-Loop Detector</strong>
+        <span>Finds unresolved decisions, repeated risks, missed actions, and what needs closure.</span>
+        <button onclick="runAutomation('openloops')">Detect Open Loops</button>
+      </div>
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Meeting Prep Workflow</strong>
+        <span>Builds agenda, talking points, questions, decision required, and follow-up sequence.</span>
+        <button onclick="runAutomation('meeting')">Prepare Meeting</button>
+      </div>
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Action Queue Builder</strong>
+        <span>Extracts action items from current thread and organizes them by priority and sequence.</span>
+        <button onclick="runAutomation('queue')">Build Queue</button>
+      </div>
+      <div class="auto-card">
+        <div class="auto-badge">Internal Automation</div>
+        <strong>Weekly Operator Review</strong>
+        <span>Reviews memory, decisions, action patterns, bottlenecks, leverage, and next week focus.</span>
+        <button onclick="runAutomation('weekly')">Run Review</button>
+      </div>
+    </div>
+  `;
+}
+
+function runAutomation(type){
+  const automationPrompts = {
+    daily:"Run my internal Daily Brief. Use my profile, memory, and current thread. Return priorities, open loops, risks, meetings/follow-ups, what to ignore, and my first move today.",
+    followup:"Create an internal Follow-Up Plan from this thread. Include people to follow up with, message drafts, decisions to confirm, action owners, timing, and next move.",
+    openloops:"Detect open loops from my current thread and memory. Identify unresolved decisions, repeated blockers, risks, missing actions, and what needs closure first.",
+    meeting:"Create a Meeting Prep workflow. Include objective, agenda, talking points, hard questions, risks, decision needed, and follow-up plan.",
+    queue:"Build my Execution Queue from this thread and memory. Organize actions by priority, owner, sequence, time horizon, and first action.",
+    weekly:"Run a Weekly Operator Review. Identify wins, failures, repeated patterns, open loops, leverage points, risk, and next week operating plan."
+  };
+
+  loadPrompt(automationPrompts[type] || automationPrompts.daily, "automation");
+  send();
 }
 
 function setPage(page, mode){
@@ -755,6 +911,8 @@ function setPage(page, mode){
 
   if(page === "profile"){
     renderProfilePanel();
+  }else if(page === "automation"){
+    renderAutomationPanel();
   }else{
     pagePanel.innerHTML = "";
     quickRow.style.display = "";
@@ -1023,9 +1181,12 @@ function handleFunction(type){
     meeting:["Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.","meeting"],
     strategy:["Build a strategy sprint. Define objective, leverage, sequence, risks, and first 5 moves.","strategy"],
     risk:["Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.","risk_review"],
-    profile:["Open profile","personal"]
+    profile:["Open profile","personal"],
+    automation:["Open automation","execution"],
+    openloops:["Detect open loops from my current thread and memory. Identify unresolved decisions, repeated blockers, risks, missing actions, and what needs closure first.","automation"]
   };
   if(type === "profile"){setPage("profile","personal");return;}
+  if(type === "automation"){setPage("automation","execution");return;}
   loadPrompt(prompts[type][0],prompts[type][1]);
 }
 
@@ -1074,7 +1235,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V62",
+    app:"Executive Engine OS V63",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});

@@ -1,14 +1,15 @@
-Executive Engine OS V62
+Executive Engine OS V63
 
 Purpose:
-- Stability + polish on the clean V61 rebuild
-- Adds system status panel
-- Adds backend health chip
-- Adds Debug button
-- Adds Export thread button
-- Adds Copy Response button
-- Adds example cards under quick prompts
-- Keeps input visible and all links functional
+- Adds internal automation only
+- No external integrations
+- Adds Daily Brief generator
+- Adds Follow-Up generator
+- Adds Open-Loop Detector
+- Adds Meeting Prep workflow
+- Adds Action Queue Builder
+- Adds Weekly Operator Review
+- Adds backend internal automation endpoints
 
 Upload:
 - frontend/index.html
@@ -22,8 +23,7 @@ Deploy:
 4. Hard refresh: Ctrl + Shift + R
 
 Test:
-1. Click Test
-2. Type: What should I focus on today?
-3. Press Enter
-4. Click Copy Response
-5. Click Export
+1. Click Automation in sidebar
+2. Click Run Daily Brief
+3. Click Detect Open Loops
+4. Run: Build my execution queue from this thread

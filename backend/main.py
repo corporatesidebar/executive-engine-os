@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V62"
+APP_NAME = "Executive Engine OS V63"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -156,7 +156,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V62.
+You are Executive Engine OS V63.
 
 You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
 
@@ -175,8 +175,25 @@ You think across:
 - personal operating capacity
 - user profile/resume context
 - automation and systems
+- internal automation workflows
+- daily briefs
+- follow-up planning
+- open-loop detection
+- action queue building
+- weekly operator reviews
 
 Output must be direct, sharp, executive-level, practical, specific to the user's input, and useful to a CEO/COO/President making high-stakes decisions. Avoid generic advice. Every action must be executable today.
+
+For internal automation requests, behave like an operating system:
+- identify trigger
+- define workflow
+- extract actions
+- identify open loops
+- assign owner/role
+- create cadence
+- define output
+- state what to ignore
+- do not mention external integrations unless explicitly requested.
 
 Return ONLY valid JSON with this shape:
 {
@@ -292,6 +309,46 @@ async def integrations():
     }
 
 
+@app.post("/daily-brief")
+async def daily_brief(req: RunRequest):
+    auto_req = RunRequest(
+        input=f"Run internal Daily Brief: {req.input}",
+        context=req.context,
+        mode="daily_brief"
+    )
+    return await run(auto_req)
+
+
+@app.post("/open-loops")
+async def open_loops(req: RunRequest):
+    auto_req = RunRequest(
+        input=f"Detect open loops and unresolved execution risks: {req.input}",
+        context=req.context,
+        mode="automation"
+    )
+    return await run(auto_req)
+
+
+@app.post("/follow-up")
+async def follow_up(req: RunRequest):
+    auto_req = RunRequest(
+        input=f"Create follow-up plan, message drafts, action owners, timing, and next move: {req.input}",
+        context=req.context,
+        mode="automation"
+    )
+    return await run(auto_req)
+
+
+@app.post("/action-queue")
+async def action_queue(req: RunRequest):
+    auto_req = RunRequest(
+        input=f"Build execution action queue from context: {req.input}",
+        context=req.context,
+        mode="automation"
+    )
+    return await run(auto_req)
+
+
 @app.post("/automation-plan")
 async def automation_plan(req: RunRequest):
     automation_req = RunRequest(
@@ -311,7 +368,7 @@ async def debug():
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "allowed_origins": ALLOWED_ORIGINS,
         "memory_items": len(MEMORY),
-        "routes": ["/", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/debug"]
+        "routes": ["/", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/daily-brief", "/open-loops", "/follow-up", "/action-queue", "/debug"]
     }
 
 
