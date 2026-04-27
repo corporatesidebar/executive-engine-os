@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V56"
+APP_NAME = "Executive Engine OS V60"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -169,7 +169,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V56.
+You are Executive Engine OS V60.
 
 You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
 
@@ -393,6 +393,15 @@ async def health():
     }
 
 
+@app.get("/run")
+async def run_info():
+    return {
+        "ok": True,
+        "message": "Use POST /run with JSON body",
+        "example": {"input": "What should I focus on today?", "mode": "execution"}
+    }
+
+
 @app.post("/run")
 async def run(req: RunRequest):
     if not req.input or not req.input.strip():
@@ -436,6 +445,19 @@ async def automation_plan(req: RunRequest):
         mode="automation"
     )
     return await run(automation_req)
+
+
+@app.get("/debug")
+async def debug():
+    return {
+        "ok": True,
+        "service": APP_NAME,
+        "model": MODEL,
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+        "allowed_origins": ALLOWED_ORIGINS,
+        "memory_items": len(MEMORY),
+        "routes": ["/", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/debug"]
+    }
 
 
 @app.get("/memory")

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V56</title>
+<title>Executive Engine OS V60</title>
 
 <style>
 :root{
@@ -1539,11 +1539,913 @@ select{
   .composer-foot .btn{width:100% !important;}
 }
 
+
+/* V57 DATABRICKS-STYLE GLOBAL TOP NAV */
+.app{
+  display:grid !important;
+  grid-template-columns:252px minmax(0,1fr) 350px !important;
+  grid-template-rows:52px minmax(0,1fr) !important;
+  height:100vh !important;
+}
+
+.global-header{
+  grid-column:1 / -1;
+  grid-row:1;
+  height:52px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:0 14px;
+  min-width:0;
+  z-index:50;
+}
+
+.global-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:0 0 auto;
+  min-width:245px;
+}
+
+.hamburger{
+  width:34px;
+  height:34px;
+  border:0;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.hamburger:hover{
+  background:#f1f5f9;
+}
+
+.global-logo{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:12px;
+}
+
+.global-brand strong{
+  display:block;
+  font-size:14px;
+  color:#0f172a;
+  line-height:1.1;
+}
+
+.global-brand span{
+  display:block;
+  font-size:11px;
+  color:#64748b;
+  margin-top:2px;
+}
+
+.global-tabs{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-x:auto;
+  min-width:0;
+  flex:1;
+  height:100%;
+  padding:7px 0;
+}
+
+.global-tabs .top-tab{
+  border:1px solid transparent;
+  background:transparent;
+  color:#475569;
+  border-radius:999px;
+  padding:8px 11px;
+  cursor:pointer;
+  font-weight:850;
+  white-space:nowrap;
+  font-size:13px;
+}
+
+.global-tabs .top-tab:hover,
+.global-tabs .top-tab.active{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+}
+
+.global-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.sidebar{
+  grid-column:1;
+  grid-row:2;
+  height:calc(100vh - 52px) !important;
+}
+
+.main{
+  grid-column:2;
+  grid-row:2;
+  height:calc(100vh - 52px) !important;
+}
+
+.right{
+  grid-column:3;
+  grid-row:2;
+  height:calc(100vh - 52px) !important;
+}
+
+.hidden-topbar{
+  display:none !important;
+}
+
+.top-nav,
+.top-nav-raised{
+  display:none !important;
+}
+
+.brand{
+  display:none !important;
+}
+
+.nav-scroll{
+  padding-top:4px !important;
+}
+
+.center-stage{
+  min-height:calc(100vh - 150px) !important;
+}
+
+@media(max-width:1150px){
+  .app{
+    grid-template-columns:240px minmax(0,1fr) !important;
+  }
+  .right{
+    display:none !important;
+  }
+  .global-actions{
+    display:none;
+  }
+}
+
+@media(max-width:760px){
+  .app{
+    display:block !important;
+    height:auto !important;
+  }
+  .global-header{
+    position:sticky;
+    top:0;
+    overflow-x:auto;
+  }
+  .global-left{
+    min-width:auto;
+  }
+  .global-brand span{
+    display:none;
+  }
+  .sidebar{
+    display:none !important;
+  }
+  .main{
+    height:auto !important;
+    min-height:calc(100vh - 52px) !important;
+  }
+}
+
+
+/* V58 CLEAN SEARCH + LESS BUSY UI */
+.clean-global-header{
+  display:grid !important;
+  grid-template-columns:280px minmax(260px,680px) auto auto !important;
+  gap:14px !important;
+  padding:0 16px !important;
+}
+
+.global-search-wrap{
+  height:36px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid #cbd5e1;
+  background:#fff;
+  border-radius:7px;
+  padding:0 10px;
+  min-width:260px;
+  max-width:680px;
+  width:100%;
+  justify-self:center;
+}
+
+.search-icon{
+  color:#64748b;
+  font-size:18px;
+  line-height:1;
+}
+
+.global-search-input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:14px;
+  color:#0f172a;
+  font-family:inherit;
+}
+
+.search-shortcut{
+  color:#64748b;
+  font-size:12px;
+  white-space:nowrap;
+  border-left:1px solid #e2e8f0;
+  padding-left:8px;
+}
+
+.clean-tabs{
+  flex:0 1 auto !important;
+  overflow:visible !important;
+  gap:4px !important;
+}
+
+.clean-tabs .top-tab{
+  padding:7px 10px !important;
+}
+
+.more-tab{
+  background:#f8fafc !important;
+  border-color:#e2e8f0 !important;
+}
+
+.more-nav-menu{
+  position:fixed;
+  top:58px;
+  right:96px;
+  width:220px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(15,23,42,.18);
+  padding:8px;
+  z-index:80;
+  display:none;
+}
+
+.more-nav-menu.show{
+  display:grid;
+  gap:4px;
+}
+
+.more-nav-menu .top-tab{
+  width:100%;
+  justify-content:flex-start;
+  text-align:left;
+  border:1px solid transparent;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.more-nav-menu .top-tab:hover,
+.more-nav-menu .top-tab.active{
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+}
+
+.global-search-results{
+  position:fixed;
+  top:58px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(680px,calc(100vw - 40px));
+  max-height:430px;
+  overflow:auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(15,23,42,.18);
+  padding:10px;
+  z-index:90;
+  display:none;
+}
+
+.global-search-results.show{
+  display:block;
+}
+
+.search-result{
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+  border:1px solid transparent;
+  font-size:13px;
+  color:#334155;
+}
+
+.search-result:hover{
+  background:#f8fafc;
+  border-color:#edf2f7;
+}
+
+.search-result strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+
+/* reduce sidebar noise */
+.sidebar{
+  width:auto !important;
+}
+
+.nav-label{
+  margin-top:18px !important;
+  font-size:10px !important;
+  letter-spacing:.12em !important;
+  opacity:.75 !important;
+}
+
+.nav-btn{
+  min-height:38px !important;
+  padding:9px 10px !important;
+  font-size:13px !important;
+}
+
+.sidebar-help,
+.left-actions,
+.extra-tools{
+  display:none !important;
+}
+
+.exec-level,
+#servicesPanel,
+#automationPanel{
+  font-size:13px;
+}
+
+.panel{
+  padding:14px !important;
+}
+
+.function-grid .function-btn:nth-child(n+6){
+  display:none;
+}
+
+/* keep layout clean */
+.right{
+  width:330px !important;
+}
+
+@media(max-width:1250px){
+  .clean-global-header{
+    grid-template-columns:250px minmax(240px,1fr) auto !important;
+  }
+  .global-actions{
+    display:none !important;
+  }
+}
+
+@media(max-width:980px){
+  .clean-tabs .top-tab:not(.more-tab):nth-child(n+4){
+    display:none;
+  }
+  .clean-global-header{
+    grid-template-columns:220px minmax(220px,1fr) auto !important;
+  }
+}
+
+@media(max-width:760px){
+  .clean-global-header{
+    display:flex !important;
+    gap:8px !important;
+  }
+  .global-brand span{
+    display:none !important;
+  }
+  .global-search-wrap{
+    min-width:0;
+    flex:1;
+  }
+  .clean-tabs{
+    display:none !important;
+  }
+}
+
+
+/* V59 FUNCTIONAL STABILITY */
+.system-notice{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  background:#0f172a;
+  color:#fff;
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 18px 40px rgba(15,23,42,.25);
+  z-index:120;
+  display:none;
+}
+
+.system-notice.show{
+  display:block;
+}
+
+.btn:disabled,
+.small-btn:disabled,
+.function-btn:disabled{
+  opacity:.58;
+  cursor:not-allowed;
+}
+
+.live.offline{
+  background:#fef2f2 !important;
+  color:#b91c1c !important;
+  border-color:#fecaca !important;
+}
+
+.live.checking{
+  background:#fffbeb !important;
+  color:#92400e !important;
+  border-color:#fde68a !important;
+}
+
+.message-error{
+  border:1px solid #fecaca !important;
+  background:#fef2f2 !important;
+}
+
+.output-json-toggle{
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#475569;
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.output-json{
+  margin-top:10px;
+  white-space:pre-wrap;
+  background:#0f172a;
+  color:#e5e7eb;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+  overflow:auto;
+  max-height:260px;
+  display:none;
+}
+
+.output-json.show{
+  display:block;
+}
+
+.functional-checklist{
+  display:grid;
+  gap:8px;
+}
+
+.check-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+}
+
+.check-row strong{
+  color:#0f172a;
+}
+
+.check-ok{
+  color:#047857;
+  font-weight:900;
+}
+
+.check-bad{
+  color:#b91c1c;
+  font-weight:900;
+}
+
+
+/* V60 TOP NAV — MATCH SCREENSHOT STYLE */
+.app{
+  display:grid !important;
+  grid-template-columns:252px minmax(0,1fr) 350px !important;
+  grid-template-rows:52px minmax(0,1fr) !important;
+  height:100vh !important;
+  background:#f8fafc !important;
+}
+
+.databricks-header{
+  grid-column:1 / -1 !important;
+  grid-row:1 !important;
+  height:52px !important;
+  min-height:52px !important;
+  background:#f8fafc !important;
+  border-bottom:1px solid #e2e8f0 !important;
+  display:grid !important;
+  grid-template-columns:300px minmax(360px,680px) 300px !important;
+  align-items:center !important;
+  gap:18px !important;
+  padding:0 22px !important;
+  z-index:100 !important;
+}
+
+.db-left{
+  display:flex !important;
+  align-items:center !important;
+  gap:13px !important;
+  min-width:0 !important;
+}
+
+.db-menu{
+  width:32px !important;
+  height:32px !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#334155 !important;
+  border-radius:8px !important;
+  cursor:pointer !important;
+  font-size:18px !important;
+  display:grid !important;
+  place-items:center !important;
+}
+
+.db-menu:hover{ background:#e2e8f0 !important; }
+
+.db-mark{
+  width:28px !important;
+  height:28px !important;
+  border-radius:8px !important;
+  background:#ef4444 !important;
+  color:white !important;
+  display:grid !important;
+  place-items:center !important;
+  font-size:11px !important;
+  font-weight:950 !important;
+  letter-spacing:-.04em !important;
+}
+
+.db-brand{
+  color:#111827 !important;
+  font-size:20px !important;
+  font-weight:850 !important;
+  letter-spacing:-.035em !important;
+  white-space:nowrap !important;
+}
+
+.db-search{
+  justify-self:center !important;
+  width:100% !important;
+  max-width:680px !important;
+  height:38px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  background:#fff !important;
+  border:1px solid #cbd5e1 !important;
+  border-radius:5px !important;
+  padding:0 12px !important;
+  box-shadow:0 1px 1px rgba(15,23,42,.03) !important;
+}
+
+.db-search-icon{
+  color:#64748b !important;
+  font-size:20px !important;
+  line-height:1 !important;
+}
+
+.db-search-input{
+  width:100% !important;
+  border:0 !important;
+  outline:0 !important;
+  background:transparent !important;
+  color:#334155 !important;
+  font-size:15px !important;
+  font-family:inherit !important;
+}
+
+.db-search-input::placeholder{ color:#64748b !important; }
+
+.db-shortcut{
+  color:#64748b !important;
+  font-size:12px !important;
+  white-space:nowrap !important;
+}
+
+.db-right{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:12px !important;
+  min-width:0 !important;
+}
+
+.db-pill{
+  height:30px !important;
+  border:1px solid #dbeafe !important;
+  background:#eff6ff !important;
+  color:#075985 !important;
+  border-radius:999px !important;
+  padding:0 12px !important;
+  font-size:13px !important;
+  font-weight:750 !important;
+  cursor:pointer !important;
+}
+
+.db-pill:hover{ background:#dbeafe !important; }
+
+.db-spark{
+  width:32px !important;
+  height:32px !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#a855f7 !important;
+  border-radius:999px !important;
+  cursor:pointer !important;
+  font-size:18px !important;
+}
+
+.db-spark:hover{ background:#f3e8ff !important; }
+
+.db-avatar{
+  width:32px !important;
+  height:32px !important;
+  border-radius:999px !important;
+  background:#059669 !important;
+  color:white !important;
+  display:grid !important;
+  place-items:center !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+}
+
+.sidebar{
+  grid-column:1 !important;
+  grid-row:2 !important;
+  height:calc(100vh - 52px) !important;
+  border-right:1px solid #e2e8f0 !important;
+}
+
+.main{
+  grid-column:2 !important;
+  grid-row:2 !important;
+  height:calc(100vh - 52px) !important;
+}
+
+.right{
+  grid-column:3 !important;
+  grid-row:2 !important;
+  height:calc(100vh - 52px) !important;
+}
+
+.hidden-topbar,
+.top-nav,
+.top-nav-raised,
+.global-tabs,
+.clean-tabs{
+  display:none !important;
+}
+
+.brand{
+  display:none !important;
+}
+
+/* menu from top-right spark */
+.db-more-menu{
+  position:fixed !important;
+  top:58px !important;
+  right:66px !important;
+  width:230px !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:16px !important;
+  box-shadow:0 24px 70px rgba(15,23,42,.18) !important;
+  padding:8px !important;
+  z-index:130 !important;
+  display:none !important;
+}
+
+.db-more-menu.show{
+  display:grid !important;
+  gap:4px !important;
+}
+
+.db-more-menu .top-tab{
+  width:100% !important;
+  text-align:left !important;
+  border:1px solid transparent !important;
+  background:#fff !important;
+  color:#334155 !important;
+  border-radius:10px !important;
+  padding:10px 12px !important;
+  cursor:pointer !important;
+  font-weight:800 !important;
+}
+
+.db-more-menu .top-tab:hover,
+.db-more-menu .top-tab.active{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border-color:#bfdbfe !important;
+}
+
+/* search result dropdown centered under top search */
+.global-search-results{
+  position:fixed !important;
+  top:58px !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:min(680px,calc(100vw - 40px)) !important;
+  max-height:430px !important;
+  overflow:auto !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:16px !important;
+  box-shadow:0 24px 70px rgba(15,23,42,.18) !important;
+  padding:10px !important;
+  z-index:140 !important;
+  display:none !important;
+}
+
+.global-search-results.show{ display:block !important; }
+
+.search-result{
+  padding:12px !important;
+  border-radius:12px !important;
+  cursor:pointer !important;
+  border:1px solid transparent !important;
+  font-size:13px !important;
+  color:#334155 !important;
+}
+
+.search-result:hover{
+  background:#f8fafc !important;
+  border-color:#edf2f7 !important;
+}
+
+.search-result strong{
+  display:block !important;
+  color:#0f172a !important;
+  margin-bottom:4px !important;
+}
+
+/* Make left area less busy under Databricks header */
+.sidebar-help,
+.left-actions,
+.extra-tools{
+  display:none !important;
+}
+
+.nav-scroll{
+  padding-top:10px !important;
+}
+
+.nav-label{
+  margin-top:18px !important;
+  font-size:10px !important;
+  letter-spacing:.12em !important;
+  opacity:.72 !important;
+}
+
+.nav-btn{
+  min-height:38px !important;
+  padding:9px 10px !important;
+  font-size:13px !important;
+}
+
+.center-stage{
+  min-height:calc(100vh - 150px) !important;
+}
+
+@media(max-width:1200px){
+  .databricks-header{
+    grid-template-columns:250px minmax(300px,1fr) 170px !important;
+  }
+  .db-pill:first-child{display:none !important;}
+}
+
+@media(max-width:980px){
+  .app{
+    grid-template-columns:230px minmax(0,1fr) !important;
+  }
+  .right{
+    display:none !important;
+  }
+  .databricks-header{
+    grid-template-columns:220px minmax(240px,1fr) 110px !important;
+  }
+  .db-brand{
+    font-size:18px !important;
+  }
+  .db-shortcut{
+    display:none !important;
+  }
+}
+
+@media(max-width:760px){
+  .app{
+    display:block !important;
+    height:auto !important;
+  }
+  .databricks-header{
+    position:sticky !important;
+    top:0 !important;
+    display:flex !important;
+    gap:8px !important;
+    padding:0 10px !important;
+  }
+  .db-brand{
+    display:none !important;
+  }
+  .db-search{
+    min-width:0 !important;
+    flex:1 !important;
+  }
+  .db-right{
+    gap:6px !important;
+  }
+  .db-pill{
+    display:none !important;
+  }
+  .sidebar{
+    display:none !important;
+  }
+  .main{
+    height:auto !important;
+    min-height:calc(100vh - 52px) !important;
+  }
+}
+
 </style>
 </head>
 
 <body>
 <div class="app">
+  <header class="global-header databricks-header">
+    <div class="db-left">
+      <button class="db-menu" type="button" aria-label="Menu">☰</button>
+      <div class="db-mark">EE</div>
+      <div class="db-brand">Executive Engine</div>
+    </div>
+
+    <div class="db-search">
+      <span class="db-search-icon">⌕</span>
+      <input id="globalSearch" class="db-search-input" placeholder="Search chats, decisions, profile, actions, and more..." />
+      <span class="db-shortcut">⌘ + P</span>
+    </div>
+
+    <div class="db-right">
+      <button id="testBackendGlobal" class="db-pill">Test</button>
+      <button id="newTopGlobal" class="db-pill">New</button>
+      <button id="moreNavBtn" class="db-spark" type="button">✦</button>
+      <div class="db-avatar">A</div>
+    </div>
+  </header>
+
+  <div id="moreNavMenu" class="more-nav-menu db-more-menu">
+    <button class="top-tab active" data-page="command" data-mode="execution">Command</button>
+    <button class="top-tab" data-page="daily" data-mode="daily_brief">Plan Today</button>
+    <button class="top-tab" data-page="decisions" data-mode="decision">Make Decision</button>
+    <button class="top-tab" data-page="meetings" data-mode="meeting">Meetings</button>
+    <button class="top-tab" data-page="strategy" data-mode="strategy">Strategy</button>
+    <button class="top-tab" data-page="risk" data-mode="risk_review">Risk</button>
+    <button class="top-tab" data-page="personal" data-mode="personal">Personal</button>
+    <button class="top-tab" data-page="capital" data-mode="strategy">Capital</button>
+    <button class="top-tab" data-page="sales" data-mode="strategy">Sales</button>
+    <button class="top-tab" data-page="ops" data-mode="execution">Operations</button>
+    <button class="top-tab" data-page="automation" data-mode="execution">Automation</button>
+    <button class="top-tab" data-page="services" data-mode="execution">Systems</button>
+    <button class="top-tab" data-page="profile" data-mode="personal">Your Profile</button>
+  </div>
+
+  <div id="searchResults" class="global-search-results"></div>
+
   <aside class="sidebar">
     <div class="brand">
       <div class="logo">EE</div>
@@ -1594,14 +2496,13 @@ select{
 
     <div class="mode-card">
       <strong>Executive Mode</strong>
-      <span>V56 · input fixed</span>
+      <span>V60 · Databricks-style top nav</span>
     </div>
   </aside>
 
   <main class="main">
-    <div class="topbar compact-topbar">
+    <div class="topbar compact-topbar hidden-topbar">
       <div id="threadTitle" class="thread-title-mini">Executive Engine OS</div>
-
       <div class="top-actions">
         <button id="exportTop" class="small-btn">Export</button>
         <button id="renameTop" class="small-btn">Rename</button>
@@ -1609,25 +2510,6 @@ select{
         <button id="newTop" class="small-btn">New</button>
         <div class="live"><span class="dot"></span><span id="healthText">LIVE</span></div>
       </div>
-    </div>
-
-    <div class="top-nav top-nav-raised">
-      <div class="top-nav-left">
-        <button class="top-tab active" data-page="command" data-mode="execution">Command</button>
-        <button class="top-tab" data-page="daily" data-mode="daily_brief">Plan Today</button>
-        <button class="top-tab" data-page="decisions" data-mode="decision">Make Decision</button>
-        <button class="top-tab" data-page="meetings" data-mode="meeting">Meetings</button>
-        <button class="top-tab" data-page="strategy" data-mode="strategy">Strategy</button>
-        <button class="top-tab" data-page="risk" data-mode="risk_review">Risk</button>
-        <button class="top-tab" data-page="personal" data-mode="personal">Personal</button>
-        <button class="top-tab" data-page="capital" data-mode="strategy">Capital</button>
-        <button class="top-tab" data-page="sales" data-mode="strategy">Sales</button>
-        <button class="top-tab" data-page="ops" data-mode="execution">Ops</button>
-        <button class="top-tab" data-page="automation" data-mode="execution">Automation</button>
-        <button class="top-tab" data-page="services" data-mode="execution">Systems</button>
-        <button class="top-tab" data-page="profile" data-mode="personal">Your Profile</button>
-      </div>
-      <div class="top-nav-right"></div>
     </div>
 
     <div class="chat-wrap">
@@ -1793,11 +2675,11 @@ select{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v56_threads";
-const ACTIVE_THREAD_KEY = "eeos_v56_active_thread";
-const MEMORY_KEY = "eeos_v56_local_memory";
-const DRAFT_KEY = "eeos_v56_draft";
-const PROFILE_KEY = "eeos_v56_user_profile";
+const STORAGE_KEY = "eeos_v60_threads";
+const ACTIVE_THREAD_KEY = "eeos_v60_active_thread";
+const MEMORY_KEY = "eeos_v60_local_memory";
+const DRAFT_KEY = "eeos_v60_draft";
+const PROFILE_KEY = "eeos_v60_user_profile";
 
 const input = document.getElementById("input");
 const modeEl = document.getElementById("mode");
@@ -1819,6 +2701,15 @@ const composer = document.getElementById("composer");
 const centerComposerMount = document.getElementById("centerComposerMount");
 const threadTitle = document.getElementById("threadTitle");
 const newTop = document.getElementById("newTop");
+const newTopGlobal = document.getElementById("newTopGlobal");
+const exportTopGlobal = document.getElementById("exportTopGlobal");
+const healthTextGlobal = document.getElementById("healthTextGlobal");
+const testBackendGlobal = document.getElementById("testBackendGlobal");
+const systemNotice = document.getElementById("systemNotice");
+const globalSearch = document.getElementById("globalSearch");
+const searchResults = document.getElementById("searchResults");
+const moreNavBtn = document.getElementById("moreNavBtn");
+const moreNavMenu = document.getElementById("moreNavMenu");
 const renameTop = document.getElementById("renameTop");
 const duplicateTop = document.getElementById("duplicateTop");
 const exportTop = document.getElementById("exportTop");
@@ -1887,6 +2778,19 @@ let activePage = localStorage.getItem("eeos_v45_active_page") || "command";
 
 if(!activeThreadId || !threads[activeThreadId]){
   activeThreadId = createThread();
+}
+
+function apiUrl(path){
+  return API.replace(/\/$/, "") + path;
+}
+
+function notifySystem(message){
+  if(systemNotice){
+    systemNotice.textContent = message;
+    systemNotice.classList.add("show");
+    setTimeout(() => systemNotice.classList.remove("show"), 2600);
+  }
+  if(typeof showToast === "function") showToast(message);
 }
 
 function showToast(message){
@@ -3024,13 +3928,18 @@ function renderAutomationPanel(){
 
 async function loadServices(){
   try{
-    const res = await fetch(API + "/integrations");
+    const res = await fetch(apiUrl("/integrations"));
     if(!res.ok) throw new Error("services unavailable");
     const data = await res.json();
     renderServices(data);
   }catch{
     renderServices(null);
   }
+}
+
+function toggleJson(idx){
+  const el = document.getElementById("json-" + idx);
+  if(el) el.classList.toggle("show");
 }
 
 function render(){
@@ -3138,7 +4047,7 @@ function buildRequestContext(){
   const currentMessages = getMessages().slice(-8);
 
   return [
-    `Executive Engine OS V56 Context`,
+    `Executive Engine OS V60 Context`,
     `Thread: ${current?.title || "New Chat"}`,
     `Current Page: ${activePage}`,
     `Current Mode: ${labelMode(modeEl.value)}`,
@@ -3181,32 +4090,30 @@ function buildRequestContext(){
 }
 
 async function send(){
-  const text = input.value.trim();
-  const mode = modeEl.value;
-
+  const text = (input?.value || "").trim();
   if(!text){
-    showError("Enter something first.");
+    notifySystem("Enter something first");
     return;
   }
 
-  clearError();
-
+  const mode = modeEl?.value || "execution";
   const routed = smartRoutePrompt(text);
-  if(routed[0] !== activePage || routed[1] !== modeEl.value){
+
+  if(routed[0] !== activePage || routed[1] !== mode){
     setPage(routed[0], routed[1]);
   }
 
   const messages = getMessages();
 
   if(threads[activeThreadId].title === "New Chat"){
-    threads[activeThreadId].title = text.slice(0,42);
+    threads[activeThreadId].title = text.slice(0, 48);
   }
 
   messages.push({
     role:"user",
     text,
-    mode,
-    ts:new Date().toISOString()
+    mode:modeEl?.value || "execution",
+    createdAt:new Date().toISOString()
   });
 
   setMessages(messages);
@@ -3214,82 +4121,113 @@ async function send(){
   localStorage.removeItem(DRAFT_KEY);
   render();
 
-  const loadingIndex = messages.length;
-
-  messages.push({
-    role:"assistant",
-    html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Thinking...</div></div></div>`,
-    data:{},
-    ts:new Date().toISOString()
+  const buttons = document.querySelectorAll(".run, #runBtn, [data-run]");
+  buttons.forEach(b => {
+    b.disabled = true;
+    if(b.textContent && b.textContent.toLowerCase().includes("run")) b.dataset.oldText = b.textContent;
+    if(b.dataset.oldText) b.textContent = "Running...";
   });
 
-  setMessages(messages);
-  render();
-
-  runBtn.disabled = true;
-  runBtn.textContent = "Running...";
-
   try{
-    const res = await fetch(API + "/run", {
+    const payload = {
+      input:text,
+      context:buildRequestContext(),
+      mode:modeEl?.value || "execution"
+    };
+
+    const res = await fetch(apiUrl("/run"), {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        input:text,
-        context:buildRequestContext(),
-        mode:mode || "execution"
-      })
+      body:JSON.stringify(payload)
     });
 
-    if(!res.ok){
-      throw new Error("Backend returned " + res.status);
+    let data;
+    const raw = await res.text();
+
+    try{
+      data = JSON.parse(raw);
+    }catch(parseErr){
+      throw new Error("Backend returned non-JSON response");
     }
 
-    const data = await res.json();
+    if(!res.ok){
+      throw new Error(data.detail || data.error || "Backend error " + res.status);
+    }
 
-    streamAssistant(loadingIndex, data);
-    loadMemory();
+    const clean = normalizeOutput(data);
 
-  }catch(e){
-    console.error(e);
-
-    const errorData = {
-      what_to_do_now:"Backend connection failed.",
-      decision:"Fix the API connection before continuing.",
-      next_move:"Check backend CORS, URL, and logs.",
-      actions:["Open backend /health","Test POST /run in /docs","Check browser console"],
-      risk:e.message,
-      priority:"high"
-    };
-
-    const current = getMessages();
-
-    current[loadingIndex] = {
+    messages.push({
       role:"assistant",
-      data:errorData,
-      html:renderAssistant(errorData)
-    };
+      data:clean,
+      createdAt:new Date().toISOString()
+    });
 
-    setMessages(current);
-    showError("Backend request failed. See console for details.");
+    setMessages(messages);
+    extractLocalMemory();
     render();
+    notifySystem("Response ready");
+  }catch(err){
+    console.error("Run failed:", err);
+
+    const fallback = normalizeOutput({
+      what_to_do_now:"Fix the system connection before adding more features.",
+      decision:"The frontend is loaded, but the backend request failed.",
+      next_move:"Run the backend health check and verify the /run endpoint.",
+      actions:[
+        "Open backend /health",
+        "Open backend /docs",
+        "Test POST /run from docs",
+        "Check Render backend logs",
+        "Confirm frontend API URL points to the backend service"
+      ],
+      risk:"If this connection is unstable, new UI features will appear broken even when the backend exists.",
+      priority:"critical",
+      reality_check:String(err.message || err),
+      leverage:"Stabilize API connectivity first.",
+      hidden_opportunity:"Once /run is stable, all pages and workflows become immediately useful.",
+      owner:"System owner",
+      operating_cadence:"Check after every deploy",
+      key_metric:"Successful POST /run response",
+      decision_type:"Operating",
+      urgency:"critical"
+    });
+
+    messages.push({
+      role:"assistant",
+      data:fallback,
+      error:true,
+      createdAt:new Date().toISOString()
+    });
+
+    setMessages(messages);
+    render();
+    notifySystem("Backend request failed");
   }finally{
-    runBtn.disabled = false;
-    runBtn.textContent = "Run Engine";
+    buttons.forEach(b => {
+      b.disabled = false;
+      if(b.dataset.oldText){
+        b.textContent = b.dataset.oldText;
+        delete b.dataset.oldText;
+      }
+    });
+    input.focus();
   }
 }
 
 async function health(){
   try{
-    const res = await fetch(API + "/health");
+    const res = await fetch(apiUrl("/health"));
     healthText.textContent = res.ok ? "LIVE" : "CHECK";
+    if(healthTextGlobal) healthTextGlobal.textContent = res.ok ? "LIVE" : "CHECK";
   }catch{
     healthText.textContent = "OFFLINE";
+    if(healthTextGlobal) healthTextGlobal.textContent = "OFFLINE";
   }
 }
 
 async function loadMemory(){
   try{
-    const res = await fetch(API + "/memory");
+    const res = await fetch(apiUrl("/memory"));
 
     if(!res.ok){
       throw new Error("memory unavailable");
@@ -3313,11 +4251,66 @@ async function loadMemory(){
 }
 
 function runGlobalSearch(){
-  return;
+  if(!globalSearch || !searchResults) return;
+
+  const q = (globalSearch.value || "").trim().toLowerCase();
+
+  if(!q){
+    searchResults.classList.remove("show");
+    searchResults.innerHTML = "";
+    return;
+  }
+
+  const results = [];
+
+  Object.values(threads).forEach(t => {
+    (t.messages || []).forEach((m, index) => {
+      const text = [
+        t.title || "",
+        m.text || "",
+        m.data?.what_to_do_now || "",
+        m.data?.decision || "",
+        m.data?.next_move || "",
+        Array.isArray(m.data?.actions) ? m.data.actions.join(" ") : "",
+        m.data?.risk || "",
+        m.data?.priority || ""
+      ].join(" ").toLowerCase();
+
+      if(text.includes(q)){
+        results.push({
+          threadId:t.id,
+          threadTitle:t.title || "New Chat",
+          index,
+          role:m.role,
+          preview:m.text || m.data?.decision || m.data?.next_move || "Matched response"
+        });
+      }
+    });
+  });
+
+  searchResults.innerHTML = results.length
+    ? results.slice(0,20).map(r => `
+      <div class="search-result" onclick="openSearchResult('${r.threadId}', ${r.index})">
+        <strong>${esc(r.threadTitle)} · ${esc(r.role)}</strong>
+        ${esc(r.preview).slice(0,180)}
+      </div>
+    `).join("")
+    : `<div class="search-result"><strong>No results</strong>Try another search.</div>`;
+
+  searchResults.classList.add("show");
 }
 
 function openSearchResult(threadId, index){
-  return;
+  activeThreadId = threadId;
+  saveThreads();
+  render();
+  if(searchResults) searchResults.classList.remove("show");
+  if(globalSearch) globalSearch.value = "";
+
+  setTimeout(() => {
+    const el = document.getElementById("msg-" + index);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 100);
 }
 
 function fillFunctionPrompt(type){
@@ -3351,7 +4344,7 @@ function fillFunctionPrompt(type){
 
 function exportAllThreads(){
   const lines = [];
-  lines.push("Executive Engine OS V56 Export — All Threads");
+  lines.push("Executive Engine OS V60 Export — All Threads");
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push("");
 
@@ -3387,7 +4380,7 @@ function exportCurrentThread(){
   const lines = [];
 
   lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V56`);
+  lines.push(`Version: V60`);
   lines.push(`Thread: ${t.title}`);
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push(``);
@@ -3431,7 +4424,12 @@ document.querySelectorAll(".nav-btn").forEach(btn => {
 });
 
 document.querySelectorAll(".top-tab").forEach(btn => {
-  btn.addEventListener("click", () => setPage(btn.dataset.page, btn.dataset.mode));
+  if(btn.id === "moreNavBtn") return;
+  btn.addEventListener("click", () => {
+    if(!btn.dataset.page) return;
+    setPage(btn.dataset.page, btn.dataset.mode);
+    if(moreNavMenu) moreNavMenu.classList.remove("show");
+  });
 });
 
 document.querySelectorAll(".quick-pill").forEach(btn => {
@@ -3448,38 +4446,82 @@ clearBtn.addEventListener("click", () => {
   clearError();
 });
 
-newTop.addEventListener("click", () => {
+if(newTop) newTop.addEventListener("click", () => {
   createThread();
   render();
   input.focus();
 });
 
-newThreadLeft.addEventListener("click", () => {
+if(newTopGlobal){
+  newTopGlobal.addEventListener("click", () => {
+    createThread();
+    render();
+    input.focus();
+  });
+}
+
+if(exportTopGlobal){
+  exportTopGlobal.addEventListener("click", exportCurrentThread);
+}
+
+if(testBackendGlobal){
+  testBackendGlobal.addEventListener("click", async () => {
+    const ok = await checkHealth();
+    if(ok){
+      notifySystem("Backend is live");
+    }else{
+      notifySystem("Backend offline or sleeping");
+    }
+  });
+}
+
+if(globalSearch && searchResults){
+  globalSearch.addEventListener("input", runGlobalSearch);
+  globalSearch.addEventListener("focus", runGlobalSearch);
+}
+
+if(moreNavBtn && moreNavMenu){
+  moreNavBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    moreNavMenu.classList.toggle("show");
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if(searchResults && globalSearch && !searchResults.contains(e.target) && e.target !== globalSearch){
+    searchResults.classList.remove("show");
+  }
+  if(moreNavMenu && moreNavBtn && !moreNavMenu.contains(e.target) && e.target !== moreNavBtn){
+    moreNavMenu.classList.remove("show");
+  }
+});
+
+if(newThreadLeft) newThreadLeft.addEventListener("click", () => {
   createThread();
   render();
   input.focus();
 });
 
-duplicateTop.addEventListener("click", duplicateThread);
+if(duplicateTop) duplicateTop.addEventListener("click", duplicateThread);
 
-dailyRunLeft.addEventListener("click", () => {
+if(dailyRunLeft) dailyRunLeft.addEventListener("click", () => {
   loadPrompt("Run my day. Give me the highest priority, what to ignore, top risks, execution queue, and one immediate next move.", "daily_brief");
   send();
 });
 
-weeklyPlanLeft.addEventListener("click", () => {
+if(weeklyPlanLeft) weeklyPlanLeft.addEventListener("click", () => {
   loadPrompt("Build my weekly execution plan. Give me top 3 priorities, sequence, risks, meetings to prepare for, what to ignore, and the first action for today.", "strategy");
   send();
 });
 
-personalResetLeft.addEventListener("click", () => {
+if(personalResetLeft) personalResetLeft.addEventListener("click", () => {
   loadPrompt("Help me organize my personal life today. Give me the top priorities, what to ignore, one immediate action, and a realistic sequence.", "personal");
   send();
 });
 
-clearAllLeft.addEventListener("click", clearAllThreads);
+if(clearAllLeft) clearAllLeft.addEventListener("click", clearAllThreads);
 
-refreshMemoryLeft.addEventListener("click", () => {
+if(refreshMemoryLeft) refreshMemoryLeft.addEventListener("click", () => {
   extractLocalMemory();
   renderLocalMemory();
   loadMemory();
@@ -3499,11 +4541,11 @@ clearMemoryBtn.addEventListener("click", () => {
   showToast("Local memory cleared");
 });
 
-renameTop.addEventListener("click", () => renameThread(activeThreadId));
+if(renameTop) renameTop.addEventListener("click", () => renameThread(activeThreadId));
 
-exportTop.addEventListener("click", exportCurrentThread);
-exportLeft.addEventListener("click", exportCurrentThread);
-exportAllLeft.addEventListener("click", exportAllThreads);
+if(exportTop) exportTop.addEventListener("click", exportCurrentThread);
+if(exportLeft) exportLeft.addEventListener("click", exportCurrentThread);
+if(exportAllLeft) exportAllLeft.addEventListener("click", exportAllThreads);
 
 viewAll.addEventListener("click", () => renderArchive(true));
 threadSearch.addEventListener("input", () => renderArchive(true));
@@ -3588,7 +4630,7 @@ document.addEventListener("keydown", (e) => {
 
   if((e.ctrlKey || e.metaKey) && key === "f"){
     e.preventDefault();
-    if(threadSearch) threadSearch.focus();
+    if(globalSearch) globalSearch.focus(); else if(threadSearch) threadSearch.focus();
   }
 
   if((e.ctrlKey || e.metaKey) && key === "l"){
@@ -3606,5 +4648,6 @@ window.onload = () => {
   input.focus();
 };
 </script>
+<div id="systemNotice" class="system-notice"></div>
 </body>
 </html>
