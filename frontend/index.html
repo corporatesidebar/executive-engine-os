@@ -4,68 +4,569 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Executive Engine OS</title>
+
 <style>
 :root{
-  --nav:#07152d; --bg:#f5f7fb; --card:#fff; --line:#e2e8f0; --text:#0f172a;
-  --muted:#64748b; --blue:#2563eb; --blue2:#1d4ed8; --orange:#ff6a1a; --green:#16a34a;
+  --nav:#07152d;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+  --blue:#2563eb;
+  --blue2:#1d4ed8;
+  --orange:#ff6a1a;
+  --green:#16a34a;
+  --red:#dc2626;
 }
+
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-.app{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;height:100vh}
-.sidebar{background:linear-gradient(180deg,var(--nav),#040b18);color:#e5edf9;padding:18px 14px;display:flex;flex-direction:column}
-.brand{display:flex;align-items:center;gap:12px;padding:8px 8px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
-.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--blue),#38bdf8);display:grid;place-items:center;color:#fff;font-weight:900}
-.brand h1{margin:0;font-size:15px;color:#fff}.brand p{margin:3px 0 0;color:#9fb1cf;font-size:12px}
-.nav-scroll{flex:1;overflow:auto;padding-top:18px}.nav-label{color:#7f92b4;font-size:11px;text-transform:uppercase;letter-spacing:.13em;margin:16px 10px 8px;font-weight:850}
-.nav-btn{width:100%;border:0;background:transparent;color:#c9d7ef;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;font-size:14px;text-align:left}
-.nav-btn:hover,.nav-btn.active{background:rgba(37,99,235,.22);color:#fff}.nav-ico{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);font-size:12px}.nav-btn.active .nav-ico{background:linear-gradient(135deg,var(--blue),#38bdf8)}
-.mode-card{margin-top:14px;padding:14px;border-radius:16px;border:1px solid rgba(147,197,253,.18);background:linear-gradient(145deg,rgba(37,99,235,.18),rgba(56,189,248,.07))}
-.mode-card strong{display:block;color:#fff;font-size:13px}.mode-card span{display:block;color:#9fb1cf;font-size:12px;margin-top:4px}
-.main{min-width:0;display:flex;flex-direction:column;height:100vh;background:#f8fafc}
-.topbar{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex:0 0 auto}
-.topbar h2{margin:0;font-size:18px;letter-spacing:-.03em}.topbar span{display:block;margin-top:3px;color:var(--muted);font-size:12px}
-.live{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;font-size:12px;font-weight:900}.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-.chat-wrap{flex:1;min-height:0;display:flex;flex-direction:column}.chat{flex:1;overflow:auto;padding:26px 28px 18px}
-.welcome{max-width:820px;margin:0 auto 20px;text-align:center;padding:28px 18px}.welcome h1{margin:0 0 10px;font-size:38px;letter-spacing:-.055em;line-height:1.06}.welcome p{margin:0 auto;max-width:650px;color:var(--muted);font-size:16px;line-height:1.55}
-.message{max-width:920px;margin:0 auto 16px;display:flex}.message.user{justify-content:flex-end}.message.assistant{justify-content:flex-start}
-.bubble{max-width:min(780px,90%);border-radius:18px;padding:15px 17px;font-size:15px;line-height:1.55;word-break:break-word}.user .bubble{background:var(--blue);color:#fff;border-bottom-right-radius:6px;box-shadow:0 10px 24px rgba(37,99,235,.18)}.assistant .bubble{background:#fff;border:1px solid var(--line);color:var(--text);border-bottom-left-radius:6px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
-.response-grid{display:grid;gap:10px}.response-card{background:#f8fafc;border:1px solid #edf2f7;border-radius:14px;padding:12px}.response-card.primary{background:linear-gradient(135deg,#fff7ed,#ffffff);border-color:#fed7aa}.response-label{color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.11em;font-weight:950;margin-bottom:5px}.response-value{color:#0f172a;font-weight:620}.response-value ol{margin:0;padding-left:20px}.response-value li{margin:5px 0}.priority-pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-weight:900}
-.error-box{display:none;max-width:920px;margin:0 auto 12px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:700}.error-box.show{display:block}
-.composer-area{flex:0 0 auto;padding:16px 28px 22px;background:linear-gradient(180deg,rgba(248,250,252,0),#f8fafc 22%)}.composer{max-width:920px;margin:0 auto;background:#fff;border:1px solid #dbe4f0;box-shadow:0 18px 48px rgba(15,23,42,.10);border-radius:22px;overflow:hidden}
-textarea{width:100%;min-height:74px;max-height:180px;resize:vertical;border:0;outline:0;padding:18px 20px;font-size:15px;line-height:1.5;font-family:inherit}.composer-foot{border-top:1px solid #eef2f7;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px}.left-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-select{border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:9px 11px;font-weight:850;outline:0}.hint{color:#94a3b8;font-size:12px;font-weight:650}.btn{border:0;border-radius:12px;padding:11px 16px;cursor:pointer;font-weight:900}.run{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;min-width:120px;box-shadow:0 10px 20px rgba(37,99,235,.22)}.run:disabled{opacity:.65;cursor:not-allowed}.clear{background:#fff;border:1px solid var(--line);color:#475569}
-.right{background:#fff;border-left:1px solid var(--line);padding:18px;overflow:auto}.panel{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 8px 20px rgba(15,23,42,.04)}.panel h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:#64748b}.current-mode{display:inline-flex;padding:8px 10px;border-radius:999px;background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;font-weight:900}.item{padding:10px;border-radius:12px;background:#f8fafc;border:1px solid #edf2f7;margin-bottom:8px;font-size:13px;color:#334155;cursor:pointer}.item strong{display:block;color:#0f172a;margin-bottom:3px}.empty{color:#94a3b8;font-size:13px;line-height:1.45}
-@media(max-width:1150px){.app{grid-template-columns:230px 1fr}.right{display:none}}
-@media(max-width:760px){body{overflow:auto}.app{display:block;height:auto}.sidebar{display:none}.main{height:auto;min-height:100vh}.topbar{padding:14px;height:auto}.chat{padding:18px 14px}.welcome h1{font-size:30px}.composer-area{padding:12px 14px 16px}.composer-foot{align-items:stretch;flex-direction:column}.left-controls{justify-content:space-between}.btn{width:100%}}
+
+html,body{
+  height:100%;
+  margin:0;
+}
+
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+
+.app{
+  display:grid;
+  grid-template-columns:250px minmax(0,1fr) 330px;
+  height:100vh;
+}
+
+/* LEFT SIDEBAR */
+
+.sidebar{
+  background:linear-gradient(180deg,var(--nav),#040b18);
+  color:#e5edf9;
+  padding:18px 14px;
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 8px 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  background:linear-gradient(135deg,var(--blue),#38bdf8);
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-weight:900;
+}
+
+.brand h1{
+  margin:0;
+  font-size:15px;
+  color:#fff;
+}
+
+.brand p{
+  margin:3px 0 0;
+  color:#9fb1cf;
+  font-size:12px;
+}
+
+.nav-scroll{
+  flex:1;
+  overflow:auto;
+  padding-top:18px;
+}
+
+.nav-label{
+  color:#7f92b4;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  margin:16px 10px 8px;
+  font-weight:850;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#c9d7ef;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:14px;
+  text-align:left;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:rgba(37,99,235,.22);
+  color:#fff;
+}
+
+.nav-ico{
+  width:24px;
+  height:24px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.07);
+  font-size:12px;
+}
+
+.mode-card{
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(147,197,253,.18);
+  background:linear-gradient(145deg,rgba(37,99,235,.18),rgba(56,189,248,.07));
+}
+
+.mode-card strong{
+  display:block;
+  color:#fff;
+  font-size:13px;
+}
+
+.mode-card span{
+  display:block;
+  color:#9fb1cf;
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* MAIN */
+
+.main{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  background:#f8fafc;
+}
+
+.topbar{
+  height:64px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+}
+
+.topbar h2{
+  margin:0;
+  font-size:18px;
+}
+
+.topbar span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.live{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:#ecfdf5;
+  color:#047857;
+  border:1px solid #bbf7d0;
+  font-size:12px;
+  font-weight:900;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+.chat-wrap{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat{
+  flex:1;
+  overflow:auto;
+  padding:16px 28px 8px;
+}
+
+.welcome{
+  max-width:820px;
+  margin:0 auto 10px;
+  text-align:center;
+  padding:18px;
+}
+
+.welcome h1{
+  margin:0 0 10px;
+  font-size:36px;
+  letter-spacing:-.04em;
+}
+
+.welcome p{
+  margin:0 auto;
+  max-width:650px;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.5;
+}
+
+.message{
+  max-width:920px;
+  margin:0 auto 16px;
+  display:flex;
+}
+
+.message.user{
+  justify-content:flex-end;
+}
+
+.message.assistant{
+  justify-content:flex-start;
+}
+
+.bubble{
+  max-width:min(780px,90%);
+  border-radius:18px;
+  padding:15px 17px;
+  font-size:15px;
+  line-height:1.55;
+  word-break:break-word;
+}
+
+.user .bubble{
+  background:var(--blue);
+  color:#fff;
+  border-bottom-right-radius:6px;
+  box-shadow:0 10px 24px rgba(37,99,235,.18);
+}
+
+.assistant .bubble{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--text);
+  border-bottom-left-radius:6px;
+  box-shadow:0 10px 24px rgba(15,23,42,.06);
+}
+
+.response-grid{
+  display:grid;
+  gap:10px;
+}
+
+.response-card{
+  background:#f8fafc;
+  border:1px solid #edf2f7;
+  border-radius:14px;
+  padding:12px;
+}
+
+.response-card.primary{
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+  border-color:#fed7aa;
+}
+
+.response-label{
+  color:#64748b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.11em;
+  font-weight:950;
+  margin-bottom:5px;
+}
+
+.response-value{
+  color:#0f172a;
+  font-weight:620;
+}
+
+.response-value ol{
+  margin:0;
+  padding-left:20px;
+}
+
+.response-value li{
+  margin:5px 0;
+}
+
+.priority-pill{
+  display:inline-flex;
+  padding:7px 10px;
+  border-radius:999px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-weight:900;
+}
+
+.error-box{
+  display:none;
+  max-width:920px;
+  margin:0 auto 12px;
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.error-box.show{
+  display:block;
+}
+
+/* CHATGPT STYLE INPUT */
+
+.composer-area{
+  position:sticky;
+  bottom:0;
+  padding:12px 28px 16px;
+  background:#f8fafc;
+  border-top:1px solid #e2e8f0;
+}
+
+.composer{
+  max-width:920px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid #dbe4f0;
+  box-shadow:0 18px 48px rgba(15,23,42,.10);
+  border-radius:22px;
+  overflow:hidden;
+}
+
+textarea{
+  width:100%;
+  min-height:60px;
+  max-height:140px;
+  resize:vertical;
+  border:0;
+  outline:0;
+  padding:18px 20px;
+  font-size:15px;
+  line-height:1.5;
+  font-family:inherit;
+}
+
+.composer-foot{
+  border-top:1px solid #eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+}
+
+.left-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+select{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+  border-radius:999px;
+  padding:9px 11px;
+  font-weight:850;
+  outline:0;
+}
+
+.hint{
+  color:#94a3b8;
+  font-size:12px;
+  font-weight:650;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:11px 16px;
+  cursor:pointer;
+  font-weight:900;
+}
+
+.run{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;
+  min-width:120px;
+}
+
+.run:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
+.clear{
+  background:#fff;
+  border:1px solid var(--line);
+  color:#475569;
+}
+
+/* RIGHT HISTORY */
+
+.right{
+  background:#fff;
+  border-left:1px solid var(--line);
+  padding:18px;
+  overflow:auto;
+}
+
+.panel{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
+.panel h3{
+  margin:0 0 10px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#64748b;
+}
+
+.current-mode{
+  display:inline-flex;
+  padding:8px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#c2410c;
+  font-weight:900;
+}
+
+.item{
+  padding:10px;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #edf2f7;
+  margin-bottom:8px;
+  font-size:13px;
+  color:#334155;
+  cursor:pointer;
+}
+
+.item strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:3px;
+}
+
+.empty{
+  color:#94a3b8;
+  font-size:13px;
+  line-height:1.45;
+}
+
+@media(max-width:1150px){
+  .app{grid-template-columns:230px 1fr}
+  .right{display:none}
+}
+
+@media(max-width:760px){
+  body{overflow:auto}
+  .app{display:block;height:auto}
+  .sidebar{display:none}
+  .main{height:auto;min-height:100vh}
+  .topbar{padding:14px;height:auto}
+  .chat{padding:18px 14px}
+  .welcome h1{font-size:30px}
+  .composer-area{padding:12px 14px 16px}
+  .composer-foot{align-items:stretch;flex-direction:column}
+  .left-controls{justify-content:space-between}
+  .btn{width:100%}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
   <aside class="sidebar">
-    <div class="brand"><div class="logo">EE</div><div><h1>Executive Engine OS</h1><p>Decision-ready execution system</p></div></div>
+    <div class="brand">
+      <div class="logo">EE</div>
+      <div>
+        <h1>Executive Engine OS</h1>
+        <p>Decision-ready execution system</p>
+      </div>
+    </div>
+
     <div class="nav-scroll">
       <div class="nav-label">Command</div>
       <button class="nav-btn active" data-mode="execution"><span class="nav-ico">⌘</span>Command Center</button>
       <button class="nav-btn" data-mode="daily_brief"><span class="nav-ico">◷</span>Daily Brief</button>
       <button class="nav-btn" data-mode="decision"><span class="nav-ico">◆</span>Decisions</button>
       <button class="nav-btn" data-mode="meeting"><span class="nav-ico">◉</span>Meeting Prep</button>
+
       <div class="nav-label">Intelligence</div>
       <button class="nav-btn" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
       <button class="nav-btn" data-mode="risk_review"><span class="nav-ico">!</span>Risk Review</button>
       <button class="nav-btn" data-mode="execution"><span class="nav-ico">▤</span>Execution Queue</button>
       <button class="nav-btn" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
     </div>
-    <div class="mode-card"><strong>Executive Mode</strong><span>Personal now. SaaS-ready later.</span></div>
+
+    <div class="mode-card">
+      <strong>Executive Mode</strong>
+      <span>Personal now. SaaS-ready later.</span>
+    </div>
   </aside>
+
   <main class="main">
-    <div class="topbar"><div><h2>Executive Flow System</h2><span>ChatGPT-style execution OS</span></div><div class="live"><span class="dot"></span><span id="healthText">LIVE</span></div></div>
+    <div class="topbar">
+      <div>
+        <h2>Executive Flow System</h2>
+        <span>ChatGPT-style execution OS</span>
+      </div>
+      <div class="live">
+        <span class="dot"></span>
+        <span id="healthText">LIVE</span>
+      </div>
+    </div>
+
     <div class="chat-wrap">
-      <div id="chat" class="chat"><div id="welcome" class="welcome"><h1>What needs to move forward?</h1><p>Drop the situation. I’ll turn it into a decision, next move, action queue, risk, and priority.</p></div></div>
+      <div id="chat" class="chat">
+        <div id="welcome" class="welcome">
+          <h1>What needs to move forward?</h1>
+          <p>Drop the situation. I’ll turn it into a decision, next move, action queue, risk, and priority.</p>
+        </div>
+      </div>
+
       <div class="composer-area">
         <div id="errorBox" class="error-box"></div>
+
         <div class="composer">
           <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
+
           <div class="composer-foot">
             <div class="left-controls">
               <select id="mode">
@@ -79,23 +580,55 @@ select{border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:9
               </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
             </div>
-            <div class="left-controls"><button id="clearBtn" class="btn clear">New Chat</button><button id="runBtn" class="btn run">Run Engine</button></div>
+
+            <div class="left-controls">
+              <button id="clearBtn" class="btn clear">New Chat</button>
+              <button id="runBtn" class="btn run">Run Engine</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </main>
+
   <aside class="right">
-    <div class="panel"><h3>Current Mode</h3><span id="currentMode" class="current-mode">Execution</span></div>
-    <div class="panel"><h3>Archive / History</h3><div id="archive"><div class="empty">No messages yet.</div></div></div>
-    <div class="panel"><h3>Execution Queue</h3><div id="queue"><div class="empty">No actions yet.</div></div></div>
-    <div class="panel"><h3>Recent Memory</h3><div id="memory"><div class="empty">Loading memory...</div></div></div>
-    <div class="panel"><h3>AI Recommendations</h3><div class="item"><strong>Use real inputs</strong>The system gets sharper when you give context, stakes, and desired outcome.</div></div>
+    <div class="panel">
+      <h3>Current Mode</h3>
+      <span id="currentMode" class="current-mode">Execution</span>
+    </div>
+
+    <div class="panel">
+      <h3>Archive / History</h3>
+      <div id="archive"><div class="empty">No messages yet.</div></div>
+      <button id="viewAll" class="btn clear" style="width:100%;margin-top:10px;">View All</button>
+    </div>
+
+    <div class="panel">
+      <h3>Execution Queue</h3>
+      <div id="queue"><div class="empty">No actions yet.</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Recent Memory</h3>
+      <div id="memory"><div class="empty">Loading memory...</div></div>
+    </div>
+
+    <div class="panel">
+      <h3>AI Recommendations</h3>
+      <div class="item">
+        <strong>Use real inputs</strong>
+        The system gets sharper when you give context, stakes, and desired outcome.
+      </div>
+    </div>
   </aside>
+
 </div>
+
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_clean_chat_v1";
+const STORAGE_KEY = "eeos_v37_threads";
+const ACTIVE_THREAD_KEY = "eeos_v37_active_thread";
+
 const chat = document.getElementById("chat");
 const welcome = document.getElementById("welcome");
 const input = document.getElementById("input");
@@ -108,30 +641,422 @@ const queue = document.getElementById("queue");
 const memory = document.getElementById("memory");
 const currentMode = document.getElementById("currentMode");
 const healthText = document.getElementById("healthText");
-let messages = [];
-try{ messages = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }catch(e){ messages = []; }
-function esc(v){return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
-function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));}
-function labelMode(v){return ({execution:"Execution",strategy:"Strategy",decision:"Decision",meeting:"Meeting Prep",daily_brief:"Daily Brief",proposal:"Proposal",risk_review:"Risk Review"})[v] || "Execution";}
-function setMode(mode){modeEl.value = mode; currentMode.textContent = labelMode(mode); document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode)); input.focus();}
-function normalize(data){const actions = Array.isArray(data.actions) ? data.actions : []; return {what_to_do_now:data.what_to_do_now || data.next_move || "Take the highest leverage next step.", decision:data.decision || "Clarify the decision.", next_move:data.next_move || "Define the next move.", actions:actions.length ? actions : ["Clarify the objective","Identify the blocker","Execute one step"], risk:data.risk || "Risk not returned.", priority:data.priority || "High", reality_check:data.reality_check || "", leverage:data.leverage || "", hidden_opportunity:data.hidden_opportunity || "", meeting_agenda:data.meeting_agenda || "", follow_up:data.follow_up || "", clarifying_question:data.clarifying_question || ""};}
-function renderAssistant(data){const d = normalize(data); const optional = [["Reality Check",d.reality_check],["Leverage",d.leverage],["Hidden Opportunity",d.hidden_opportunity],["Meeting Agenda",d.meeting_agenda],["Follow Up",d.follow_up],["Clarifying Question",d.clarifying_question]].filter(x=>x[1]); return `<div class="response-grid"><div class="response-card primary"><div class="response-label">What To Do Now</div><div class="response-value">${esc(d.what_to_do_now)}</div></div><div class="response-card"><div class="response-label">Decision</div><div class="response-value">${esc(d.decision)}</div></div><div class="response-card"><div class="response-label">Next Move</div><div class="response-value">${esc(d.next_move)}</div></div><div class="response-card"><div class="response-label">Actions</div><div class="response-value"><ol>${d.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ol></div></div><div class="response-card"><div class="response-label">Risk</div><div class="response-value">${esc(d.risk)}</div></div><div class="response-card"><div class="response-label">Priority</div><div class="response-value"><span class="priority-pill">${esc(d.priority)}</span></div></div>${optional.map(([label,value]) => `<div class="response-card"><div class="response-label">${esc(label)}</div><div class="response-value">${esc(value)}</div></div>`).join("")}</div>`;}
-function render(){chat.innerHTML = ""; if(!messages.length){chat.appendChild(welcome); welcome.style.display="block";} else {welcome.style.display="none";} messages.forEach((m,i)=>{const row=document.createElement("div"); row.className="message "+m.role; row.id="msg-"+i; const bubble=document.createElement("div"); bubble.className="bubble"; if(m.role==="user") bubble.textContent=m.text; else bubble.innerHTML=m.html || renderAssistant(m.data || {}); row.appendChild(bubble); chat.appendChild(row);}); renderArchive(); renderQueue(); save(); requestAnimationFrame(()=>{chat.scrollTop=chat.scrollHeight;});}
-function renderArchive(){const users=messages.map((m,i)=>({m,i})).filter(x=>x.m.role==="user").reverse().slice(0,10); archive.innerHTML=users.length ? users.map(x=>`<div class="item" onclick="scrollToMsg(${x.i})"><strong>${esc(x.m.modeLabel || "Execution")}</strong>${esc(x.m.text).slice(0,85)}</div>`).join("") : `<div class="empty">No messages yet.</div>`;}
-function latestAssistant(){for(let i=messages.length-1;i>=0;i--){if(messages[i].role==="assistant") return normalize(messages[i].data || {});} return null;}
-function renderQueue(){const d=latestAssistant(); queue.innerHTML=d && d.actions.length ? d.actions.map((a,i)=>`<div class="item"><strong>${i+1}. Action</strong>${esc(a)}</div>`).join("") : `<div class="empty">No actions yet.</div>`;}
-function scrollToMsg(i){const el=document.getElementById("msg-"+i); if(el) el.scrollIntoView({behavior:"smooth", block:"center"});}
-function showError(msg){errorBox.textContent=msg; errorBox.classList.add("show");}
-function clearError(){errorBox.textContent=""; errorBox.classList.remove("show");}
-async function send(){const text=input.value.trim(); const mode=modeEl.value; if(!text){showError("Enter something first."); return;} clearError(); messages.push({role:"user", text, mode, modeLabel:labelMode(mode), ts:new Date().toISOString()}); input.value=""; render(); const loadingIndex=messages.length; messages.push({role:"assistant", html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Thinking...</div></div></div>`, data:{}, ts:new Date().toISOString()}); render(); runBtn.disabled=true; runBtn.textContent="Running..."; try{const res=await fetch(API + "/run", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({input:text, context:text, mode})}); if(!res.ok) throw new Error("Backend returned " + res.status); const data=await res.json(); messages[loadingIndex]={role:"assistant", data, html:renderAssistant(data), ts:new Date().toISOString()}; loadMemory();}catch(e){console.error(e); const errorData={what_to_do_now:"Backend connection failed.", decision:"Fix the API connection before continuing.", next_move:"Check backend CORS, URL, and logs.", actions:["Open backend /health","Test POST /run in /docs","Check browser console"], risk:e.message, priority:"High"}; messages[loadingIndex]={role:"assistant", data:errorData, html:renderAssistant(errorData)}; showError("Backend request failed. See console for details.");}finally{runBtn.disabled=false; runBtn.textContent="Run Engine"; render();}}
-async function health(){try{const res=await fetch(API + "/health"); healthText.textContent=res.ok ? "LIVE" : "CHECK";}catch(e){healthText.textContent="OFFLINE";}}
-async function loadMemory(){try{const res=await fetch(API + "/memory"); if(!res.ok) throw new Error("memory not available"); const data=await res.json(); const items=data.memory || data.items || []; memory.innerHTML=items.length ? items.slice(-5).reverse().map(m=>`<div class="item"><strong>${esc(m.mode || m.priority || "Memory")}</strong>${esc(m.input || m.decision || m.next_move || "Saved execution")}</div>`).join("") : `<div class="empty">No memory yet.</div>`;}catch(e){memory.innerHTML=`<div class="empty">Memory unavailable.</div>`;}}
-document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
-modeEl.addEventListener("change",()=>setMode(modeEl.value));
+const viewAll = document.getElementById("viewAll");
+
+let threads = loadThreads();
+let activeThreadId = localStorage.getItem(ACTIVE_THREAD_KEY) || null;
+
+if (!activeThreadId || !threads[activeThreadId]) {
+  activeThreadId = createThread();
+}
+
+function loadThreads(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  }catch{
+    return {};
+  }
+}
+
+function saveThreads(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+  localStorage.setItem(ACTIVE_THREAD_KEY, activeThreadId);
+}
+
+function createThread(){
+  const id = "thread_" + Date.now();
+  threads[id] = {
+    id,
+    title:"New Chat",
+    createdAt:new Date().toISOString(),
+    messages:[]
+  };
+  activeThreadId = id;
+  saveThreads();
+  return id;
+}
+
+function getMessages(){
+  return threads[activeThreadId]?.messages || [];
+}
+
+function setMessages(messages){
+  threads[activeThreadId].messages = messages;
+  saveThreads();
+}
+
+function esc(v){
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function labelMode(v){
+  return ({
+    execution:"Execution",
+    strategy:"Strategy",
+    decision:"Decision",
+    meeting:"Meeting Prep",
+    daily_brief:"Daily Brief",
+    proposal:"Proposal",
+    risk_review:"Risk Review"
+  })[v] || "Execution";
+}
+
+function setMode(mode){
+  modeEl.value = mode;
+  currentMode.textContent = labelMode(mode);
+
+  document.querySelectorAll(".nav-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.mode === mode);
+  });
+
+  input.focus();
+}
+
+function normalize(data){
+  const actions = Array.isArray(data.actions) ? data.actions : [];
+
+  return {
+    what_to_do_now:data.what_to_do_now || data.next_move || "Take the highest leverage next step.",
+    decision:data.decision || "Clarify the decision.",
+    next_move:data.next_move || "Define the next move.",
+    actions:actions.length ? actions : ["Clarify the objective","Identify the blocker","Execute one step"],
+    risk:data.risk || "Risk not returned.",
+    priority:data.priority || "High",
+    reality_check:data.reality_check || "",
+    leverage:data.leverage || "",
+    hidden_opportunity:data.hidden_opportunity || "",
+    meeting_agenda:data.meeting_agenda || "",
+    follow_up:data.follow_up || "",
+    clarifying_question:data.clarifying_question || ""
+  };
+}
+
+function renderAssistant(data){
+  const d = normalize(data);
+
+  const optional = [
+    ["Reality Check", d.reality_check],
+    ["Leverage", d.leverage],
+    ["Hidden Opportunity", d.hidden_opportunity],
+    ["Meeting Agenda", d.meeting_agenda],
+    ["Follow Up", d.follow_up],
+    ["Clarifying Question", d.clarifying_question]
+  ].filter(x => x[1]);
+
+  return `
+    <div class="response-grid">
+      <div class="response-card primary">
+        <div class="response-label">What To Do Now</div>
+        <div class="response-value">${esc(d.what_to_do_now)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Decision</div>
+        <div class="response-value">${esc(d.decision)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Next Move</div>
+        <div class="response-value">${esc(d.next_move)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Actions</div>
+        <div class="response-value">
+          <ol>${d.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ol>
+        </div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Risk</div>
+        <div class="response-value">${esc(d.risk)}</div>
+      </div>
+
+      <div class="response-card">
+        <div class="response-label">Priority</div>
+        <div class="response-value"><span class="priority-pill">${esc(d.priority)}</span></div>
+      </div>
+
+      ${optional.map(([label,value]) => `
+        <div class="response-card">
+          <div class="response-label">${esc(label)}</div>
+          <div class="response-value">${esc(value)}</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function render(){
+  const messages = getMessages();
+  chat.innerHTML = "";
+
+  if(!messages.length){
+    chat.appendChild(welcome);
+    welcome.style.display = "block";
+  } else {
+    welcome.style.display = "none";
+  }
+
+  messages.forEach((m, i) => {
+    const row = document.createElement("div");
+    row.className = "message " + m.role;
+    row.id = "msg-" + i;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    if(m.role === "user"){
+      bubble.textContent = m.text;
+    } else {
+      bubble.innerHTML = m.html || renderAssistant(m.data || {});
+    }
+
+    row.appendChild(bubble);
+    chat.appendChild(row);
+  });
+
+  renderArchive(false);
+  renderQueue();
+  saveThreads();
+
+  requestAnimationFrame(() => {
+    chat.scrollTop = chat.scrollHeight;
+  });
+}
+
+function renderArchive(showAll){
+  const allThreads = Object.values(threads)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const visible = showAll ? allThreads : allThreads.slice(0,10);
+
+  archive.innerHTML = visible.length
+    ? visible.map(t => `
+      <div class="item" onclick="openThread('${t.id}')">
+        <strong>${esc(t.title || "New Chat")}</strong>
+        ${esc((t.messages?.[0]?.text || "No messages yet")).slice(0,90)}
+      </div>
+    `).join("")
+    : `<div class="empty">No messages yet.</div>`;
+}
+
+function openThread(id){
+  activeThreadId = id;
+  saveThreads();
+  render();
+}
+
+function latestAssistant(){
+  const messages = getMessages();
+
+  for(let i=messages.length-1; i>=0; i--){
+    if(messages[i].role === "assistant"){
+      return normalize(messages[i].data || {});
+    }
+  }
+
+  return null;
+}
+
+function renderQueue(){
+  const d = latestAssistant();
+
+  queue.innerHTML = d && d.actions.length
+    ? d.actions.map((a,i) => `
+      <div class="item">
+        <strong>${i+1}. Action</strong>
+        ${esc(a)}
+      </div>
+    `).join("")
+    : `<div class="empty">No actions yet.</div>`;
+}
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.classList.add("show");
+}
+
+function clearError(){
+  errorBox.textContent = "";
+  errorBox.classList.remove("show");
+}
+
+async function send(){
+  const text = input.value.trim();
+  const mode = modeEl.value;
+
+  if(!text){
+    showError("Enter something first.");
+    return;
+  }
+
+  clearError();
+
+  const messages = getMessages();
+
+  if(threads[activeThreadId].title === "New Chat"){
+    threads[activeThreadId].title = text.slice(0,42);
+  }
+
+  messages.push({
+    role:"user",
+    text,
+    mode,
+    modeLabel:labelMode(mode),
+    ts:new Date().toISOString()
+  });
+
+  setMessages(messages);
+  input.value = "";
+  render();
+
+  const loadingIndex = messages.length;
+
+  messages.push({
+    role:"assistant",
+    html:`<div class="response-grid"><div class="response-card primary"><div class="response-label">Engine Running</div><div class="response-value">Thinking...</div></div></div>`,
+    data:{},
+    ts:new Date().toISOString()
+  });
+
+  setMessages(messages);
+  render();
+
+  runBtn.disabled = true;
+  runBtn.textContent = "Running...";
+
+  try{
+    const res = await fetch(API + "/run", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        input:text,
+        context:text,
+        mode
+      })
+    });
+
+    if(!res.ok){
+      throw new Error("Backend returned " + res.status);
+    }
+
+    const data = await res.json();
+
+    messages[loadingIndex] = {
+      role:"assistant",
+      data,
+      html:renderAssistant(data),
+      ts:new Date().toISOString()
+    };
+
+    setMessages(messages);
+    loadMemory();
+
+  }catch(e){
+    console.error(e);
+
+    const errorData = {
+      what_to_do_now:"Backend connection failed.",
+      decision:"Fix the API connection before continuing.",
+      next_move:"Check backend CORS, URL, and logs.",
+      actions:["Open backend /health","Test POST /run in /docs","Check browser console"],
+      risk:e.message,
+      priority:"High"
+    };
+
+    messages[loadingIndex] = {
+      role:"assistant",
+      data:errorData,
+      html:renderAssistant(errorData)
+    };
+
+    setMessages(messages);
+    showError("Backend request failed. See console for details.");
+
+  }finally{
+    runBtn.disabled = false;
+    runBtn.textContent = "Run Engine";
+    render();
+  }
+}
+
+async function health(){
+  try{
+    const res = await fetch(API + "/health");
+    healthText.textContent = res.ok ? "LIVE" : "CHECK";
+  }catch{
+    healthText.textContent = "OFFLINE";
+  }
+}
+
+async function loadMemory(){
+  try{
+    const res = await fetch(API + "/memory");
+
+    if(!res.ok){
+      throw new Error("memory not available");
+    }
+
+    const data = await res.json();
+    const items = data.memory || data.items || [];
+
+    memory.innerHTML = items.length
+      ? items.slice(-5).reverse().map(m => `
+        <div class="item">
+          <strong>${esc(m.mode || m.priority || "Memory")}</strong>
+          ${esc(m.input || m.decision || m.next_move || "Saved execution")}
+        </div>
+      `).join("")
+      : `<div class="empty">No memory yet.</div>`;
+
+  }catch{
+    memory.innerHTML = `<div class="empty">Memory unavailable.</div>`;
+  }
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => setMode(btn.dataset.mode));
+});
+
+modeEl.addEventListener("change", () => setMode(modeEl.value));
+
 runBtn.addEventListener("click", send);
-clearBtn.addEventListener("click",()=>{messages=[]; save(); render();});
-input.addEventListener("keydown",(e)=>{if(e.key==="Enter" && !e.shiftKey){e.preventDefault(); send();}});
-setMode("execution"); render(); health(); loadMemory();
+
+clearBtn.addEventListener("click", () => {
+  createThread();
+  render();
+});
+
+viewAll.addEventListener("click", () => {
+  renderArchive(true);
+});
+
+input.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    const hasNewLine = input.value.includes("\n");
+
+    if(!hasNewLine && !e.shiftKey){
+      e.preventDefault();
+      send();
+    }
+  }
+});
+
+window.onload = () => {
+  input.focus();
+};
+
+setMode("execution");
+render();
+health();
+loadMemory();
 </script>
+
 </body>
 </html>
