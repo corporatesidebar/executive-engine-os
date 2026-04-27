@@ -5,336 +5,550 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Executive Engine OS</title>
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --ink: #0b1220;
+      --muted: #667085;
+      --line: #e5eaf2;
+      --nav: #0d1628;
+      --nav2: #142033;
+      --blue: #2563eb;
+      --blue2: #1d4ed8;
+      --green: #16a34a;
+      --orange: #f97316;
+      --red: #dc2626;
+      --soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
     }
 
     .app {
       display: grid;
-      grid-template-columns: 268px 1fr 360px;
-      min-height: 100vh;
+      grid-template-columns: 270px minmax(0, 1fr) 350px;
+      height: 100vh;
+      width: 100vw;
     }
 
     .sidebar {
-      background: #0f172a;
-      color: #cbd5e1;
-      padding: 24px 18px;
+      background: var(--nav);
+      color: #dbe7ff;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 26px;
+      gap: 18px;
+      overflow-y: auto;
     }
 
     .brand {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
     }
 
     .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #2563eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 800;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 950;
     }
 
     .brand-title {
-      color: white;
-      font-weight: 800;
-      font-size: 15px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
     }
 
     .brand-subtitle {
+      color: #9fb0cc;
       font-size: 12px;
-      margin-top: 5px;
-      color: #94a3b8;
+      margin-top: 3px;
     }
 
     .section-label {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 800;
-      letter-spacing: .08em;
-      margin: 6px 0 10px;
+      margin: 18px 0 8px;
+      color: #6f819d;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .12em;
     }
 
     .nav-item {
+      width: 100%;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 2px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #dbeafe;
+      gap: 10px;
+      background: transparent;
+      color: #dbe7ff;
+      border-radius: 9px;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-weight: 850;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,.06);
     }
 
     .nav-item.active {
-      background: #2563eb;
+      background: var(--blue);
       color: white;
     }
 
     .badge {
       margin-left: auto;
-      background: #f97316;
+      background: var(--orange);
       color: white;
-      font-size: 12px;
       border-radius: 999px;
       padding: 3px 7px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .side-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .side-button {
+      background: #1b2940;
+      color: #dbe7ff;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-weight: 850;
+      text-align: left;
     }
 
     .profile {
       margin-top: auto;
-      background: #1e293b;
-      border-radius: 10px;
+      background: var(--nav2);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
       padding: 14px;
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 12px;
     }
 
     .avatar {
-      background: #f97316;
-      color: white;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: white;
+      font-weight: 950;
     }
 
     .main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 76px 1fr auto;
       background: white;
-      border-right: 1px solid #e2e8f0;
+      border-right: 1px solid var(--line);
     }
 
     .topbar {
-      height: 88px;
-      border-bottom: 1px solid #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 34px;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(10px);
     }
 
-    .title {
-      font-size: 24px;
-      font-weight: 800;
+    .page-title {
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: -.03em;
     }
 
-    .subtitle {
-      color: #64748b;
-      margin-top: 6px;
-      font-size: 14px;
-    }
-
-    .live {
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-      background: #f0fdf4;
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .center {
-      max-width: 760px;
-      margin: 70px auto 0;
-      text-align: center;
-      padding: 0 24px;
-    }
-
-    h1 {
-      font-size: 36px;
-      margin: 0 0 14px;
-      letter-spacing: -0.04em;
-    }
-
-    .hero-sub {
-      font-size: 17px;
-      color: #64748b;
-      margin-bottom: 44px;
-    }
-
-    .input-card {
-      border: 1px solid #dbe3ee;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, .08);
-      background: white;
-      text-align: left;
-    }
-
-    textarea {
-      width: 100%;
-      height: 140px;
-      resize: none;
-      border: none;
-      outline: none;
-      padding: 24px;
-      font-size: 16px;
-      font-family: inherit;
-      color: #0f172a;
-    }
-
-    textarea::placeholder {
-      color: #94a3b8;
-    }
-
-    .input-footer {
-      border-top: 1px solid #e2e8f0;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #64748b;
-      font-size: 12px;
-    }
-
-    button {
-      border: none;
-      background: #2563eb;
-      color: white;
-      border-radius: 10px;
-      padding: 13px 24px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, .25);
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .quick {
-      text-align: left;
-      margin-top: 28px;
-      color: #64748b;
+    .page-sub {
+      margin-top: 4px;
+      color: var(--muted);
       font-size: 13px;
     }
 
-    .chips {
+    .top-actions {
       display: flex;
       gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .chip {
-      border: 1px solid #e2e8f0;
-      background: #f8fafc;
-      color: #334155;
-      border-radius: 9px;
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
+    .pill {
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: #ecfdf3;
+      color: #047857;
+      font-weight: 950;
+      font-size: 12px;
+      border: 1px solid #bbf7d0;
     }
 
-    .output {
-      margin-top: 32px;
-      display: none;
-      text-align: left;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
+    .ghost-btn {
+      background: #fff;
+      color: #344054;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 850;
+    }
+
+    .chat {
+      overflow-y: auto;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, .06), transparent 32%),
+        #fff;
+    }
+
+    .hero {
+      max-width: 840px;
+      margin: 0 auto 24px;
+      text-align: center;
+      padding: 32px 10px 12px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -.045em;
+      line-height: 1.08;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .messages {
+      max-width: 930px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 12px;
+    }
+
+    .msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .msg.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 78%;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      box-shadow: var(--soft);
+    }
+
+    .user .bubble {
+      background: var(--blue);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+
+    .assistant .bubble {
       background: #f8fafc;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-bottom-left-radius: 6px;
+      max-width: 100%;
+      width: 100%;
+      padding: 0;
       overflow: hidden;
     }
 
-    .output-grid {
+    .response-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+
+    .response-title {
+      font-weight: 950;
+      letter-spacing: -.02em;
+    }
+
+    .response-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .priority {
+      text-transform: uppercase;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 950;
+      padding: 6px 9px;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .priority.high, .priority.critical {
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .priority.medium {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .priority.low {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .copy-btn {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      color: #344054;
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
 
-    .output-card {
-      padding: 20px;
-      border-bottom: 1px solid #e2e8f0;
-      border-right: 1px solid #e2e8f0;
+    .card {
+      padding: 16px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      min-height: 104px;
     }
 
-    .output-card:nth-child(even) {
-      border-right: none;
+    .card:nth-child(even) {
+      border-right: 0;
     }
 
-    .output-label {
+    .card.wide {
+      grid-column: 1 / -1;
+      border-right: 0;
+    }
+
+    .label {
+      color: #667085;
       font-size: 11px;
       text-transform: uppercase;
-      color: #64748b;
-      letter-spacing: .08em;
-      font-weight: 900;
+      letter-spacing: .11em;
+      font-weight: 950;
       margin-bottom: 8px;
     }
 
-    .output-value {
+    .value {
+      color: #101828;
+      font-size: 14px;
+      font-weight: 750;
+      line-height: 1.52;
+    }
+
+    .value ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .value li {
+      margin-bottom: 7px;
+    }
+
+    .composer-wrap {
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      padding: 14px 28px 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .composer {
+      max-width: 930px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #d8e0ec;
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .mode-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px 0;
+    }
+
+    .mode-chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #344054;
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .mode-chip.active {
+      background: #eff6ff;
+      color: var(--blue2);
+      border-color: #bfdbfe;
+    }
+
+    .quick-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 10px 14px 0;
+    }
+
+    .quick {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      color: #344054;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    textarea#prompt {
+      width: 100%;
+      min-height: 78px;
+      max-height: 190px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      padding: 15px 16px;
+      color: var(--ink);
       font-size: 15px;
       line-height: 1.5;
-      color: #0f172a;
-      font-weight: 650;
     }
 
-    ul {
-      padding-left: 18px;
-      margin: 0;
+    .composer-footer {
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
     }
 
-    li {
-      margin-bottom: 6px;
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .send {
+      background: var(--blue);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 950;
+      box-shadow: 0 10px 22px rgba(37,99,235,.25);
+    }
+
+    .send:hover {
+      background: var(--blue2);
+    }
+
+    .send:disabled {
+      opacity: .65;
+      cursor: not-allowed;
     }
 
     .rightbar {
-      background: #f8fafc;
-      padding: 24px;
       overflow-y: auto;
+      padding: 20px;
+      background: #f8fafc;
     }
 
     .panel {
       background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(15,23,42,.03);
+    }
+
+    .panel.dark {
+      background: var(--nav);
+      color: white;
+      border: 0;
     }
 
     .panel-title {
-      font-weight: 900;
-      font-size: 16px;
-      margin-bottom: 14px;
+      font-weight: 950;
+      margin-bottom: 13px;
+      letter-spacing: -.02em;
     }
 
-    .activity {
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 10px;
+    .stat, .archive-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 9px;
       background: white;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
-    .activity small {
+    .archive-item {
+      cursor: pointer;
+    }
+
+    .archive-item:hover {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .stat small, .archive-item small {
       display: block;
-      color: #64748b;
-      margin-top: 6px;
-    }
-
-    .milestone.warn {
-      background: #fff7ed;
-      border-color: #fed7aa;
+      margin-top: 5px;
+      color: var(--muted);
     }
 
     .focus {
@@ -343,21 +557,32 @@
       color: #166534;
     }
 
-    .ai {
-      background: #0f172a;
-      color: white;
-      border: none;
+    .queue-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 9px;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
-    .ai ul {
-      color: #e2e8f0;
-      font-size: 14px;
-      line-height: 1.55;
+    .dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: var(--blue);
+      flex: 0 0 auto;
     }
 
-    @media (max-width: 1100px) {
+    .error {
+      color: #be123c;
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    @media (max-width: 1180px) {
       .app {
-        grid-template-columns: 220px 1fr;
+        grid-template-columns: 230px 1fr;
       }
 
       .rightbar {
@@ -365,29 +590,53 @@
       }
     }
 
-    @media (max-width: 760px) {
+    @media (max-width: 780px) {
+      body {
+        overflow: auto;
+      }
+
       .app {
-        grid-template-columns: 1fr;
+        display: block;
+        height: auto;
+        min-height: 100vh;
       }
 
       .sidebar {
         display: none;
       }
 
+      .main {
+        min-height: 100vh;
+      }
+
       .topbar {
-        padding: 0 20px;
+        padding: 0 16px;
       }
 
-      .center {
-        margin-top: 42px;
+      .chat {
+        padding: 18px;
       }
 
-      .output-grid {
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .cards {
         grid-template-columns: 1fr;
       }
 
-      .output-card {
-        border-right: none;
+      .card {
+        border-right: 0;
+      }
+
+      .bubble {
+        max-width: 92%;
+      }
+
+      .composer-wrap {
+        padding: 12px;
+        position: sticky;
+        bottom: 0;
       }
     }
   </style>
@@ -405,27 +654,30 @@
 
       <div>
         <div class="section-label">COMMAND</div>
-        <div class="nav-item active">⌘ Command Center</div>
-        <div class="nav-item">▤ Daily Brief <span class="badge">3</span></div>
-        <div class="nav-item">◎ Decisions <span class="badge">2</span></div>
-        <div class="nav-item">▣ Meeting Prep</div>
+        <button class="nav-item active" data-mode="execution">⌘ Command Center</button>
+        <button class="nav-item" data-mode="daily_brief">▤ Daily Brief <span class="badge">3</span></button>
+        <button class="nav-item" data-mode="decision">◎ Decisions <span class="badge">2</span></button>
+        <button class="nav-item" data-mode="meeting_prep">▣ Meeting Prep</button>
       </div>
 
       <div>
         <div class="section-label">INTELLIGENCE</div>
-        <div class="nav-item">♙ Insights</div>
-        <div class="nav-item">⌁ Strategy Board</div>
-        <div class="nav-item">◇ Risk Monitor <span class="badge">4</span></div>
-        <div class="nav-item">♧ Team Pulse</div>
-        <div class="nav-item">$ Financial Snapshot</div>
+        <button class="nav-item" data-mode="strategy">♙ Strategy</button>
+        <button class="nav-item" data-mode="proposal">◇ Proposal</button>
+        <button class="nav-item" data-mode="risk_review">◇ Risk Review <span class="badge">4</span></button>
       </div>
 
       <div>
         <div class="section-label">RESOURCES</div>
-        <div class="nav-item">▣ Active Projects</div>
-        <div class="nav-item">▢ Files</div>
-        <div class="nav-item">▤ Notes</div>
-        <div class="nav-item">⇧ Upload Context</div>
+        <button class="nav-item" data-mode="execution">▣ Execution Queue</button>
+        <button class="nav-item" data-mode="meeting_prep">▢ Meetings</button>
+        <button class="nav-item" data-mode="strategy">▤ Strategy Notes</button>
+      </div>
+
+      <div class="side-actions">
+        <button class="side-button" onclick="newChat()">＋ New Chat</button>
+        <button class="side-button" onclick="clearHistory()">🧹 Clear History</button>
+        <button class="side-button" onclick="loadMemory()">↻ Refresh Memory</button>
       </div>
 
       <div class="profile">
@@ -438,94 +690,77 @@
     </aside>
 
     <main class="main">
-      <div class="topbar">
+      <header class="topbar">
         <div>
-          <div class="title">Executive Flow System</div>
-          <div class="subtitle">Executive Engine</div>
+          <div class="page-title">Executive Flow System</div>
+          <div class="page-sub" id="modeSubtitle">Execution Mode</div>
         </div>
-        <div class="live">● LIVE</div>
-      </div>
-
-      <section class="center">
-        <h1>How can I help you execute today?</h1>
-        <div class="hero-sub">
-          Drop the situation. I'll turn it into one clear decision, the next move, risk, and priority.
+        <div class="top-actions">
+          <button class="ghost-btn" onclick="newChat()">New</button>
+          <div class="pill">● LIVE</div>
         </div>
+      </header>
 
-        <div class="input-card">
-          <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
-          <div class="input-footer">
-            <div>Press ⌘ + Enter to submit</div>
-            <button id="runBtn" onclick="runEngine()">⚡ Run Engine</button>
-          </div>
+      <section class="chat" id="chat">
+        <div class="hero" id="hero">
+          <h1>How can I help you execute today?</h1>
+          <p>Drop the situation. I’ll turn it into one clear decision, next move, risk, and priority.</p>
         </div>
 
-        <div class="quick">
-          Quick prompts:
-          <div class="chips">
-            <div class="chip" onclick="setPrompt('Decide what to focus on this week')">Decide what to focus on this week</div>
-            <div class="chip" onclick="setPrompt('Prepare me for a meeting')">Prepare for a meeting</div>
-            <div class="chip" onclick="setPrompt('Turn this idea into action')">Turn an idea into action</div>
-          </div>
-        </div>
-
-        <div id="output" class="output">
-          <div class="output-grid">
-            <div class="output-card">
-              <div class="output-label">What To Do Now</div>
-              <div id="what_to_do_now" class="output-value"></div>
-            </div>
-            <div class="output-card">
-              <div class="output-label">Decision</div>
-              <div id="decision" class="output-value"></div>
-            </div>
-            <div class="output-card">
-              <div class="output-label">Next Move</div>
-              <div id="next_move" class="output-value"></div>
-            </div>
-            <div class="output-card">
-              <div class="output-label">Priority</div>
-              <div id="priority" class="output-value"></div>
-            </div>
-            <div class="output-card">
-              <div class="output-label">Actions</div>
-              <div id="actions" class="output-value"></div>
-            </div>
-            <div class="output-card">
-              <div class="output-label">Risk</div>
-              <div id="risk" class="output-value"></div>
-            </div>
-          </div>
-        </div>
+        <div class="messages" id="messages"></div>
       </section>
+
+      <footer class="composer-wrap">
+        <div class="composer">
+          <div class="mode-row" id="modeRow"></div>
+          <div class="quick-row" id="quickPrompts"></div>
+          <textarea id="prompt" placeholder="Message Executive Engine OS..."></textarea>
+          <div class="composer-footer">
+            <div class="hint">Enter to send · Shift+Enter for new line</div>
+            <button class="send" id="sendBtn" onclick="sendMessage()">⚡ Send</button>
+          </div>
+        </div>
+      </footer>
     </main>
 
     <aside class="rightbar">
       <div class="panel">
-        <div class="panel-title">Recent Decisions</div>
-        <div class="activity">Approve Q2 marketing budget increase<small>2 hours ago</small></div>
-        <div class="activity">Postpone product launch to Q3<small>5 hours ago</small></div>
-        <div class="activity">Hire senior engineer for Platform team<small>Yesterday</small></div>
+        <div class="panel-title">Archive / History</div>
+        <div id="archiveList"></div>
       </div>
 
       <div class="panel">
-        <div class="panel-title">Critical Milestones</div>
-        <div class="activity milestone warn">Q2 Board Meeting<small>Today, 2:00 PM</small></div>
-        <div class="activity">Product Launch<small>May 15</small></div>
-        <div class="activity milestone warn">Series B Deadline<small>Jun 30</small></div>
+        <div class="panel-title">Current Mode</div>
+        <div class="stat" id="currentModeStat">Execution</div>
       </div>
 
-      <div class="panel focus">
-        <div class="panel-title">◎ Focus Today</div>
-        Finalize Q2 financial strategy and secure board approval for key initiatives.
+      <div class="panel">
+        <div class="panel-title">Recent Decisions</div>
+        <div id="recentDecisions">
+          <div class="stat">No decisions yet<small>Run the engine to begin</small></div>
+        </div>
       </div>
 
-      <div class="panel ai">
+      <div class="panel">
+        <div class="panel-title">Memory Preview</div>
+        <div id="memoryPreview">
+          <div class="stat">Loading memory...</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Execution Queue</div>
+        <div id="executionQueue">
+          <div class="queue-item"><span class="dot"></span><span>No queued actions yet</span></div>
+        </div>
+      </div>
+
+      <div class="panel dark">
         <div class="panel-title">AI Recommendations</div>
         <ul>
-          <li>Prioritize board prep — meeting in 15 minutes</li>
-          <li>Sales team morale dipped — schedule 1:1 with Jennifer</li>
-          <li>Burn rate trending up — review Q2 spending plan</li>
+          <li>Start with the highest-risk decision.</li>
+          <li>Convert open loops into next actions.</li>
+          <li>Use Meeting Prep before live calls.</li>
         </ul>
       </div>
     </aside>
@@ -533,18 +768,324 @@
 
   <script>
     const API = "https://executive-engine-os.onrender.com";
+    const STORAGE_KEY = "executive_engine_os_v13_history";
+    const MODE_KEY = "executive_engine_os_v13_mode";
 
-    function setPrompt(text) {
-      document.getElementById("input").value = text;
+    const modes = {
+      execution: {
+        label: "Execution",
+        subtitle: "Execution Mode",
+        prompts: [
+          "Build my execution plan for tomorrow: priorities, decisions, next actions, risks.",
+          "Turn this messy situation into an execution plan.",
+          "Tell me what to do now and what to ignore."
+        ]
+      },
+      strategy: {
+        label: "Strategy",
+        subtitle: "Strategy Mode",
+        prompts: [
+          "Build a strategy from this goal with tradeoffs and next moves.",
+          "Pressure-test this strategy and show risks.",
+          "Find the highest-leverage path forward."
+        ]
+      },
+      decision: {
+        label: "Decision",
+        subtitle: "Decision Mode",
+        prompts: [
+          "Help me make this decision with options, tradeoffs, and recommendation.",
+          "Choose the best path and explain the next move.",
+          "Turn this uncertainty into one decision."
+        ]
+      },
+      meeting_prep: {
+        label: "Meeting Prep",
+        subtitle: "Meeting Prep Mode",
+        prompts: [
+          "Prepare me for a meeting: agenda, talking points, decisions, risks.",
+          "Create a 15-minute meeting plan with expected outcomes.",
+          "What should I ask, decide, and avoid in this meeting?"
+        ]
+      },
+      daily_brief: {
+        label: "Daily Brief",
+        subtitle: "Daily Brief Mode",
+        prompts: [
+          "Create my daily brief: focus, decisions, meetings, actions.",
+          "What should I prioritize today?",
+          "Build an executive brief for today."
+        ]
+      },
+      proposal: {
+        label: "Proposal",
+        subtitle: "Proposal Mode",
+        prompts: [
+          "Turn this idea into a sharp proposal.",
+          "Create a proposal with objective, value, risks, and next steps.",
+          "Rewrite this proposal into executive-level language."
+        ]
+      },
+      risk_review: {
+        label: "Risk Review",
+        subtitle: "Risk Review Mode",
+        prompts: [
+          "Identify the biggest risks and what to do now.",
+          "Show me what can break and how to prevent it.",
+          "Create a risk review with mitigation actions."
+        ]
+      }
+    };
+
+    let selectedMode = localStorage.getItem(MODE_KEY) || "execution";
+    let history = loadHistory();
+
+    function loadHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch (err) {
+        console.error("History load failed", err);
+        return [];
+      }
     }
 
-    async function runEngine() {
-      const input = document.getElementById("input");
-      const button = document.getElementById("runBtn");
+    function saveHistory() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-80)));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function setMode(mode) {
+      selectedMode = mode;
+      localStorage.setItem(MODE_KEY, mode);
+
+      document.getElementById("modeSubtitle").textContent = modes[mode].subtitle;
+      document.getElementById("currentModeStat").textContent = modes[mode].label;
+
+      document.querySelectorAll(".nav-item").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+      });
+
+      renderModeRow();
+      renderQuickPrompts();
+    }
+
+    function renderModeRow() {
+      document.getElementById("modeRow").innerHTML = Object.entries(modes).map(([key, item]) => `
+        <button class="mode-chip ${key === selectedMode ? "active" : ""}" onclick="setMode('${key}')">${item.label}</button>
+      `).join("");
+    }
+
+    function renderQuickPrompts() {
+      document.getElementById("quickPrompts").innerHTML = modes[selectedMode].prompts.map(prompt => `
+        <button class="quick" onclick="setPrompt(\`${escapeHtml(prompt)}\`)">${escapeHtml(prompt)}</button>
+      `).join("");
+    }
+
+    function setPrompt(text) {
+      const input = document.getElementById("prompt");
+      input.value = text;
+      input.focus();
+    }
+
+    function renderHistory() {
+      const messages = document.getElementById("messages");
+      const hero = document.getElementById("hero");
+
+      hero.style.display = history.length ? "none" : "block";
+
+      messages.innerHTML = history.map((item, index) => {
+        if (item.role === "user") {
+          return `
+            <div class="msg user" id="msg-${index}">
+              <div class="bubble">${escapeHtml(item.text)}</div>
+            </div>
+          `;
+        }
+
+        return renderAssistantMessage(item, index);
+      }).join("");
+
+      renderArchive();
+      renderRecentDecisions();
+      renderExecutionQueue();
+      scrollToBottom();
+    }
+
+    function renderAssistantMessage(item, index) {
+      const data = item.data || {};
+      const priority = String(data.priority || "medium").toLowerCase();
+      const actions = Array.isArray(data.actions) ? data.actions : [data.actions || ""];
+
+      const optionalFields = [
+        ["Reality Check", data.reality_check],
+        ["Leverage", data.leverage],
+        ["Hidden Opportunity", data.hidden_opportunity],
+        ["Meeting Agenda", data.meeting_agenda],
+        ["Follow Up", data.follow_up]
+      ].filter(([, value]) => value);
+
+      return `
+        <div class="msg assistant" id="msg-${index}">
+          <div class="bubble">
+            <div class="response-head">
+              <div class="response-title">${escapeHtml(modes[item.mode]?.label || "Executive Output")}</div>
+              <div class="response-actions">
+                <span class="priority ${priority}">${escapeHtml(priority)}</span>
+                <button class="copy-btn" onclick="copyOutput(${index})">Copy</button>
+              </div>
+            </div>
+
+            <div class="cards">
+              <div class="card">
+                <div class="label">What To Do Now</div>
+                <div class="value">${escapeHtml(data.what_to_do_now)}</div>
+              </div>
+              <div class="card">
+                <div class="label">Decision</div>
+                <div class="value">${escapeHtml(data.decision)}</div>
+              </div>
+              <div class="card">
+                <div class="label">Next Move</div>
+                <div class="value">${escapeHtml(data.next_move)}</div>
+              </div>
+              <div class="card">
+                <div class="label">Priority</div>
+                <div class="value">${escapeHtml(data.priority)}</div>
+              </div>
+              <div class="card wide">
+                <div class="label">Actions</div>
+                <div class="value"><ul>${actions.map(a => `<li>${escapeHtml(a)}</li>`).join("")}</ul></div>
+              </div>
+              <div class="card wide">
+                <div class="label">Risk</div>
+                <div class="value">${escapeHtml(data.risk)}</div>
+              </div>
+
+              ${optionalFields.map(([label, value]) => `
+                <div class="card wide">
+                  <div class="label">${escapeHtml(label)}</div>
+                  <div class="value">${Array.isArray(value)
+                    ? `<ul>${value.map(v => `<li>${escapeHtml(v)}</li>`).join("")}</ul>`
+                    : escapeHtml(value)
+                  }</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderArchive() {
+      const archive = document.getElementById("archiveList");
+      const userItems = history
+        .map((item, index) => ({ ...item, index }))
+        .filter(item => item.role === "user")
+        .slice(-8)
+        .reverse();
+
+      if (!userItems.length) {
+        archive.innerHTML = `<div class="stat">No history yet<small>Messages will appear here</small></div>`;
+        return;
+      }
+
+      archive.innerHTML = userItems.map(item => `
+        <div class="archive-item" onclick="scrollToMessage(${item.index})">
+          ${escapeHtml(item.text).slice(0, 70)}${item.text.length > 70 ? "..." : ""}
+          <small>${escapeHtml(modes[item.mode]?.label || "Execution")}</small>
+        </div>
+      `).join("");
+    }
+
+    function renderRecentDecisions() {
+      const decisions = history
+        .filter(item => item.role === "assistant" && item.data?.decision)
+        .slice(-4)
+        .reverse();
+
+      const el = document.getElementById("recentDecisions");
+
+      if (!decisions.length) {
+        el.innerHTML = `<div class="stat">No decisions yet<small>Run the engine to begin</small></div>`;
+        return;
+      }
+
+      el.innerHTML = decisions.map(item => `
+        <div class="stat">
+          ${escapeHtml(item.data.decision)}
+          <small>${escapeHtml(item.data.priority || "medium")} priority</small>
+        </div>
+      `).join("");
+    }
+
+    function renderExecutionQueue() {
+      const latest = history.filter(item => item.role === "assistant").at(-1);
+      const actions = latest && Array.isArray(latest.data?.actions) ? latest.data.actions : [];
+
+      const el = document.getElementById("executionQueue");
+
+      if (!actions.length) {
+        el.innerHTML = `<div class="queue-item"><span class="dot"></span><span>No queued actions yet</span></div>`;
+        return;
+      }
+
+      el.innerHTML = actions.slice(0, 6).map(action => `
+        <div class="queue-item"><span class="dot"></span><span>${escapeHtml(action)}</span></div>
+      `).join("");
+    }
+
+    async function loadMemory() {
+      const el = document.getElementById("memoryPreview");
+
+      try {
+        const res = await fetch(API + "/memory");
+        const data = await res.json();
+
+        const memory = Array.isArray(data.memory) ? data.memory : [];
+
+        if (!memory.length) {
+          el.innerHTML = `<div class="stat">No memory saved<small>Memory endpoint connected</small></div>`;
+          return;
+        }
+
+        el.innerHTML = memory.slice(-4).reverse().map(item => `
+          <div class="stat">
+            ${escapeHtml(item.key || "memory")}
+            <small>${escapeHtml(typeof item.value === "string" ? item.value : JSON.stringify(item.value)).slice(0, 90)}</small>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error("Memory fetch failed", err);
+        el.innerHTML = `<div class="stat error">Memory unavailable<small>Backend /memory could not be reached</small></div>`;
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("prompt");
+      const button = document.getElementById("sendBtn");
       const text = input.value.trim();
 
-      if (!text) return;
+      if (!text || button.disabled) return;
 
+      history.push({
+        role: "user",
+        text,
+        mode: selectedMode,
+        ts: Date.now()
+      });
+
+      saveHistory();
+      renderHistory();
+
+      input.value = "";
       button.disabled = true;
       button.textContent = "Running...";
 
@@ -554,42 +1095,99 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             input: text,
-            mode: "execution"
+            context: text,
+            mode: selectedMode
           })
         });
 
+        if (!res.ok) {
+          throw new Error(`Backend returned ${res.status}`);
+        }
+
         const data = await res.json();
 
-        document.getElementById("output").style.display = "block";
-        document.getElementById("what_to_do_now").textContent = data.what_to_do_now || "";
-        document.getElementById("decision").textContent = data.decision || "";
-        document.getElementById("next_move").textContent = data.next_move || "";
-        document.getElementById("priority").textContent = data.priority || "";
+        history.push({
+          role: "assistant",
+          data,
+          mode: selectedMode,
+          ts: Date.now()
+        });
 
-        const actions = Array.isArray(data.actions) ? data.actions : [data.actions || ""];
-        document.getElementById("actions").innerHTML =
-          "<ul>" + actions.map(a => `<li>${a}</li>`).join("") + "</ul>";
-
-        document.getElementById("risk").textContent = data.risk || "";
+        saveHistory();
+        renderHistory();
       } catch (err) {
-        document.getElementById("output").style.display = "block";
-        document.getElementById("what_to_do_now").textContent = "Connection failed.";
-        document.getElementById("decision").textContent = "Check frontend API URL and backend CORS.";
-        document.getElementById("next_move").textContent = "Redeploy frontend and backend.";
-        document.getElementById("priority").textContent = "critical";
-        document.getElementById("actions").innerHTML = "<ul><li>Verify backend URL</li><li>Verify ALLOWED_ORIGINS</li><li>Test /run directly</li></ul>";
-        document.getElementById("risk").textContent = err.message;
+        console.error("Run failed", err);
+
+        history.push({
+          role: "assistant",
+          mode: selectedMode,
+          ts: Date.now(),
+          data: {
+            what_to_do_now: "Check backend connection.",
+            decision: "The request failed safely.",
+            next_move: "Verify backend URL, deployment, and CORS.",
+            actions: [
+              "Confirm backend is live at https://executive-engine-os.onrender.com/health",
+              "Confirm frontend domain is allowed in backend CORS",
+              "Redeploy backend and frontend"
+            ],
+            risk: err.message,
+            priority: "critical"
+          }
+        });
+
+        saveHistory();
+        renderHistory();
       } finally {
         button.disabled = false;
-        button.textContent = "⚡ Run Engine";
+        button.textContent = "⚡ Send";
       }
     }
 
-    document.getElementById("input").addEventListener("keydown", function(e) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-        runEngine();
+    function copyOutput(index) {
+      const item = history[index];
+      if (!item || !item.data) return;
+      navigator.clipboard.writeText(JSON.stringify(item.data, null, 2));
+    }
+
+    function scrollToMessage(index) {
+      const el = document.getElementById(`msg-${index}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function scrollToBottom() {
+      const chat = document.getElementById("chat");
+      requestAnimationFrame(() => {
+        chat.scrollTop = chat.scrollHeight;
+      });
+    }
+
+    function newChat() {
+      history = [];
+      saveHistory();
+      renderHistory();
+    }
+
+    function clearHistory() {
+      history = [];
+      saveHistory();
+      renderHistory();
+    }
+
+    document.getElementById("prompt").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
       }
     });
+
+    document.querySelectorAll(".nav-item").forEach(btn => {
+      btn.addEventListener("click", () => setMode(btn.dataset.mode || "execution"));
+    });
+
+    setMode(selectedMode);
+    renderHistory();
+    loadMemory();
   </script>
 </body>
 </html>
