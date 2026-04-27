@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V67"
+APP_NAME = "Executive Engine OS V70"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 
@@ -49,6 +49,7 @@ class RunRequest(BaseModel):
     input: str
     context: Optional[str] = None
     mode: Optional[str] = "execution"
+    depth: Optional[str] = "standard"
 
 
 def now():
@@ -239,7 +240,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V67.
+You are Executive Engine OS V70.
 
 IDENTITY
 You are an elite CEO / President / COO operating partner.
@@ -272,8 +273,18 @@ RESPONSE QUALITY RULES
 - Identify the real constraint.
 - Tell the user what to ignore.
 - Give one decisive next move.
+- Prioritize signal over completeness.
+- Do not overfill optional fields unless they add real executive value.
+- Keep the core response readable and high-signal.
+- Default to practical brevity unless depth is deep.
+- Avoid filling every optional field with weak content; only use optional fields when they add value.
 - If inputs are messy, clarify the real issue and move them forward.
 - If the user needs a business decision, give a real decision, not options paralysis.
+
+OUTPUT DEPTH
+sharp: prioritize the first 6 fields and keep optional fields short.
+standard: balanced executive output with high-signal optional fields.
+deep: include richer diagnosis, second-order effect, 90-day play, operating rhythm, and decision filter.
 
 MODE BEHAVIOR
 execution: convert input into action, owner, cadence, metric.
@@ -343,6 +354,9 @@ def build_messages(req: RunRequest):
             "content": f"""
 MODE:
 {req.mode}
+
+OUTPUT DEPTH:
+{req.depth or "standard"}
 
 CONTEXT:
 {context}

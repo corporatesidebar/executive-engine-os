@@ -1,15 +1,13 @@
-Executive Engine OS V67
+Executive Engine OS V70
 
 Purpose:
-- High-end elite operator intelligence upgrade
-- Major backend prompt upgrade
-- Expanded backend output schema
-- Stronger profile/context usage
-- Less generic advice
-- More specific execution logic
-- Adds executive diagnosis, strategic read, constraint, unfair advantage, second-order effect, what to ignore, 90-day play, operating rhythm, success metric, decision filter, escalation point
-- Frontend renders expanded fields
-- Output cards have stronger hierarchy
+- Adds output depth control: Sharp / Standard / Deep
+- Adds compact output by default with Show More
+- Improves top nav/search spacing
+- Keeps Run Engine stable
+- Adds output metadata chips
+- Adds healthier backend live visual
+- Keeps V69 polish and V67 elite backend logic
 
 Upload:
 - frontend/index.html
@@ -23,6 +21,8 @@ Deploy:
 4. Hard refresh: Ctrl + Shift + R
 
 Test:
-1. Ask: Based on my profile, what is my highest leverage move?
-2. Ask: Give me an elite COO decision on what to focus on this week.
-3. Ask: Turn this messy situation into a clear next move.
+1. Select Sharp / Standard / Deep
+2. Run a prompt
+3. Click Show More
+4. Click Copy
+5. Test Compact View

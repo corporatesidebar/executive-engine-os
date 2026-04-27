@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V67</title>
+  <title>Executive Engine OS V70</title>
 
   <style>
     :root{
@@ -923,30 +923,559 @@
   color:#92400e !important;
 }
 
+
+/* V68 TOP NAV + SEARCH FIX — OVERRIDE */
+.app{
+  grid-template-columns:252px minmax(0,1fr) 330px !important;
+  grid-template-rows:56px minmax(0,1fr) !important;
+}
+
+.fixed-topbar,
+.topbar{
+  grid-column:1/-1 !important;
+  grid-row:1 !important;
+  height:56px !important;
+  min-height:56px !important;
+  display:grid !important;
+  grid-template-columns:245px auto minmax(280px,460px) 220px !important;
+  align-items:center !important;
+  gap:14px !important;
+  padding:0 16px !important;
+  background:#ffffff !important;
+  border-bottom:1px solid #dbe3ef !important;
+  box-shadow:0 1px 0 rgba(15,23,42,.04) !important;
+  position:relative !important;
+  z-index:100 !important;
+}
+
+.top-left{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  min-width:0 !important;
+}
+
+.brand-home{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  border:0 !important;
+  background:transparent !important;
+  cursor:pointer !important;
+  padding:0 !important;
+  min-width:0 !important;
+}
+
+.brand-icon{
+  width:28px !important;
+  height:28px !important;
+  border-radius:8px !important;
+  flex:0 0 auto !important;
+}
+
+.brand-title{
+  display:block !important;
+  font-size:18px !important;
+  font-weight:950 !important;
+  letter-spacing:-.04em !important;
+  white-space:nowrap !important;
+  color:#071226 !important;
+}
+
+.menu-btn{
+  width:32px !important;
+  height:32px !important;
+  display:grid !important;
+  place-items:center !important;
+}
+
+.top-nav-main{
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  overflow-x:auto !important;
+  min-width:0 !important;
+  height:100% !important;
+  scrollbar-width:none !important;
+}
+
+.top-nav-main::-webkit-scrollbar{
+  display:none !important;
+}
+
+.top-nav-btn{
+  height:34px !important;
+  border:1px solid transparent !important;
+  background:transparent !important;
+  color:#475569 !important;
+  border-radius:999px !important;
+  padding:0 12px !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  cursor:pointer !important;
+  white-space:nowrap !important;
+}
+
+.top-nav-btn:hover,
+.top-nav-btn.active{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border-color:#bfdbfe !important;
+}
+
+.top-search{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  width:100% !important;
+  height:38px !important;
+  border:1px solid #cbd5e1 !important;
+  background:#fff !important;
+  border-radius:10px !important;
+  padding:0 11px !important;
+  box-shadow:0 1px 0 rgba(15,23,42,.03), 0 8px 24px rgba(15,23,42,.04) !important;
+  justify-self:stretch !important;
+}
+
+.top-search:focus-within{
+  border-color:#93c5fd !important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.12), 0 8px 24px rgba(15,23,42,.06) !important;
+}
+
+.search-icon{
+  color:#64748b !important;
+  font-size:17px !important;
+}
+
+.top-search input,
+#globalSearch{
+  display:block !important;
+  width:100% !important;
+  border:0 !important;
+  outline:0 !important;
+  background:transparent !important;
+  color:#334155 !important;
+  font-size:14px !important;
+}
+
+.shortcut{
+  border-left:1px solid #e2e8f0 !important;
+  padding-left:8px !important;
+  color:#64748b !important;
+  font-size:12px !important;
+  white-space:nowrap !important;
+}
+
+.top-actions{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+}
+
+.sidebar,
+.main,
+.right{
+  grid-row:2 !important;
+  height:calc(100vh - 56px) !important;
+}
+
+.search-results{
+  display:none;
+  position:fixed !important;
+  top:64px !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:min(640px,calc(100vw - 40px)) !important;
+  max-height:430px !important;
+  overflow:auto !important;
+  background:#fff !important;
+  border:1px solid #dbe3ef !important;
+  border-radius:16px !important;
+  box-shadow:0 26px 80px rgba(15,23,42,.20) !important;
+  padding:10px !important;
+  z-index:200 !important;
+}
+
+.search-results.show{
+  display:block !important;
+}
+
+.search-result{
+  padding:12px !important;
+  border-radius:12px !important;
+  cursor:pointer !important;
+  border:1px solid transparent !important;
+  font-size:13px !important;
+  color:#334155 !important;
+}
+
+.search-result:hover{
+  background:#eff6ff !important;
+  border-color:#bfdbfe !important;
+}
+
+.search-result strong{
+  display:block !important;
+  color:#0f172a !important;
+  margin-bottom:4px !important;
+}
+
+@media(max-width:1280px){
+  .fixed-topbar,.topbar{
+    grid-template-columns:235px auto minmax(240px,360px) 170px !important;
+  }
+  .top-nav-btn{
+    padding:0 10px !important;
+  }
+}
+
+@media(max-width:1080px){
+  .fixed-topbar,.topbar{
+    grid-template-columns:220px minmax(220px,1fr) 120px !important;
+  }
+  .top-nav-main{
+    display:none !important;
+  }
+  .top-actions .pill:first-child{
+    display:none !important;
+  }
+}
+
+@media(max-width:760px){
+  .app{
+    display:block !important;
+  }
+  .fixed-topbar,.topbar{
+    position:sticky !important;
+    top:0 !important;
+    display:flex !important;
+    gap:8px !important;
+    padding:0 10px !important;
+  }
+  .brand-title{
+    display:none !important;
+  }
+  .top-search{
+    min-width:0 !important;
+    flex:1 !important;
+  }
+  .shortcut,
+  .top-actions .pill{
+    display:none !important;
+  }
+}
+
+
+/* V69 POLISH + STABILITY */
+.top-nav-main{
+  background:#f8fafc !important;
+  border:1px solid #edf2f7 !important;
+  border-radius:999px !important;
+  padding:4px !important;
+}
+
+.top-nav-btn{
+  height:30px !important;
+  padding:0 11px !important;
+  font-size:12.5px !important;
+}
+
+.top-nav-btn.active{
+  background:#ffffff !important;
+  color:#1d4ed8 !important;
+  border-color:#dbeafe !important;
+  box-shadow:0 2px 8px rgba(37,99,235,.08) !important;
+}
+
+.top-search{
+  height:36px !important;
+}
+
+.brand-title{
+  font-size:17px !important;
+}
+
+.hero h1{
+  max-width:760px;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+.hero p{
+  max-width:680px;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+.composer{
+  border-color:#d5dfec !important;
+  box-shadow:0 18px 48px rgba(15,23,42,.10) !important;
+}
+
+.composer:focus-within{
+  border-color:#93c5fd !important;
+  box-shadow:0 0 0 4px rgba(37,99,235,.10), 0 18px 48px rgba(15,23,42,.12) !important;
+}
+
+.quick{
+  box-shadow:none !important;
+}
+
+.quick:hover{
+  transform:translateY(-1px);
+}
+
+.panel{
+  background:#ffffff !important;
+}
+
+.mode-pill{
+  width:100%;
+  justify-content:center;
+}
+
+.archive-item strong{
+  line-height:1.25;
+}
+
+.response-card.full:first-child{
+  position:relative;
+}
+
+.response-card.full:first-child:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:12px;
+  bottom:12px;
+  width:4px;
+  border-radius:999px;
+  background:#2563eb;
+}
+
+.response-card.full:first-child{
+  padding-left:16px !important;
+}
+
+.elite-badge{
+  margin-left:2px;
+}
+
+.search-results{
+  backdrop-filter:blur(10px);
+}
+
+.search-result{
+  line-height:1.35;
+}
+
+.search-result mark{
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:4px;
+  padding:0 2px;
+}
+
+.compact-toggle{
+  width:100%;
+  height:36px;
+  border:1px solid #dbe3ef;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:8px;
+}
+
+.compact-toggle:hover{
+  background:#f8fafc;
+}
+
+body.compact-ui .status-strip,
+body.compact-ui .quick-row,
+body.compact-ui .right .panel:nth-of-type(n+4){
+  display:none !important;
+}
+
+body.compact-ui .hero-inner{
+  transform:translateY(-34px);
+}
+
+body.compact-ui .composer textarea{
+  height:92px !important;
+  min-height:92px !important;
+  max-height:92px !important;
+}
+
+
+/* V70 STABILITY + OUTPUT CONTROL */
+.depth-select{
+  border-color:#c7d2fe !important;
+  background:#eef2ff !important;
+  color:#3730a3 !important;
+}
+
+.top-nav-main{
+  max-width:100%;
+}
+
+.fixed-topbar,
+.topbar{
+  grid-template-columns:245px minmax(390px,1fr) minmax(260px,420px) 220px !important;
+}
+
+.top-search{
+  max-width:420px !important;
+  justify-self:end !important;
+}
+
+.composer-foot{
+  min-height:67px !important;
+}
+
+.composer-left{
+  flex:1;
+  min-width:0;
+}
+
+.composer-right{
+  flex:0 0 auto;
+}
+
+.hint{
+  white-space:nowrap;
+}
+
+.output-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin:8px 0 0;
+}
+
+.output-toolbar .copy-btn{
+  margin-top:0 !important;
+}
+
+.output-meta{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.output-meta span{
+  display:inline-flex;
+  border:1px solid #e2e8f0;
+  background:#fff;
+  color:#475569;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.response-grid.compact-output .response-card:nth-child(n+7){
+  display:none;
+}
+
+.expand-output-btn{
+  margin-top:8px;
+  height:34px;
+  border:1px solid #dbe3ef;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.expand-output-btn:hover{
+  background:#f8fafc;
+}
+
+.health-pulse{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#22c55e;
+  display:inline-block;
+  margin-right:6px;
+  box-shadow:0 0 0 5px rgba(34,197,94,.12);
+}
+
+body.compact-ui .response-grid .response-card:nth-child(n+7){
+  display:none !important;
+}
+
+body.compact-ui .elite-badge{
+  display:none;
+}
+
+@media(max-width:1280px){
+  .fixed-topbar,
+  .topbar{
+    grid-template-columns:225px minmax(320px,1fr) minmax(220px,320px) 170px !important;
+  }
+}
+
+@media(max-width:1080px){
+  .fixed-topbar,
+  .topbar{
+    grid-template-columns:220px minmax(220px,1fr) 130px !important;
+  }
+  .top-search{
+    max-width:none !important;
+  }
+}
+
+@media(max-width:760px){
+  .composer-left{
+    width:100%;
+  }
+  .hint{
+    white-space:normal;
+  }
+}
+
 </style>
 </head>
 
 <body>
 <div class="app">
-  <header class="topbar">
+  <header class="topbar fixed-topbar">
     <div class="top-left">
-      <button class="menu-btn" id="menuBtn">☰</button>
-      <button class="brand-home" id="brandHome" type="button" title="Go to main page">
+      <button class="menu-btn" id="menuBtn" type="button" title="Toggle sidebar">☰</button>
+      <button class="brand-home" id="brandHome" type="button" title="Main page">
         <div class="brand-icon">EE</div>
         <div class="brand-title">Executive Engine</div>
       </button>
     </div>
 
+    <nav class="top-nav-main" aria-label="Primary navigation">
+      <button class="top-nav-btn active" data-page="command" data-mode="execution">Command</button>
+      <button class="top-nav-btn" data-page="daily" data-mode="daily_brief">Today</button>
+      <button class="top-nav-btn" data-page="decisions" data-mode="decision">Decision</button>
+      <button class="top-nav-btn" data-page="meetings" data-mode="meeting">Meeting</button>
+      <button class="top-nav-btn" data-page="automation" data-mode="automation">Automation</button>
+      <button class="top-nav-btn" data-page="misc" data-mode="misc">Misc</button>
+      <button class="top-nav-btn" data-page="profile" data-mode="personal">Profile</button>
+    </nav>
+
     <div class="top-search">
-      <span>⌕</span>
-      <input id="globalSearch" placeholder="Search chats, decisions, profile, actions, and more..." />
-      <div class="shortcut">⌘ + P</div>
+      <span class="search-icon">⌕</span>
+      <input id="globalSearch" placeholder="Search history, decisions, actions, profile..." autocomplete="off" />
+      <div class="shortcut">⌘K</div>
     </div>
 
     <div class="top-actions">
-      <button class="pill" id="testBtn">Test</button>
-      <button class="pill" id="newTopBtn">New</button>
-      <button class="spark" id="moreBtn">✦</button>
+      <button class="pill" id="testBtn" type="button">Test</button>
+      <button class="pill" id="newTopBtn" type="button">New</button>
+      <button class="spark" id="moreBtn" type="button" title="More">✦</button>
       <div class="avatar">A</div>
     </div>
   </header>
@@ -978,7 +1507,7 @@
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V67 · elite operator intelligence
+      V70 · stable elite cockpit
     </div>
   </aside>
 
@@ -989,7 +1518,7 @@
         <p id="pageDesc">Type the situation. The engine will turn it into a decision, next move, action queue, risk, and priority.</p>
 
         <div class="status-strip">
-          <button class="status-chip green" id="backendChip" type="button">● Backend Live</button>
+          <button class="status-chip green" id="backendChip" type="button"><span class="health-pulse"></span>Backend Live</button>
           <button class="status-chip orange" id="execOutputChip" type="button">Elite Output</button>
           <button class="status-chip" id="profileChip" type="button">Profile Intelligence</button>
           <button class="status-chip green" id="automationChip" type="button">Internal Automation</button>
@@ -1035,6 +1564,11 @@
                 <option value="personal">Personal</option>
                 <option value="misc">Personal / Misc</option>
               </select>
+              <select id="depthSelect" class="mode-select depth-select" title="Output depth">
+                <option value="sharp">Sharp</option>
+                <option value="standard" selected>Standard</option>
+                <option value="deep">Deep</option>
+              </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
             </div>
             <div class="composer-right">
@@ -1061,6 +1595,7 @@
         <button class="mini-btn" id="debugBtn">Debug</button>
         <button class="mini-btn" id="exportBtn">Export</button>
       </div>
+      <button class="compact-toggle" id="compactBtn">Compact View</button>
     </section>
 
     <section class="panel">
@@ -1141,16 +1676,17 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v67_threads";
-const ACTIVE_KEY = "eeos_v67_active_thread";
-const PROFILE_KEY = "eeos_v67_profile";
-const MEMORY_KEY = "eeos_v67_memory";
+const STORAGE_KEY = "eeos_v70_threads";
+const ACTIVE_KEY = "eeos_v70_active_thread";
+const PROFILE_KEY = "eeos_v70_profile";
+const MEMORY_KEY = "eeos_v70_memory";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
 const runBtn = $("runBtn");
 const clearBtn = $("clearBtn");
 const modeSelect = $("modeSelect");
+const depthSelect = $("depthSelect");
 const hero = $("hero");
 const chatShell = $("chatShell");
 const chat = $("chat");
@@ -1172,7 +1708,9 @@ const backendStatus = $("backendStatus");
 const backendChip = $("backendChip");
 const debugBtn = $("debugBtn");
 const exportBtn = $("exportBtn");
+const compactBtn = $("compactBtn");
 const brandHome = $("brandHome");
+const topNavButtons = document.querySelectorAll(".top-nav-btn");
 const execOutputChip = $("execOutputChip");
 const profileChip = $("profileChip");
 const automationChip = $("automationChip");
@@ -1299,8 +1837,9 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V67 Context",
+    "Executive Engine OS V70 Context",
     "Mode: " + modeLabels[modeSelect.value],
+    "Output depth: " + (depthSelect ? depthSelect.value : "standard"),
     "User profile:",
     profileText() || "No profile saved.",
     "Recent thread:",
@@ -1375,6 +1914,9 @@ function setPage(page, mode){
   if(currentMode) currentMode.textContent = modeLabels[modeSelect.value] || "Execution";
 
   document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === page);
+  });
+  document.querySelectorAll(".top-nav-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.page === page);
   });
 
@@ -1496,9 +2038,10 @@ function renderAssistant(d){
     ["Question", d.clarifying_question]
   ].filter(x=>x[1]);
 
+  const outputId = "out_" + Math.random().toString(36).slice(2);
   return `
     <div class="elite-badge">◆ Elite Operator Output</div>
-    <div class="response-grid">
+    <div id="${outputId}" class="response-grid compact-output">
       <div class="response-card full"><div class="label">What To Do Now</div><div class="value">${esc(d.what_to_do_now)}</div></div>
       <div class="response-card"><div class="label">Decision</div><div class="value">${esc(d.decision)}</div></div>
       <div class="response-card"><div class="label">Next Move</div><div class="value">${esc(d.next_move)}</div></div>
@@ -1507,7 +2050,17 @@ function renderAssistant(d){
       <div class="response-card"><div class="label">Priority</div><div class="value"><span class="priority">${esc(d.priority)}</span></div></div>
       ${extra.map(([k,v])=>`<div class="response-card"><div class="label">${esc(k)}</div><div class="value">${esc(v)}</div></div>`).join("")}
     </div>
-    <button class="copy-btn" onclick="copyLatestResponse()">Copy Response</button>
+    <div class="output-toolbar">
+      <div class="output-meta">
+        <span>${esc(d.decision_confidence || "Confidence —")}</span>
+        <span>${esc(d.execution_score || "Execution —")}</span>
+        <span>${esc(d.time_horizon || "Time —")}</span>
+      </div>
+      <div>
+        <button class="expand-output-btn" onclick="toggleOutput('${outputId}', this)">Show More</button>
+        <button class="copy-btn" onclick="copyLatestResponse()">Copy</button>
+      </div>
+    </div>
   `;
 }
 
@@ -1589,7 +2142,7 @@ async function send(){
     const res = await fetch(API + "/run", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({input:text, mode:modeSelect.value, context:buildContext()})
+      body:JSON.stringify({input:text, mode:modeSelect.value, context:buildContext(), depth: depthSelect ? depthSelect.value : "standard"})
     });
 
     const raw = await res.text();
@@ -1626,6 +2179,11 @@ function runSearch(){
   const q = globalSearch.value.trim().toLowerCase();
   if(!q){searchResults.classList.remove("show");searchResults.innerHTML="";return;}
   const results = [];
+  const p = profileText();
+  if(p.toLowerCase().includes(q)){
+    results.push({thread:{id:activeThreadId,title:"Your Profile"},index:0,preview:p.slice(0,200)});
+  }
+
   Object.values(threads).forEach(t => {
     t.messages.forEach((m,i)=>{
       const text = [t.title,m.text,m.data?.decision,m.data?.next_move,(m.data?.actions||[]).join(" ")].join(" ").toLowerCase();
@@ -1634,7 +2192,8 @@ function runSearch(){
   });
   searchResults.innerHTML = results.length ? results.slice(0,20).map(r=>`
     <div class="search-result" onclick="openSearch('${r.thread.id}',${r.index})">
-      <strong>${esc(r.thread.title)}</strong>${esc(r.preview).slice(0,180)}
+      <strong>${esc(r.thread.title)}</strong>
+      <div>${esc(r.preview).slice(0,200)}</div>
     </div>`).join("") : `<div class="search-result"><strong>No results</strong>Try another search.</div>`;
   searchResults.classList.add("show");
 }
@@ -1727,7 +2286,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V67",
+    app:"Executive Engine OS V70",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -1793,6 +2352,19 @@ function openInternalAutomation(){
   notify("Internal automation dashboard opened");
 }
 
+function toggleCompact(){
+  document.body.classList.toggle("compact-ui");
+  localStorage.setItem("eeos_v70_compact", document.body.classList.contains("compact-ui") ? "1" : "0");
+  if(compactBtn) compactBtn.textContent = document.body.classList.contains("compact-ui") ? "Full View" : "Compact View";
+}
+
+function restoreCompact(){
+  if(localStorage.getItem("eeos_v70_compact") === "1"){
+    document.body.classList.add("compact-ui");
+    if(compactBtn) compactBtn.textContent = "Full View";
+  }
+}
+
 function goHome(){
   setPage("command", "execution");
   if(!getMessages().length){
@@ -1802,6 +2374,13 @@ function goHome(){
     if(composer.parentElement !== $("heroInner")) $("heroInner").appendChild(composer);
   }
   input.focus();
+}
+
+function toggleOutput(id, btn){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle("compact-output");
+  btn.textContent = el.classList.contains("compact-output") ? "Show More" : "Show Less";
 }
 
 function initEvents(){
@@ -1832,12 +2411,14 @@ function initEvents(){
   clearMemoryBtn.addEventListener("click", ()=>{localStorage.removeItem(MEMORY_KEY);renderRight();notify("Memory cleared");});
 
   document.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
+  document.querySelectorAll(".top-nav-btn").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
   document.querySelectorAll(".more-menu button").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
   document.querySelectorAll(".quick").forEach(btn => btn.addEventListener("click",()=>loadPrompt(btn.dataset.prompt,btn.dataset.mode)));
   document.querySelectorAll(".example-card").forEach(card => card.addEventListener("click",()=>loadPrompt(card.dataset.prompt,card.dataset.mode)));
   document.querySelectorAll(".function-btn").forEach(btn => btn.addEventListener("click",()=>handleFunction(btn.dataset.function)));
   if(debugBtn) debugBtn.addEventListener("click", openDebug);
   if(exportBtn) exportBtn.addEventListener("click", exportThread);
+  if(compactBtn) compactBtn.addEventListener("click", toggleCompact);
   if(backendChip) backendChip.addEventListener("click", checkBackend);
   if(execOutputChip) execOutputChip.addEventListener("click", openExecutiveOutputHelp);
   if(profileChip) profileChip.addEventListener("click", openProfileAware);
@@ -1857,6 +2438,7 @@ function initEvents(){
 }
 
 initEvents();
+restoreCompact();
 setPage("command","execution");
 render();
 checkBackend();
