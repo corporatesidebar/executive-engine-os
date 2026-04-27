@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V48"
+APP_NAME = "Executive Engine OS V53"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -34,6 +34,16 @@ app.add_middleware(
 )
 
 MEMORY: List[Dict[str, Any]] = []
+
+SERVICES = [
+    {"name": "Calendar", "status": "ready", "purpose": "Meeting prep, daily brief, reminders, review cadence"},
+    {"name": "Email", "status": "ready", "purpose": "Follow-ups, draft replies, summaries, outbound next steps"},
+    {"name": "Revenue System", "status": "ready", "purpose": "Pipeline, deals, client follow-up, revenue actions"},
+    {"name": "Finance System", "status": "ready", "purpose": "Capital allocation, margin, cash risk, ROI"},
+    {"name": "Execution System", "status": "ready", "purpose": "Execution queue, owners, deadlines, operating cadence"},
+    {"name": "Knowledge Base", "status": "ready", "purpose": "Docs, decisions, strategy, context library"},
+    {"name": "Automation", "status": "ready", "purpose": "Triggers, repeatable workflows, systemized execution"},
+]
 
 
 class RunRequest(BaseModel):
@@ -69,7 +79,19 @@ def safe_response(reason: str = "Temporary failure"):
         "leadership_implication": "Leadership must force clarity and sequencing.",
         "execution_score": "Medium",
         "decision_confidence": "Medium",
-        "time_horizon": "Immediate"
+        "time_horizon": "Immediate",
+        "systems_to_connect": ["Calendar", "Execution System", "Memory"],
+        "automation_opportunity": "Capture repeated decisions and turn them into workflows.",
+        "delegation_opportunity": "Assign ownership once the next move is clear.",
+        "owner": "Executive owner",
+        "operating_cadence": "Review progress daily until resolved.",
+        "key_metric": "Execution progress",
+        "decision_type": "Operating decision",
+        "urgency": "High",
+        "automation_plan": ["Identify repeatable workflow", "Define trigger", "Choose service", "Create first automation"],
+        "service_actions": ["Connect Calendar for cadence", "Connect Projects for execution queue"],
+        "trigger": "Manual executive command",
+        "required_services": ["Calendar", "Execution System", "Memory"]
     }
 
 
@@ -131,13 +153,39 @@ def normalize(data: Dict[str, Any]):
         "execution_score": str(data.get("execution_score") or "").strip(),
         "decision_confidence": str(data.get("decision_confidence") or "").strip(),
         "time_horizon": str(data.get("time_horizon") or "").strip(),
+        "systems_to_connect": data.get("systems_to_connect") if isinstance(data.get("systems_to_connect"), list) else [],
+        "automation_opportunity": str(data.get("automation_opportunity") or "").strip(),
+        "delegation_opportunity": str(data.get("delegation_opportunity") or "").strip(),
+        "owner": str(data.get("owner") or "").strip(),
+        "operating_cadence": str(data.get("operating_cadence") or "").strip(),
+        "key_metric": str(data.get("key_metric") or "").strip(),
+        "decision_type": str(data.get("decision_type") or "").strip(),
+        "urgency": str(data.get("urgency") or priority).strip(),
+        "automation_plan": data.get("automation_plan") if isinstance(data.get("automation_plan"), list) else [],
+        "service_actions": data.get("service_actions") if isinstance(data.get("service_actions"), list) else [],
+        "trigger": str(data.get("trigger") or "").strip(),
+        "required_services": data.get("required_services") if isinstance(data.get("required_services"), list) else [],
     }
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V48.
+You are Executive Engine OS V53.
 
-You respond like a CEO / President / COO-level operating partner.
+You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
+
+V51 upgrade:
+You operate as a native automation-aware executive operating system. Every answer should help the user run the business with clearer ownership, metrics, cadence, and decision velocity.
+
+You operate as an executive intelligence hub that can reason across:
+- calendar and meeting cadence
+- email and follow-up
+- CRM and sales pipeline
+- finance, cash, margin, ROI, and capital allocation
+- projects and execution queues
+- team performance, delegation, and accountability
+- automation opportunities
+- knowledge base and memory
+- personal operating capacity
 
 V48 upgrade:
 You must elevate the answer into executive workflow quality:
@@ -149,6 +197,17 @@ You must elevate the answer into executive workflow quality:
 - leadership implication
 - execution score
 - time horizon
+- system integration opportunities
+- automation opportunities
+- delegation opportunities
+- operating cadence
+- key metrics
+- ownership clarity
+- urgency classification
+- operating system mapping
+- native automation blueprinting
+- trigger/action workflow design
+- workflow ownership and review cadence
 
 You are not a generic assistant.
 You are not a motivational coach.
@@ -205,7 +264,19 @@ Required JSON shape:
   "leadership_implication": "",
   "execution_score": "Low|Medium|High",
   "decision_confidence": "Low|Medium|High",
-  "time_horizon": "Immediate|Short-term|Medium-term|Long-term"
+  "time_horizon": "Immediate|Short-term|Medium-term|Long-term",
+  "systems_to_connect": [],
+  "automation_opportunity": "",
+  "delegation_opportunity": "",
+  "owner": "",
+  "operating_cadence": "",
+  "key_metric": "",
+  "decision_type": "",
+  "urgency": "low|medium|high|critical",
+  "automation_plan": [],
+  "service_actions": [],
+  "trigger": "",
+  "required_services": []
 }
 
 Field rules:
@@ -227,6 +298,18 @@ Field rules:
 - execution_score: Low, Medium, or High based on how executable the plan is.
 - decision_confidence: Low, Medium, or High based on available context.
 - time_horizon: Immediate, Short-term, Medium-term, or Long-term.
+- systems_to_connect: list of relevant systems such as Calendar, Email, CRM, Finance, Projects, Team, Automation, Knowledge Base.
+- automation_opportunity: one specific automation opportunity if relevant.
+- delegation_opportunity: one specific delegation opportunity if relevant.
+- owner: who or what role should own the next move.
+- operating_cadence: review rhythm, checkpoint, or meeting cadence.
+- key_metric: the metric that proves progress.
+- decision_type: capital, sales, operating, people, strategy, risk, personal, or automation.
+- urgency: low, medium, high, or critical.
+- automation_plan: list of automation build steps if relevant.
+- service_actions: list of operating system actions if relevant.
+- trigger: what should trigger the automation or workflow.
+- required_services: list of operating systems needed such as Calendar, Email, Revenue System, Finance System, Execution System, Knowledge Base, Automation, Memory.
 """
 
 
@@ -264,6 +347,18 @@ def save_memory(req: RunRequest, output: Dict[str, Any]):
         "execution_score": output.get("execution_score"),
         "decision_confidence": output.get("decision_confidence"),
         "time_horizon": output.get("time_horizon"),
+        "systems_to_connect": output.get("systems_to_connect"),
+        "automation_opportunity": output.get("automation_opportunity"),
+        "delegation_opportunity": output.get("delegation_opportunity"),
+        "owner": output.get("owner"),
+        "operating_cadence": output.get("operating_cadence"),
+        "key_metric": output.get("key_metric"),
+        "decision_type": output.get("decision_type"),
+        "urgency": output.get("urgency"),
+        "automation_plan": output.get("automation_plan"),
+        "service_actions": output.get("service_actions"),
+        "trigger": output.get("trigger"),
+        "required_services": output.get("required_services"),
         "created_at": now(),
     })
 
@@ -314,6 +409,24 @@ async def run(req: RunRequest):
 
     except Exception as e:
         return safe_response(f"Backend fallback: {str(e)[:160]}")
+
+
+@app.get("/integrations")
+async def integrations():
+    return {
+        "services": SERVICES,
+        "note": "Operating systems are mapped for native executive workflows."
+    }
+
+
+@app.post("/automation-plan")
+async def automation_plan(req: RunRequest):
+    automation_req = RunRequest(
+        input=f"Create an automation blueprint for: {req.input}",
+        context=req.context,
+        mode="automation"
+    )
+    return await run(automation_req)
 
 
 @app.get("/memory")

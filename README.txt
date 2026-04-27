@@ -1,31 +1,19 @@
-Executive Engine OS V48
+Executive Engine OS V53
+
+Purpose:
+- Removes technical integration-warning feel
+- Makes automation feel native to the OS
+- Renames service language into operating systems language
+- Keeps backend fields stable for frontend compatibility
+- Makes automation output feel like workflow design, not IT setup
 
 Upload:
 - frontend/index.html
 - backend/main.py
 - backend/requirements.txt
 
-Render backend:
-- Root Directory: backend
-- Build Command: pip install -r requirements.txt
-- Start Command: uvicorn main:app --host 0.0.0.0 --port 10000
-
-Render frontend:
-- Root Directory: frontend
-- Build Command: blank
-- Publish Directory: .
-
-Required backend env:
-- OPENAI_API_KEY
-
-Optional:
-- OPENAI_MODEL=gpt-4o-mini
-- ALLOWED_ORIGINS=https://executive-engine-frontend.onrender.com
-
-V48 adds executive workflow fields:
-- executive_summary
-- financial_impact
-- leadership_implication
-- execution_score
-- decision_confidence
-- time_horizon
+Deploy:
+1. Commit changes
+2. Render backend -> Manual Deploy
+3. Render frontend -> Clear cache & deploy
+4. Hard refresh frontend

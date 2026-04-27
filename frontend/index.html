@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V48</title>
+<title>Executive Engine OS V53</title>
 
 <style>
 :root{
@@ -151,6 +151,28 @@ body{
 
 .left-action:hover{
   background:rgba(37,99,235,.22);
+}
+
+.left-action.subtle{
+  background:rgba(255,255,255,.025);
+  color:#b9c7dc;
+}
+
+.left-action.danger{
+  color:#fecaca;
+  border-color:rgba(248,113,113,.25);
+}
+
+.extra-tools{
+  display:grid;
+  gap:8px;
+}
+
+.sidebar-help{
+  margin:10px 8px 0;
+  color:#8ea2c4;
+  font-size:12px;
+  line-height:1.4;
 }
 
 .mode-card{
@@ -1025,6 +1047,224 @@ select{
   border-color:#bfdbfe;
 }
 
+.integrations-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.integration-item{
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  color:#334155;
+}
+
+.integration-item strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:3px;
+}
+
+.integration-item span{
+  display:block;
+  color:#64748b;
+  font-size:12px;
+}
+
+.exec-level{
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  color:white;
+  border:0;
+}
+
+.exec-level h3{
+  color:#bfdbfe !important;
+}
+
+.exec-level .item{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.12);
+  color:#e5edf9;
+}
+
+.exec-level .item strong{
+  color:#fff;
+}
+
+.cockpit-grid{
+  max-width:920px;
+  margin:0 auto 14px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+
+.cockpit-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 8px 22px rgba(15,23,42,.045);
+}
+
+.cockpit-card strong{
+  display:block;
+  font-size:18px;
+  color:#0f172a;
+}
+
+.cockpit-card span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  margin-top:2px;
+}
+
+.priority-alert{
+  max-width:920px;
+  margin:0 auto 12px;
+  border:1px solid #fecaca;
+  background:#fef2f2;
+  color:#991b1b;
+  border-radius:16px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  display:none;
+}
+
+.priority-alert.show{
+  display:block;
+}
+
+.memory-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+.memory-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:8px 10px;
+  cursor:pointer;
+  font-weight:800;
+  font-size:12px;
+}
+
+.memory-btn:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  color:#1d4ed8;
+}
+
+.system-tag{
+  display:inline-flex;
+  margin:3px 4px 0 0;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-size:11px;
+  font-weight:900;
+}
+
+@media(max-width:900px){
+  .cockpit-grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:620px){
+  .cockpit-grid{grid-template-columns:1fr}
+}
+
+.service-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.service-row{
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.service-row strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:3px;
+}
+
+.service-row span{
+  display:block;
+  color:#64748b;
+  font-size:12px;
+}
+
+.service-status{
+  display:inline-flex;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  background:#fff7ed;
+  color:#c2410c;
+  border:1px solid #fed7aa;
+  white-space:nowrap;
+}
+
+.service-status.ready{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+
+.automation-list{
+  display:grid;
+  gap:8px;
+}
+
+.automation-card{
+  border:1px solid #edf2f7;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  color:#334155;
+}
+
+.automation-card strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+
+.automation-card button{
+  margin-top:8px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  border-radius:8px;
+  padding:7px 9px;
+  cursor:pointer;
+  font-weight:800;
+  font-size:12px;
+}
+
 /* MODAL */
 .modal-backdrop{
   position:fixed;
@@ -1123,33 +1363,46 @@ select{
     </div>
 
     <div class="nav-scroll">
-      <div class="nav-label">Command</div>
-      <button class="nav-btn active" data-page="command" data-mode="execution"><span class="nav-ico">⌘</span>Command Center</button>
-      <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="nav-ico">◷</span>Daily Brief</button>
-      <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="nav-ico">◆</span>Decisions</button>
-      <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="nav-ico">◉</span>Meeting Prep</button>
+      <div class="nav-label">Workflows</div>
+      <button class="nav-btn active" data-page="command" data-mode="execution"><span class="nav-ico">⌘</span>Ask / Execute</button>
+      <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="nav-ico">◷</span>Plan Today</button>
+      <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="nav-ico">◆</span>Make Decision</button>
+      <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="nav-ico">◉</span>Prepare Meeting</button>
       <button class="nav-btn" data-page="personal" data-mode="personal"><span class="nav-ico">★</span>Personal</button>
 
-      <div class="nav-label">Intelligence</div>
+      <div class="nav-label">Tools</div>
       <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="nav-ico">✦</span>Strategy</button>
-      <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="nav-ico">!</span>Risk Review</button>
+      <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="nav-ico">!</span>Check Risk</button>
       <button class="nav-btn" data-page="proposal" data-mode="proposal"><span class="nav-ico">▣</span>Proposal</button>
+
+      <div class="nav-label">Executive Systems</div>
+      <button class="nav-btn" data-page="capital" data-mode="strategy"><span class="nav-ico">$</span>Capital</button>
+      <button class="nav-btn" data-page="sales" data-mode="strategy"><span class="nav-ico">↗</span>Sales</button>
+      <button class="nav-btn" data-page="team" data-mode="meeting"><span class="nav-ico">●</span>Team</button>
+      <button class="nav-btn" data-page="ops" data-mode="execution"><span class="nav-ico">⚙</span>Operations</button>
+      <button class="nav-btn" data-page="automation" data-mode="execution"><span class="nav-ico">⚡</span>Automation</button>
+      <button class="nav-btn" data-page="services" data-mode="execution"><span class="nav-ico">◆</span>Systems</button>
     </div>
+
+    <div class="sidebar-help">Start with Ask / Execute. Use the others only when you know the workflow.</div>
 
     <div class="left-actions">
       <button id="newThreadLeft" class="left-action">+ New Chat</button>
-      <button id="dailyRunLeft" class="left-action">Run My Day</button>
-      <button id="weeklyPlanLeft" class="left-action">Weekly Plan</button>
-      <button id="personalResetLeft" class="left-action">Personal Reset</button>
-      <button id="exportLeft" class="left-action">Export Current Thread</button>
-      <button id="exportAllLeft" class="left-action">Export All Threads</button>
-      <button id="clearAllLeft" class="left-action">Clear All History</button>
-      <button id="refreshMemoryLeft" class="left-action">Refresh Memory</button>
+      <button id="dailyRunLeft" class="left-action">Plan My Day</button>
+      <button id="weeklyPlanLeft" class="left-action">Plan My Week</button>
+      <button id="moreToolsLeft" class="left-action subtle">More Tools</button>
+      <div id="extraTools" class="extra-tools hidden">
+        <button id="personalResetLeft" class="left-action">Personal Reset</button>
+        <button id="exportLeft" class="left-action">Export Thread</button>
+        <button id="exportAllLeft" class="left-action">Export All</button>
+        <button id="refreshMemoryLeft" class="left-action">Refresh Memory</button>
+        <button id="clearAllLeft" class="left-action danger">Clear History</button>
+      </div>
     </div>
 
     <div class="mode-card">
       <strong>Executive Mode</strong>
-      <span>V48 · executive workflows + scoring</span>
+      <span>V53 · native automation</span>
     </div>
   </aside>
 
@@ -1172,12 +1425,17 @@ select{
     <div class="top-nav">
       <div class="top-nav-left">
         <button class="top-tab active" data-page="command" data-mode="execution">Command</button>
-        <button class="top-tab" data-page="daily" data-mode="daily_brief">Daily Brief</button>
-        <button class="top-tab" data-page="decisions" data-mode="decision">Decisions</button>
+        <button class="top-tab" data-page="daily" data-mode="daily_brief">Plan Today</button>
+        <button class="top-tab" data-page="decisions" data-mode="decision">Make Decision</button>
         <button class="top-tab" data-page="meetings" data-mode="meeting">Meetings</button>
         <button class="top-tab" data-page="strategy" data-mode="strategy">Strategy</button>
         <button class="top-tab" data-page="risk" data-mode="risk_review">Risk</button>
         <button class="top-tab" data-page="personal" data-mode="personal">Personal</button>
+        <button class="top-tab" data-page="capital" data-mode="strategy">Capital</button>
+        <button class="top-tab" data-page="sales" data-mode="strategy">Sales</button>
+        <button class="top-tab" data-page="ops" data-mode="execution">Ops</button>
+        <button class="top-tab" data-page="automation" data-mode="execution">Automation</button>
+        <button class="top-tab" data-page="services" data-mode="execution">Systems</button>
       </div>
       <div class="top-nav-right">
         <input id="globalSearch" class="global-search" placeholder="Search chats, actions, decisions..." />
@@ -1190,7 +1448,7 @@ select{
       <div id="centerStage" class="center-stage">
         <div class="center-inner">
           <h1>What needs to move forward?</h1>
-          <p>Drop the situation. V48 turns it into a clearer executive decision, next move, action queue, risk, and priority.</p>
+          <p>Drop the situation. V49 turns it into a clearer executive decision, next move, action queue, risk, and priority.</p>
           <div id="centerComposerMount"></div>
           <div class="quick-row">
             <button class="quick-pill" data-mode="daily_brief" data-prompt="Run my day. Give me the highest priority, what to ignore, top risks, and the execution queue.">Run my day</button>
@@ -1205,6 +1463,8 @@ select{
       </div>
 
       <div id="chatShell" class="chat-shell hidden">
+        <div id="priorityAlert" class="priority-alert"></div>
+        <div id="cockpitGrid" class="cockpit-grid hidden"></div>
         <div id="focusCard" class="focus-card hidden">
           <strong>Executive Focus</strong>
           <div id="focusText">No focus yet.</div>
@@ -1219,7 +1479,7 @@ select{
       <div id="composerArea" class="composer-area hidden">
         <div id="errorBox" class="error-box"></div>
         <div id="composer" class="composer">
-          <textarea id="input" placeholder="Tell the engine what needs to get done, decided, fixed, or prepared..."></textarea>
+          <textarea id="input" placeholder="Ask anything. Example: What should I focus on today?"></textarea>
           <div class="composer-foot">
             <div class="left-controls">
               <select id="mode">
@@ -1275,6 +1535,10 @@ select{
     <div class="panel">
       <h3>Memory Snapshot</h3>
       <div id="localMemory"><div class="empty">No local memory yet.</div></div>
+      <div class="memory-actions">
+        <button id="summarizeMemoryBtn" class="memory-btn">Summarize</button>
+        <button id="clearMemoryBtn" class="memory-btn">Clear</button>
+      </div>
     </div>
 
     <div class="panel">
@@ -1296,9 +1560,9 @@ select{
       <h3>Functions</h3>
       <div class="function-grid">
         <button class="function-btn" id="fnRunDay">Run My Day</button>
-        <button class="function-btn" id="fnMeeting">Meeting Prep</button>
+        <button class="function-btn" id="fnMeeting">Prepare Meeting</button>
         <button class="function-btn" id="fnStrategy">Strategy Sprint</button>
-        <button class="function-btn" id="fnRisk">Risk Review</button>
+        <button class="function-btn" id="fnRisk">Check Risk</button>
         <button class="function-btn" id="fnProposal">Draft Proposal</button>
         <button class="function-btn" id="fnFollowup">Follow-Up Plan</button>
         <button class="function-btn" id="fnPersonal">Personal Reset</button>
@@ -1308,6 +1572,14 @@ select{
         <button class="function-btn" id="fnBoard">Board Summary</button>
         <button class="function-btn" id="fnDelegate">Delegation Plan</button>
         <button class="function-btn" id="fnScore">Decision Score</button>
+        <button class="function-btn" id="fnCapital">Capital Allocation</button>
+        <button class="function-btn" id="fnSales">Revenue Sprint</button>
+        <button class="function-btn" id="fnTeam">Team / Delegation</button>
+        <button class="function-btn" id="fnAutomation">Automation Map</button>
+        <button class="function-btn" id="fnCockpit">Operating Cockpit</button>
+        <button class="function-btn" id="fnIntegration">Systems Plan</button>
+        <button class="function-btn" id="fnAutomationBuild">Build Automation</button>
+        <button class="function-btn" id="fnServiceMap">System Map</button>
       </div>
     </div>
 
@@ -1334,10 +1606,10 @@ select{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v48_threads";
-const ACTIVE_THREAD_KEY = "eeos_v48_active_thread";
-const MEMORY_KEY = "eeos_v48_local_memory";
-const DRAFT_KEY = "eeos_v48_draft";
+const STORAGE_KEY = "eeos_v53_threads";
+const ACTIVE_THREAD_KEY = "eeos_v53_active_thread";
+const MEMORY_KEY = "eeos_v53_local_memory";
+const DRAFT_KEY = "eeos_v53_draft";
 
 const input = document.getElementById("input");
 const modeEl = document.getElementById("mode");
@@ -1378,6 +1650,12 @@ const downloadModal = document.getElementById("downloadModal");
 const closeModal = document.getElementById("closeModal");
 const toast = document.getElementById("toast");
 const pageContent = document.getElementById("pageContent");
+const servicesPanel = document.getElementById("servicesPanel");
+const automationPanel = document.getElementById("automationPanel");
+const cockpitGrid = document.getElementById("cockpitGrid");
+const priorityAlert = document.getElementById("priorityAlert");
+const summarizeMemoryBtn = document.getElementById("summarizeMemoryBtn");
+const clearMemoryBtn = document.getElementById("clearMemoryBtn");
 const focusCard = document.getElementById("focusCard");
 const focusText = document.getElementById("focusText");
 const commandInsights = document.getElementById("commandInsights");
@@ -1398,6 +1676,18 @@ const fnNextLevel = document.getElementById("fnNextLevel");
 const fnBoard = document.getElementById("fnBoard");
 const fnDelegate = document.getElementById("fnDelegate");
 const fnScore = document.getElementById("fnScore");
+const fnCapital = document.getElementById("fnCapital");
+const fnSales = document.getElementById("fnSales");
+const fnTeam = document.getElementById("fnTeam");
+const fnAutomation = document.getElementById("fnAutomation");
+const fnCockpit = document.getElementById("fnCockpit");
+const fnIntegration = document.getElementById("fnIntegration");
+const fnAutomationBuild = document.getElementById("fnAutomationBuild");
+const fnServiceMap = document.getElementById("fnServiceMap");
+const moreToolsLeft = document.getElementById("moreToolsLeft");
+const extraTools = document.getElementById("extraTools");
+const fnMoreActions = document.getElementById("fnMoreActions");
+const moreActionButtons = document.getElementById("moreActionButtons");
 const threadSearch = document.getElementById("threadSearch");
 
 let threads = loadThreads();
@@ -1580,7 +1870,19 @@ function normalize(data){
     leadership_implication:data.leadership_implication || "",
     execution_score:data.execution_score || "",
     decision_confidence:data.decision_confidence || "",
-    time_horizon:data.time_horizon || ""
+    time_horizon:data.time_horizon || "",
+    systems_to_connect:Array.isArray(data.systems_to_connect) ? data.systems_to_connect : [],
+    automation_opportunity:data.automation_opportunity || "",
+    delegation_opportunity:data.delegation_opportunity || "",
+    owner:data.owner || "",
+    operating_cadence:data.operating_cadence || "",
+    key_metric:data.key_metric || "",
+    decision_type:data.decision_type || "",
+    urgency:data.urgency || "",
+    automation_plan:Array.isArray(data.automation_plan) ? data.automation_plan : [],
+    service_actions:Array.isArray(data.service_actions) ? data.service_actions : [],
+    trigger:data.trigger || "",
+    required_services:Array.isArray(data.required_services) ? data.required_services : []
   };
 }
 
@@ -1605,7 +1907,19 @@ function toPlainText(data){
     d.leadership_implication ? `LEADERSHIP IMPLICATION: ${d.leadership_implication}` : "",
     d.execution_score ? `EXECUTION SCORE: ${d.execution_score}` : "",
     d.decision_confidence ? `DECISION CONFIDENCE: ${d.decision_confidence}` : "",
-    d.time_horizon ? `TIME HORIZON: ${d.time_horizon}` : ""
+    d.time_horizon ? `TIME HORIZON: ${d.time_horizon}` : "",
+    d.systems_to_connect?.length ? `SYSTEMS TO CONNECT: ${d.systems_to_connect.join(", ")}` : "",
+    d.automation_opportunity ? `AUTOMATION OPPORTUNITY: ${d.automation_opportunity}` : "",
+    d.delegation_opportunity ? `DELEGATION OPPORTUNITY: ${d.delegation_opportunity}` : "",
+    d.owner ? `OWNER: ${d.owner}` : "",
+    d.operating_cadence ? `OPERATING CADENCE: ${d.operating_cadence}` : "",
+    d.key_metric ? `KEY METRIC: ${d.key_metric}` : "",
+    d.decision_type ? `DECISION TYPE: ${d.decision_type}` : "",
+    d.urgency ? `URGENCY: ${d.urgency}` : "",
+    d.trigger ? `TRIGGER: ${d.trigger}` : "",
+    d.required_services?.length ? `REQUIRED SERVICES: ${d.required_services.join(", ")}` : "",
+    d.service_actions?.length ? `SERVICE ACTIONS: ${d.service_actions.join(", ")}` : "",
+    d.automation_plan?.length ? `AUTOMATION PLAN: ${d.automation_plan.join(" -> ")}` : ""
   ].filter(Boolean).join("\n\n");
 }
 
@@ -1624,7 +1938,19 @@ function renderAssistant(data){
     ["Leadership Implication", d.leadership_implication],
     ["Execution Score", d.execution_score],
     ["Decision Confidence", d.decision_confidence],
-    ["Time Horizon", d.time_horizon]
+    ["Time Horizon", d.time_horizon],
+    ["Systems To Connect", d.systems_to_connect.join(", ")],
+    ["Automation Opportunity", d.automation_opportunity],
+    ["Delegation Opportunity", d.delegation_opportunity],
+    ["Owner", d.owner],
+    ["Operating Cadence", d.operating_cadence],
+    ["Key Metric", d.key_metric],
+    ["Decision Type", d.decision_type],
+    ["Urgency", d.urgency],
+    ["Trigger", d.trigger],
+    ["Required Systems", d.required_services.join(", ")],
+    ["System Actions", d.service_actions.join(", ")],
+    ["Automation Plan", d.automation_plan.join(" → ")]
   ].filter(x => x[1]);
 
   return `
@@ -1908,6 +2234,38 @@ function getLastUserInput(){
   return "";
 }
 
+function renderCockpit(){
+  const d = latestAssistant();
+
+  if(!getMessages().length || !d){
+    cockpitGrid.classList.add("hidden");
+    priorityAlert.classList.remove("show");
+    priorityAlert.textContent = "";
+    return;
+  }
+
+  cockpitGrid.classList.remove("hidden");
+
+  const systems = Array.isArray(d.systems_to_connect) ? d.systems_to_connect.length : 0;
+  const priority = String(d.priority || "—");
+  const urgency = d.urgency || (priority === "critical" ? "Critical" : priority);
+
+  cockpitGrid.innerHTML = `
+    <div class="cockpit-card"><strong>${esc(priority)}</strong><span>Priority</span></div>
+    <div class="cockpit-card"><strong>${esc(d.decision_confidence || "—")}</strong><span>Confidence</span></div>
+    <div class="cockpit-card"><strong>${esc(d.execution_score || "—")}</strong><span>Execution</span></div>
+    <div class="cockpit-card"><strong>${esc(systems)}</strong><span>Systems</span></div>
+  `;
+
+  if(priority === "critical" || String(urgency).toLowerCase() === "critical"){
+    priorityAlert.textContent = "Critical: handle this before adding more work.";
+    priorityAlert.classList.add("show");
+  }else{
+    priorityAlert.classList.remove("show");
+    priorityAlert.textContent = "";
+  }
+}
+
 function renderCommandIntelligence(){
   const lastInput = getLastUserInput();
   const d = latestAssistant();
@@ -1977,6 +2335,8 @@ function renderWorkflowStrip(){
     <button class="workflow-btn" onclick="runFollowup('Create a board-level summary with decision, impact, risk, and next move.')">Board Summary</button>
     <button class="workflow-btn" onclick="runFollowup('Create a delegation plan: who does what, in what order, by when.')">Delegation Plan</button>
     <button class="workflow-btn" onclick="runFollowup('Create a ruthless prioritization: what to do, delay, delegate, and delete.')">Prioritize</button>
+    <button class="workflow-btn" onclick="runFollowup('Turn this into a CEO operating dashboard: owner, metric, cadence, risk, and next review.')">Operating Dashboard</button>
+    <button class="workflow-btn" onclick="runFollowup('Create an executive systems plan across calendar, email, revenue, finance, execution, team, and automation.')">Systems Plan</button>
   `;
 }
 
@@ -2069,6 +2429,72 @@ function pageConfig(page){
         ["People situation","Plan the best next message/action and what not to do.","Help me handle this people situation: "],
         ["Admin cleanup","Organize personal admin into a simple sequence.","Help me clean up personal admin: "]
       ]
+    },
+    capital:{
+      title:"Capital",
+      desc:"Make capital allocation decisions like a high-level operator: cash, margin, risk, opportunity cost, and ROI.",
+      mode:"strategy",
+      cards:[
+        ["Capital allocation","Decide where money, time, and resources should go.","Review this capital allocation decision: "],
+        ["Margin review","Find margin risk and profit upside.","Review margin and profit impact for: "],
+        ["Investment decision","Decide whether this investment is worth it.","Evaluate this investment decision: "],
+        ["Opportunity cost","Identify what this choice prevents or delays.","Review opportunity cost for: "]
+      ]
+    },
+    sales:{
+      title:"Sales",
+      desc:"Drive revenue with pipeline clarity, offer structure, follow-up, objections, and closing moves.",
+      mode:"strategy",
+      cards:[
+        ["Revenue sprint","Find the fastest path to revenue.","Build a revenue sprint for: "],
+        ["Pipeline review","Prioritize deals and next actions.","Review this sales pipeline: "],
+        ["Close strategy","Create a closing sequence and risk review.","Create a close strategy for: "],
+        ["Offer sharpen","Improve value proposition and offer logic.","Sharpen this offer: "]
+      ]
+    },
+    team:{
+      title:"Team",
+      desc:"Improve leadership execution: delegation, performance, communication, accountability, and meetings.",
+      mode:"meeting",
+      cards:[
+        ["Delegation plan","Clarify who owns what and by when.","Create a delegation plan for: "],
+        ["Performance conversation","Plan a direct but constructive leadership conversation.","Prepare a performance conversation for: "],
+        ["Accountability system","Build checkpoints and ownership.","Create accountability system for: "],
+        ["Leadership message","Draft the leadership message and follow-up.","Draft leadership communication for: "]
+      ]
+    },
+    ops:{
+      title:"Operations",
+      desc:"Remove bottlenecks, improve process, reduce drag, and increase execution speed.",
+      mode:"execution",
+      cards:[
+        ["Find bottleneck","Identify the constraint slowing execution.","Find the operating bottleneck in: "],
+        ["Process fix","Improve workflow and reduce friction.","Fix this process: "],
+        ["Execution cadence","Create cadence, checkpoints, and owners.","Build operating cadence for: "],
+        ["Remove drag","Find what to stop, simplify, or automate.","Remove operational drag from: "]
+      ]
+    },
+    automation:{
+      title:"Automation",
+      desc:"Map repeatable work into native automation opportunities, triggers, workflows, and execution systems.",
+      mode:"execution",
+      cards:[
+        ["Automation map","Find what should be automated first.","Create an automation map for: "],
+        ["Workflow design","Turn this workflow into steps, triggers, and outputs.","Design an automation workflow for: "],
+        ["Tool stack","Recommend tool categories and integration order.","Suggest tool stack and integration plan for: "],
+        ["Systemize task","Turn this recurring task into a system.","Systemize this task: "]
+      ]
+    },
+    services:{
+      title:"Systems",
+      desc:"Map the executive operating system: calendar, email, revenue, finance, execution, knowledge, and automation.",
+      mode:"execution",
+      cards:[
+        ["System map","Identify which operating systems support this workflow.","Map systems needed for: "],
+        ["Calendar workflow","Create meeting and scheduling operating rhythm.","Create calendar workflow for: "],
+        ["Email workflow","Create follow-up, drafting, and response workflows.","Create email workflow for: "],
+        ["Revenue workflow","Create sales pipeline and follow-up workflows.","Create revenue workflow for: "]
+      ]
     }
   };
 
@@ -2105,6 +2531,12 @@ function smartRoutePrompt(text){
 
   if(value.includes("meeting") || value.includes("call") || value.includes("conversation")) return ["meetings","meeting"];
   if(value.includes("risk") || value.includes("worried") || value.includes("issue") || value.includes("problem")) return ["risk","risk_review"];
+  if(value.includes("capital") || value.includes("cash") || value.includes("margin") || value.includes("roi") || value.includes("investment")) return ["capital","strategy"];
+  if(value.includes("sales") || value.includes("revenue") || value.includes("pipeline") || value.includes("close") || value.includes("deal")) return ["sales","strategy"];
+  if(value.includes("team") || value.includes("employee") || value.includes("delegate") || value.includes("staff")) return ["team","meeting"];
+  if(value.includes("operations") || value.includes("process") || value.includes("bottleneck") || value.includes("workflow")) return ["ops","execution"];
+  if(value.includes("service") || value.includes("integration") || value.includes("connect")) return ["services","execution"];
+  if(value.includes("automation") || value.includes("automate") || value.includes("systemize")) return ["automation","execution"];
   if(value.includes("strategy") || value.includes("growth") || value.includes("plan")) return ["strategy","strategy"];
   if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return ["proposal","proposal"];
   if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return ["personal","personal"];
@@ -2112,6 +2544,56 @@ function smartRoutePrompt(text){
   if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return ["decisions","decision"];
 
   return [activePage, modeEl.value];
+}
+
+function renderServices(status){
+  const services = status?.services || [
+    {name:"Calendar", status:"ready", purpose:"Meeting prep, daily brief, reminders"},
+    {name:"Email", status:"ready", purpose:"Follow-ups, draft replies, summaries"},
+    {name:"Revenue System", status:"ready", purpose:"Pipeline, deal actions, client follow-up"},
+    {name:"Finance System", status:"ready", purpose:"Capital allocation, margin, cash risk"},
+    {name:"Execution System", status:"ready", purpose:"Execution queue, owners, deadlines"},
+    {name:"Knowledge Base", status:"ready", purpose:"Context, docs, prior decisions"},
+    {name:"Automation", status:"ready", purpose:"Triggers, workflows, recurring tasks"}
+  ];
+
+  servicesPanel.innerHTML = services.map(s => `
+    <div class="service-row">
+      <div><strong>${esc(s.name)}</strong><span>${esc(s.purpose || "")}</span></div>
+      <span class="service-status ${s.status === "ready" ? "ready" : ""}">${esc(s.status || "mapped")}</span>
+    </div>
+  `).join("");
+}
+
+function renderAutomationPanel(){
+  const d = latestAssistant();
+
+  if(!d || (!d.automation_plan?.length && !d.service_actions?.length && !d.automation_opportunity)){
+    automationPanel.innerHTML = `<div class="empty">No native automation opportunities yet.</div>`;
+    return;
+  }
+
+  const plan = d.automation_plan?.length ? d.automation_plan : [d.automation_opportunity || "Create automation blueprint"];
+
+  automationPanel.innerHTML = `
+    <div class="automation-card">
+      <strong>${esc(d.trigger || "Suggested automation")}</strong>
+      ${esc(d.automation_opportunity || "Turn this workflow into a repeatable system.")}
+      <button onclick="loadPrompt('Build this automation blueprint: ${esc((d.automation_opportunity || "").replaceAll("'",""))}', 'execution')">Build Native Workflow</button>
+    </div>
+    ${plan.map((p,i)=>`<div class="automation-card"><strong>Step ${i+1}</strong>${esc(p)}</div>`).join("")}
+  `;
+}
+
+async function loadServices(){
+  try{
+    const res = await fetch(API + "/integrations");
+    if(!res.ok) throw new Error("services unavailable");
+    const data = await res.json();
+    renderServices(data);
+  }catch{
+    renderServices(null);
+  }
 }
 
 function render(){
@@ -2147,6 +2629,8 @@ function render(){
   renderRecommendations();
   renderMetrics();
   renderLocalMemory();
+  renderAutomationPanel();
+  renderCockpit();
   renderCommandIntelligence();
   renderWorkflowStrip();
   saveThreads();
@@ -2217,7 +2701,7 @@ function buildRequestContext(){
   const currentMessages = getMessages().slice(-8);
 
   return [
-    `Executive Engine OS V48 Context`,
+    `Executive Engine OS V53 Context`,
     `Thread: ${current?.title || "New Chat"}`,
     `Current Page: ${activePage}`,
     `Current Mode: ${labelMode(modeEl.value)}`,
@@ -2236,8 +2720,13 @@ function buildRequestContext(){
     `- If input quality is low, produce useful output but include a sharper clarifying question if supported by backend`,
     `- Always identify the highest leverage next move, not a generic next step`,
     `- Actions should be sequential and small enough to start immediately`,
-    `- Output must be CEO / President / COO quality: decisive, strategic, operational, financially aware, and execution-ready`,
-    `- Think like an experienced executive protecting time, capital, reputation, growth, and operational momentum`,
+    `- Output must be CEO / President / COO quality for executives making millions per year: decisive, strategic, operational, financially aware, and execution-ready`,
+    `- Keep the output easy to use; do not overload the user with unnecessary complexity`,
+    `- Think like an executive protecting time, capital, reputation, growth, leadership capacity, and operational momentum`,
+    `- Integrate other systems conceptually when relevant: calendar, email, CRM/sales, finance, projects, team workflows, automation, and knowledge base`,
+    `- V53 should behave like a native automation-aware executive OS: define owner, key metric, cadence, urgency, systems involved, automation trigger, and next review when possible`,
+    `- Make automation feel native to the operating system: workflow, trigger, owner, cadence, output, and review`,
+    `- Use clean executive wording; avoid technical integration warnings unless there is an actual error`,
     `- Include implications for leadership, revenue, execution, risk, decision velocity, delegation, and time horizon`,
     `- When possible, include board-level clarity: executive summary, financial impact, leadership implication, and decision confidence`,
     `- Avoid junior advice, motivational language, obvious suggestions, and surface-level recommendations`,
@@ -2376,10 +2865,10 @@ async function loadMemory(){
           ${esc(m.input || m.decision || m.next_move || "Saved item")}
         </div>
       `).join("")
-      : `<div class="empty">No backend memory yet.</div>`;
+      : `<div class="empty">No saved backend memory yet.</div>`;
 
   }catch{
-    memory.innerHTML = `<div class="empty">Backend memory unavailable.</div>`;
+    memory.innerHTML = `<div class="empty">Saved memory unavailable.</div>`;
   }
 }
 
@@ -2457,7 +2946,15 @@ function fillFunctionPrompt(type){
     nextlevel:["execution","Give me a CEO / President / COO quality review. Challenge weak points, identify the highest leverage move, financial/operational implications, what to ignore, and the exact first action."],
     board:["execution","Create a board-level summary: executive summary, decision, financial impact, operational risk, leadership implication, and next move."],
     delegate:["execution","Create a delegation plan: what I should own, what to delegate, who/role should own it, sequence, checkpoint, and risk."],
-    score:["decision","Score this decision for upside, risk, speed, execution difficulty, capital impact, and decision confidence."]
+    score:["decision","Score this decision for upside, risk, speed, execution difficulty, capital impact, and decision confidence."],
+    capital:["strategy","Give me a capital allocation review: ROI, margin, cash risk, opportunity cost, downside, and highest leverage deployment."],
+    sales:["strategy","Build a revenue sprint: best offer, fastest prospects, follow-up sequence, objections, close path, and revenue risk."],
+    team:["meeting","Build a team/delegation plan: ownership, accountability, communication, blockers, and checkpoints."],
+    automation:["execution","Map this into automation: repeatable workflow, trigger, tools, data needed, output, risk, and first build step."],
+    cockpit:["execution","Build an operating cockpit for this: owner, key metric, cadence, next review, risk, decision, and immediate action."],
+    integration:["execution","Create an executive systems plan across calendar, email, revenue, finance, execution, team workflows, automation, and memory."],
+    automationbuild:["execution","Build a native automation blueprint: trigger, systems involved, data required, steps, outputs, failure points, and first build action."],
+    servicemap:["execution","Map the operating systems this should use: calendar, email, revenue, finance, execution, knowledge, automation, and memory. Explain what each system should do."]
   };
 
   const [mode, prompt] = prompts[type];
@@ -2466,7 +2963,7 @@ function fillFunctionPrompt(type){
 
 function exportAllThreads(){
   const lines = [];
-  lines.push("Executive Engine OS V48 Export — All Threads");
+  lines.push("Executive Engine OS V53 Export — All Threads");
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push("");
 
@@ -2502,7 +2999,7 @@ function exportCurrentThread(){
   const lines = [];
 
   lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V48`);
+  lines.push(`Version: V53`);
   lines.push(`Thread: ${t.title}`);
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push(``);
@@ -2601,6 +3098,19 @@ refreshMemoryLeft.addEventListener("click", () => {
   showToast("Memory refreshed");
 });
 
+summarizeMemoryBtn.addEventListener("click", () => {
+  const items = extractLocalMemory();
+  const text = items.map((m,i)=>`${i+1}. ${m.decision || m.next_move || ""}`).join("\n");
+  loadPrompt("Summarize this memory into patterns, repeated risks, leverage points, and what I should do next:\n" + text, "strategy");
+});
+
+clearMemoryBtn.addEventListener("click", () => {
+  if(!confirm("Clear local memory snapshot?")) return;
+  localStorage.removeItem(MEMORY_KEY);
+  renderLocalMemory();
+  showToast("Local memory cleared");
+});
+
 renameTop.addEventListener("click", () => renameThread(activeThreadId));
 
 exportTop.addEventListener("click", exportCurrentThread);
@@ -2630,6 +3140,22 @@ fnNextLevel.addEventListener("click", () => fillFunctionPrompt("nextlevel"));
 fnBoard.addEventListener("click", () => fillFunctionPrompt("board"));
 fnDelegate.addEventListener("click", () => fillFunctionPrompt("delegate"));
 fnScore.addEventListener("click", () => fillFunctionPrompt("score"));
+fnCapital.addEventListener("click", () => fillFunctionPrompt("capital"));
+fnSales.addEventListener("click", () => fillFunctionPrompt("sales"));
+fnTeam.addEventListener("click", () => fillFunctionPrompt("team"));
+fnAutomation.addEventListener("click", () => fillFunctionPrompt("automation"));
+fnCockpit.addEventListener("click", () => fillFunctionPrompt("cockpit"));
+fnIntegration.addEventListener("click", () => fillFunctionPrompt("integration"));
+fnAutomationBuild.addEventListener("click", () => fillFunctionPrompt("automationbuild"));
+fnServiceMap.addEventListener("click", () => fillFunctionPrompt("servicemap"));
+
+moreToolsLeft.addEventListener("click", () => {
+  extraTools.classList.toggle("hidden");
+});
+
+fnMoreActions.addEventListener("click", () => {
+  moreActionButtons.classList.toggle("hidden");
+});
 
 closeModal.addEventListener("click", () => modalBackdrop.classList.remove("show"));
 
@@ -2685,6 +3211,7 @@ window.onload = () => {
   render();
   health();
   loadMemory();
+  loadServices();
   input.focus();
 };
 </script>
