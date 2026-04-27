@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V60</title>
+<title>Executive Engine OS V61</title>
 
 <style>
 :root{
@@ -2402,6 +2402,249 @@ select{
   }
 }
 
+
+/* V61 LAYOUT + INPUT FIX */
+.app{
+  grid-template-columns:252px minmax(760px,1fr) 320px !important;
+  grid-template-rows:52px minmax(0,1fr) !important;
+}
+
+.databricks-header{
+  grid-template-columns:300px minmax(420px,680px) 240px !important;
+}
+
+.main{
+  background:#f8fafc !important;
+  overflow:auto !important;
+}
+
+.right{
+  width:320px !important;
+  overflow:auto !important;
+  background:#fff !important;
+}
+
+.center-stage{
+  min-height:calc(100vh - 52px) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:34px 28px !important;
+}
+
+.center-inner{
+  width:100% !important;
+  max-width:920px !important;
+  margin:0 auto !important;
+  transform:translateY(-18px) !important;
+}
+
+.center-inner h1{
+  font-size:32px !important;
+  letter-spacing:-.045em !important;
+  margin-bottom:10px !important;
+}
+
+.center-inner p{
+  margin-bottom:18px !important;
+}
+
+#centerComposerMount{
+  display:block !important;
+  width:100% !important;
+  max-width:880px !important;
+  margin:22px auto 0 !important;
+}
+
+#centerComposerMount:empty::after{
+  content:"";
+  display:none;
+}
+
+.composer{
+  display:block !important;
+  width:100% !important;
+  max-width:880px !important;
+  margin:0 auto !important;
+  background:#fff !important;
+  border:1px solid #cbd5e1 !important;
+  border-radius:18px !important;
+  box-shadow:0 20px 60px rgba(15,23,42,.13) !important;
+  overflow:hidden !important;
+  position:relative !important;
+  z-index:10 !important;
+}
+
+.composer.hidden,
+.composer-area.hidden .composer{
+  display:block !important;
+}
+
+.composer textarea,
+#input{
+  display:block !important;
+  width:100% !important;
+  min-height:112px !important;
+  max-height:300px !important;
+  border:0 !important;
+  outline:0 !important;
+  resize:vertical !important;
+  padding:20px 22px !important;
+  font-size:16px !important;
+  line-height:1.5 !important;
+  color:#0f172a !important;
+  background:#fff !important;
+  font-family:inherit !important;
+}
+
+.composer textarea::placeholder,
+#input::placeholder{
+  color:#64748b !important;
+}
+
+.composer-foot{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  padding:13px 14px !important;
+  border-top:1px solid #e5e7eb !important;
+  background:#fff !important;
+}
+
+.composer-left,
+.composer-right{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+
+.mode-select,
+#modeEl{
+  height:40px !important;
+  border-radius:999px !important;
+  border:1px solid #fed7aa !important;
+  background:#fff7ed !important;
+  color:#c2410c !important;
+  padding:0 13px !important;
+  font-weight:850 !important;
+}
+
+.btn.run,
+.run{
+  min-width:116px !important;
+  height:40px !important;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;
+  color:#fff !important;
+  border:0 !important;
+  border-radius:12px !important;
+  font-weight:900 !important;
+}
+
+.btn.clear,
+.clear{
+  height:40px !important;
+  border:1px solid #dbe3ef !important;
+  background:#fff !important;
+  color:#334155 !important;
+  border-radius:12px !important;
+  font-weight:850 !important;
+}
+
+.composer-area{
+  display:block !important;
+  position:sticky !important;
+  bottom:0 !important;
+  background:#f8fafc !important;
+  border-top:1px solid #e2e8f0 !important;
+  padding:14px 22px !important;
+  z-index:30 !important;
+}
+
+.composer-area.hidden{
+  display:none !important;
+}
+
+.chat-shell{
+  min-height:100% !important;
+  padding-bottom:0 !important;
+}
+
+.chat{
+  padding-bottom:20px !important;
+}
+
+/* Reduce right rail clutter while preserving function */
+.right .panel:nth-of-type(n+7){
+  display:none !important;
+}
+
+.panel{
+  margin-bottom:10px !important;
+  border-radius:16px !important;
+}
+
+.function-grid .function-btn:nth-child(n+6){
+  display:none !important;
+}
+
+/* Make New on left closer to reference style */
+.sidebar::before{
+  content:"+  New";
+  display:flex;
+  align-items:center;
+  margin:12px 12px 18px;
+  height:44px;
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  padding:0 16px;
+  font-weight:900;
+  letter-spacing:.01em;
+}
+
+/* On wide screens, keep center content lower but input visible */
+@media(min-width:1200px){
+  .center-stage{
+    padding-top:20px !important;
+  }
+}
+
+@media(max-width:1100px){
+  .app{
+    grid-template-columns:230px minmax(0,1fr) !important;
+  }
+  .right{
+    display:none !important;
+  }
+  .databricks-header{
+    grid-template-columns:250px minmax(280px,1fr) 160px !important;
+  }
+}
+
+@media(max-width:760px){
+  .center-stage{
+    min-height:calc(100vh - 52px) !important;
+    padding:18px 14px !important;
+  }
+  .center-inner{
+    transform:none !important;
+  }
+  .composer-foot{
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  .composer-left,
+  .composer-right{
+    width:100% !important;
+  }
+  .btn.run,
+  .btn.clear{
+    width:100% !important;
+  }
+}
+
 </style>
 </head>
 
@@ -2496,7 +2739,7 @@ select{
 
     <div class="mode-card">
       <strong>Executive Mode</strong>
-      <span>V60 · Databricks-style top nav</span>
+      <span>V61 · layout/input fix</span>
     </div>
   </aside>
 
@@ -2675,11 +2918,11 @@ select{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v60_threads";
-const ACTIVE_THREAD_KEY = "eeos_v60_active_thread";
-const MEMORY_KEY = "eeos_v60_local_memory";
-const DRAFT_KEY = "eeos_v60_draft";
-const PROFILE_KEY = "eeos_v60_user_profile";
+const STORAGE_KEY = "eeos_v61_threads";
+const ACTIVE_THREAD_KEY = "eeos_v61_active_thread";
+const MEMORY_KEY = "eeos_v61_local_memory";
+const DRAFT_KEY = "eeos_v61_draft";
+const PROFILE_KEY = "eeos_v61_user_profile";
 
 const input = document.getElementById("input");
 const modeEl = document.getElementById("mode");
@@ -3110,7 +3353,7 @@ function updateComposerPosition(){
     composerArea.classList.remove("hidden");
     composerArea.classList.add("bottom");
 
-    if(composer.parentElement !== composerArea){
+    if(composer && composer.parentElement !== composerArea){
       composerArea.appendChild(composer);
     }
   }else{
@@ -3119,12 +3362,12 @@ function updateComposerPosition(){
     composerArea.classList.remove("bottom");
     composerArea.classList.add("hidden");
 
-    if(composer.parentElement !== centerComposerMount){
+    if(composer && centerComposerMount && composer.parentElement !== centerComposerMount){
       centerComposerMount.appendChild(composer);
     }
 
-    composer.style.display = "block";
-    input.style.display = "block";
+    if(composer) composer.style.display = "block";
+    if(input) input.style.display = "block";
   }
 }
 
@@ -3942,12 +4185,23 @@ function toggleJson(idx){
   if(el) el.classList.toggle("show");
 }
 
+function ensureComposerVisible(){
+  try{
+    if(!getMessages().length && composer && centerComposerMount && composer.parentElement !== centerComposerMount){
+      centerComposerMount.appendChild(composer);
+    }
+    if(composer) composer.style.display = "block";
+    if(input) input.style.display = "block";
+  }catch(e){}
+}
+
 function render(){
   const messages = getMessages();
 
   threadTitle.textContent = threads[activeThreadId]?.title || "Executive Engine OS";
 
   updateComposerPosition();
+  ensureComposerVisible();
 
   chat.innerHTML = "";
 
@@ -4047,7 +4301,7 @@ function buildRequestContext(){
   const currentMessages = getMessages().slice(-8);
 
   return [
-    `Executive Engine OS V60 Context`,
+    `Executive Engine OS V61 Context`,
     `Thread: ${current?.title || "New Chat"}`,
     `Current Page: ${activePage}`,
     `Current Mode: ${labelMode(modeEl.value)}`,
@@ -4344,7 +4598,7 @@ function fillFunctionPrompt(type){
 
 function exportAllThreads(){
   const lines = [];
-  lines.push("Executive Engine OS V60 Export — All Threads");
+  lines.push("Executive Engine OS V61 Export — All Threads");
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push("");
 
@@ -4380,7 +4634,7 @@ function exportCurrentThread(){
   const lines = [];
 
   lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V60`);
+  lines.push(`Version: V61`);
   lines.push(`Thread: ${t.title}`);
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push(``);

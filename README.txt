@@ -1,14 +1,12 @@
-Executive Engine OS V60 Databricks-Style Header
+Executive Engine OS V61 Layout Fix
 
 Changes:
-- Rebuilds top nav/header to match the attached Databricks-style layout
-- Left: menu + brand
-- Center: large search bar
-- Right: Test, New, spark menu, avatar
-- Keeps nav/workflows inside the spark menu and sidebar
-- Keeps global search functional
-- Keeps V59 functional stability fixes
-- Keeps input/composer, profile/resume, automation, systems, memory, and history
+- Fixes missing/hidden composer input on empty screen
+- Keeps Databricks-style top nav
+- Makes input visible under hero prompt
+- Input moves to bottom after first message
+- Reduces right rail clutter
+- Keeps search, profile/resume, automation, memory, history, backend test
 
 Upload:
 - frontend/index.html
