@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V64</title>
+  <title>Executive Engine OS V65</title>
 
   <style>
     :root{
@@ -528,6 +528,265 @@
   50%{opacity:1}
 }
 
+
+/* V65 UI REFINEMENT */
+*{
+  scrollbar-width:thin;
+  scrollbar-color:#cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+*::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+*::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border:3px solid transparent;
+  border-radius:999px;
+  background-clip:content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover{
+  background:#94a3b8;
+  border:3px solid transparent;
+  background-clip:content-box;
+}
+
+.brand-home{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:0;
+  background:transparent;
+  padding:0;
+  cursor:pointer;
+  min-width:0;
+}
+
+.brand-home:hover .brand-title{
+  color:#1d4ed8;
+}
+
+.brand-home:hover .brand-icon{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(239,68,68,.25);
+}
+
+.brand-icon{
+  transition:transform .14s ease, box-shadow .14s ease;
+}
+
+.topbar{
+  background:#fbfdff !important;
+  box-shadow:0 1px 0 rgba(15,23,42,.03);
+}
+
+.top-search{
+  border-color:#d5dce8 !important;
+  border-radius:10px !important;
+  background:#ffffff !important;
+  box-shadow:0 1px 0 rgba(15,23,42,.03), 0 8px 24px rgba(15,23,42,.045) !important;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+
+.top-search:focus-within{
+  border-color:#93c5fd !important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.12), 0 8px 24px rgba(15,23,42,.06) !important;
+}
+
+.top-search input::placeholder{
+  color:#94a3b8;
+}
+
+.shortcut{
+  border-left:1px solid #e2e8f0;
+  padding-left:8px;
+}
+
+.sidebar{
+  padding:12px 10px !important;
+}
+
+.new-left{
+  height:42px !important;
+  margin-bottom:14px !important;
+  font-size:15px !important;
+}
+
+.nav-label{
+  margin:15px 8px 7px !important;
+}
+
+.nav-btn{
+  height:37px !important;
+  font-size:13px !important;
+}
+
+.side-card{
+  display:none !important;
+}
+
+.hero-inner{
+  max-width:900px !important;
+}
+
+.hero h1{
+  font-size:32px !important;
+}
+
+.status-strip{
+  margin-bottom:14px !important;
+}
+
+.status-chip{
+  border-radius:999px !important;
+  padding:7px 11px !important;
+}
+
+.quick-row{
+  margin-bottom:18px !important;
+}
+
+.quick{
+  padding:9px 13px !important;
+  font-size:13px !important;
+}
+
+.empty-examples{
+  display:none !important;
+}
+
+.composer{
+  max-width:840px !important;
+  border-radius:18px !important;
+}
+
+.composer textarea{
+  min-height:118px !important;
+  height:118px !important;
+  max-height:118px !important;
+  resize:none !important;
+  overflow-y:auto !important;
+}
+
+.bottom-composer .composer textarea{
+  min-height:78px !important;
+  height:78px !important;
+  max-height:78px !important;
+  resize:none !important;
+  overflow-y:auto !important;
+}
+
+/* Run button no layout jump */
+.btn.primary,
+#runBtn{
+  min-width:124px !important;
+  width:124px !important;
+  height:40px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+}
+
+.btn.primary:disabled,
+#runBtn:disabled{
+  opacity:.78 !important;
+}
+
+/* Search dropdown refinement */
+.search-results{
+  border-radius:14px !important;
+  border-color:#dbe3ef !important;
+  box-shadow:0 30px 90px rgba(15,23,42,.18) !important;
+}
+
+.search-result{
+  border-radius:10px !important;
+  padding:11px 12px !important;
+}
+
+.search-result strong{
+  font-size:13px !important;
+}
+
+.right{
+  padding:14px 12px !important;
+  background:#fbfdff !important;
+}
+
+.panel{
+  padding:13px !important;
+  margin-bottom:10px !important;
+  border-radius:15px !important;
+  box-shadow:0 8px 18px rgba(15,23,42,.025);
+}
+
+.panel h3{
+  margin-bottom:9px !important;
+  font-size:11px !important;
+}
+
+.right .panel:nth-of-type(n+6){
+  display:none !important;
+}
+
+.metrics{
+  gap:7px !important;
+}
+
+.metric{
+  padding:10px !important;
+}
+
+.metric strong{
+  font-size:16px !important;
+}
+
+.archive-item{
+  padding:10px !important;
+  margin:7px 0 !important;
+}
+
+.response-grid{
+  gap:8px !important;
+}
+
+.response-card{
+  padding:11px !important;
+}
+
+.copy-btn{
+  margin-top:8px !important;
+}
+
+.notice{
+  border-radius:12px !important;
+}
+
+@media(max-width:1180px){
+  .right{
+    display:none !important;
+  }
+}
+
+@media(max-width:760px){
+  .top-search{
+    height:36px !important;
+  }
+  .composer textarea,
+  .bottom-composer .composer textarea{
+    height:110px !important;
+    min-height:110px !important;
+    max-height:110px !important;
+  }
+}
+
 </style>
 </head>
 
@@ -536,8 +795,10 @@
   <header class="topbar">
     <div class="top-left">
       <button class="menu-btn" id="menuBtn">☰</button>
-      <div class="brand-icon">EE</div>
-      <div class="brand-title">Executive Engine</div>
+      <button class="brand-home" id="brandHome" type="button" title="Go to main page">
+        <div class="brand-icon">EE</div>
+        <div class="brand-title">Executive Engine</div>
+      </button>
     </div>
 
     <div class="top-search">
@@ -580,7 +841,7 @@
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V64 · clickable status + fixes
+      V65 · refined UI
     </div>
   </aside>
 
@@ -588,7 +849,7 @@
     <section class="hero" id="hero">
       <div class="hero-inner" id="heroInner">
         <h1 id="pageTitle">What needs to move forward?</h1>
-        <p id="pageDesc">Start simple. Type what you need decided, fixed, planned, or moved forward.</p>
+        <p id="pageDesc">Type the situation. The engine will turn it into a decision, next move, action queue, risk, and priority.</p>
 
         <div class="status-strip">
           <button class="status-chip green" id="backendChip" type="button">● Backend Live</button>
@@ -599,11 +860,8 @@
 
         <div class="quick-row" id="quickRow">
           <button class="quick" data-mode="daily_brief" data-prompt="Run my day. Give me priorities, what to ignore, risks, and the first action.">Run my day</button>
+          <button class="quick" data-mode="decision" data-prompt="Help me make a CEO-level decision on this situation: ">Make decision</button>
           <button class="quick" data-mode="meeting" data-prompt="Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.">Prep meeting</button>
-          <button class="quick" data-mode="strategy" data-prompt="Build a strategy sprint. Define objective, leverage, sequence, risks, and first 5 moves.">Strategy</button>
-          <button class="quick" data-mode="risk_review" data-prompt="Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.">Reality check</button>
-          <button class="quick" data-mode="personal" data-prompt="Help me organize my personal life today. Give me priorities, what to ignore, and one immediate next move.">Personal reset</button>
-          <button class="quick" data-mode="execution" data-prompt="Convert this into a 30-minute execution sprint with exact steps and what to ignore.">30-min sprint</button>
           <button class="quick" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
         </div>
 
@@ -715,11 +973,8 @@
       <h3>Functions</h3>
       <button class="function-btn" data-function="day">Run My Day</button>
       <button class="function-btn" data-function="meeting">Prepare Meeting</button>
-      <button class="function-btn" data-function="strategy">Strategy Sprint</button>
-      <button class="function-btn" data-function="risk">Check Risk</button>
       <button class="function-btn" data-function="profile">Your Profile</button>
       <button class="function-btn" data-function="automation">Automation</button>
-      <button class="function-btn" data-function="openloops">Open Loops</button>
     </section>
   </aside>
 </div>
@@ -745,10 +1000,10 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v64_threads";
-const ACTIVE_KEY = "eeos_v64_active_thread";
-const PROFILE_KEY = "eeos_v64_profile";
-const MEMORY_KEY = "eeos_v64_memory";
+const STORAGE_KEY = "eeos_v65_threads";
+const ACTIVE_KEY = "eeos_v65_active_thread";
+const PROFILE_KEY = "eeos_v65_profile";
+const MEMORY_KEY = "eeos_v65_memory";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -776,6 +1031,7 @@ const backendStatus = $("backendStatus");
 const backendChip = $("backendChip");
 const debugBtn = $("debugBtn");
 const exportBtn = $("exportBtn");
+const brandHome = $("brandHome");
 const execOutputChip = $("execOutputChip");
 const profileChip = $("profileChip");
 const automationChip = $("automationChip");
@@ -889,7 +1145,7 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V64 Context",
+    "Executive Engine OS V65 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "User profile:",
     profileText() || "No profile saved.",
@@ -1158,7 +1414,7 @@ async function send(){
   render();
 
   runBtn.disabled = true;
-  runBtn.textContent = "Running...";
+  runBtn.textContent = "Run";
 
   try{
     const res = await fetch(API + "/run", {
@@ -1301,7 +1557,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V64",
+    app:"Executive Engine OS V65",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -1360,7 +1616,19 @@ function openInternalAutomation(){
   notify("Internal automation dashboard opened");
 }
 
+function goHome(){
+  setPage("command", "execution");
+  if(!getMessages().length){
+    hero.style.display = "flex";
+    chatShell.classList.remove("show");
+    bottomComposer.classList.remove("show");
+    if(composer.parentElement !== $("heroInner")) $("heroInner").appendChild(composer);
+  }
+  input.focus();
+}
+
 function initEvents(){
+  if(brandHome) brandHome.addEventListener("click", goHome);
   runBtn.addEventListener("click", send);
   clearBtn.addEventListener("click", clearAll);
   newTopBtn.addEventListener("click", ()=>createThread(true));
@@ -1377,8 +1645,7 @@ function initEvents(){
   });
 
   input.addEventListener("input", () => {
-    input.style.height = "auto";
-    input.style.height = Math.min(input.scrollHeight, 310) + "px";
+    // V65: fixed composer height to prevent layout jump.
   });
 
   globalSearch.addEventListener("input", runSearch);

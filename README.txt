@@ -1,13 +1,14 @@
-Executive Engine OS V64
+Executive Engine OS V65
 
 Purpose:
-- Fix status chips that were not clickable
-- Backend Live now runs health check
-- CEO / COO Output now loads executive-quality prompt
-- Profile-Aware opens Your Profile
-- Internal Automation opens Automation dashboard
-- Adds /status backend route
-- Adds null-safe JS guards for common frontend errors
+- Make Executive Engine brand clickable to main page
+- Refine UI and reduce busy feeling
+- Style search bar and search results
+- Style scrollbars
+- Keep Run Engine button same width/height during loading
+- Fixed composer height to prevent layout jump
+- Reduce quick prompts and right-side clutter
+- Keep V64 clickable status chips and automation features
 
 Upload:
 - frontend/index.html
@@ -21,8 +22,8 @@ Deploy:
 4. Hard refresh: Ctrl + Shift + R
 
 Test:
-1. Click Backend Live
-2. Click CEO / COO Output
-3. Click Profile-Aware
-4. Click Internal Automation
-5. Run: What should I focus on today?
+1. Click Executive Engine brand -> main page
+2. Type prompt -> Run Engine
+3. Confirm button size does not jump
+4. Use search
+5. Click status chips
