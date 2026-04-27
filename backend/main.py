@@ -11,9 +11,9 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V65"
+APP_NAME = "Executive Engine OS V67"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
+OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 
 ALLOWED_ORIGINS = [
     origin.strip()
@@ -35,13 +35,13 @@ app.add_middleware(
 MEMORY: List[Dict[str, Any]] = []
 
 SERVICES = [
-    {"name": "Calendar", "status": "ready", "purpose": "Meeting prep, daily brief, reminders, review cadence"},
-    {"name": "Email", "status": "ready", "purpose": "Follow-ups, draft replies, summaries, outbound next steps"},
-    {"name": "Revenue System", "status": "ready", "purpose": "Pipeline, deals, client follow-up, revenue actions"},
-    {"name": "Finance System", "status": "ready", "purpose": "Capital allocation, margin, cash risk, ROI"},
-    {"name": "Execution System", "status": "ready", "purpose": "Execution queue, owners, deadlines, operating cadence"},
-    {"name": "Knowledge Base", "status": "ready", "purpose": "Docs, decisions, strategy, context library"},
-    {"name": "Automation", "status": "ready", "purpose": "Triggers, repeatable workflows, systemized execution"},
+    {"name": "Calendar", "status": "ready", "purpose": "Cadence, meeting prep, daily brief, review rhythm"},
+    {"name": "Email", "status": "ready", "purpose": "Follow-up, outbound response, stakeholder management"},
+    {"name": "Revenue System", "status": "ready", "purpose": "Pipeline, sales motion, offer, close, retention"},
+    {"name": "Finance System", "status": "ready", "purpose": "Cash, margin, ROI, burn, capital allocation"},
+    {"name": "Execution System", "status": "ready", "purpose": "Owners, actions, operating cadence, deadlines"},
+    {"name": "Knowledge Base", "status": "ready", "purpose": "Context, decisions, strategy, profile, memory"},
+    {"name": "Automation", "status": "ready", "purpose": "Repeatable workflows, triggers, open-loop detection"},
 ]
 
 
@@ -55,42 +55,100 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+REQUIRED_KEYS = [
+    "what_to_do_now",
+    "decision",
+    "next_move",
+    "actions",
+    "risk",
+    "priority",
+    "reality_check",
+    "leverage",
+    "hidden_opportunity",
+    "meeting_agenda",
+    "follow_up",
+    "clarifying_question",
+    "executive_summary",
+    "financial_impact",
+    "leadership_implication",
+    "execution_score",
+    "decision_confidence",
+    "time_horizon",
+    "systems_to_connect",
+    "automation_opportunity",
+    "delegation_opportunity",
+    "owner",
+    "operating_cadence",
+    "key_metric",
+    "decision_type",
+    "urgency",
+    "automation_plan",
+    "service_actions",
+    "trigger",
+    "required_services",
+    "executive_diagnosis",
+    "strategic_read",
+    "constraint",
+    "unfair_advantage",
+    "second_order_effect",
+    "what_to_ignore",
+    "ninety_day_play",
+    "operating_rhythm",
+    "success_metric",
+    "decision_filter",
+    "escalation_point",
+]
+
+
 def safe_response(reason: str = "Temporary fallback"):
     return {
-        "what_to_do_now": "Clarify the real objective, then execute the highest-leverage next move.",
-        "decision": "Do not add complexity until the current blocker is resolved.",
-        "next_move": "Identify the single constraint stopping progress and remove it first.",
+        "what_to_do_now": "Stabilize the operating loop: define the outcome, isolate the constraint, and execute one high-leverage move.",
+        "decision": "Do not add complexity until the current blocker is removed.",
+        "next_move": "Write the desired outcome in one sentence, then choose the one action that moves it forward today.",
         "actions": [
-            "Define the intended outcome in one sentence",
-            "Identify the current blocker",
-            "Choose the highest-leverage action",
-            "Execute that action before adding more features",
-            "Review the result and adjust"
+            "Define the exact outcome in one sentence",
+            "Identify the single constraint blocking progress",
+            "Choose the highest-leverage action that can be completed today",
+            "Execute that action before adding more features or options",
+            "Review the result and decide whether to scale, fix, or stop"
         ],
         "risk": reason,
         "priority": "high",
-        "reality_check": "The system needs stable execution before more complexity is useful.",
-        "leverage": "Stabilize the operating loop before scaling functionality.",
-        "hidden_opportunity": "A reliable executive workflow is more valuable than disconnected features.",
-        "clarifying_question": "What specific outcome needs to improve first?",
-        "executive_summary": "Stabilize the operating loop and force the next action.",
-        "financial_impact": "Poor execution wastes time, delays revenue, and increases operating drag.",
-        "leadership_implication": "Leadership must force clarity and sequencing.",
+        "reality_check": "More features will not fix an unclear operating loop.",
+        "leverage": "The fastest improvement comes from removing the constraint, not expanding the system.",
+        "hidden_opportunity": "A reliable decision-to-action loop becomes the core advantage.",
+        "meeting_agenda": "",
+        "follow_up": "",
+        "clarifying_question": "What exact outcome do you want by the end of today?",
+        "executive_summary": "Stabilize, simplify, execute, review.",
+        "financial_impact": "Execution drag wastes time, delays revenue, and increases operating cost.",
+        "leadership_implication": "Leadership must force clarity, sequencing, and ownership.",
         "execution_score": "Medium",
         "decision_confidence": "Medium",
         "time_horizon": "Immediate",
-        "systems_to_connect": ["Calendar", "Execution System", "Memory"],
-        "automation_opportunity": "Capture repeated decisions and turn them into workflows.",
-        "delegation_opportunity": "Assign ownership once the next move is clear.",
+        "systems_to_connect": ["Execution System", "Memory", "Calendar"],
+        "automation_opportunity": "Turn repeated decisions into an action workflow.",
+        "delegation_opportunity": "Assign one owner to the current constraint.",
         "owner": "Executive owner",
-        "operating_cadence": "Review progress daily until resolved.",
-        "key_metric": "Execution progress",
+        "operating_cadence": "Daily review until the blocker is cleared.",
+        "key_metric": "One completed high-leverage action today.",
         "decision_type": "Operating decision",
-        "urgency": "High",
-        "automation_plan": ["Identify repeatable workflow", "Define trigger", "Choose system", "Create first automation"],
-        "service_actions": ["Use Calendar for cadence", "Use Execution System for action tracking"],
-        "trigger": "Executive command or repeated workflow",
-        "required_services": ["Calendar", "Execution System", "Memory"]
+        "urgency": "high",
+        "automation_plan": ["Capture repeated workflow", "Define trigger", "Assign owner", "Review cadence"],
+        "service_actions": ["Use Execution System for action tracking", "Use Memory for repeated patterns"],
+        "trigger": "Executive command or repeated blocker",
+        "required_services": ["Execution System", "Memory"],
+        "executive_diagnosis": "The likely issue is not lack of options; it is lack of constraint clarity.",
+        "strategic_read": "Simplify the decision surface and force one measurable move.",
+        "constraint": "Unclear next action.",
+        "unfair_advantage": "Speed of execution once clarity is restored.",
+        "second_order_effect": "Cleaner execution compounds into better trust, faster cycles, and less decision fatigue.",
+        "what_to_ignore": "Ignore cosmetic improvements until the operating loop works.",
+        "ninety_day_play": "Build a repeatable decision-to-action system and remove one major blocker per week.",
+        "operating_rhythm": "Daily priority check, weekly review, monthly strategy reset.",
+        "success_metric": "Completed priority actions and fewer unresolved open loops.",
+        "decision_filter": "Only do work that improves revenue, risk, speed, leverage, or personal operating capacity.",
+        "escalation_point": "Escalate if the same blocker appears three times."
     }
 
 
@@ -110,7 +168,19 @@ def clean_actions(actions):
     if not isinstance(actions, list):
         actions = []
     cleaned = [str(a).strip() for a in actions if str(a).strip()]
-    return cleaned[:7] or ["Clarify the objective", "Identify the constraint", "Execute the highest-leverage next move"]
+    return cleaned[:7] or [
+        "Clarify the outcome",
+        "Identify the constraint",
+        "Execute the highest-leverage next move"
+    ]
+
+
+def clean_list(value):
+    if isinstance(value, list):
+        return [str(v).strip() for v in value if str(v).strip()][:8]
+    if isinstance(value, str) and value.strip():
+        return [value.strip()]
+    return []
 
 
 def normalize(data: Dict[str, Any]):
@@ -121,7 +191,7 @@ def normalize(data: Dict[str, Any]):
     if priority not in ["low", "medium", "high", "critical"]:
         priority = "high"
 
-    return {
+    normalized = {
         "what_to_do_now": str(data.get("what_to_do_now") or "Execute the highest-leverage next move.").strip(),
         "decision": str(data.get("decision") or "Commit to the clearest execution path.").strip(),
         "next_move": str(data.get("next_move") or "Move from discussion to execution.").strip(),
@@ -140,7 +210,7 @@ def normalize(data: Dict[str, Any]):
         "execution_score": str(data.get("execution_score") or "").strip(),
         "decision_confidence": str(data.get("decision_confidence") or "").strip(),
         "time_horizon": str(data.get("time_horizon") or "").strip(),
-        "systems_to_connect": data.get("systems_to_connect") if isinstance(data.get("systems_to_connect"), list) else [],
+        "systems_to_connect": clean_list(data.get("systems_to_connect")),
         "automation_opportunity": str(data.get("automation_opportunity") or "").strip(),
         "delegation_opportunity": str(data.get("delegation_opportunity") or "").strip(),
         "owner": str(data.get("owner") or "").strip(),
@@ -148,54 +218,76 @@ def normalize(data: Dict[str, Any]):
         "key_metric": str(data.get("key_metric") or "").strip(),
         "decision_type": str(data.get("decision_type") or "").strip(),
         "urgency": str(data.get("urgency") or priority).strip(),
-        "automation_plan": data.get("automation_plan") if isinstance(data.get("automation_plan"), list) else [],
-        "service_actions": data.get("service_actions") if isinstance(data.get("service_actions"), list) else [],
+        "automation_plan": clean_list(data.get("automation_plan")),
+        "service_actions": clean_list(data.get("service_actions")),
         "trigger": str(data.get("trigger") or "").strip(),
-        "required_services": data.get("required_services") if isinstance(data.get("required_services"), list) else [],
+        "required_services": clean_list(data.get("required_services")),
+        "executive_diagnosis": str(data.get("executive_diagnosis") or "").strip(),
+        "strategic_read": str(data.get("strategic_read") or "").strip(),
+        "constraint": str(data.get("constraint") or "").strip(),
+        "unfair_advantage": str(data.get("unfair_advantage") or "").strip(),
+        "second_order_effect": str(data.get("second_order_effect") or "").strip(),
+        "what_to_ignore": str(data.get("what_to_ignore") or "").strip(),
+        "ninety_day_play": str(data.get("ninety_day_play") or "").strip(),
+        "operating_rhythm": str(data.get("operating_rhythm") or "").strip(),
+        "success_metric": str(data.get("success_metric") or "").strip(),
+        "decision_filter": str(data.get("decision_filter") or "").strip(),
+        "escalation_point": str(data.get("escalation_point") or "").strip(),
     }
+
+    return normalized
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V65.
+You are Executive Engine OS V67.
 
-You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
+IDENTITY
+You are an elite CEO / President / COO operating partner.
+You think like a board-level operator, not a generic assistant.
+You are direct, specific, commercially aware, and execution-focused.
 
-You are not a generic assistant, motivational coach, or junior consultant.
-
-You think across:
+OPERATING STANDARD
+Every answer must improve one or more of:
 - revenue
-- capital allocation
-- operational efficiency
+- speed
+- risk reduction
+- capital efficiency
 - leadership clarity
-- risk management
-- execution velocity
-- reputation
-- strategic leverage
-- decision quality
+- execution quality
+- positioning
+- delegation
+- operating cadence
 - personal operating capacity
-- user profile/resume context
-- automation and systems
-- internal automation workflows
-- daily briefs
-- follow-up planning
-- open-loop detection
-- action queue building
-- weekly operator reviews
 
-Output must be direct, sharp, executive-level, practical, specific to the user's input, and useful to a CEO/COO/President making high-stakes decisions. Avoid generic advice. Every action must be executable today.
+RESPONSE QUALITY RULES
+- No generic advice.
+- No fluffy coaching.
+- No vague actions.
+- No "research opportunities" unless you specify exactly what to research, where, and why.
+- No "conduct a self-assessment" unless it includes a specific framework and next action.
+- Every action must be executable today.
+- The first action must be immediate and concrete.
+- Use the user profile/resume/context aggressively when available.
+- Separate signal from noise.
+- Identify the real constraint.
+- Tell the user what to ignore.
+- Give one decisive next move.
+- If inputs are messy, clarify the real issue and move them forward.
+- If the user needs a business decision, give a real decision, not options paralysis.
 
-For internal automation requests, behave like an operating system:
-- identify trigger
-- define workflow
-- extract actions
-- identify open loops
-- assign owner/role
-- create cadence
-- define output
-- state what to ignore
-- do not mention external integrations unless explicitly requested.
+MODE BEHAVIOR
+execution: convert input into action, owner, cadence, metric.
+decision: force a call; state tradeoff, risk, and next move.
+strategy: find leverage, constraint, sequencing, 90-day play.
+meeting: agenda, power dynamics, questions, decision required, follow-up.
+risk_review: downside, weak assumptions, mitigation, kill criteria.
+proposal: offer, scope, outcome, proof, pricing logic, next step.
+personal: practical life execution without sounding corporate.
+misc: handle anything; remove noise; identify issue; give next move.
+automation: trigger, workflow, owner, output, cadence, open loops.
 
-Return ONLY valid JSON with this shape:
+OUTPUT FORMAT
+Return ONLY valid JSON with this exact shape:
 {
   "what_to_do_now": "",
   "decision": "",
@@ -226,15 +318,42 @@ Return ONLY valid JSON with this shape:
   "automation_plan": [],
   "service_actions": [],
   "trigger": "",
-  "required_services": []
+  "required_services": [],
+  "executive_diagnosis": "",
+  "strategic_read": "",
+  "constraint": "",
+  "unfair_advantage": "",
+  "second_order_effect": "",
+  "what_to_ignore": "",
+  "ninety_day_play": "",
+  "operating_rhythm": "",
+  "success_metric": "",
+  "decision_filter": "",
+  "escalation_point": ""
 }
 """
 
 
 def build_messages(req: RunRequest):
+    context = req.context or "No context"
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"MODE:\n{req.mode}\n\nCONTEXT:\n{req.context or 'No context'}\n\nUSER INPUT:\n{req.input}"}
+        {
+            "role": "user",
+            "content": f"""
+MODE:
+{req.mode}
+
+CONTEXT:
+{context}
+
+USER INPUT:
+{req.input}
+
+DELIVERABLE:
+Return elite operator intelligence. Diagnose the real issue, identify constraint, define leverage, state what to ignore, decide next move, and provide actions executable today.
+"""
+        }
     ]
 
 
@@ -247,9 +366,11 @@ def save_memory(req: RunRequest, output: Dict[str, Any]):
         "actions": output.get("actions"),
         "risk": output.get("risk"),
         "priority": output.get("priority"),
+        "constraint": output.get("constraint"),
+        "leverage": output.get("leverage"),
         "created_at": now(),
     })
-    del MEMORY[:-20]
+    del MEMORY[:-30]
 
 
 @app.get("/")
@@ -263,8 +384,8 @@ async def status():
         "ok": True,
         "service": APP_NAME,
         "backend": "live",
-        "executive_output": "ready",
-        "profile_aware": "ready",
+        "elite_output": "ready",
+        "profile_intelligence": "ready",
         "internal_automation": "ready",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
@@ -301,8 +422,8 @@ async def run(req: RunRequest):
             client.chat.completions.create(
                 model=MODEL,
                 messages=build_messages(req),
-                temperature=0.25,
-                max_tokens=1100,
+                temperature=0.22,
+                max_tokens=1400,
                 response_format={"type": "json_object"},
             ),
             timeout=OPENAI_TIMEOUT_SECONDS,
@@ -382,10 +503,14 @@ async def debug():
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "allowed_origins": ALLOWED_ORIGINS,
         "memory_items": len(MEMORY),
-        "routes": ["/", "/status", "/health", "/run", "/memory", "/integrations", "/automation-plan", "/daily-brief", "/open-loops", "/follow-up", "/action-queue", "/debug"]
+        "routes": [
+            "/", "/status", "/health", "/run", "/memory", "/integrations",
+            "/automation-plan", "/daily-brief", "/open-loops", "/follow-up",
+            "/action-queue", "/debug"
+        ]
     }
 
 
 @app.get("/memory")
 async def memory():
-    return {"memory": MEMORY[-20:]}
+    return {"memory": MEMORY[-30:]}

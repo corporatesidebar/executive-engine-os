@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V65</title>
+  <title>Executive Engine OS V67</title>
 
   <style>
     :root{
@@ -787,6 +787,142 @@
   }
 }
 
+
+/* V66 OUTPUT QUALITY + PERSONAL/MISC */
+.response-card:first-child{
+  border-color:#bfdbfe !important;
+  background:#eff6ff !important;
+  box-shadow:0 10px 22px rgba(37,99,235,.08);
+}
+
+.response-card:first-child .label{
+  color:#1d4ed8 !important;
+}
+
+.response-card:first-child .value{
+  font-size:16px !important;
+  line-height:1.55 !important;
+}
+
+.response-card:nth-child(4){
+  border-color:#d1fae5 !important;
+  background:#ecfdf5 !important;
+}
+
+.response-card:nth-child(4) .label{
+  color:#047857 !important;
+}
+
+.value ol li{
+  margin:6px 0;
+  padding-left:3px;
+}
+
+.value{
+  font-weight:780 !important;
+}
+
+.label{
+  letter-spacing:.115em !important;
+}
+
+.nav-btn[data-page="misc"]{
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.nav-btn[data-page="misc"].active{
+  background:#1e40af !important;
+}
+
+.mode-select option[value="misc"]{
+  font-weight:900;
+}
+
+.misc-note{
+  border:1px solid #e9d5ff;
+  background:#faf5ff;
+  color:#6b21a8;
+  border-radius:14px;
+  padding:12px;
+  font-size:13px;
+  font-weight:800;
+  margin:12px auto 0;
+  max-width:840px;
+}
+
+
+/* V67 HIGH-END EXECUTIVE OUTPUT */
+.response-grid{
+  grid-template-columns:1fr 1fr !important;
+  gap:9px !important;
+}
+
+.response-card{
+  background:#fbfdff !important;
+  border-color:#dbe6f3 !important;
+}
+
+.response-card:first-child{
+  grid-column:1/-1 !important;
+  background:linear-gradient(180deg,#eff6ff,#ffffff) !important;
+  border-color:#93c5fd !important;
+}
+
+.response-card:nth-child(2){
+  background:#ffffff !important;
+  border-color:#c7d2fe !important;
+}
+
+.response-card:nth-child(3){
+  background:#ffffff !important;
+  border-color:#bfdbfe !important;
+}
+
+.response-card:nth-child(4){
+  grid-column:1/-1 !important;
+  background:linear-gradient(180deg,#ecfdf5,#ffffff) !important;
+  border-color:#86efac !important;
+}
+
+.label{
+  color:#475569 !important;
+  font-size:10.5px !important;
+}
+
+.value{
+  color:#071226 !important;
+  font-weight:820 !important;
+}
+
+.assistant .bubble{
+  border-color:#dbe6f3 !important;
+  box-shadow:0 18px 50px rgba(15,23,42,.085) !important;
+}
+
+.priority{
+  text-transform:uppercase;
+}
+
+.elite-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #c7d2fe;
+  background:#eef2ff;
+  color:#3730a3;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:950;
+  margin-bottom:10px;
+}
+
+.status-chip.orange{
+  background:#fffbeb !important;
+  border-color:#fcd34d !important;
+  color:#92400e !important;
+}
+
 </style>
 </head>
 
@@ -824,6 +960,7 @@
     <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="ico">◆</span>Make Decision</button>
     <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="ico">◉</span>Prepare Meeting</button>
     <button class="nav-btn" data-page="personal" data-mode="personal"><span class="ico">★</span>Personal</button>
+    <button class="nav-btn" data-page="misc" data-mode="misc"><span class="ico">✚</span>Personal / Misc</button>
 
     <div class="nav-label">Tools</div>
     <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="ico">✦</span>Strategy</button>
@@ -841,7 +978,7 @@
 
     <div class="side-card">
       <strong>Executive Mode</strong>
-      V65 · refined UI
+      V67 · elite operator intelligence
     </div>
   </aside>
 
@@ -853,8 +990,8 @@
 
         <div class="status-strip">
           <button class="status-chip green" id="backendChip" type="button">● Backend Live</button>
-          <button class="status-chip orange" id="execOutputChip" type="button">CEO / COO Output</button>
-          <button class="status-chip" id="profileChip" type="button">Profile-Aware</button>
+          <button class="status-chip orange" id="execOutputChip" type="button">Elite Output</button>
+          <button class="status-chip" id="profileChip" type="button">Profile Intelligence</button>
           <button class="status-chip green" id="automationChip" type="button">Internal Automation</button>
         </div>
 
@@ -863,6 +1000,7 @@
           <button class="quick" data-mode="decision" data-prompt="Help me make a CEO-level decision on this situation: ">Make decision</button>
           <button class="quick" data-mode="meeting" data-prompt="Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.">Prep meeting</button>
           <button class="quick" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
+          <button class="quick" data-mode="misc" data-prompt="Help me make sense of this and turn it into a clear next move: ">Anything / Misc</button>
         </div>
 
         <div class="empty-examples" id="exampleGrid">
@@ -895,6 +1033,7 @@
                 <option value="risk_review">Risk Review</option>
                 <option value="proposal">Proposal</option>
                 <option value="personal">Personal</option>
+                <option value="misc">Personal / Misc</option>
               </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
             </div>
@@ -975,6 +1114,7 @@
       <button class="function-btn" data-function="meeting">Prepare Meeting</button>
       <button class="function-btn" data-function="profile">Your Profile</button>
       <button class="function-btn" data-function="automation">Automation</button>
+      <button class="function-btn" data-function="misc">Personal / Misc</button>
     </section>
   </aside>
 </div>
@@ -987,6 +1127,7 @@
   <button data-page="strategy" data-mode="strategy">Strategy</button>
   <button data-page="risk" data-mode="risk_review">Risk</button>
   <button data-page="personal" data-mode="personal">Personal</button>
+  <button data-page="misc" data-mode="misc">Personal / Misc</button>
   <button data-page="capital" data-mode="strategy">Capital</button>
   <button data-page="sales" data-mode="strategy">Sales</button>
   <button data-page="ops" data-mode="execution">Operations</button>
@@ -1000,10 +1141,10 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v65_threads";
-const ACTIVE_KEY = "eeos_v65_active_thread";
-const PROFILE_KEY = "eeos_v65_profile";
-const MEMORY_KEY = "eeos_v65_memory";
+const STORAGE_KEY = "eeos_v67_threads";
+const ACTIVE_KEY = "eeos_v67_active_thread";
+const PROFILE_KEY = "eeos_v67_profile";
+const MEMORY_KEY = "eeos_v67_memory";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -1051,7 +1192,8 @@ const modeLabels = {
   strategy:"Strategy",
   risk_review:"Risk Review",
   proposal:"Proposal",
-  personal:"Personal"
+  personal:"Personal",
+  misc:"Personal / Misc"
 };
 
 const pageConfigs = {
@@ -1063,6 +1205,7 @@ const pageConfigs = {
   risk:["Check Risk","Find downside, weak assumptions, mitigation, and next move.","risk_review"],
   proposal:["Proposal","Build offer, scope, deliverables, and next step.","proposal"],
   personal:["Personal","Handle life execution: energy, people, routines, and priorities.","personal"],
+  misc:["Personal / Misc","Use this for anything: messy thoughts, random problems, life admin, messages, ideas, or unclear situations.","misc"],
   capital:["Capital","Make better capital, cash, margin, and ROI decisions.","strategy"],
   sales:["Sales","Drive revenue, pipeline, offers, follow-up, and closing moves.","strategy"],
   team:["Team","Handle delegation, accountability, performance, and leadership.","meeting"],
@@ -1129,7 +1272,18 @@ function normalizeOutput(data){
     systems_to_connect: Array.isArray(data.systems_to_connect) ? data.systems_to_connect : [],
     automation_opportunity: data.automation_opportunity || "",
     delegation_opportunity: data.delegation_opportunity || "",
-    clarifying_question: data.clarifying_question || ""
+    clarifying_question: data.clarifying_question || "",
+    executive_diagnosis: data.executive_diagnosis || "",
+    strategic_read: data.strategic_read || "",
+    constraint: data.constraint || "",
+    unfair_advantage: data.unfair_advantage || "",
+    second_order_effect: data.second_order_effect || "",
+    what_to_ignore: data.what_to_ignore || "",
+    ninety_day_play: data.ninety_day_play || "",
+    operating_rhythm: data.operating_rhythm || "",
+    success_metric: data.success_metric || "",
+    decision_filter: data.decision_filter || "",
+    escalation_point: data.escalation_point || ""
   };
 }
 
@@ -1145,7 +1299,7 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V65 Context",
+    "Executive Engine OS V67 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "User profile:",
     profileText() || "No profile saved.",
@@ -1228,6 +1382,9 @@ function setPage(page, mode){
     renderProfilePanel();
   }else if(page === "automation"){
     renderAutomationPanel();
+  }else if(page === "misc"){
+    if(quickRow) quickRow.style.display = "";
+    if(pagePanel) pagePanel.innerHTML = `<div class="misc-note">Personal / Misc mode is for anything that does not fit neatly: ideas, relationships, admin, stress, messages, random problems, or messy thoughts.</div>`;
   }else{
     if(pagePanel) pagePanel.innerHTML = "";
     if(quickRow) quickRow.style.display = "";
@@ -1314,14 +1471,25 @@ function analyzeProfile(){
 function renderAssistant(d){
   d = normalizeOutput(d);
   const extra = [
+    ["Executive Diagnosis", d.executive_diagnosis],
+    ["Strategic Read", d.strategic_read],
+    ["Constraint", d.constraint],
     ["Reality Check", d.reality_check],
     ["Leverage", d.leverage],
+    ["Unfair Advantage", d.unfair_advantage],
     ["Hidden Opportunity", d.hidden_opportunity],
+    ["What To Ignore", d.what_to_ignore],
     ["Financial Impact", d.financial_impact],
+    ["Second-Order Effect", d.second_order_effect],
     ["Leadership Implication", d.leadership_implication],
     ["Owner", d.owner],
     ["Operating Cadence", d.operating_cadence],
     ["Key Metric", d.key_metric],
+    ["Success Metric", d.success_metric],
+    ["90-Day Play", d.ninety_day_play],
+    ["Operating Rhythm", d.operating_rhythm],
+    ["Decision Filter", d.decision_filter],
+    ["Escalation Point", d.escalation_point],
     ["Systems", d.systems_to_connect.join(", ")],
     ["Automation", d.automation_opportunity],
     ["Delegation", d.delegation_opportunity],
@@ -1329,6 +1497,7 @@ function renderAssistant(d){
   ].filter(x=>x[1]);
 
   return `
+    <div class="elite-badge">◆ Elite Operator Output</div>
     <div class="response-grid">
       <div class="response-card full"><div class="label">What To Do Now</div><div class="value">${esc(d.what_to_do_now)}</div></div>
       <div class="response-card"><div class="label">Decision</div><div class="value">${esc(d.decision)}</div></div>
@@ -1499,7 +1668,8 @@ function handleFunction(type){
     risk:["Give me a blunt reality check. Identify risk, weak logic, what I am missing, and the next move.","risk_review"],
     profile:["Open profile","personal"],
     automation:["Open automation","execution"],
-    openloops:["Detect open loops from my current thread and memory. Identify unresolved decisions, repeated blockers, risks, missing actions, and what needs closure first.","automation"]
+    openloops:["Detect open loops from my current thread and memory. Identify unresolved decisions, repeated blockers, risks, missing actions, and what needs closure first.","automation"],
+    misc:["Help me make sense of this. Clarify the issue, identify what matters, remove noise, and give me a practical next move: ","misc"]
   };
   if(type === "profile"){setPage("profile","personal");return;}
   if(type === "automation"){setPage("automation","execution");return;}
@@ -1557,7 +1727,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V65",
+    app:"Executive Engine OS V67",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -1586,7 +1756,14 @@ function latestAssistantText(){
     `PRIORITY: ${d.priority}`,
     d.reality_check ? `REALITY CHECK: ${d.reality_check}` : "",
     d.leverage ? `LEVERAGE: ${d.leverage}` : "",
-    d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : ""
+    d.executive_diagnosis ? `EXECUTIVE DIAGNOSIS: ${d.executive_diagnosis}` : "",
+    d.strategic_read ? `STRATEGIC READ: ${d.strategic_read}` : "",
+    d.constraint ? `CONSTRAINT: ${d.constraint}` : "",
+    d.hidden_opportunity ? `HIDDEN OPPORTUNITY: ${d.hidden_opportunity}` : "",
+    d.what_to_ignore ? `WHAT TO IGNORE: ${d.what_to_ignore}` : "",
+    d.ninety_day_play ? `90-DAY PLAY: ${d.ninety_day_play}` : "",
+    d.operating_rhythm ? `OPERATING RHYTHM: ${d.operating_rhythm}` : "",
+    d.success_metric ? `SUCCESS METRIC: ${d.success_metric}` : ""
   ].filter(Boolean).join("\n");
 }
 
@@ -1602,8 +1779,8 @@ async function copyLatestResponse(){
 }
 
 function openExecutiveOutputHelp(){
-  loadPrompt("Give me CEO / COO / President quality output for this situation. Include what to do now, decision, next move, actions, risk, priority, financial impact, leadership implication, owner, cadence, and key metric: ", "execution");
-  notify("CEO / COO output mode ready");
+  loadPrompt("Give me elite CEO / President / COO-level operating intelligence for this situation. Diagnose the real issue, constraint, leverage, what to ignore, decision, next move, actions, financial impact, leadership implication, owner, cadence, metric, and 90-day play: ", "execution");
+  notify("Elite output mode ready");
 }
 
 function openProfileAware(){
