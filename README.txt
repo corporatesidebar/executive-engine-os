@@ -1,11 +1,17 @@
-Executive Engine OS V53
+Executive Engine OS V54
 
 Purpose:
-- Removes technical integration-warning feel
-- Makes automation feel native to the OS
-- Renames service language into operating systems language
-- Keeps backend fields stable for frontend compatibility
-- Makes automation output feel like workflow design, not IT setup
+- Adds "Your Profile" to top navigation
+- Adds sidebar profile link
+- Adds user questionnaire
+- Adds resume upload/paste area
+- Saves profile locally in browser
+- Sends profile context with each backend request
+- Adds profile analysis, executive positioning, resume strategy, and opportunity filter actions
+
+Note:
+- Browser can reliably read TXT/MD resumes.
+- For PDF/DOCX, paste resume text into the resume field for best results.
 
 Upload:
 - frontend/index.html

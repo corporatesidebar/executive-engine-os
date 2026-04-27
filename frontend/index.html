@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Executive Engine OS V53</title>
+<title>Executive Engine OS V54</title>
 
 <style>
 :root{
@@ -1265,6 +1265,95 @@ select{
   font-size:12px;
 }
 
+.profile-form{
+  display:grid;
+  gap:12px;
+}
+
+.profile-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.profile-field{
+  display:grid;
+  gap:6px;
+}
+
+.profile-field label{
+  color:#475569;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.profile-field input,
+.profile-field textarea,
+.profile-field select{
+  width:100%;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#0f172a;
+  border-radius:12px;
+  padding:11px 12px;
+  outline:0;
+  font-size:14px;
+  font-family:inherit;
+}
+
+.profile-field textarea{
+  min-height:88px;
+  resize:vertical;
+}
+
+.profile-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:4px;
+}
+
+.upload-box{
+  border:1px dashed #bfdbfe;
+  background:#eff6ff;
+  border-radius:16px;
+  padding:14px;
+}
+
+.upload-box input{
+  margin-top:8px;
+}
+
+.profile-status{
+  margin-top:8px;
+  font-size:13px;
+  color:#047857;
+  font-weight:800;
+}
+
+.profile-summary{
+  display:grid;
+  gap:8px;
+}
+
+.profile-pill{
+  display:inline-flex;
+  padding:6px 9px;
+  background:#f8fafc;
+  color:#334155;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  margin:3px 4px 0 0;
+}
+
+@media(max-width:760px){
+  .profile-row{grid-template-columns:1fr}
+}
+
 /* MODAL */
 .modal-backdrop{
   position:fixed;
@@ -1382,6 +1471,7 @@ select{
       <button class="nav-btn" data-page="ops" data-mode="execution"><span class="nav-ico">⚙</span>Operations</button>
       <button class="nav-btn" data-page="automation" data-mode="execution"><span class="nav-ico">⚡</span>Automation</button>
       <button class="nav-btn" data-page="services" data-mode="execution"><span class="nav-ico">◆</span>Systems</button>
+      <button class="nav-btn" data-page="profile" data-mode="personal"><span class="nav-ico">☰</span>Your Profile</button>
     </div>
 
     <div class="sidebar-help">Start with Ask / Execute. Use the others only when you know the workflow.</div>
@@ -1402,7 +1492,7 @@ select{
 
     <div class="mode-card">
       <strong>Executive Mode</strong>
-      <span>V53 · native automation</span>
+      <span>V54 · user profile intelligence</span>
     </div>
   </aside>
 
@@ -1436,6 +1526,7 @@ select{
         <button class="top-tab" data-page="ops" data-mode="execution">Ops</button>
         <button class="top-tab" data-page="automation" data-mode="execution">Automation</button>
         <button class="top-tab" data-page="services" data-mode="execution">Systems</button>
+        <button class="top-tab" data-page="profile" data-mode="personal">Your Profile</button>
       </div>
       <div class="top-nav-right">
         <input id="globalSearch" class="global-search" placeholder="Search chats, actions, decisions..." />
@@ -1580,6 +1671,7 @@ select{
         <button class="function-btn" id="fnIntegration">Systems Plan</button>
         <button class="function-btn" id="fnAutomationBuild">Build Automation</button>
         <button class="function-btn" id="fnServiceMap">System Map</button>
+        <button class="function-btn" id="fnProfile">Analyze Profile</button>
       </div>
     </div>
 
@@ -1606,10 +1698,11 @@ select{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v53_threads";
-const ACTIVE_THREAD_KEY = "eeos_v53_active_thread";
-const MEMORY_KEY = "eeos_v53_local_memory";
-const DRAFT_KEY = "eeos_v53_draft";
+const STORAGE_KEY = "eeos_v54_threads";
+const ACTIVE_THREAD_KEY = "eeos_v54_active_thread";
+const MEMORY_KEY = "eeos_v54_local_memory";
+const DRAFT_KEY = "eeos_v54_draft";
+const PROFILE_KEY = "eeos_v54_user_profile";
 
 const input = document.getElementById("input");
 const modeEl = document.getElementById("mode");
@@ -1684,6 +1777,7 @@ const fnCockpit = document.getElementById("fnCockpit");
 const fnIntegration = document.getElementById("fnIntegration");
 const fnAutomationBuild = document.getElementById("fnAutomationBuild");
 const fnServiceMap = document.getElementById("fnServiceMap");
+const fnProfile = document.getElementById("fnProfile");
 const moreToolsLeft = document.getElementById("moreToolsLeft");
 const extraTools = document.getElementById("extraTools");
 const fnMoreActions = document.getElementById("fnMoreActions");
@@ -2495,10 +2589,248 @@ function pageConfig(page){
         ["Email workflow","Create follow-up, drafting, and response workflows.","Create email workflow for: "],
         ["Revenue workflow","Create sales pipeline and follow-up workflows.","Create revenue workflow for: "]
       ]
+    },
+    profile:{
+      title:"Your Profile",
+      desc:"Build your operating profile so the engine gives advice that fits your experience, goals, strengths, role, and constraints.",
+      mode:"personal",
+      cards:[
+        ["Profile review","Use my profile to tell me what my highest-leverage focus should be.","Review my profile and identify my highest-leverage direction."],
+        ["Career positioning","Turn my profile into executive positioning.","Use my profile to create executive positioning for me."],
+        ["Opportunity filter","Create a decision filter based on my goals and strengths.","Create an opportunity filter based on my profile."],
+        ["Resume strategy","Analyze my resume/profile and suggest positioning improvements.","Analyze my resume/profile and suggest improvements."]
+      ]
     }
   };
 
   return configs[page] || configs.command;
+}
+
+function defaultProfile(){
+  return {
+    name:"",
+    current_role:"",
+    target_role:"",
+    industries:"",
+    experience:"",
+    strengths:"",
+    goals:"",
+    constraints:"",
+    work_style:"",
+    decision_style:"",
+    values:"",
+    resume_text:"",
+    resume_file_name:"",
+    updated_at:""
+  };
+}
+
+function loadProfile(){
+  try{
+    return {...defaultProfile(), ...JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}")};
+  }catch{
+    return defaultProfile();
+  }
+}
+
+function saveProfileData(data){
+  const profile = {...loadProfile(), ...data, updated_at:new Date().toISOString()};
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  return profile;
+}
+
+function profileText(){
+  const p = loadProfile();
+  return [
+    `Name: ${p.name}`,
+    `Current role: ${p.current_role}`,
+    `Target role: ${p.target_role}`,
+    `Industries: ${p.industries}`,
+    `Experience: ${p.experience}`,
+    `Strengths: ${p.strengths}`,
+    `Goals: ${p.goals}`,
+    `Constraints: ${p.constraints}`,
+    `Work style: ${p.work_style}`,
+    `Decision style: ${p.decision_style}`,
+    `Values: ${p.values}`,
+    `Resume file: ${p.resume_file_name}`,
+    `Resume text: ${p.resume_text ? p.resume_text.slice(0,3500) : ""}`
+  ].filter(line => !line.endsWith(": ")).join("\n");
+}
+
+function saveProfileFromForm(){
+  const data = {
+    name:document.getElementById("profileName")?.value || "",
+    current_role:document.getElementById("profileCurrentRole")?.value || "",
+    target_role:document.getElementById("profileTargetRole")?.value || "",
+    industries:document.getElementById("profileIndustries")?.value || "",
+    experience:document.getElementById("profileExperience")?.value || "",
+    strengths:document.getElementById("profileStrengths")?.value || "",
+    goals:document.getElementById("profileGoals")?.value || "",
+    constraints:document.getElementById("profileConstraints")?.value || "",
+    work_style:document.getElementById("profileWorkStyle")?.value || "",
+    decision_style:document.getElementById("profileDecisionStyle")?.value || "",
+    values:document.getElementById("profileValues")?.value || ""
+  };
+
+  saveProfileData(data);
+  render();
+  showToast("Profile saved");
+}
+
+function clearProfile(){
+  if(!confirm("Clear your profile?")) return;
+  localStorage.removeItem(PROFILE_KEY);
+  render();
+  showToast("Profile cleared");
+}
+
+function useProfilePrompt(type){
+  const p = profileText();
+  const prompts = {
+    review:"Use my profile to identify my highest-leverage direction, blind spots, best opportunities, and next move.\n\nPROFILE:\n",
+    career:"Turn my profile into executive-level positioning for CEO / COO / CMO / President opportunities.\n\nPROFILE:\n",
+    resume:"Analyze my resume/profile. Improve positioning, strengths, gaps, and next career/business moves.\n\nPROFILE:\n",
+    filter:"Create an opportunity filter based on my profile: what to pursue, ignore, delegate, and say no to.\n\nPROFILE:\n"
+  };
+
+  loadPrompt((prompts[type] || prompts.review) + p, "personal");
+}
+
+function renderProfilePage(){
+  const p = loadProfile();
+
+  return `
+    <div class="page-panel">
+      <span class="smart-badge">Personal Intelligence · Your Profile</span>
+      <h2>Your Profile</h2>
+      <p>Answer what matters. Upload or paste your resume. The engine will use this profile as context for sharper decisions.</p>
+
+      <div class="profile-form">
+        <div class="profile-row">
+          <div class="profile-field">
+            <label>Name</label>
+            <input id="profileName" value="${esc(p.name)}" placeholder="Will Webb" />
+          </div>
+          <div class="profile-field">
+            <label>Current Role / Identity</label>
+            <input id="profileCurrentRole" value="${esc(p.current_role)}" placeholder="Founder / COO / Operator" />
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <div class="profile-field">
+            <label>Target Role / Direction</label>
+            <input id="profileTargetRole" value="${esc(p.target_role)}" placeholder="CEO, COO, President, SaaS founder..." />
+          </div>
+          <div class="profile-field">
+            <label>Industries</label>
+            <input id="profileIndustries" value="${esc(p.industries)}" placeholder="Finance, SaaS, alcohol, marketing..." />
+          </div>
+        </div>
+
+        <div class="profile-field">
+          <label>Experience Summary</label>
+          <textarea id="profileExperience" placeholder="Summarize your background, wins, businesses, career history...">${esc(p.experience)}</textarea>
+        </div>
+
+        <div class="profile-row">
+          <div class="profile-field">
+            <label>Strengths</label>
+            <textarea id="profileStrengths" placeholder="Growth, operations, sales, leadership, product...">${esc(p.strengths)}</textarea>
+          </div>
+          <div class="profile-field">
+            <label>Goals</label>
+            <textarea id="profileGoals" placeholder="What are you trying to build, become, earn, or achieve?">${esc(p.goals)}</textarea>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <div class="profile-field">
+            <label>Constraints</label>
+            <textarea id="profileConstraints" placeholder="Time, money, team, stress, legal, focus, skill gaps...">${esc(p.constraints)}</textarea>
+          </div>
+          <div class="profile-field">
+            <label>Values / Standards</label>
+            <textarea id="profileValues" placeholder="Integrity, speed, quality, family, freedom, impact...">${esc(p.values)}</textarea>
+          </div>
+        </div>
+
+        <div class="profile-row">
+          <div class="profile-field">
+            <label>Work Style</label>
+            <select id="profileWorkStyle">
+              <option value="">Choose...</option>
+              <option ${p.work_style==="Fast / decisive"?"selected":""}>Fast / decisive</option>
+              <option ${p.work_style==="Strategic / reflective"?"selected":""}>Strategic / reflective</option>
+              <option ${p.work_style==="Creative / builder"?"selected":""}>Creative / builder</option>
+              <option ${p.work_style==="Operator / execution"?"selected":""}>Operator / execution</option>
+            </select>
+          </div>
+          <div class="profile-field">
+            <label>Decision Style</label>
+            <select id="profileDecisionStyle">
+              <option value="">Choose...</option>
+              <option ${p.decision_style==="Direct recommendation"?"selected":""}>Direct recommendation</option>
+              <option ${p.decision_style==="Options + tradeoffs"?"selected":""}>Options + tradeoffs</option>
+              <option ${p.decision_style==="Blunt reality check"?"selected":""}>Blunt reality check</option>
+              <option ${p.decision_style==="Step-by-step execution"?"selected":""}>Step-by-step execution</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="upload-box">
+          <strong>Upload Resume</strong>
+          <div class="empty">Best: .txt resume. PDF/DOCX may not fully parse in browser; you can paste text below too.</div>
+          <input id="resumeUpload" type="file" accept=".txt,.md,.pdf,.doc,.docx" />
+          <div id="resumeStatus" class="profile-status">${p.resume_file_name ? "Loaded: " + esc(p.resume_file_name) : ""}</div>
+        </div>
+
+        <div class="profile-field">
+          <label>Resume Text / Bio / LinkedIn Copy</label>
+          <textarea id="resumeText" placeholder="Paste your resume, LinkedIn bio, career notes, or achievements here...">${esc(p.resume_text)}</textarea>
+        </div>
+
+        <div class="profile-actions">
+          <button class="btn run" onclick="saveProfileFromForm()">Save Profile</button>
+          <button class="btn clear" onclick="useProfilePrompt('review')">Analyze Profile</button>
+          <button class="btn clear" onclick="useProfilePrompt('career')">Executive Positioning</button>
+          <button class="btn clear" onclick="useProfilePrompt('resume')">Resume Strategy</button>
+          <button class="btn clear" onclick="useProfilePrompt('filter')">Opportunity Filter</button>
+          <button class="btn clear" onclick="clearProfile()">Clear Profile</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function bindProfileEvents(){
+  const resumeUpload = document.getElementById("resumeUpload");
+  const resumeText = document.getElementById("resumeText");
+
+  if(resumeUpload){
+    resumeUpload.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+
+      let text = "";
+
+      try{
+        if(file.type === "text/plain" || file.name.endsWith(".txt") || file.name.endsWith(".md")){
+          text = await file.text();
+        }else{
+          text = `[Uploaded file: ${file.name}]\nBrowser preview may not parse this file type. Paste resume text here for best results.`;
+        }
+
+        resumeText.value = text;
+        saveProfileData({resume_text:text, resume_file_name:file.name});
+        document.getElementById("resumeStatus").textContent = "Loaded: " + file.name;
+        showToast("Resume loaded");
+      }catch(err){
+        document.getElementById("resumeStatus").textContent = "Could not read file. Paste resume text instead.";
+      }
+    });
+  }
 }
 
 function renderPage(){
@@ -2506,6 +2838,12 @@ function renderPage(){
 
   if(!getMessages().length){
     pageContent.innerHTML = "";
+    return;
+  }
+
+  if(activePage === "profile"){
+    pageContent.innerHTML = renderProfilePage();
+    bindProfileEvents();
     return;
   }
 
@@ -2539,6 +2877,7 @@ function smartRoutePrompt(text){
   if(value.includes("automation") || value.includes("automate") || value.includes("systemize")) return ["automation","execution"];
   if(value.includes("strategy") || value.includes("growth") || value.includes("plan")) return ["strategy","strategy"];
   if(value.includes("proposal") || value.includes("offer") || value.includes("client")) return ["proposal","proposal"];
+  if(value.includes("profile") || value.includes("resume") || value.includes("career") || value.includes("linkedin")) return ["profile","personal"];
   if(value.includes("personal") || value.includes("health") || value.includes("energy") || value.includes("relationship")) return ["personal","personal"];
   if(value.includes("today") || value.includes("day") || value.includes("priority")) return ["daily","daily_brief"];
   if(value.includes("decide") || value.includes("decision") || value.includes("choose")) return ["decisions","decision"];
@@ -2701,7 +3040,7 @@ function buildRequestContext(){
   const currentMessages = getMessages().slice(-8);
 
   return [
-    `Executive Engine OS V53 Context`,
+    `Executive Engine OS V54 Context`,
     `Thread: ${current?.title || "New Chat"}`,
     `Current Page: ${activePage}`,
     `Current Mode: ${labelMode(modeEl.value)}`,
@@ -2731,6 +3070,9 @@ function buildRequestContext(){
     `- When possible, include board-level clarity: executive summary, financial impact, leadership implication, and decision confidence`,
     `- Avoid junior advice, motivational language, obvious suggestions, and surface-level recommendations`,
     `- If the input is vague, still give the best next move and ask one clarifying question if needed`,
+    ``,
+    `User Profile:`,
+    profileText() || "No profile saved yet.",
     ``,
     `Recent local memory:`,
     ...localMemory.map((m,i)=>`${i+1}. ${m.decision || m.next_move || ""}`),
@@ -2963,7 +3305,7 @@ function fillFunctionPrompt(type){
 
 function exportAllThreads(){
   const lines = [];
-  lines.push("Executive Engine OS V53 Export — All Threads");
+  lines.push("Executive Engine OS V54 Export — All Threads");
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push("");
 
@@ -2999,7 +3341,7 @@ function exportCurrentThread(){
   const lines = [];
 
   lines.push(`Executive Engine OS Export`);
-  lines.push(`Version: V53`);
+  lines.push(`Version: V54`);
   lines.push(`Thread: ${t.title}`);
   lines.push(`Date: ${new Date().toLocaleString()}`);
   lines.push(``);
@@ -3148,6 +3490,7 @@ fnCockpit.addEventListener("click", () => fillFunctionPrompt("cockpit"));
 fnIntegration.addEventListener("click", () => fillFunctionPrompt("integration"));
 fnAutomationBuild.addEventListener("click", () => fillFunctionPrompt("automationbuild"));
 fnServiceMap.addEventListener("click", () => fillFunctionPrompt("servicemap"));
+fnProfile.addEventListener("click", () => setPage("profile", "personal"));
 
 moreToolsLeft.addEventListener("click", () => {
   extraTools.classList.toggle("hidden");
