@@ -1,17 +1,12 @@
-Executive Engine OS V54
+Executive Engine OS V56 Input Fix
 
-Purpose:
-- Adds "Your Profile" to top navigation
-- Adds sidebar profile link
-- Adds user questionnaire
-- Adds resume upload/paste area
-- Saves profile locally in browser
-- Sends profile context with each backend request
-- Adds profile analysis, executive positioning, resume strategy, and opportunity filter actions
-
-Note:
-- Browser can reliably read TXT/MD resumes.
-- For PDF/DOCX, paste resume text into the resume field for best results.
+Changes:
+- Fixes missing input/composer on empty state
+- Keeps top navigation clean like screenshot
+- Removes visible Executive Flow System / ChatGPT-style execution OS wording
+- Composer appears centered before first message
+- Composer moves to bottom after first message
+- Keeps profile/resume features
 
 Upload:
 - frontend/index.html
@@ -22,4 +17,5 @@ Deploy:
 1. Commit changes
 2. Render backend -> Manual Deploy
 3. Render frontend -> Clear cache & deploy
-4. Hard refresh frontend
+4. Open frontend
+5. Hard refresh: Ctrl + Shift + R

@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V54"
+APP_NAME = "Executive Engine OS V56"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -169,7 +169,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V54.
+You are Executive Engine OS V56.
 
 You respond like a CEO / President / COO-level operating partner for executives who make millions per year.
 
