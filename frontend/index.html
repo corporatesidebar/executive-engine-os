@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+const API = "https://executive-engine-os.onrender.com";
+html>
 <head>
   <title>Executive Engine</title>
 </head>
@@ -18,16 +19,14 @@ const API = "https://executive-engine-os.onrender.com";
 async function run() {
   const text = document.getElementById("input").value;
 
-  const res = await fetch(API + "/run", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      input: text,
-      mode: "execution"
-    })
-  });
+  fetch(API + "/run", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    input: text,
+    mode: "execution"
+  })
+})
 
   const data = await res.json();
   document.getElementById("output").textContent = JSON.stringify(data, null, 2);
