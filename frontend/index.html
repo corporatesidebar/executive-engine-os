@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V80</title>
+  <title>Executive Engine OS V81</title>
   <style>
     :root{
       --nav:#071226;
@@ -394,6 +394,220 @@ h1{
   }
 }
 
+
+/* V81 — ELITE USABLE WORKFLOW BOARD */
+.hero{
+  padding:32px 18px 56px !important;
+}
+
+.hero-inner{
+  max-width:1220px !important;
+}
+
+h1{
+  font-size:38px !important;
+}
+
+.workflow-board-panel{
+  max-width:1180px !important;
+  padding:18px !important;
+}
+
+.workflow-board{
+  grid-template-columns:repeat(5,minmax(190px,1fr)) !important;
+  gap:14px !important;
+}
+
+.workflow-col{
+  min-height:292px !important;
+  border-radius:18px !important;
+}
+
+.workflow-col.active{
+  border-width:2px !important;
+}
+
+.workflow-head{
+  padding:14px !important;
+}
+
+.workflow-icon{
+  width:34px !important;
+  height:34px !important;
+  font-size:17px !important;
+  border-radius:11px !important;
+}
+
+.workflow-title strong{
+  font-size:15px !important;
+  letter-spacing:-.015em;
+}
+
+.workflow-title span{
+  font-size:12px !important;
+}
+
+.workflow-items{
+  padding:12px !important;
+  gap:10px !important;
+}
+
+.workflow-item{
+  padding:12px !important;
+  border-radius:14px !important;
+  min-height:62px !important;
+}
+
+.workflow-item strong{
+  font-size:13.5px !important;
+  line-height:1.25 !important;
+}
+
+.workflow-item span{
+  font-size:12px !important;
+}
+
+.add-new-workflow{
+  margin:0 12px 12px !important;
+  height:40px !important;
+  font-size:13.5px !important;
+  border-radius:13px !important;
+}
+
+.inline-composer .composer,
+.composer{
+  max-width:960px !important;
+}
+
+.inline-composer .composer textarea,
+.composer textarea{
+  height:132px !important;
+  min-height:132px !important;
+  max-height:132px !important;
+  font-size:17px !important;
+}
+
+.current-workflow-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  height:38px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:999px;
+  padding:0 13px;
+  font-size:13px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.current-workflow-pill span{
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  color:#fff;
+  background:#2563eb;
+  font-size:12px;
+}
+
+.hidden-mode-select{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.mode-block{
+  display:none !important;
+}
+
+.hint{
+  font-size:12.5px !important;
+}
+
+.run-btn{
+  height:44px !important;
+  min-width:150px !important;
+  font-size:14px !important;
+}
+
+.page-section{
+  display:none;
+  max-width:1180px;
+  margin:18px auto 0;
+  text-align:left;
+}
+
+.page-section.show{
+  display:block;
+}
+
+.page-card-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.page-card{
+  border:1px solid #dbe3ef;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 10px 28px rgba(15,23,42,.045);
+}
+
+.page-card h3{
+  margin:0 0 8px;
+  color:#0f172a;
+  font-size:16px;
+}
+
+.page-card p{
+  margin:0 0 14px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.page-card button{
+  height:38px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:12px;
+  padding:0 12px;
+  font-weight:950;
+}
+
+.profile-panel{
+  max-width:900px !important;
+}
+
+@media(max-width:1350px){
+  .workflow-board{
+    grid-template-columns:repeat(3,minmax(220px,1fr)) !important;
+  }
+}
+
+@media(max-width:980px){
+  .workflow-board,
+  .page-card-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media(max-width:760px){
+  .workflow-board,
+  .page-card-grid{
+    grid-template-columns:1fr !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -436,7 +650,7 @@ h1{
           <div class="workflow-board-panel">
             <div class="intent-head">
               <div class="intent-label">Choose workflow</div>
-              <div class="intent-hint">Pick a lane or add a new input. The chat box is directly below.</div>
+              <div class="intent-hint">Pick a lane. Add New starts that workflow. Recent items reopen instantly.</div>
             </div>
             <div class="workflow-board" id="workflowBoard"></div>
           </div>
@@ -462,6 +676,7 @@ h1{
               </div>
             </div>
           </div>
+          <div class="page-section" id="pageSection"></div>
         </div>
       </section>
 
@@ -495,17 +710,17 @@ h1{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v80_threads";
-const ACTIVE_KEY = "eeos_v80_active_thread";
-const PROFILE_KEY = "eeos_v80_profile";
-const MEMORY_KEY = "eeos_v80_memory";
-const ACTIONS_KEY = "eeos_v80_actions";
-const DECISIONS_KEY = "eeos_v80_decisions";
+const STORAGE_KEY = "eeos_v81_threads";
+const ACTIVE_KEY = "eeos_v81_active_thread";
+const PROFILE_KEY = "eeos_v81_profile";
+const MEMORY_KEY = "eeos_v81_memory";
+const ACTIONS_KEY = "eeos_v81_actions";
+const DECISIONS_KEY = "eeos_v81_decisions";
 
 const $ = id => document.getElementById(id);
 const input = $("input"), runBtn = $("runBtn"), modeSelect = $("modeSelect"), chat = $("chat"), hero = $("hero"), chatShell = $("chatShell");
 const globalSearch = $("globalSearch"), searchResults = $("searchResults"), notice = $("notice"), processingOverlay = $("processingOverlay"), runStatus = $("runStatus");
-const pageTitle = $("pageTitle"), pageDesc = $("pageDesc"), workflowBoard = $("workflowBoard"), composer = $("composer");
+const pageTitle = $("pageTitle"), pageDesc = $("pageDesc"), workflowBoard = $("workflowBoard"), composer = $("composer"), pageSection = $("pageSection"), currentWorkflowIcon = $("currentWorkflowIcon"), currentWorkflowLabel = $("currentWorkflowLabel");
 const todayFocus = $("todayFocus"), queueList = $("queueList"), recentDecisionList = $("recentDecisionList");
 const commandPalette = $("commandPalette"), paletteInput = $("paletteInput"), paletteList = $("paletteList"), closePalette = $("closePalette");
 
@@ -513,11 +728,11 @@ let threads = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
 let activeThreadId = localStorage.getItem(ACTIVE_KEY);
 
 const workflows = {
-  execution:{page:"command", label:"Ask / Execute", icon:"⌘", desc:"Anything you need moved forward.", placeholder:"Tell me what needs to get done, decided, fixed, or prepared.", prompt:"Help me execute or fix this: "},
-  daily_brief:{page:"daily", label:"Plan Today", icon:"◷", desc:"Priorities, risks, first move.", placeholder:"What is on your plate today? Include meetings, deadlines, follow-ups, and pressure points.", prompt:"Run my day. Here is what is on my plate: "},
-  decision:{page:"decisions", label:"Make Decision", icon:"◆", desc:"Choose direction with tradeoffs.", placeholder:"What decision are you trying to make? Include options, deadline, and what is at stake.", prompt:"Help me make this decision: "},
-  meeting:{page:"meetings", label:"Prepare Meeting", icon:"◉", desc:"Agenda, questions, follow-up.", placeholder:"What meeting are you preparing for? Include people, objective, context, and desired outcome.", prompt:"Prepare me for this meeting: "},
-  personal:{page:"personal", label:"Personal / Misc", icon:"★", desc:"Anything personal or unclear.", placeholder:"What is going on? Share the messy version. I’ll clarify the next move.", prompt:"Help me make sense of this: "}
+  execution:{page:"command", label:"Ask / Execute", icon:"⌘", desc:"General task or blocker.", placeholder:"Tell me what needs to get done, decided, fixed, or prepared.", prompt:"Help me execute or fix this: "},
+  daily_brief:{page:"daily", label:"Plan Today", icon:"◷", desc:"Today’s plan and focus.", placeholder:"What is on your plate today? Include meetings, deadlines, follow-ups, and pressure points.", prompt:"Run my day. Here is what is on my plate: "},
+  decision:{page:"decisions", label:"Make Decision", icon:"◆", desc:"Decision, tradeoff, risk.", placeholder:"What decision are you trying to make? Include options, deadline, and what is at stake.", prompt:"Help me make this decision: "},
+  meeting:{page:"meetings", label:"Prepare Meeting", icon:"◉", desc:"Prep, agenda, follow-up.", placeholder:"What meeting are you preparing for? Include people, objective, context, and desired outcome.", prompt:"Prepare me for this meeting: "},
+  personal:{page:"personal", label:"Personal / Misc", icon:"★", desc:"Life, message, admin.", placeholder:"What is going on? Share the messy version. I’ll clarify the next move.", prompt:"Help me make sense of this: "}
 };
 
 const pageCopy = {
@@ -558,29 +773,29 @@ function recentItemsForWorkflow(mode){
 
   const defaults = {
     execution:[
-      "Fix an operational blocker",
-      "Turn a messy situation into next steps",
-      "Create a 30-minute execution sprint"
+      "Fix a blocker",
+      "Turn issue into steps",
+      "30-minute sprint"
     ],
     daily_brief:[
-      "Plan today’s highest-leverage work",
-      "Review meetings and follow-ups",
-      "Choose what to ignore today"
+      "Highest-leverage work",
+      "Meetings + follow-ups",
+      "What to ignore"
     ],
     decision:[
-      "Decide between two options",
-      "Evaluate risk and tradeoffs",
-      "Choose a direction under pressure"
+      "Compare options",
+      "Risk + tradeoffs",
+      "Decide under pressure"
     ],
     meeting:[
-      "Prepare talking points",
-      "Build agenda and questions",
-      "Create follow-up plan"
+      "Talking points",
+      "Agenda + questions",
+      "Follow-up plan"
     ],
     personal:[
-      "Organize personal admin",
-      "Draft a message",
-      "Clarify messy thoughts"
+      "Personal admin",
+      "Draft message",
+      "Clarify thoughts"
     ]
   };
 
@@ -634,12 +849,63 @@ function renderWorkflowBoard(){
     });
   });
 }
+
+function renderPageSection(page, mode){
+  if(!pageSection) return;
+  if(page === "command"){
+    pageSection.classList.remove("show");
+    pageSection.innerHTML = "";
+    return;
+  }
+
+  const cards = {
+    daily:[
+      ["Today’s Priorities","Turn scattered tasks into one clear sequence.","Plan Today"],
+      ["Open Loops","Find follow-ups, decisions, and blocked items.","Find Open Loops"],
+      ["First Move","Create the first 30-minute action.","Build First Move"]
+    ],
+    decisions:[
+      ["Decision Brief","Clarify options, stakes, tradeoffs, and recommendation.","Build Decision"],
+      ["Risk Check","Pressure-test downside and weak assumptions.","Check Risk"],
+      ["Save Decision","Store the decision and next move.","Save Decision"]
+    ],
+    meetings:[
+      ["Meeting Brief","Agenda, talking points, hard questions, and outcome.","Prep Meeting"],
+      ["Follow-Up","Create a follow-up message and action sequence.","Create Follow-Up"],
+      ["Stakeholder Read","Clarify people, incentives, risks, and power dynamics.","Analyze Room"]
+    ],
+    personal:[
+      ["Clarify Messy Thought","Turn personal/misc input into a clean next move.","Clarify"],
+      ["Draft Message","Create a clean text/email/message response.","Draft Message"],
+      ["Personal Admin","Organize life/admin tasks into action sequence.","Organize"]
+    ],
+    profile:[
+      ["Profile Context","Add role, goals, experience, constraints, preferences.","Open Profile"],
+      ["Resume Upload Later","Resume parsing can be added next.","Coming Soon"],
+      ["Personalization","Your profile improves every answer.","Save Profile"]
+    ]
+  };
+
+  const selected = cards[page] || cards.daily;
+  pageSection.innerHTML = `<div class="page-card-grid">${selected.map(c=>`
+    <div class="page-card">
+      <h3>${esc(c[0])}</h3>
+      <p>${esc(c[1])}</p>
+      <button onclick="selectWorkflow('${mode || "execution"}', true)">${esc(c[2])}</button>
+    </div>
+  `).join("")}</div>`;
+  pageSection.classList.add("show");
+}
+
 function selectWorkflow(mode, fillPrompt=false){
   const w = workflows[mode] || workflows.execution;
   modeSelect.value = mode;
   input.placeholder = w.placeholder;
+  if(currentWorkflowIcon) currentWorkflowIcon.textContent = w.icon;
+  if(currentWorkflowLabel) currentWorkflowLabel.textContent = w.label;
   pageTitle.textContent = pageCopy[w.page]?.[0] || pageCopy.command[0];
   pageDesc.textContent = pageCopy[w.page]?.[1] || pageCopy.command[1];
+  renderPageSection(w.page, mode);
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode || (mode==="execution" && b.dataset.page==="command")));
   renderWorkflowBoard();
   if(fillPrompt && !input.value.trim()) input.value = w.prompt;
@@ -735,7 +1001,7 @@ function saveLatestDecision(){const d=latestAssistant();if(!d)return notify("Run
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;selectWorkflow("execution");notify("Deep analysis prompt created")}
 
-function buildContext(){return ["Executive Engine OS V80 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return ["Executive Engine OS V81 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim(); if(!text) return notify("Add context first");
   const t=getThread(); if(t.title==="New Chat") t.title=text.slice(0,52);

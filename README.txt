@@ -1,13 +1,16 @@
-Executive Engine OS V80
+Executive Engine OS V81
 
 Purpose:
-- Changes Choose Workflow into 5 Notion-style workflow boxes/columns.
-- Each workflow box shows up to 5 recent inputs for that workflow.
-- If no recent inputs exist, it shows suggested starter inputs.
-- Each workflow box has + Add New.
-- Chat input box is directly below workflow boxes, not stuck at bottom.
-- Keeps same layout and colours from V79.
-- Keeps all V79 functionality: sidebar, dropdown, run, search, profile, action queue, recent decisions, processing overlay, robots/noindex.
+- Refines V80 into a more usable executive OS.
+- Makes 5 workflow boxes larger/wider with bigger fonts.
+- Removes visible dropdown confusion from bottom-left composer.
+- Replaces dropdown with a clear Current Workflow pill.
+- Workflow board is now the main selector and single source of truth.
+- Left navigation links/pages are functional.
+- Added simple page content/cards for Plan Today, Decision, Meeting, Personal/Misc.
+- + Add New starts the selected workflow and focuses the chat box.
+- Recent workflow cards load into chat input.
+- Keeps all backend, run, search, profile, action queue, decisions, processing, robots/noindex.
 
 Upload:
 - frontend/index.html
