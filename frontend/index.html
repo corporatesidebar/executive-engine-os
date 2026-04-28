@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V82</title>
+  <title>Executive Engine OS V83</title>
   <style>
     :root{
       --nav:#071226;
@@ -631,6 +631,31 @@ h1{
 @media(max-width:980px){.page-grid,.process-strip{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.page-grid,.process-strip{grid-template-columns:1fr}}
 
+
+/* V83 — FIX FRONT FUNCTIONALITY */
+.topbar{grid-template-columns:252px 92px minmax(260px,520px) 70px!important;justify-content:center!important}
+.top-new-left{height:36px;border:1px solid rgba(255,255,255,.18);background:#2563eb;color:#fff;border-radius:12px;padding:0 14px;font-weight:950;box-shadow:0 10px 18px rgba(37,99,235,.22);justify-self:end}
+.top-new-left:hover{background:#1d4ed8}
+.top-search{max-width:520px!important;width:100%!important;justify-self:center!important}
+.top-actions .new-btn{display:none!important}
+.workflow-board{gap:16px!important}
+.workflow-col{border-width:2px!important;background:#fff!important;box-shadow:0 12px 34px rgba(15,23,42,.055)}
+.workflow-col[data-mode="execution"]{border-color:#93c5fd!important}.workflow-col[data-mode="execution"] .workflow-head{background:#eff6ff!important}.workflow-col[data-mode="execution"] .workflow-icon{background:#2563eb!important;color:#fff!important}
+.workflow-col[data-mode="daily_brief"]{border-color:#86efac!important}.workflow-col[data-mode="daily_brief"] .workflow-head{background:#ecfdf5!important}.workflow-col[data-mode="daily_brief"] .workflow-icon{background:#059669!important;color:#fff!important}
+.workflow-col[data-mode="decision"]{border-color:#c4b5fd!important}.workflow-col[data-mode="decision"] .workflow-head{background:#f5f3ff!important}.workflow-col[data-mode="decision"] .workflow-icon{background:#7c3aed!important;color:#fff!important}
+.workflow-col[data-mode="meeting"]{border-color:#fed7aa!important}.workflow-col[data-mode="meeting"] .workflow-head{background:#fff7ed!important}.workflow-col[data-mode="meeting"] .workflow-icon{background:#ea580c!important;color:#fff!important}
+.workflow-col[data-mode="personal"]{border-color:#fbcfe8!important}.workflow-col[data-mode="personal"] .workflow-head{background:#fdf2f8!important}.workflow-col[data-mode="personal"] .workflow-icon{background:#db2777!important;color:#fff!important}
+.workflow-col.active{transform:translateY(-2px);box-shadow:0 18px 45px rgba(37,99,235,.14)!important}
+.workflow-title strong{font-size:16px!important}.workflow-title span{font-size:12.5px!important;color:#475569!important}
+.workflow-item{border-color:#dbe3ef!important}.workflow-item strong{font-size:14px!important}
+.add-new-workflow{border-width:2px!important;font-size:14px!important;color:#1d4ed8!important;background:#fff!important}
+.add-new-workflow:hover{background:#eff6ff!important}
+.page-primary,.page-module button,.nav-btn,.workflow-item,.add-new-workflow,.new-left,.top-new-left,.brand-home{transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease}
+.page-primary:hover,.page-module button:hover,.workflow-item:hover,.add-new-workflow:hover,.top-new-left:hover{transform:translateY(-1px)}
+.profile-panel{max-width:920px!important;margin-top:18px!important}.profile-panel textarea{font-size:14px!important;line-height:1.45!important}
+@media(max-width:1180px){.topbar{grid-template-columns:220px 82px minmax(220px,1fr)!important}.top-actions{display:none!important}}
+@media(max-width:760px){.top-new-left{display:none!important}.topbar{grid-template-columns:auto 1fr!important}}
+
 </style>
 </head>
 <body>
@@ -734,19 +759,19 @@ h1{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v82_threads";
-const ACTIVE_KEY = "eeos_v82_active_thread";
-const PROFILE_KEY = "eeos_v82_profile";
-const MEMORY_KEY = "eeos_v82_memory";
-const ACTIONS_KEY = "eeos_v82_actions";
-const DECISIONS_KEY = "eeos_v82_decisions";
+const STORAGE_KEY = "eeos_v83_threads";
+const ACTIVE_KEY = "eeos_v83_active_thread";
+const PROFILE_KEY = "eeos_v83_profile";
+const MEMORY_KEY = "eeos_v83_memory";
+const ACTIONS_KEY = "eeos_v83_actions";
+const DECISIONS_KEY = "eeos_v83_decisions";
 
 const $ = id => document.getElementById(id);
 const input = $("input"), runBtn = $("runBtn"), modeSelect = $("modeSelect"), chat = $("chat"), hero = $("hero"), chatShell = $("chatShell");
 const globalSearch = $("globalSearch"), searchResults = $("searchResults"), notice = $("notice"), processingOverlay = $("processingOverlay"), runStatus = $("runStatus");
 const pageTitle = $("pageTitle"), pageDesc = $("pageDesc"), workflowBoard = $("workflowBoard"), composer = $("composer"), pageSection = $("pageSection"), pageView = $("pageView"), currentWorkflowIcon = $("currentWorkflowIcon"), currentWorkflowLabel = $("currentWorkflowLabel");
 const todayFocus = $("todayFocus"), queueList = $("queueList"), recentDecisionList = $("recentDecisionList");
-const commandPalette = $("commandPalette"), paletteInput = $("paletteInput"), paletteList = $("paletteList"), closePalette = $("closePalette");
+const commandPalette = $("commandPalette"), paletteInput = $("paletteInput"), paletteList = $("paletteList"), closePalette = $("closePalette"), newTopLeftBtn = $("newTopLeftBtn");
 
 let threads = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
 let activeThreadId = localStorage.getItem(ACTIVE_KEY);
@@ -930,7 +955,24 @@ function selectWorkflow(mode, fillPrompt=false){
   pageTitle.textContent = pageCopy[w.page]?.[0] || pageCopy.command[0];
   pageDesc.textContent = pageCopy[w.page]?.[1] || pageCopy.command[1];
   renderPageSection(w.page, mode);
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode || (mode==="execution" && b.dataset.page==="command")));
+  
+function goHome(){
+  if(pageView) pageView.classList.remove("show");
+  hero.style.display = "flex";
+  chatShell.classList.remove("show");
+  selectWorkflow("execution", false);
+  renderWorkflowBoard();
+  input.focus();
+}
+function newChat(){
+  createThread(false);
+  input.value = "";
+  goHome();
+  renderRight();
+  notify("New workspace ready", "success");
+}
+
+document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode || (mode==="execution" && b.dataset.page==="command")));
   renderWorkflowBoard();
   if(fillPrompt && !input.value.trim()) input.value = w.prompt;
   input.focus();
@@ -1048,24 +1090,42 @@ function handlePageModule(mode, action){
 
 function renderProfile(){
   if(pageView) pageView.classList.remove("show");
-  pageTitle.textContent = "Your Profile";
-  pageDesc.textContent = "Add career, company, goals, constraints, and preferences. This improves every answer.";
-  hero.style.display="flex"; chatShell.classList.remove("show");
+  chatShell.classList.remove("show");
+  hero.style.display = "flex";
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.page==="profile"));
-  const p=profile();
-  let panel=document.querySelector(".profile-panel");
-  if(!panel){panel=document.createElement("div");panel.className="profile-panel intent-panel";$("heroInner").appendChild(panel)}
-  panel.innerHTML=`
-    <div class="intent-label">Profile Setup</div>
-    <div style="display:grid;gap:10px;text-align:left">
-      ${["role","goals","experience","constraints","preferences"].map(k=>`
-        <label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">${k}</label>
-        <textarea data-profile="${k}" style="width:100%;min-height:74px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p[k]||"")}</textarea>`).join("")}
-      <button class="run-btn" id="saveProfileBtn" style="width:160px">Save Profile</button>
+  pageTitle.textContent = "Your Profile";
+  pageDesc.textContent = "Add role, goals, experience, constraints, resume/context. This makes every answer sharper.";
+  selectWorkflow("personal", false);
+  document.querySelectorAll(".profile-panel").forEach(p => p.remove());
+  const p = profile();
+  const panel = document.createElement("div");
+  panel.className = "profile-panel intent-panel";
+  panel.innerHTML = `
+    <div class="intent-head"><div class="intent-label">Profile Setup</div><div class="intent-hint">Saved locally for now. Supabase later.</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left">
+      <div><label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">Current Role / Target</label><textarea data-profile="role" style="width:100%;min-height:92px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p.role||"")}</textarea></div>
+      <div><label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">Goals</label><textarea data-profile="goals" style="width:100%;min-height:92px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p.goals||"")}</textarea></div>
+      <div><label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">Experience / Strengths</label><textarea data-profile="experience" style="width:100%;min-height:110px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p.experience||"")}</textarea></div>
+      <div><label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">Constraints / Preferences</label><textarea data-profile="constraints" style="width:100%;min-height:110px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p.constraints||"")}</textarea></div>
+      <div style="grid-column:1/-1"><label style="font-size:12px;font-weight:950;color:#475569;text-transform:uppercase">Resume / Bio / Context</label><textarea data-profile="resume" placeholder="Paste resume, LinkedIn summary, company context, or background notes here..." style="width:100%;min-height:150px;border:1px solid #dbe3ef;border-radius:12px;padding:12px">${esc(p.resume||"")}</textarea></div>
+      <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center"><button class="run-btn" id="saveProfileBtn" style="width:160px">Save Profile</button><button class="ghost-btn" id="useProfileBtn" type="button">Use Profile Now</button></div>
     </div>`;
-  $("saveProfileBtn").onclick=()=>{
-    const next={};panel.querySelectorAll("[data-profile]").forEach(el=>next[el.dataset.profile]=el.value.trim());
-    localStorage.setItem(PROFILE_KEY,JSON.stringify(next));notify("Profile saved","success");renderRight();
+  document.getElementById("heroInner").appendChild(panel);
+  document.getElementById("saveProfileBtn").onclick = () => {
+    const next = {};
+    panel.querySelectorAll("[data-profile]").forEach(el => next[el.dataset.profile] = el.value.trim());
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
+    notify("Profile saved", "success");
+    renderRight();
+  };
+  document.getElementById("useProfileBtn").onclick = () => {
+    const next = {};
+    panel.querySelectorAll("[data-profile]").forEach(el => next[el.dataset.profile] = el.value.trim());
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
+    input.value = "Based on my profile, identify my highest-leverage direction, positioning, risks, and next move.";
+    selectWorkflow("personal", false);
+    input.focus();
+    notify("Profile loaded into prompt", "success");
   };
 }
 
@@ -1109,9 +1169,11 @@ function toggleStrategic(btn){const adv=btn.closest(".bubble").querySelector(".a
 
 function render(){
   const msgs=getMessages();
-  if(pageView) pageView.classList.remove("show");
-  hero.style.display = msgs.length ? "none" : "flex";
-  chatShell.classList.toggle("show", !!msgs.length);
+  const pageOpen = pageView && pageView.classList.contains("show");
+  if(!pageOpen){
+    hero.style.display = msgs.length ? "none" : "flex";
+    chatShell.classList.toggle("show", !!msgs.length);
+  }
   chat.innerHTML = msgs.map(m=>`<div class="msg ${m.role}"><div class="bubble">${m.role==="user"?esc(m.text):renderAssistant(m.data)}</div></div>`).join("");
   renderRight(); renderWorkflowBoard(); saveThreads();
   setTimeout(()=>{const main=$("main");main.scrollTop=main.scrollHeight},30);
@@ -1132,9 +1194,10 @@ function saveLatestDecision(){const d=latestAssistant();if(!d)return notify("Run
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;selectWorkflow("execution");notify("Deep analysis prompt created")}
 
-function buildContext(){return ["Executive Engine OS V82 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return ["Executive Engine OS V83 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim(); if(!text) return notify("Add context first");
+  if(pageView) pageView.classList.remove("show");
   const t=getThread(); if(t.title==="New Chat") t.title=text.slice(0,52);
   t.messages.push({role:"user",text,mode:modeSelect.value,at:new Date().toISOString()});
   input.value=""; render(); setProcessing(true); runBtn.disabled=true; runBtn.textContent="Running";
@@ -1162,13 +1225,14 @@ function runSearch(){
 function openSearch(id){activeThreadId=id;searchResults.classList.remove("show");globalSearch.value="";render()}
 
 const paletteCommands=[
-  ["New Chat","Start fresh",()=>createThread(true)],
-  ["Ask / Execute","General execution mode",()=>selectWorkflow("execution")],
-  ["Plan Today","Plan the day",()=>selectWorkflow("daily_brief",true)],
-  ["Make Decision","Decision mode",()=>selectWorkflow("decision",true)],
-  ["Prepare Meeting","Meeting prep mode",()=>selectWorkflow("meeting",true)],
-  ["Personal / Misc","Handle anything",()=>selectWorkflow("personal",true)],
-  ["Profile","Open profile",()=>renderProfile()]
+  ["New Chat","Start a fresh workspace",()=>newChat()],
+  ["Ask / Execute","Open Ask / Execute page",()=>setPage("command","execution")],
+  ["Plan Today","Open Plan Today page",()=>setPage("daily","daily_brief")],
+  ["Make Decision","Open Make Decision page",()=>setPage("decisions","decision")],
+  ["Prepare Meeting","Open Prepare Meeting page",()=>setPage("meetings","meeting")],
+  ["Personal / Misc","Open Personal / Misc page",()=>setPage("personal","personal")],
+  ["Your Profile","Open profile page",()=>renderProfile()],
+  ["Search","Focus search",()=>globalSearch.focus()]
 ];
 function openPalette(){commandPalette.classList.add("show");renderPalette("");paletteInput.value="";setTimeout(()=>paletteInput.focus(),20)}
 function closeCommandPalette(){commandPalette.classList.remove("show");input.focus()}
@@ -1176,7 +1240,7 @@ function renderPalette(q){q=(q||"").toLowerCase();const filtered=paletteCommands
 function runPaletteFirst(){const q=paletteInput.value.toLowerCase();const c=paletteCommands.find(c=>(c[0]+" "+c[1]).toLowerCase().includes(q))||paletteCommands[0];closeCommandPalette();c[2]()}
 
 document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
-newTopBtn.onclick=()=>createThread(true); newLeftBtn.onclick=()=>createThread(true); brandHome.onclick=()=>{if(pageView)pageView.classList.remove("show");hero.style.display="flex";chatShell.classList.remove("show");selectWorkflow("execution",false);render()};
+if(typeof newTopBtn !== "undefined" && newTopBtn) newTopBtn.onclick = newChat; if(newTopLeftBtn) newTopLeftBtn.onclick = newChat; if(newLeftBtn) newLeftBtn.onclick = newChat; if(brandHome) brandHome.onclick = goHome;hero.style.display="flex";chatShell.classList.remove("show");selectWorkflow("execution",false);render()};
 runBtn.onclick=send;
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
 modeSelect.addEventListener("change",()=>selectWorkflow(modeSelect.value,false));
