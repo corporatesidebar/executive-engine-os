@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V88</title>
+  <title>Executive Engine OS V89</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -160,6 +160,76 @@
   line-height:1.35;
 }
 
+
+/* V89 — RIGHT SIDEBAR FUNCTIONAL + FULLER OUTPUT */
+.rail-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.rail-actions button{
+  height:30px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:9px;
+  padding:0 9px;
+  font-size:11px;
+  font-weight:950;
+}
+.rail-actions button:hover{
+  background:#dbeafe;
+}
+.queue-item,.decision-item,.engine-item{
+  user-select:none;
+}
+.queue-item{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  margin:8px 0;
+  cursor:pointer;
+  transition:.15s;
+}
+.queue-item:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+}
+.queue-item strong{
+  display:block;
+  color:#0f172a;
+  font-size:12.5px;
+  line-height:1.35;
+}
+.queue-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  margin-top:4px;
+}
+.sidebar-mini-btn{
+  width:100%;
+  height:34px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:950;
+  margin-top:8px;
+}
+.response-card.more-visible{
+  background:#fff;
+}
+.advanced{
+  display:grid !important;
+}
+.ghost-btn[onclick*="toggleStrategic"]{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -238,7 +308,7 @@
 
 <script>
 const API="https://executive-engine-os.onrender.com";
-const STORAGE_KEY="eeos_v88_threads",ACTIVE_KEY="eeos_v88_active_thread",PROFILE_KEY="eeos_v88_profile",ACTIONS_KEY="eeos_v88_actions",DECISIONS_KEY="eeos_v88_decisions";
+const STORAGE_KEY="eeos_v89_threads",ACTIVE_KEY="eeos_v89_active_thread",PROFILE_KEY="eeos_v89_profile",ACTIONS_KEY="eeos_v89_actions",DECISIONS_KEY="eeos_v89_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -289,6 +359,67 @@ function renderAssistant(data){const d=normalize(data);return`<div class="respon
 function toggleStrategic(btn){const adv=btn.closest(".bubble").querySelector(".advanced");adv.classList.toggle("show");btn.textContent=adv.classList.contains("show")?"Hide Strategic Detail":"Show Strategic Detail"}
 function render(){const msgs=getMessages();if(!pageView.classList.contains("show")){workspace.style.display=msgs.length?"none":"block";chatShell.classList.toggle("show",!!msgs.length)}chat.innerHTML=msgs.map(m=>`<div class="msg ${m.role}"><div class="bubble">${m.role==="user"?esc(m.text):renderAssistant(m.data)}</div></div>`).join("");renderRight();renderEngineList();renderWorkflowTabs();renderRecent();saveThreads();setTimeout(()=>{$("main").scrollTop=$("main").scrollHeight},30)}
 
+
+function openThreadById(id){
+  if(!threads[id]) return notify("Chat not found");
+  activeThreadId = id;
+  saveThreads();
+  pageView.classList.remove("show");
+  workspace.style.display = "none";
+  chatShell.classList.add("show");
+  render();
+  notify("Chat reopened", "success");
+}
+
+function useFocus(){
+  const latest = latestAssistant();
+  if(!latest) return notify("Run the engine first");
+  goHome();
+  input.value = "Turn this focus into an execution plan for today:\n\n" + (latest.what_to_do_now || latest.next_move || latest.decision || "");
+  selectWorkflow("daily_brief", false);
+  input.focus();
+}
+
+function clearQueue(){
+  localStorage.setItem(ACTIONS_KEY, "[]");
+  renderRight();
+  notify("Action Queue cleared", "success");
+}
+
+function useQueueItem(index){
+  const actions = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  const item = actions[index];
+  if(!item) return notify("Action not found");
+  goHome();
+  input.value = "Help me execute this action:\n\n" + (item.text || item);
+  selectWorkflow("execution", false);
+  input.focus();
+}
+
+function removeQueueItem(index){
+  const actions = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  actions.splice(index,1);
+  localStorage.setItem(ACTIONS_KEY, JSON.stringify(actions));
+  renderRight();
+  notify("Action removed", "success");
+}
+
+function useDecision(index){
+  const decisions = JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]");
+  const item = decisions[index];
+  if(!item) return notify("Decision not found");
+  goHome();
+  input.value = "Create the next execution steps for this saved decision:\n\n" + (item.decision || "");
+  selectWorkflow("decision", false);
+  input.focus();
+}
+
+function clearDecisions(){
+  localStorage.setItem(DECISIONS_KEY, "[]");
+  renderRight();
+  notify("Recent Decisions cleared", "success");
+}
+
 function renderEngineList(){
   if(!engineList) return;
   const items = Object.values(threads)
@@ -304,32 +435,58 @@ function renderEngineList(){
     const last = [...(t.messages || [])].reverse().find(m => m.role === "user" || m.role === "assistant");
     const preview = last?.text || last?.data?.what_to_do_now || t.title || "New Chat";
     const count = (t.messages || []).length;
-    return `<div class="engine-item" data-thread="${esc(t.id)}">
+    return `<div class="engine-item" data-thread="${esc(t.id)}" onclick="openThreadById(this.dataset.thread)">
       <strong>${esc(t.title || "New Chat").slice(0,48)}</strong>
       <span>${count} messages · ${esc(preview).slice(0,70)}</span>
     </div>`;
   }).join("");
 
-  engineList.querySelectorAll(".engine-item").forEach(item => {
-    item.onclick = () => {
-      activeThreadId = item.dataset.thread;
-      saveThreads();
-      pageView.classList.remove("show");
-      workspace.style.display = "none";
-      chatShell.classList.add("show");
-      render();
-      notify("Chat reopened", "success");
-    };
-  });
+
 }
 
-function renderRight(){const latest=[...getMessages()].reverse().find(m=>m.role==="assistant")?.data;const actions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");const decisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");todayFocus.innerHTML=latest?.what_to_do_now?`<strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Keep moving.")}</span>`:`<strong>No focus yet</strong><span>Run the engine to create your current focus.</span>`;queueList.innerHTML=actions.length?`<ol>${actions.slice(-6).reverse().map(a=>`<li>${esc(a.text||a)}</li>`).join("")}</ol>`:`<div class="empty">No actions yet.</div>`;recentDecisionList.innerHTML=decisions.length?decisions.slice(-5).reverse().map(d=>`<div class="decision-item"><strong>${esc(d.decision)}</strong><span>${esc(d.priority)} · ${esc(d.date)}</span></div>`).join(""):`<div class="empty">No decisions saved yet.</div>`}
+function renderRight(){
+  const latest=[...getMessages()].reverse().find(m=>m.role==="assistant")?.data;
+  const actions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
+  const decisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
+
+  todayFocus.innerHTML = latest?.what_to_do_now
+    ? `<strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Keep moving.")}</span><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+    : `<strong>No focus yet</strong><span>Run the engine to create your current focus.</span><div class="rail-actions"><button onclick="goHome()">Start</button></div>`;
+
+  if(actions.length){
+    const latestActions = actions.slice(-10).reverse();
+    queueList.innerHTML = latestActions.map((a,displayIndex)=>{
+      const realIndex = actions.length - 1 - displayIndex;
+      return `<div class="queue-item" onclick="useQueueItem(${realIndex})">
+        <strong>${esc(a.text||a)}</strong>
+        <span>${esc(a.priority||"priority")} · click to run</span>
+        <div class="rail-actions"><button onclick="event.stopPropagation();useQueueItem(${realIndex})">Run</button><button onclick="event.stopPropagation();removeQueueItem(${realIndex})">Remove</button></div>
+      </div>`;
+    }).join("") + `<button class="sidebar-mini-btn" onclick="clearQueue()">Clear Queue</button>`;
+  }else{
+    queueList.innerHTML = `<div class="empty">No actions yet.</div><button class="sidebar-mini-btn" onclick="goHome()">Create Action</button>`;
+  }
+
+  if(decisions.length){
+    const latestDecisions = decisions.slice(-10).reverse();
+    recentDecisionList.innerHTML = latestDecisions.map((d,displayIndex)=>{
+      const realIndex = decisions.length - 1 - displayIndex;
+      return `<div class="decision-item" onclick="useDecision(${realIndex})">
+        <strong>${esc(d.decision)}</strong>
+        <span>${esc(d.priority)} · ${esc(d.date)} · click to use</span>
+        <div class="rail-actions"><button onclick="event.stopPropagation();useDecision(${realIndex})">Use</button></div>
+      </div>`;
+    }).join("") + `<button class="sidebar-mini-btn" onclick="clearDecisions()">Clear Decisions</button>`;
+  }else{
+    recentDecisionList.innerHTML = `<div class="empty">No decisions saved yet.</div>`;
+  }
+}
 function latestAssistant(){return[...getMessages()].reverse().find(m=>m.role==="assistant")?.data}
 function addLatestToQueue(){const d=latestAssistant();if(!d)return notify("Run the engine first");const arr=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");normalize(d).actions.forEach(a=>arr.push({text:a,priority:d.priority||"medium",status:"open",date:new Date().toLocaleDateString()}));localStorage.setItem(ACTIONS_KEY,JSON.stringify(arr.slice(-50)));renderRight();notify("Added to Action Queue","success")}
 function saveLatestDecision(){const d=latestAssistant();if(!d)return notify("Run the engine first");const arr=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");arr.push({decision:normalize(d).decision,priority:d.priority||"medium",date:new Date().toLocaleDateString()});localStorage.setItem(DECISIONS_KEY,JSON.stringify(arr.slice(-50)));renderRight();notify("Decision saved","success")}
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V88 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V89 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -377,7 +534,7 @@ async function send(){
         priority:"high",
         reality_check:"Speed matters. The system should return fast or provide a useful fallback.",
         leverage:"Keep the workflow moving instead of blocking on response time.",
-        constraint: timedOut ? "Backend/OpenAI response exceeded 22 seconds." : "Backend request failed.",
+        constraint: timedOut ? "Backend/OpenAI response exceeded 35 seconds." : "Backend request failed.",
         what_to_ignore:"Do not keep refreshing repeatedly.",
         financial_impact:"Slow feedback reduces execution velocity.",
         strategic_read:"Backend optimization and DB memory are the next build priorities."

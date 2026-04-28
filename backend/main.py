@@ -6,9 +6,9 @@ from pydantic import BaseModel
 from typing import Optional
 from openai import AsyncOpenAI
 
-APP_NAME = "Executive Engine OS V88"
+APP_NAME = "Executive Engine OS V89"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "18"))
+TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "28"))
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI(title=APP_NAME)
@@ -46,16 +46,18 @@ async def root(): return {"ok": True, "service": APP_NAME}
 async def health(): return {"ok": True, "service": APP_NAME, "openai_key_set": bool(os.getenv("OPENAI_API_KEY")), "model": MODEL}
 
 @app.get("/debug")
-async def debug(): return {"ok": True, "version": "V88", "routes": ["/", "/health", "/run", "/robots.txt"], "model": MODEL}
+async def debug(): return {"ok": True, "version": "V89", "routes": ["/", "/health", "/run", "/robots.txt"], "model": MODEL}
 
 @app.post("/run")
 async def run(req: RunRequest):
-    system = """You are Executive Engine OS V88. Act like an elite CEO/COO/President operator.
+    system = """You are Executive Engine OS V89. Act like an elite CEO/COO/President operator.
 Return ONLY valid JSON. No markdown.
 Schema:
 {"what_to_do_now":"","decision":"","next_move":"","actions":[""],"risk":"","priority":"low|medium|high|critical","reality_check":"","leverage":"","constraint":"","what_to_ignore":"","financial_impact":"","strategic_read":""}
 Rules:
 - Be specific, direct, and execution-focused.
+- Do not give shallow short answers. Fill all schema fields with useful executive-level detail.
+- Keep actions practical and complete.
 - No generic advice.
 - Actions must be executable today.
 - Adapt to mode: execution, daily_brief, decision, meeting, personal, content, learning.
@@ -66,7 +68,7 @@ Rules:
             model=MODEL,
             messages=[{"role":"system","content":system},{"role":"user","content":f"MODE: {req.mode}\n\nCONTEXT:\n{req.context or ''}\n\nINPUT:\n{req.input}"}],
             temperature=0.2,
-            max_tokens=750,
+            max_tokens=1400,
             response_format={"type":"json_object"}
         ), timeout=TIMEOUT)
         return normalize(extract_json(res.choices[0].message.content))

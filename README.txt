@@ -1,13 +1,19 @@
-Executive Engine OS V88
+Executive Engine OS V89
 
 Fixes:
-- Optimizes feedback speed.
-- Frontend now times out backend requests after 22 seconds and gives an immediate useful fallback.
-- Backend timeout reduced from 40s to 18s.
-- Backend max_tokens added to reduce response latency.
-- Adds right rail section: Your Engine.
-- Your Engine shows latest 20 chats and lets you reopen them.
-- Keeps simplified V87 flow, pages, Profile, Content Studio, Learning, Action Queue, Recent Decisions, noindex files.
+- Stops reverting to the too-short/fallback answer as quickly.
+- Frontend timeout increased from 22s to 35s.
+- Backend timeout increased from 18s to 28s.
+- Backend max_tokens increased from 750 to 1400.
+- Backend prompt now forces useful complete executive output, not shallow short output.
+- Right sidebar is functional:
+  - Your Engine chats reopen when clicked.
+  - Today’s Focus has Use Focus / New Run.
+  - Action Queue items can Run or Remove.
+  - Action Queue can be cleared.
+  - Recent Decisions can be clicked/used.
+  - Recent Decisions can be cleared.
+- Strategic detail now shows by default.
 
 Upload:
 - frontend/index.html
