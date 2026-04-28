@@ -1,15 +1,15 @@
-Executive Engine OS V84 REUPLOAD
+Executive Engine OS V85
 
-Files:
+Fixes:
+- Profile Setup is now its own page.
+- Profile no longer appears under the home workflow board.
+- Main home screen has clearer UX flow.
+- Added 4-step helper: Pick / Prompt / Run / Save.
+- Keeps V84 working layout, workflow board, + New, search, sidebar pages, Run Engine, profile, action queue, recent decisions.
+
+Upload:
 - frontend/index.html
 - frontend/robots.txt
 - frontend/_headers
 - backend/main.py
 - backend/requirements.txt
-
-Deploy:
-1. Upload/replace files.
-2. Commit.
-3. Render backend -> Manual Deploy.
-4. Render frontend -> Clear cache & deploy.
-5. Hard refresh with Ctrl + Shift + R.

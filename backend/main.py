@@ -7,7 +7,7 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from openai import AsyncOpenAI
 
-APP_NAME = "Executive Engine OS V84"
+APP_NAME = "Executive Engine OS V85"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "40"))
 
@@ -65,7 +65,7 @@ def build_messages(req: RunRequest):
     mode = req.mode or "execution"
     return [
         {"role":"system","content":"""
-You are Executive Engine OS V84. Act like an elite CEO/COO/President operator.
+You are Executive Engine OS V85. Act like an elite CEO/COO/President operator.
 Return ONLY valid JSON. No markdown. No extra text.
 
 Output schema:
@@ -108,7 +108,7 @@ async def health():
 
 @app.get("/debug")
 async def debug():
-    return {"ok": True, "version": "V84", "routes": ["/", "/health", "/run", "/robots.txt"], "model": MODEL, "openai_key_set": bool(os.getenv("OPENAI_API_KEY"))}
+    return {"ok": True, "version": "V85", "routes": ["/", "/health", "/run", "/robots.txt"], "model": MODEL, "openai_key_set": bool(os.getenv("OPENAI_API_KEY"))}
 
 @app.post("/run")
 async def run(req: RunRequest):
