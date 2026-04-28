@@ -1,18 +1,15 @@
-Executive Engine OS V83
+Executive Engine OS V84 REUPLOAD
 
-Fixes:
-- Workflow boxes are more visually distinct.
-- Search is centered and reduced width.
-- + New button added to left of search.
-- New buttons work.
-- Sidebar links load pages.
-- Profile page works.
-- Visible buttons/modules work.
-- Keeps workflow board, run, search, command palette, action queue, recent decisions, processing, robots/noindex.
-
-Upload:
+Files:
 - frontend/index.html
 - frontend/robots.txt
 - frontend/_headers
 - backend/main.py
 - backend/requirements.txt
+
+Deploy:
+1. Upload/replace files.
+2. Commit.
+3. Render backend -> Manual Deploy.
+4. Render frontend -> Clear cache & deploy.
+5. Hard refresh with Ctrl + Shift + R.
