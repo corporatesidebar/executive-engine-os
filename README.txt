@@ -1,19 +1,17 @@
-Executive Engine OS V89
+Executive Engine OS V90
 
 Fixes:
-- Stops reverting to the too-short/fallback answer as quickly.
-- Frontend timeout increased from 22s to 35s.
-- Backend timeout increased from 18s to 28s.
-- Backend max_tokens increased from 750 to 1400.
-- Backend prompt now forces useful complete executive output, not shallow short output.
-- Right sidebar is functional:
-  - Your Engine chats reopen when clicked.
-  - Today’s Focus has Use Focus / New Run.
-  - Action Queue items can Run or Remove.
-  - Action Queue can be cleared.
-  - Recent Decisions can be clicked/used.
-  - Recent Decisions can be cleared.
-- Strategic detail now shows by default.
+- Longer, fuller executive responses.
+- Backend timeout increased to 35s.
+- Backend max_tokens increased to 2200.
+- Prompt strengthened so output does not feel shallow.
+- Right sidebar cleaned up:
+  - One-line rows.
+  - Clear clickable chips: Open / Use / Run / Add / Save.
+  - Your Engine is clearer: “Recent chats. Click a row to reopen.”
+  - Action Queue and Recent Decisions are easier to scan.
+  - Today’s Focus is cleaner and clickable.
+- Strategic detail remains visible by default.
 
 Upload:
 - frontend/index.html

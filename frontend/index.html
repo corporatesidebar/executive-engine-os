@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V89</title>
+  <title>Executive Engine OS V90</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -230,6 +230,139 @@
   display:none !important;
 }
 
+
+/* V90 — CLEAN FUNCTIONAL RIGHT PANEL */
+.right{
+  padding:14px 12px !important;
+}
+.panel{
+  padding:14px !important;
+  margin-bottom:12px !important;
+  border-radius:16px !important;
+}
+.panel h3{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px !important;
+}
+.panel h3::after{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#cbd5e1;
+}
+.panel:first-child h3::after{
+  background:#2563eb;
+}
+.engine-help{
+  margin:-4px 0 10px;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.25;
+}
+.engine-list{
+  gap:6px !important;
+  max-height:310px !important;
+}
+.engine-item,
+.queue-item,
+.decision-item,
+.focus-one-line{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:8px 9px !important;
+  border-radius:11px !important;
+}
+.engine-item strong,
+.queue-item strong,
+.decision-item strong,
+.focus-one-line strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px !important;
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+.engine-item span,
+.queue-item span,
+.decision-item span,
+.focus-one-line span{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10.5px !important;
+  line-height:1.2 !important;
+  margin-top:2px !important;
+}
+.row-chip{
+  height:22px;
+  min-width:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 7px;
+  border-radius:999px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.row-chip.green{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#86efac;
+}
+.row-chip.orange{
+  background:#fff7ed;
+  color:#c2410c;
+  border-color:#fed7aa;
+}
+.rail-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr;
+  gap:7px !important;
+  margin-top:10px !important;
+}
+.rail-actions button,
+.sidebar-mini-btn{
+  height:32px !important;
+  border-radius:10px !important;
+  font-size:11.5px !important;
+}
+.sidebar-mini-btn{
+  margin-top:8px !important;
+}
+.focus-box{
+  padding:10px !important;
+}
+.focus-box .focus-one-line{
+  border:1px solid #bfdbfe;
+  background:#fff;
+}
+.empty{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.response-card .value{
+  font-size:15px !important;
+  line-height:1.52 !important;
+  font-weight:850 !important;
+}
+.response-card.actions .value li{
+  margin:7px 0 !important;
+}
+
 </style>
 </head>
 <body>
@@ -295,7 +428,7 @@
     </main>
 
     <aside class="right">
-      <section class="panel"><h3>Your Engine</h3><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="speed-note">Shows your latest 20 chats. Click one to reopen.</div></section>
+      <section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
       <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
       <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
       <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
@@ -308,7 +441,7 @@
 
 <script>
 const API="https://executive-engine-os.onrender.com";
-const STORAGE_KEY="eeos_v89_threads",ACTIVE_KEY="eeos_v89_active_thread",PROFILE_KEY="eeos_v89_profile",ACTIONS_KEY="eeos_v89_actions",DECISIONS_KEY="eeos_v89_decisions";
+const STORAGE_KEY="eeos_v90_threads",ACTIVE_KEY="eeos_v90_active_thread",PROFILE_KEY="eeos_v90_profile",ACTIONS_KEY="eeos_v90_actions",DECISIONS_KEY="eeos_v90_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -436,8 +569,8 @@ function renderEngineList(){
     const preview = last?.text || last?.data?.what_to_do_now || t.title || "New Chat";
     const count = (t.messages || []).length;
     return `<div class="engine-item" data-thread="${esc(t.id)}" onclick="openThreadById(this.dataset.thread)">
-      <strong>${esc(t.title || "New Chat").slice(0,48)}</strong>
-      <span>${count} messages · ${esc(preview).slice(0,70)}</span>
+      <div><strong>${esc(t.title || "New Chat").slice(0,58)}</strong><span>${count} msg · ${esc(preview).slice(0,80)}</span></div>
+      <div class="row-chip">Open</div>
     </div>`;
   }).join("");
 
@@ -450,35 +583,33 @@ function renderRight(){
   const decisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
 
   todayFocus.innerHTML = latest?.what_to_do_now
-    ? `<strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Keep moving.")}</span><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
-    : `<strong>No focus yet</strong><span>Run the engine to create your current focus.</span><div class="rail-actions"><button onclick="goHome()">Start</button></div>`;
+    ? `<div class="focus-one-line" onclick="useFocus()"><div><strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Click to turn into plan")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+    : `<div class="focus-one-line" onclick="goHome()"><div><strong>No focus yet</strong><span>Run the engine to create one</span></div><div class="row-chip">Start</div></div>`;
 
   if(actions.length){
-    const latestActions = actions.slice(-10).reverse();
+    const latestActions = actions.slice(-8).reverse();
     queueList.innerHTML = latestActions.map((a,displayIndex)=>{
       const realIndex = actions.length - 1 - displayIndex;
       return `<div class="queue-item" onclick="useQueueItem(${realIndex})">
-        <strong>${esc(a.text||a)}</strong>
-        <span>${esc(a.priority||"priority")} · click to run</span>
-        <div class="rail-actions"><button onclick="event.stopPropagation();useQueueItem(${realIndex})">Run</button><button onclick="event.stopPropagation();removeQueueItem(${realIndex})">Remove</button></div>
+        <div><strong>${esc(a.text||a)}</strong><span>${esc(a.priority||"action")} · click to run</span></div>
+        <div class="row-chip green">Run</div>
       </div>`;
-    }).join("") + `<button class="sidebar-mini-btn" onclick="clearQueue()">Clear Queue</button>`;
+    }).join("") + `<div class="rail-actions"><button onclick="goHome()">Add</button><button onclick="clearQueue()">Clear</button></div>`;
   }else{
-    queueList.innerHTML = `<div class="empty">No actions yet.</div><button class="sidebar-mini-btn" onclick="goHome()">Create Action</button>`;
+    queueList.innerHTML = `<div class="queue-item" onclick="goHome()"><div><strong>No actions yet</strong><span>Run output, then Add to Action Queue</span></div><div class="row-chip">Add</div></div>`;
   }
 
   if(decisions.length){
-    const latestDecisions = decisions.slice(-10).reverse();
+    const latestDecisions = decisions.slice(-8).reverse();
     recentDecisionList.innerHTML = latestDecisions.map((d,displayIndex)=>{
       const realIndex = decisions.length - 1 - displayIndex;
       return `<div class="decision-item" onclick="useDecision(${realIndex})">
-        <strong>${esc(d.decision)}</strong>
-        <span>${esc(d.priority)} · ${esc(d.date)} · click to use</span>
-        <div class="rail-actions"><button onclick="event.stopPropagation();useDecision(${realIndex})">Use</button></div>
+        <div><strong>${esc(d.decision)}</strong><span>${esc(d.priority)} · ${esc(d.date)} · click to use</span></div>
+        <div class="row-chip orange">Use</div>
       </div>`;
-    }).join("") + `<button class="sidebar-mini-btn" onclick="clearDecisions()">Clear Decisions</button>`;
+    }).join("") + `<div class="rail-actions"><button onclick="goHome()">New</button><button onclick="clearDecisions()">Clear</button></div>`;
   }else{
-    recentDecisionList.innerHTML = `<div class="empty">No decisions saved yet.</div>`;
+    recentDecisionList.innerHTML = `<div class="decision-item" onclick="goHome()"><div><strong>No decisions saved</strong><span>Click Save Decision under any output</span></div><div class="row-chip">Save</div></div>`;
   }
 }
 function latestAssistant(){return[...getMessages()].reverse().find(m=>m.role==="assistant")?.data}
@@ -486,7 +617,7 @@ function addLatestToQueue(){const d=latestAssistant();if(!d)return notify("Run t
 function saveLatestDecision(){const d=latestAssistant();if(!d)return notify("Run the engine first");const arr=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");arr.push({decision:normalize(d).decision,priority:d.priority||"medium",date:new Date().toLocaleDateString()});localStorage.setItem(DECISIONS_KEY,JSON.stringify(arr.slice(-50)));renderRight();notify("Decision saved","success")}
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V89 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V90 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
