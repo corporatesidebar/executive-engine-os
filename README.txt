@@ -1,11 +1,13 @@
-Executive Engine OS V85
+Executive Engine OS V87
 
 Fixes:
-- Profile Setup is now its own page.
-- Profile no longer appears under the home workflow board.
-- Main home screen has clearer UX flow.
-- Added 4-step helper: Pick / Prompt / Run / Save.
-- Keeps V84 working layout, workflow board, + New, search, sidebar pages, Run Engine, profile, action queue, recent decisions.
+- Simplified home flow.
+- Removed busy workflow board.
+- Text box is directly under workflow selector, not pushed to bottom.
+- Sidebar links/pages work.
+- Added Content Studio and Learning pages.
+- Keeps Profile as its own page.
+- Keeps Run Engine, Search, Action Queue, Recent Decisions, noindex files.
 
 Upload:
 - frontend/index.html
