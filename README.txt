@@ -1,22 +1,13 @@
-Executive Engine OS V79
+Executive Engine OS V80
 
 Purpose:
-- Fixes all major visible buttons/pages by rebuilding frontend cleanly.
-- Makes Ask / Execute selector prominent and styled.
-- Removes confusing duplicate "What do you need?" vs "Need" issue:
-  one source of truth = Choose Workflow cards + Need dropdown, synced together.
-- Left nav works.
-- Workflow cards work.
-- Dropdown works.
-- Run Engine works.
-- Search works.
-- Command palette works with Ctrl/Cmd+K.
-- Profile page works.
-- Action Queue works locally.
-- Recent Decisions works locally.
-- Post-output action buttons work.
-- Processing overlay remains.
-- robots/noindex remain.
+- Changes Choose Workflow into 5 Notion-style workflow boxes/columns.
+- Each workflow box shows up to 5 recent inputs for that workflow.
+- If no recent inputs exist, it shows suggested starter inputs.
+- Each workflow box has + Add New.
+- Chat input box is directly below workflow boxes, not stuck at bottom.
+- Keeps same layout and colours from V79.
+- Keeps all V79 functionality: sidebar, dropdown, run, search, profile, action queue, recent decisions, processing overlay, robots/noindex.
 
 Upload:
 - frontend/index.html

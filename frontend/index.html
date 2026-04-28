@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V79</title>
+  <title>Executive Engine OS V80</title>
   <style>
     :root{
       --nav:#071226;
@@ -198,7 +198,203 @@
       body{overflow:auto}.app{display:block;height:auto}.topbar{position:sticky;top:0;display:flex}.sidebar{display:none}.brand-title{display:none}.top-search{min-width:0}.right{display:none}
       .hero{padding:28px 14px 180px}.hero h1{font-size:30px}.intent-grid{grid-template-columns:1fr}.composer-wrap{padding:16px 14px 18px}.composer-foot{align-items:flex-start;flex-direction:column}.run-btn{width:100%}
     }
-  </style>
+  
+/* V80 — WORKFLOW BOARD + INLINE COMPOSER */
+.hero{
+  align-items:flex-start !important;
+  padding:40px 26px 70px !important;
+  min-height:auto !important;
+}
+
+.hero-inner{
+  max-width:1080px !important;
+}
+
+h1{
+  font-size:34px !important;
+  margin-bottom:8px !important;
+}
+
+.subtitle{
+  margin-bottom:18px !important;
+}
+
+.flow-strip{
+  margin-bottom:18px !important;
+}
+
+.workflow-board-panel{
+  border:1px solid #e2e8f0;
+  background:rgba(255,255,255,.84);
+  backdrop-filter:blur(10px);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:0 16px 44px rgba(15,23,42,.06);
+  margin:0 auto 18px;
+  text-align:left;
+}
+
+.workflow-board{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+
+.workflow-col{
+  border:1px solid #dbe3ef;
+  background:#f8fafc;
+  border-radius:16px;
+  overflow:hidden;
+  min-height:230px;
+  display:flex;
+  flex-direction:column;
+}
+
+.workflow-col.active{
+  border-color:#2563eb;
+  box-shadow:0 10px 24px rgba(37,99,235,.10);
+  background:#eff6ff;
+}
+
+.workflow-head{
+  padding:12px;
+  background:#fff;
+  border-bottom:1px solid #edf2f7;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.workflow-icon{
+  width:28px;
+  height:28px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  color:#1d4ed8;
+  background:#eff6ff;
+  font-size:15px;
+  flex:0 0 auto;
+}
+
+.workflow-title{
+  min-width:0;
+}
+
+.workflow-title strong{
+  display:block;
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.15;
+}
+
+.workflow-title span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  margin-top:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.workflow-items{
+  padding:10px;
+  display:grid;
+  gap:8px;
+  flex:1;
+}
+
+.workflow-item{
+  border:1px solid #e2e8f0;
+  background:#fff;
+  border-radius:12px;
+  padding:9px;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+
+.workflow-item:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  transform:translateY(-1px);
+}
+
+.workflow-item strong{
+  display:block;
+  color:#0f172a;
+  font-size:12px;
+  line-height:1.22;
+  margin-bottom:3px;
+}
+
+.workflow-item span{
+  color:#64748b;
+  font-size:11px;
+  line-height:1.25;
+}
+
+.add-new-workflow{
+  margin:0 10px 10px;
+  height:36px;
+  border:1px dashed #bfdbfe;
+  background:#fff;
+  color:#1d4ed8;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:950;
+}
+
+.add-new-workflow:hover{
+  background:#eff6ff;
+  border-style:solid;
+}
+
+.composer-wrap.inline-composer{
+  position:static !important;
+  background:transparent !important;
+  padding:0 !important;
+  margin:0 auto !important;
+}
+
+.inline-composer .composer{
+  max-width:900px !important;
+}
+
+.inline-composer .composer textarea{
+  height:118px !important;
+  min-height:118px !important;
+  max-height:118px !important;
+}
+
+.chat-shell{
+  padding:24px 26px 80px !important;
+}
+
+.intent-panel,
+.intent-grid{
+  display:none !important;
+}
+
+@media(max-width:1180px){
+  .workflow-board{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:760px){
+  .hero{
+    padding:26px 14px 40px !important;
+  }
+  .workflow-board{
+    grid-template-columns:1fr;
+  }
+  .workflow-col{
+    min-height:auto;
+  }
+}
+
+</style>
 </head>
 <body>
   <div class="app">
@@ -237,40 +433,41 @@
             <div class="flow-step"><strong>3</strong><span>Run Engine</span></div>
           </div>
 
-          <div class="intent-panel">
+          <div class="workflow-board-panel">
             <div class="intent-head">
               <div class="intent-label">Choose workflow</div>
-              <div class="intent-hint">This controls the output. No extra mode confusion.</div>
+              <div class="intent-hint">Pick a lane or add a new input. The chat box is directly below.</div>
             </div>
-            <div class="intent-grid" id="intentGrid"></div>
+            <div class="workflow-board" id="workflowBoard"></div>
+          </div>
+          <div class="composer-wrap inline-composer" id="composerWrap">
+            <div class="composer" id="composer">
+              <textarea id="input" placeholder="Tell me what is happening. Include rough details. I’ll turn it into the next move."></textarea>
+              <div class="composer-foot">
+                <div class="composer-left">
+                  <div class="mode-block">
+                    <label for="modeSelect">Need</label>
+                    <select id="modeSelect">
+                      <option value="execution">Ask / Execute</option>
+                      <option value="daily_brief">Plan Today</option>
+                      <option value="decision">Make Decision</option>
+                      <option value="meeting">Prepare Meeting</option>
+                      <option value="personal">Personal / Misc</option>
+                    </select>
+                  </div>
+                  <span class="hint">Enter = send · Shift+Enter = new line</span>
+                  <span class="run-status" id="runStatus"><span class="spinner"></span>Thinking</span>
+                </div>
+                <button class="run-btn" id="runBtn">Run Engine</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="chat-shell" id="chatShell"><div class="chat" id="chat"></div></section>
 
-      <div class="composer-wrap" id="composerWrap">
-        <div class="composer" id="composer">
-          <textarea id="input" placeholder="Tell me what is happening. Include rough details. I’ll turn it into the next move."></textarea>
-          <div class="composer-foot">
-            <div class="composer-left">
-              <div class="mode-block">
-                <label for="modeSelect">Need</label>
-                <select id="modeSelect">
-                  <option value="execution">Ask / Execute</option>
-                  <option value="daily_brief">Plan Today</option>
-                  <option value="decision">Make Decision</option>
-                  <option value="meeting">Prepare Meeting</option>
-                  <option value="personal">Personal / Misc</option>
-                </select>
-              </div>
-              <span class="hint">Enter = send · Shift+Enter = new line</span>
-              <span class="run-status" id="runStatus"><span class="spinner"></span>Thinking</span>
-            </div>
-            <button class="run-btn" id="runBtn">Run Engine</button>
-          </div>
-        </div>
-      </div>
+
     </main>
 
     <aside class="right">
@@ -298,17 +495,17 @@
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v79_threads";
-const ACTIVE_KEY = "eeos_v79_active_thread";
-const PROFILE_KEY = "eeos_v79_profile";
-const MEMORY_KEY = "eeos_v79_memory";
-const ACTIONS_KEY = "eeos_v79_actions";
-const DECISIONS_KEY = "eeos_v79_decisions";
+const STORAGE_KEY = "eeos_v80_threads";
+const ACTIVE_KEY = "eeos_v80_active_thread";
+const PROFILE_KEY = "eeos_v80_profile";
+const MEMORY_KEY = "eeos_v80_memory";
+const ACTIONS_KEY = "eeos_v80_actions";
+const DECISIONS_KEY = "eeos_v80_decisions";
 
 const $ = id => document.getElementById(id);
 const input = $("input"), runBtn = $("runBtn"), modeSelect = $("modeSelect"), chat = $("chat"), hero = $("hero"), chatShell = $("chatShell");
 const globalSearch = $("globalSearch"), searchResults = $("searchResults"), notice = $("notice"), processingOverlay = $("processingOverlay"), runStatus = $("runStatus");
-const pageTitle = $("pageTitle"), pageDesc = $("pageDesc"), intentGrid = $("intentGrid"), composer = $("composer");
+const pageTitle = $("pageTitle"), pageDesc = $("pageDesc"), workflowBoard = $("workflowBoard"), composer = $("composer");
 const todayFocus = $("todayFocus"), queueList = $("queueList"), recentDecisionList = $("recentDecisionList");
 const commandPalette = $("commandPalette"), paletteInput = $("paletteInput"), paletteList = $("paletteList"), closePalette = $("closePalette");
 
@@ -345,14 +542,98 @@ function profileText(){const p=profile();return Object.values(p).filter(Boolean)
 
 function setProcessing(v){document.body.classList.toggle("processing",!!v);processingOverlay.classList.toggle("show",!!v);composer.classList.toggle("is-processing",!!v);runStatus.classList.toggle("show",!!v)}
 
-function renderIntents(){
-  intentGrid.innerHTML = Object.entries(workflows).map(([mode,w])=>`
-    <button class="intent-card ${modeSelect.value===mode?"active":""}" data-mode="${mode}">
-      <span>${w.icon}</span><strong>${w.label}</strong><small>${w.desc}</small>
-    </button>`).join("");
-  intentGrid.querySelectorAll(".intent-card").forEach(btn=>btn.addEventListener("click",()=>selectWorkflow(btn.dataset.mode,true)));
+function recentItemsForWorkflow(mode){
+  const messages = Object.values(threads).flatMap(t => (t.messages || []).filter(m => m.role === "user").map(m => ({
+    text:m.text || "",
+    mode:m.mode || "execution",
+    at:m.at || t.createdAt || new Date().toISOString()
+  })));
+
+  const mapped = messages.filter(m => {
+    if(mode === "execution") return ["execution","strategy","risk_review","proposal"].includes(m.mode);
+    return m.mode === mode;
+  }).slice(-5).reverse();
+
+  if(mapped.length) return mapped;
+
+  const defaults = {
+    execution:[
+      "Fix an operational blocker",
+      "Turn a messy situation into next steps",
+      "Create a 30-minute execution sprint"
+    ],
+    daily_brief:[
+      "Plan today’s highest-leverage work",
+      "Review meetings and follow-ups",
+      "Choose what to ignore today"
+    ],
+    decision:[
+      "Decide between two options",
+      "Evaluate risk and tradeoffs",
+      "Choose a direction under pressure"
+    ],
+    meeting:[
+      "Prepare talking points",
+      "Build agenda and questions",
+      "Create follow-up plan"
+    ],
+    personal:[
+      "Organize personal admin",
+      "Draft a message",
+      "Clarify messy thoughts"
+    ]
+  };
+
+  return (defaults[mode] || defaults.execution).map(text => ({text, mode, at:"Suggested"}));
 }
 
+function renderWorkflowBoard(){
+  if(!workflowBoard) return;
+  workflowBoard.innerHTML = Object.entries(workflows).map(([mode,w]) => {
+    const items = recentItemsForWorkflow(mode).slice(0,5);
+    return `
+      <div class="workflow-col ${modeSelect.value===mode?"active":""}" data-mode="${mode}">
+        <div class="workflow-head">
+          <div class="workflow-icon">${w.icon}</div>
+          <div class="workflow-title">
+            <strong>${esc(w.label)}</strong>
+            <span>${esc(w.desc)}</span>
+          </div>
+        </div>
+        <div class="workflow-items">
+          ${items.map(item => `
+            <div class="workflow-item" data-mode="${mode}" data-text="${esc(item.text)}">
+              <strong>${esc(item.text).slice(0,62)}</strong>
+              <span>${item.at === "Suggested" ? "Suggested input" : "Recent input"}</span>
+            </div>
+          `).join("")}
+        </div>
+        <button class="add-new-workflow" data-mode="${mode}">+ Add New</button>
+      </div>`;
+  }).join("");
+
+  workflowBoard.querySelectorAll(".workflow-col").forEach(col => {
+    col.addEventListener("click", e => {
+      if(e.target.closest(".workflow-item") || e.target.closest(".add-new-workflow")) return;
+      selectWorkflow(col.dataset.mode, false);
+    });
+  });
+
+  workflowBoard.querySelectorAll(".workflow-item").forEach(item => {
+    item.addEventListener("click", () => {
+      selectWorkflow(item.dataset.mode, false);
+      input.value = item.dataset.text;
+      input.focus();
+    });
+  });
+
+  workflowBoard.querySelectorAll(".add-new-workflow").forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectWorkflow(btn.dataset.mode, true);
+      input.focus();
+    });
+  });
+}
 function selectWorkflow(mode, fillPrompt=false){
   const w = workflows[mode] || workflows.execution;
   modeSelect.value = mode;
@@ -360,7 +641,7 @@ function selectWorkflow(mode, fillPrompt=false){
   pageTitle.textContent = pageCopy[w.page]?.[0] || pageCopy.command[0];
   pageDesc.textContent = pageCopy[w.page]?.[1] || pageCopy.command[1];
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode || (mode==="execution" && b.dataset.page==="command")));
-  renderIntents();
+  renderWorkflowBoard();
   if(fillPrompt && !input.value.trim()) input.value = w.prompt;
   input.focus();
 }
@@ -435,7 +716,7 @@ function render(){
   hero.style.display = msgs.length ? "none" : "flex";
   chatShell.classList.toggle("show", !!msgs.length);
   chat.innerHTML = msgs.map(m=>`<div class="msg ${m.role}"><div class="bubble">${m.role==="user"?esc(m.text):renderAssistant(m.data)}</div></div>`).join("");
-  renderRight(); renderIntents(); saveThreads();
+  renderRight(); renderWorkflowBoard(); saveThreads();
   setTimeout(()=>{const main=$("main");main.scrollTop=main.scrollHeight},30);
 }
 
@@ -454,7 +735,7 @@ function saveLatestDecision(){const d=latestAssistant();if(!d)return notify("Run
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;selectWorkflow("execution");notify("Deep analysis prompt created")}
 
-function buildContext(){return ["Executive Engine OS V79 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return ["Executive Engine OS V80 Context","Workflow: "+(workflows[modeSelect.value]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim(); if(!text) return notify("Add context first");
   const t=getThread(); if(t.title==="New Chat") t.title=text.slice(0,52);
