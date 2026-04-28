@@ -1,13 +1,13 @@
-Executive Engine OS V87
+Executive Engine OS V88
 
 Fixes:
-- Simplified home flow.
-- Removed busy workflow board.
-- Text box is directly under workflow selector, not pushed to bottom.
-- Sidebar links/pages work.
-- Added Content Studio and Learning pages.
-- Keeps Profile as its own page.
-- Keeps Run Engine, Search, Action Queue, Recent Decisions, noindex files.
+- Optimizes feedback speed.
+- Frontend now times out backend requests after 22 seconds and gives an immediate useful fallback.
+- Backend timeout reduced from 40s to 18s.
+- Backend max_tokens added to reduce response latency.
+- Adds right rail section: Your Engine.
+- Your Engine shows latest 20 chats and lets you reopen them.
+- Keeps simplified V87 flow, pages, Profile, Content Studio, Learning, Action Queue, Recent Decisions, noindex files.
 
 Upload:
 - frontend/index.html
@@ -15,3 +15,9 @@ Upload:
 - frontend/_headers
 - backend/main.py
 - backend/requirements.txt
+
+Deploy:
+1. Commit changes.
+2. Render backend -> Manual Deploy.
+3. Render frontend -> Clear cache & deploy.
+4. Hard refresh: Ctrl + Shift + R.
