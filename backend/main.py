@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V78"
+APP_NAME = "Executive Engine OS V79"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 
@@ -240,7 +240,7 @@ def normalize(data: Dict[str, Any]):
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V78.
+You are Executive Engine OS V79.
 
 IDENTITY
 You are an elite CEO / President / COO operating partner.
@@ -566,7 +566,7 @@ async def debug():
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "allowed_origins": ALLOWED_ORIGINS,
         "memory_items": len(MEMORY),
-        "version": "V78",
+        "version": "V79",
         "routes": [
             "/", "/status", "/health", "/run", "/memory", "/integrations",
             "/automation-plan", "/daily-brief", "/open-loops", "/follow-up",

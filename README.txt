@@ -1,17 +1,22 @@
-Executive Engine OS V78
+Executive Engine OS V79
 
 Purpose:
-- Fluid executive UX rebuild
-- Removes visible redundancy/confusion
-- Simplifies top bar to: Brand / Search / New
-- Simplifies sidebar to core executive workflows only
-- Replaces noisy chips with 3-step guide
-- Uses one clear Need dropdown
-- Removes Clear and visible depth dropdown
-- Simplifies right rail to: Today's Focus, Action Queue, Recent Decisions
-- Adds post-output action buttons:
-  Add to Action Queue, Save Decision, Create Follow-Up, Run Deeper Analysis
-- Keeps processing overlay, robots/noindex, command palette/search, profile, memory, backend logic
+- Fixes all major visible buttons/pages by rebuilding frontend cleanly.
+- Makes Ask / Execute selector prominent and styled.
+- Removes confusing duplicate "What do you need?" vs "Need" issue:
+  one source of truth = Choose Workflow cards + Need dropdown, synced together.
+- Left nav works.
+- Workflow cards work.
+- Dropdown works.
+- Run Engine works.
+- Search works.
+- Command palette works with Ctrl/Cmd+K.
+- Profile page works.
+- Action Queue works locally.
+- Recent Decisions works locally.
+- Post-output action buttons work.
+- Processing overlay remains.
+- robots/noindex remain.
 
 Upload:
 - frontend/index.html
