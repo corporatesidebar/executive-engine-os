@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Executive Engine OS V76</title>
+  <title>Executive Engine OS V78</title>
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
 
   <style>
@@ -2530,6 +2530,26 @@ body.processing .function-btn{
   }
 }
 
+
+/* V78 — FLUID EXECUTIVE UX */
+.app{grid-template-columns:252px minmax(0,1fr) 320px!important;grid-template-rows:56px minmax(0,1fr)!important}
+.topbar{grid-template-columns:245px minmax(360px,680px) 110px!important;background:linear-gradient(180deg,#081426,#071226)!important;border-bottom:1px solid rgba(255,255,255,.1)!important}
+.top-search{justify-self:start!important;width:100%!important;max-width:680px!important;background:#fff!important}
+.top-actions{justify-content:flex-end!important}.top-actions .avatar,.spark,#testBtn,#goLiveTopBtn,#moreBtn{display:none!important}
+.hero{background:radial-gradient(circle at 50% 15%,rgba(37,99,235,.06),transparent 36%),#f8fafc!important;align-items:flex-start!important;padding-top:56px!important}
+.hero-inner{max-width:880px!important;transform:none!important}.hero h1{font-size:38px!important;line-height:1.05!important;margin-bottom:12px!important}.hero p{font-size:16px!important;max-width:640px!important;margin-bottom:20px!important}
+.status-strip,.empty-examples,.page-chip-row,#exampleGrid{display:none!important}
+.step-guide{display:flex;justify-content:center;gap:10px;margin:0 auto 20px;flex-wrap:wrap}.step{display:flex;align-items:center;gap:7px;border:1px solid #e2e8f0;background:#fff;border-radius:999px;padding:7px 11px;color:#64748b;font-size:12px;font-weight:900}.step strong{width:20px;height:20px;display:grid;place-items:center;border-radius:999px;background:#e2e8f0;color:#475569;font-size:11px}.step.active{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}.step.active strong{background:#2563eb;color:#fff}
+.intent-panel{border:1px solid #e2e8f0;background:rgba(255,255,255,.78);border-radius:22px;padding:16px;max-width:820px;margin:0 auto 20px;box-shadow:0 14px 42px rgba(15,23,42,.055)}
+.intent-label{text-align:left;color:#475569;font-size:12px;font-weight:950;letter-spacing:.09em;text-transform:uppercase;margin:0 0 10px 2px}
+.quick-row{margin:0!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important}.quick{border-radius:14px!important;padding:14px 10px!important;min-height:58px;background:#fff!important;color:#0f172a!important;border:1px solid #dbe3ef!important;white-space:normal!important;line-height:1.2!important}.quick.active,.quick:hover{background:#eff6ff!important;color:#1d4ed8!important;border-color:#93c5fd!important;box-shadow:0 10px 24px rgba(37,99,235,.10)!important}
+.composer{max-width:820px!important;border-radius:22px!important}.composer textarea{height:138px!important;min-height:138px!important;max-height:138px!important;font-size:16px!important}.composer-foot{min-height:66px!important}.composer-left{gap:8px!important}.composer-label{color:#64748b;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}.mode-select{min-width:152px!important}#clearBtn,.depth-select{display:none!important}#runBtn{width:138px!important;min-width:138px!important}
+.right{background:#fff!important;padding:18px 14px!important}.right .panel{display:block!important;border-radius:18px!important;margin-bottom:14px!important;padding:16px!important}.right .panel h3{font-size:12px!important;margin-bottom:12px!important}
+.focus-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:14px;padding:13px}.focus-box strong{display:block;color:#1d4ed8;line-height:1.35;margin-bottom:5px}.focus-box span{display:block;color:#475569;font-size:13px;line-height:1.4}
+#queueList ol{margin:0;padding-left:18px}#queueList li{margin:8px 0;font-size:13px;color:#334155}.decision-item{border:1px solid #edf2f7;background:#f8fafc;border-radius:12px;padding:10px;margin:8px 0}.decision-item strong{display:block;color:#0f172a;font-size:13px;margin-bottom:4px}.decision-item span{color:#64748b;font-size:12px}
+.response-grid.compact-output .response-card:nth-child(n+7){display:none!important}.post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #edf2f7}.post-actions button{height:34px;border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:0 10px;font-size:12px;font-weight:900;cursor:pointer}.post-actions button:hover{background:#dbeafe}
+@media(max-width:1180px){.app{grid-template-columns:230px minmax(0,1fr)!important}.right{display:none!important}.quick-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:760px){.app{display:block!important}.sidebar{display:none!important}.quick-row{grid-template-columns:1fr!important}.hero h1{font-size:30px!important}}
+
 </style>
 </head>
 
@@ -2543,60 +2563,32 @@ body.processing .function-btn{
         <div class="brand-title">Executive Engine</div>
       </button>
     </div>
-
-    <nav class="top-nav-main" aria-label="Primary navigation">
-      <button class="top-nav-btn active" data-page="command" data-mode="execution">Command</button>
-      <button class="top-nav-btn" data-page="daily" data-mode="daily_brief">Today</button>
-      <button class="top-nav-btn" data-page="decisions" data-mode="decision">Decision</button>
-      <button class="top-nav-btn" data-page="meetings" data-mode="meeting">Meeting</button>
-      <button class="top-nav-btn" data-page="automation" data-mode="automation">Automation</button>
-      <button class="top-nav-btn" data-page="misc" data-mode="misc">Misc</button>
-      <button class="top-nav-btn" data-page="profile" data-mode="personal">Profile</button>
-    </nav>
-
     <div class="top-search">
       <span class="search-icon">⌕</span>
-      <input id="globalSearch" placeholder="Search history, decisions, actions, profile..." autocomplete="off" />
-      <div class="shortcut">⌘F</div>
+      <input id="globalSearch" placeholder="Search or command..." autocomplete="off" />
+      <div class="shortcut">⌘K</div>
     </div>
-
     <div class="top-actions">
-      <button class="pill live-ready-pill" id="goLiveTopBtn" type="button">Go Live</button>
-      <button class="pill" id="testBtn" type="button">Test</button>
-      <button class="pill" id="newTopBtn" type="button">New</button>
-      <button class="spark" id="moreBtn" type="button" title="More">✦</button>
-      <div class="avatar">A</div>
+      <button class="pill" id="newTopBtn" type="button">+ New</button>
     </div>
   </header>
 
   <aside class="sidebar" id="sidebar">
     <button class="new-left" id="newLeftBtn">+ New</button>
 
-    <div class="nav-label">Workflows</div>
+    <div class="nav-label">Start Here</div>
     <button class="nav-btn active" data-page="command" data-mode="execution"><span class="ico">⌘</span>Ask / Execute</button>
     <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="ico">◷</span>Plan Today</button>
     <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="ico">◆</span>Make Decision</button>
     <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="ico">◉</span>Prepare Meeting</button>
-    <button class="nav-btn" data-page="personal" data-mode="personal"><span class="ico">★</span>Personal</button>
-    <button class="nav-btn" data-page="misc" data-mode="misc"><span class="ico">✚</span>Personal / Misc</button>
+    <button class="nav-btn" data-page="personal" data-mode="personal"><span class="ico">★</span>Personal / Misc</button>
 
-    <div class="nav-label">Tools</div>
-    <button class="nav-btn" data-page="strategy" data-mode="strategy"><span class="ico">✦</span>Strategy</button>
-    <button class="nav-btn" data-page="risk" data-mode="risk_review"><span class="ico">!</span>Check Risk</button>
-    <button class="nav-btn" data-page="proposal" data-mode="proposal"><span class="ico">▣</span>Proposal</button>
-
-    <div class="nav-label">Executive Systems</div>
-    <button class="nav-btn" data-page="capital" data-mode="strategy"><span class="ico">$</span>Capital</button>
-    <button class="nav-btn" data-page="sales" data-mode="strategy"><span class="ico">↗</span>Sales</button>
-    <button class="nav-btn" data-page="team" data-mode="meeting"><span class="ico">●</span>Team</button>
-    <button class="nav-btn" data-page="ops" data-mode="execution"><span class="ico">⚙</span>Operations</button>
-    <button class="nav-btn" data-page="automation" data-mode="execution"><span class="ico">⚡</span>Automation</button>
-    <button class="nav-btn" data-page="services" data-mode="execution"><span class="ico">◆</span>Systems</button>
+    <div class="nav-label">Setup</div>
     <button class="nav-btn" data-page="profile" data-mode="personal"><span class="ico">☰</span>Your Profile</button>
 
     <div class="side-card">
-      <strong>Executive Mode</strong>
-      V76 · processing + black nav
+      <strong>How it works</strong>
+      Choose what you need. Add context. Run Engine. Get decision, action, risk, and next move.
     </div>
   </aside>
 
@@ -2606,21 +2598,22 @@ body.processing .function-btn{
         <h1 id="pageTitle">What needs to move forward?</h1>
         <p id="pageDesc">Type the situation. The engine will turn it into a decision, next move, action queue, risk, and priority.</p>
 
-        <div class="status-strip">
-          <button class="status-chip green" id="backendChip" type="button"><span class="health-pulse"></span>Backend Live</button>
-          <button class="status-chip orange" id="execOutputChip" type="button">Elite Output</button>
-          <button class="status-chip" id="profileChip" type="button">Profile Intelligence</button>
-          <button class="status-chip green" id="automationChip" type="button">Internal Automation</button>
+        <div class="step-guide" id="stepGuide">
+          <div class="step active"><strong>1</strong><span>Choose need</span></div>
+          <div class="step"><strong>2</strong><span>Add context</span></div>
+          <div class="step"><strong>3</strong><span>Run Engine</span></div>
         </div>
 
-        <div class="quick-row" id="quickRow">
-          <button class="quick" data-mode="daily_brief" data-prompt="Run my day. Give me priorities, what to ignore, risks, and the first action.">Run my day</button>
-          <button class="quick" data-mode="decision" data-prompt="Help me make a CEO-level decision on this situation: ">Make decision</button>
-          <button class="quick" data-mode="meeting" data-prompt="Prepare me for this meeting. Build agenda, talking points, risks, questions, and follow-up.">Prep meeting</button>
-          <button class="quick" data-mode="execution" data-prompt="Give me a CEO / President / COO quality review: decision, leverage, financial impact, operational risk, what to ignore, and exact next move.">Executive review</button>
-          <button class="quick" data-mode="misc" data-prompt="Help me make sense of this and turn it into a clear next move: ">Anything / Misc</button>
+        <div class="intent-panel">
+          <div class="intent-label">What do you need?</div>
+          <div class="quick-row" id="quickRow">
+            <button class="quick active" data-page="daily" data-mode="daily_brief" data-prompt="Run my day. Here is what is on my plate: ">Run My Day</button>
+            <button class="quick" data-page="decisions" data-mode="decision" data-prompt="Help me make this decision: ">Make Decision</button>
+            <button class="quick" data-page="meetings" data-mode="meeting" data-prompt="Prepare me for this meeting: ">Prepare Meeting</button>
+            <button class="quick" data-page="command" data-mode="execution" data-prompt="Help me execute or fix this: ">Execute / Fix</button>
+            <button class="quick" data-page="personal" data-mode="personal" data-prompt="Help me make sense of this: ">Personal / Misc</button>
+          </div>
         </div>
-
         <div class="empty-examples" id="exampleGrid">
           <div class="example-card" data-mode="execution" data-prompt="What should I focus on today to move my business and career forward?">
             <strong>Daily Focus</strong>
@@ -2650,28 +2643,19 @@ body.processing .function-btn{
           <textarea id="input" placeholder="Ask anything. Example: What should I focus on today?"></textarea>
           <div class="composer-foot">
             <div class="composer-left">
+              <label class="composer-label">Need</label>
               <select id="modeSelect" class="mode-select">
-                <option value="execution">Execution</option>
-                <option value="daily_brief">Daily Brief</option>
-                <option value="decision">Decision</option>
-                <option value="meeting">Meeting</option>
-                <option value="strategy">Strategy</option>
-                <option value="risk_review">Risk Review</option>
-                <option value="proposal">Proposal</option>
-                <option value="personal">Personal</option>
-                <option value="misc">Personal / Misc</option>
-                <option value="automation">Automation</option>
-              </select>
-              <select id="depthSelect" class="mode-select depth-select" title="Output depth">
-                <option value="sharp">Sharp</option>
-                <option value="standard" selected>Standard</option>
-                <option value="deep">Deep</option>
+                <option value="execution">Ask / Execute</option>
+                <option value="daily_brief">Plan Today</option>
+                <option value="decision">Make Decision</option>
+                <option value="meeting">Prepare Meeting</option>
+                <option value="personal">Personal / Misc</option>
               </select>
               <span class="hint">Enter = send · Shift+Enter = new line</span>
               <span class="run-status" id="runStatus"><span class="spinner"></span>Thinking</span>
             </div>
             <div class="composer-right">
-              <button class="btn" id="clearBtn">Clear</button>
+              
               <button class="btn primary" id="runBtn">Run Engine</button>
             </div>
           </div>
@@ -2691,99 +2675,22 @@ body.processing .function-btn{
   </main>
 
   <aside class="right">
-    <section class="panel">
-      <h3>System Status</h3>
-      <div class="mode-pill" id="backendStatus">Checking...</div>
-      <div class="system-line"><span>Command Palette</span><strong>⌘K</strong></div>
-      <div class="system-line"><span>Search</span><strong>⌘F</strong></div>
-      <div class="thread-tools">
-        <button class="mini-btn" id="debugBtn">Debug</button>
-        <button class="mini-btn" id="exportBtn">Export</button>
-        <button class="mini-btn danger-lite" id="resetBtn">Reset</button>
-      </div>
-      <button class="compact-toggle" id="compactBtn">Compact View</button>
-      <button class="compact-toggle" id="focusBtn">Focus Mode</button>
-    </section>
-
-    <section class="panel">
-      <h3>Connected</h3>
-      <div class="connected-grid">
-        <button class="connect-tile" data-connect="backend"><strong>Backend</strong><span id="connectBackend">Checking</span></button>
-        <button class="connect-tile" data-connect="profile"><strong>Profile</strong><span id="connectProfile">Local</span></button>
-        <button class="connect-tile" data-connect="memory"><strong>Memory</strong><span id="connectMemory">Local</span></button>
-        <button class="connect-tile" data-connect="automation"><strong>Automation</strong><span>Ready</span></button>
-      </div>
-      <button class="connect-all-btn" id="connectAllBtn">Connect / Check All</button>
-    </section>
-
-    <section class="panel">
-      <h3>Go Live</h3>
-      <div class="go-live-list" id="goLiveList">
-        <div class="go-live-row" data-check="backend"><span>Backend</span><strong>Checking</strong></div>
-        <div class="go-live-row" data-check="input"><span>Input / Run</span><strong>Ready</strong></div>
-        <div class="go-live-row" data-check="search"><span>Search</span><strong>Ready</strong></div>
-        <div class="go-live-row" data-check="profile"><span>Profile</span><strong>Check</strong></div>
-        <div class="go-live-row" data-check="automation"><span>Automation</span><strong>Ready</strong></div>
-      </div>
-      <button class="connect-all-btn live-btn" id="goLiveBtn">Run Go-Live Check</button>
-    </section>
-
-    <section class="panel">
-      <h3>Current Mode</h3>
-      <div class="mode-pill" id="currentMode">Execution</div>
-    </section>
-
-    <section class="panel">
-      <h3>Metrics</h3>
-      <div class="metrics">
-        <div class="metric"><strong id="metricThreads">0</strong><span>Threads</span></div>
-        <div class="metric"><strong id="metricMessages">0</strong><span>Messages</span></div>
-        <div class="metric"><strong id="metricActions">0</strong><span>Actions</span></div>
-        <div class="metric"><strong id="metricPriority">—</strong><span>Priority</span></div>
+    <section class="panel focus-panel">
+      <h3>Today’s Focus</h3>
+      <div id="todayFocus" class="focus-box">
+        <strong>No focus yet</strong>
+        <span>Run the engine to create your current focus.</span>
       </div>
     </section>
 
     <section class="panel">
-      <h3>Archive / Threads</h3>
-      <input class="thread-search" id="threadSearch" placeholder="Search threads..." />
-      <div id="archiveList"><div class="empty">No messages yet.</div></div>
-      <div class="thread-tools">
-        <button class="mini-btn" id="renameThreadBtn">Rename</button>
-        <button class="mini-btn" id="duplicateThreadBtn">Duplicate</button>
-      </div>
-      <button class="mini-btn" id="viewAllBtn" style="width:100%;margin-top:8px;">View All</button>
-    </section>
-
-    <section class="panel">
-      <h3>Execution Queue</h3>
+      <h3>Action Queue</h3>
       <div id="queueList"><div class="empty">No actions yet.</div></div>
     </section>
 
     <section class="panel">
-      <h3>Automation</h3>
-      <div class="auto-panel-list">
-        <div class="auto-panel-item"><strong>Daily Brief</strong>Internal generator ready</div>
-        <div class="auto-panel-item"><strong>Open Loops</strong>Thread + memory review ready</div>
-        <div class="auto-panel-item"><strong>Action Queue</strong>Priority sequencing ready</div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h3>Memory Snapshot</h3>
-      <div id="memoryList"><div class="empty">No local memory yet.</div></div>
-      <div style="display:flex;gap:8px;margin-top:10px;">
-        <button class="mini-btn" id="summarizeBtn" style="flex:1;">Summarize</button>
-        <button class="mini-btn" id="clearMemoryBtn" style="flex:1;">Clear</button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h3>Functions</h3>
-      <button class="function-btn" data-function="day">Run My Day</button>
-      <button class="function-btn" data-function="meeting">Prepare Meeting</button>
-      <button class="function-btn" data-function="profile">Your Profile</button>
-      <button class="function-btn" data-function="automation">Automation</button>
-      <button class="function-btn" data-function="misc">Personal / Misc</button>
+      <h3>Recent Decisions</h3>
+      <div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div>
     </section>
   </aside>
 </div>
@@ -2831,11 +2738,13 @@ body.processing .function-btn{
 
 <script>
 const API = "https://executive-engine-os.onrender.com";
-const STORAGE_KEY = "eeos_v76_threads";
-const ACTIVE_KEY = "eeos_v76_active_thread";
-const PROFILE_KEY = "eeos_v76_profile";
-const MEMORY_KEY = "eeos_v76_memory";
-const DRAFT_KEY = "eeos_v76_draft";
+const STORAGE_KEY = "eeos_v78_threads";
+const ACTIVE_KEY = "eeos_v78_active_thread";
+const PROFILE_KEY = "eeos_v78_profile";
+const MEMORY_KEY = "eeos_v78_memory";
+const DRAFT_KEY = "eeos_v78_draft";
+const ACTIONS_KEY = "eeos_v78_actions";
+const DECISIONS_KEY = "eeos_v78_decisions";
 
 const $ = id => document.getElementById(id);
 const input = $("input");
@@ -3013,7 +2922,7 @@ function profileText(){
 function buildContext(){
   const recent = getMessages().slice(-6).map(m => m.role === "user" ? `User: ${m.text}` : `Assistant: ${m.data?.decision || ""}`).join("\n");
   return [
-    "Executive Engine OS V76 Context",
+    "Executive Engine OS V78 Context",
     "Mode: " + modeLabels[modeSelect.value],
     "Output depth: " + (depthSelect ? depthSelect.value : "standard"),
     "User profile:",
@@ -3226,6 +3135,12 @@ function renderAssistant(d){
       <div class="response-card"><div class="label">Priority</div><div class="value"><span class="priority">${esc(d.priority)}</span></div></div>
       ${extra.map(([k,v])=>`<div class="response-card"><div class="label">${esc(k)}</div><div class="value">${esc(v)}</div></div>`).join("")}
     </div>
+    <div class="post-actions">
+      <button onclick="addLatestToQueue()">Add to Action Queue</button>
+      <button onclick="saveLatestDecision()">Save Decision</button>
+      <button onclick="createFollowUp()">Create Follow-Up</button>
+      <button onclick="runDeeperAnalysis()">Run Deeper Analysis</button>
+    </div>
     <div class="output-toolbar">
       <div class="output-meta">
         <span>${esc(d.decision_confidence || "Confidence —")}</span>
@@ -3270,29 +3185,32 @@ function render(){
 }
 
 function renderRight(){
-  const allThreads = Object.values(threads);
   const messages = getMessages();
   const latest = [...messages].reverse().find(m => m.role === "assistant")?.data;
-  const actions = latest?.actions || [];
+  const actions = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  const decisions = JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]");
 
-  $("metricThreads").textContent = allThreads.length;
-  $("metricMessages").textContent = messages.length;
-  $("metricActions").textContent = actions.length;
-  $("metricPriority").textContent = latest?.priority || "—";
+  const todayFocus = document.getElementById("todayFocus");
+  if(todayFocus){
+    if(latest?.what_to_do_now){
+      todayFocus.innerHTML = `<strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move || "Keep moving.")}</span>`;
+    }else{
+      todayFocus.innerHTML = `<strong>No focus yet</strong><span>Run the engine to create your current focus.</span>`;
+    }
+  }
 
-  queueList.innerHTML = actions.length ? `<ol>${actions.map(a=>`<li>${esc(a)}</li>`).join("")}</ol>` : `<div class="empty">No actions yet.</div>`;
+  if(queueList){
+    queueList.innerHTML = actions.length
+      ? `<ol>${actions.slice(-6).reverse().map(a=>`<li>${esc(a.text || a)}</li>`).join("")}</ol>`
+      : `<div class="empty">No actions yet.</div>`;
+  }
 
-  const filter = ($("threadSearch").value || "").toLowerCase();
-  const visible = allThreads.filter(t => (t.title || "").toLowerCase().includes(filter)).slice(-10).reverse();
-  archiveList.innerHTML = visible.length ? visible.map(t => `
-    <div class="archive-item" onclick="openThread('${t.id}')">
-      <strong>${esc(t.title || "New Chat")}</strong>
-      <span>${t.messages.length} messages</span>
-    </div>
-  `).join("") : `<div class="empty">No messages yet.</div>`;
-
-  const memory = JSON.parse(localStorage.getItem(MEMORY_KEY) || "[]");
-  memoryList.innerHTML = memory.length ? memory.slice(-3).reverse().map(x=>`<div class="archive-item"><strong>${esc(x.decision)}</strong><span>${esc(x.next_move)}</span></div>`).join("") : `<div class="empty">No local memory yet.</div>`;
+  const recentDecisionList = document.getElementById("recentDecisionList");
+  if(recentDecisionList){
+    recentDecisionList.innerHTML = decisions.length
+      ? decisions.slice(-5).reverse().map(d=>`<div class="decision-item"><strong>${esc(d.decision)}</strong><span>${esc(d.priority || "priority")} · ${esc(d.date || "")}</span></div>`).join("")
+      : `<div class="empty">No decisions saved yet.</div>`;
+  }
 }
 
 function openThread(id){
@@ -3437,7 +3355,7 @@ async function checkBackend(){
       backendStatus.textContent = "Backend live";
       backendStatus.classList.add("backend-ok");
       backendStatus.classList.remove("backend-bad");
-      if(backendChip){
+      if(typeof backendChip !== 'undefined' && backendChip){
         backendChip.textContent = "● Backend Live";
         backendChip.classList.add("ready");
         backendChip.classList.remove("bad");
@@ -3449,7 +3367,7 @@ async function checkBackend(){
     backendStatus.textContent = "Backend sleeping/offline";
     backendStatus.classList.add("backend-bad");
     backendStatus.classList.remove("backend-ok");
-    if(backendChip){
+    if(typeof backendChip !== 'undefined' && backendChip){
       backendChip.textContent = "● Backend Check";
       backendChip.classList.remove("ready");
       backendChip.classList.add("bad");
@@ -3467,7 +3385,7 @@ function exportThread(){
   const t = getThread();
   const payload = {
     exported_at:new Date().toISOString(),
-    app:"Executive Engine OS V76",
+    app:"Executive Engine OS V78",
     thread:t
   };
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -3535,27 +3453,27 @@ function openInternalAutomation(){
 
 function toggleCompact(){
   document.body.classList.toggle("compact-ui");
-  localStorage.setItem("eeos_v76_compact", document.body.classList.contains("compact-ui") ? "1" : "0");
-  if(compactBtn) compactBtn.textContent = document.body.classList.contains("compact-ui") ? "Full View" : "Compact View";
+  localStorage.setItem("eeos_v78_compact", document.body.classList.contains("compact-ui") ? "1" : "0");
+  if(typeof compactBtn !== 'undefined' && compactBtn) compactBtn.textContent = document.body.classList.contains("compact-ui") ? "Full View" : "Compact View";
 }
 
 function restoreCompact(){
-  if(localStorage.getItem("eeos_v76_compact") === "1"){
+  if(localStorage.getItem("eeos_v78_compact") === "1"){
     document.body.classList.add("compact-ui");
-    if(compactBtn) compactBtn.textContent = "Full View";
+    if(typeof compactBtn !== 'undefined' && compactBtn) compactBtn.textContent = "Full View";
   }
 }
 
 function toggleFocusMode(){
   document.body.classList.toggle("focus-ui");
-  localStorage.setItem("eeos_v76_focus", document.body.classList.contains("focus-ui") ? "1" : "0");
-  if(focusBtn) focusBtn.textContent = document.body.classList.contains("focus-ui") ? "Full UI" : "Focus Mode";
+  localStorage.setItem("eeos_v78_focus", document.body.classList.contains("focus-ui") ? "1" : "0");
+  if(typeof focusBtn !== 'undefined' && focusBtn) focusBtn.textContent = document.body.classList.contains("focus-ui") ? "Full UI" : "Focus Mode";
 }
 
 function restoreFocusMode(){
-  if(localStorage.getItem("eeos_v76_focus") === "1"){
+  if(localStorage.getItem("eeos_v78_focus") === "1"){
     document.body.classList.add("focus-ui");
-    if(focusBtn) focusBtn.textContent = "Full UI";
+    if(typeof focusBtn !== 'undefined' && focusBtn) focusBtn.textContent = "Full UI";
   }
 }
 
@@ -3578,8 +3496,8 @@ function resetAllLocal(){
   localStorage.removeItem(ACTIVE_KEY);
   localStorage.removeItem(PROFILE_KEY);
   localStorage.removeItem(MEMORY_KEY);
-  localStorage.removeItem("eeos_v76_compact");
-  localStorage.removeItem("eeos_v76_focus");
+  localStorage.removeItem("eeos_v78_compact");
+  localStorage.removeItem("eeos_v78_focus");
   threads = {};
   activeThreadId = createThread(false);
   document.body.classList.remove("compact-ui","focus-ui");
@@ -3813,15 +3731,70 @@ function setProcessing(isProcessing){
   if(runStatus) runStatus.classList.toggle("show", !!isProcessing);
 }
 
+
+function latestAssistant(){
+  return [...getMessages()].reverse().find(m => m.role === "assistant")?.data || null;
+}
+
+function addLatestToQueue(){
+  const d = latestAssistant();
+  if(!d) return notify("Run the engine first");
+  const stored = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  (d.actions || []).forEach(a => stored.push({text:a, priority:d.priority || "medium", status:"open", date:new Date().toLocaleDateString()}));
+  localStorage.setItem(ACTIONS_KEY, JSON.stringify(stored.slice(-50)));
+  renderRight();
+  notify("Added to Action Queue", "success");
+}
+
+function saveLatestDecision(){
+  const d = latestAssistant();
+  if(!d) return notify("Run the engine first");
+  const stored = JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]");
+  stored.push({decision:d.decision || d.what_to_do_now, priority:d.priority || "medium", date:new Date().toLocaleDateString(), next_move:d.next_move || ""});
+  localStorage.setItem(DECISIONS_KEY, JSON.stringify(stored.slice(-50)));
+  renderRight();
+  notify("Decision saved", "success");
+}
+
+function createFollowUp(){
+  const d = latestAssistant();
+  if(!d) return notify("Run the engine first");
+  input.value = `Create a follow-up message and next steps for this decision:\n\nDecision: ${d.decision}\nNext move: ${d.next_move}\nActions: ${(d.actions || []).join("; ")}`;
+  modeSelect.value = "execution";
+  input.focus();
+  notify("Follow-up prompt created");
+}
+
+function runDeeperAnalysis(){
+  const d = latestAssistant();
+  if(!d) return notify("Run the engine first");
+  input.value = `Run deeper strategic analysis on this:\n\nDecision: ${d.decision}\nRisk: ${d.risk}\nNext move: ${d.next_move}`;
+  modeSelect.value = "execution";
+  input.focus();
+  notify("Deep analysis prompt created");
+}
+
+function selectIntent(mode, prompt, page){
+  if(modeSelect) modeSelect.value = mode;
+  document.querySelectorAll(".quick").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+  if(prompt && !input.value.trim()) input.value = prompt;
+  if(page) setPage(page, mode);
+  input.focus();
+}
+
 function initEvents(){
   if(brandHome) brandHome.addEventListener("click", goHome);
   runBtn.addEventListener("click", send);
-  clearBtn.addEventListener("click", clearAll);
+  if(clearBtn) clearBtn.addEventListener("click", clearAll);
   newTopBtn.addEventListener("click", ()=>createThread(true));
   newLeftBtn.addEventListener("click", ()=>createThread(true));
   testBtn.addEventListener("click", testBackend);
   moreBtn.addEventListener("click", e => {e.stopPropagation(); moreMenu.classList.toggle("show");});
   menuBtn.addEventListener("click", ()=>sidebar.style.display = sidebar.style.display === "none" ? "" : "none");
+
+  if(modeSelect) modeSelect.addEventListener("change", () => {
+    document.querySelectorAll(".quick").forEach(b => b.classList.toggle("active", b.dataset.mode === modeSelect.value));
+  });
 
   input.addEventListener("keydown", e => {
     if(e.key === "Enter" && !e.shiftKey){
@@ -3850,27 +3823,27 @@ function initEvents(){
   document.querySelectorAll(".nav-btn").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
   document.querySelectorAll(".top-nav-btn").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
   document.querySelectorAll(".more-menu button").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
-  document.querySelectorAll(".quick").forEach(btn => btn.addEventListener("click",()=>loadPrompt(btn.dataset.prompt,btn.dataset.mode)));
+  document.querySelectorAll(".quick").forEach(btn => btn.addEventListener("click",()=>selectIntent(btn.dataset.mode, btn.dataset.prompt, btn.dataset.page)));
   document.querySelectorAll(".page-chip").forEach(btn => btn.addEventListener("click",()=>setPage(btn.dataset.page,btn.dataset.mode)));
   document.querySelectorAll(".example-card").forEach(card => card.addEventListener("click",()=>loadPrompt(card.dataset.prompt,card.dataset.mode)));
   document.querySelectorAll(".function-btn").forEach(btn => btn.addEventListener("click",()=>handleFunction(btn.dataset.function)));
-  if(debugBtn) debugBtn.addEventListener("click", openDebug);
-  if(exportBtn) exportBtn.addEventListener("click", exportThread);
-  if(compactBtn) compactBtn.addEventListener("click", toggleCompact);
-  if(focusBtn) focusBtn.addEventListener("click", toggleFocusMode);
-  if(resetBtn) resetBtn.addEventListener("click", resetAllLocal);
+  if(typeof debugBtn !== 'undefined' && debugBtn) debugBtn.addEventListener("click", openDebug);
+  if(typeof exportBtn !== 'undefined' && exportBtn) exportBtn.addEventListener("click", exportThread);
+  if(typeof compactBtn !== 'undefined' && compactBtn) compactBtn.addEventListener("click", toggleCompact);
+  if(typeof focusBtn !== 'undefined' && focusBtn) focusBtn.addEventListener("click", toggleFocusMode);
+  if(typeof resetBtn !== 'undefined' && resetBtn) resetBtn.addEventListener("click", resetAllLocal);
   if(renameThreadBtn) renameThreadBtn.addEventListener("click", renameThread);
   if(duplicateThreadBtn) duplicateThreadBtn.addEventListener("click", duplicateThread);
-  if(connectAllBtn) connectAllBtn.addEventListener("click", connectAll);
-  if(goLiveBtn) goLiveBtn.addEventListener("click", runGoLiveCheck);
-  if(goLiveTopBtn) goLiveTopBtn.addEventListener("click", connectAndGoLive);
+  if(typeof connectAllBtn !== 'undefined' && connectAllBtn) connectAllBtn.addEventListener("click", connectAll);
+  if(typeof goLiveBtn !== 'undefined' && goLiveBtn) goLiveBtn.addEventListener("click", runGoLiveCheck);
+  if(typeof goLiveTopBtn !== 'undefined' && goLiveTopBtn) goLiveTopBtn.addEventListener("click", connectAndGoLive);
   document.querySelectorAll(".connect-tile").forEach(tile => {
     tile.addEventListener("click", () => handleConnectTile(tile.dataset.connect));
   });
-  if(backendChip) backendChip.addEventListener("click", checkBackend);
-  if(execOutputChip) execOutputChip.addEventListener("click", openExecutiveOutputHelp);
-  if(profileChip) profileChip.addEventListener("click", openProfileAware);
-  if(automationChip) automationChip.addEventListener("click", openInternalAutomation);
+  if(typeof backendChip !== 'undefined' && backendChip) backendChip.addEventListener("click", checkBackend);
+  if(typeof execOutputChip !== 'undefined' && execOutputChip) execOutputChip.addEventListener("click", openExecutiveOutputHelp);
+  if(typeof profileChip !== 'undefined' && profileChip) profileChip.addEventListener("click", openProfileAware);
+  if(typeof automationChip !== 'undefined' && automationChip) automationChip.addEventListener("click", openInternalAutomation);
 
   document.addEventListener("click", e => {
     if(!moreMenu.contains(e.target) && e.target !== moreBtn) moreMenu.classList.remove("show");

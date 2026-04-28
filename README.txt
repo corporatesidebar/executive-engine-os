@@ -1,12 +1,17 @@
-Executive Engine OS V76
+Executive Engine OS V78
 
 Purpose:
-- Adds clear Processing / Thinking state after Run Engine is pressed
-- Adds processing overlay so user knows request is working
-- Adds composer processing highlight
-- Adds Run button loading state
-- Changes top navigation background to black/navy to match left sidebar
-- Keeps V75 smooth GUI, robots/noindex, thread rename/duplicate, autosave, command palette, go-live checks
+- Fluid executive UX rebuild
+- Removes visible redundancy/confusion
+- Simplifies top bar to: Brand / Search / New
+- Simplifies sidebar to core executive workflows only
+- Replaces noisy chips with 3-step guide
+- Uses one clear Need dropdown
+- Removes Clear and visible depth dropdown
+- Simplifies right rail to: Today's Focus, Action Queue, Recent Decisions
+- Adds post-output action buttons:
+  Add to Action Queue, Save Decision, Create Follow-Up, Run Deeper Analysis
+- Keeps processing overlay, robots/noindex, command palette/search, profile, memory, backend logic
 
 Upload:
 - frontend/index.html
@@ -20,9 +25,3 @@ Deploy:
 2. Render backend -> Manual Deploy
 3. Render frontend -> Clear cache & deploy
 4. Hard refresh: Ctrl + Shift + R
-
-Test:
-1. Press Run Engine
-2. Confirm Processing request overlay appears
-3. Confirm Run button says Running
-4. Confirm top nav is dark/navy
