@@ -4,7 +4,7 @@ import re
 import time
 import asyncio
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 import httpx
 from fastapi import FastAPI, Query
@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V95"
+APP_NAME = "Executive Engine OS V95.2"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="95.0.0")
+app = FastAPI(title=APP_NAME, version="95.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -295,7 +295,7 @@ def build_system_prompt(mode, depth, loop_mode=False):
     )
 
     return f"""
-You are Executive Engine OS V95.
+You are Executive Engine OS V95.2.
 
 ROLE:
 Act like an elite CEO, COO, President, Chief of Staff, strategist, and operator.
@@ -591,7 +591,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V95"}
+    return {"ok": True, "service": APP_NAME, "version": "V95.2"}
 
 
 @app.get("/health")
@@ -599,7 +599,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V95",
+        "version": "V95.2",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -614,7 +614,7 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V95",
+        "version": "V95.2",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
             "/recent-runs", "/memory", "/memory-summary", "/stability-check", "/actions", "/save-action",
@@ -632,7 +632,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V95",
+        "version": "V95.2",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -707,7 +707,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V95", "auto_enabled": False, "message": "Manual execution loop only in V95.", "final": output}
+    return {"ok": True, "version": "V95.2", "auto_enabled": False, "message": "Manual execution loop only in V95.", "final": output}
 
 
 
@@ -724,9 +724,9 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V95", "output": validate_output_shape(output)}
+        return {"ok": True, "version": "V95.2", "output": validate_output_shape(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V95", "output": validate_output_shape(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V95.2", "output": validate_output_shape(fallback_response(str(exc)))}
 
 @app.get("/memory")
 async def memory(user_id: str = Query("local_user")):
@@ -738,7 +738,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory = await load_memory(user_id)
-    return {"ok": True, "version": "V95", "summary": summarize_memory_for_prompt(memory)}
+    return {"ok": True, "version": "V95.2", "summary": summarize_memory_for_prompt(memory)}
 
 @app.post("/stability-check")
 async def stability_check():
@@ -754,7 +754,7 @@ async def stability_check():
         "auto_loop_enabled": False,
         "memory_injection": "last_3_items"
     }
-    return {"ok": True, "version": "V95", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V95.2", "health": health_data, "checks": checks}
 
 @app.get("/recent-runs")
 async def recent_runs(user_id: str = Query("local_user"), limit: int = Query(20, ge=1, le=50)):
