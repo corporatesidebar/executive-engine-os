@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>Executive Engine OS V95</title>
+  <style>
+    :root{
+      --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
+      --muted:#64748b;--text:#071226;--green:#059669;--purple:#7c3aed;--orange:#ea580c;--pink:#db2777;
+      --shadow:0 18px 55px rgba(15,23,42,.10)
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    body{overflow:hidden}
+
+    .app{height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr) 306px;grid-template-rows:58px minmax(0,1fr)}
+    .topbar{grid-column:1/-1;display:grid;grid-template-columns:248px 92px minmax(320px,520px) 1fr;gap:16px;align-items:center;padding:0 16px;background:linear-gradient(180deg,var(--nav2),var(--nav));border-bottom:1px solid rgba(255,255,255,.10);z-index:50}
+    .top-left{display:flex;align-items:center;gap:10px;min-width:0}
+    .menu-btn{width:34px;height:34px;border:0;background:transparent;color:#e5edf8;border-radius:10px;font-size:19px}
+    .brand-home{border:0;background:transparent;color:#fff;display:flex;align-items:center;gap:10px;padding:0}
+    .brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#ef4444,#2563eb);color:#fff;font-size:12px;font-weight:950;display:grid;place-items:center}
+    .brand-title{font-size:18px;font-weight:950;letter-spacing:-.04em;white-space:nowrap}
+    .top-new{height:36px;border:1px solid rgba(255,255,255,.18);background:#2563eb;color:#fff;border-radius:12px;padding:0 14px;font-weight:950;box-shadow:0 10px 18px rgba(37,99,235,.22)}
+    .top-search{height:39px;display:flex;align-items:center;gap:9px;background:#fff;border-radius:12px;padding:0 12px;box-shadow:0 10px 24px rgba(2,8,23,.16)}
+    .top-search input{width:100%;border:0;outline:0;background:transparent;color:#334155;font-size:14px}
+    .shortcut{border-left:1px solid #e2e8f0;padding-left:9px;color:#64748b;font-size:12px;white-space:nowrap}
+
+    .sidebar{grid-column:1;grid-row:2;background:linear-gradient(180deg,#071226,#08172d);color:#fff;padding:14px 12px;overflow:auto;border-right:1px solid rgba(255,255,255,.08)}
+    .new-left{width:100%;height:44px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;text-align:left;padding:0 16px;font-weight:950;font-size:15px;margin-bottom:20px}
+    .nav-label{margin:18px 8px 8px;color:#8da2c0;font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase}
+    .nav-btn{width:100%;height:42px;border:1px solid transparent;background:transparent;color:#e5edf8;border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 12px;font-weight:900;text-align:left;margin:4px 0}
+    .nav-btn:hover{background:rgba(255,255,255,.07)}
+    .nav-btn.active{background:#1d4ed8;color:#fff;box-shadow:0 8px 18px rgba(37,99,235,.28)}
+    .ico{width:22px;height:22px;border-radius:7px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:13px}
+    .side-card{margin-top:24px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:16px;padding:14px;color:#b8c7dd;font-size:13px;line-height:1.45}
+    .side-card strong{display:block;color:#fff;margin-bottom:6px}
+
+    .main{grid-column:2;grid-row:2;overflow:auto;background:radial-gradient(circle at 52% 0%,rgba(37,99,235,.07),transparent 36%),var(--bg)}
+    .workspace{max-width:1040px;margin:0 auto;padding:38px 24px 70px}
+    .intro{text-align:center;margin-bottom:22px}
+    .kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:950;margin-bottom:18px}
+    h1{font-size:38px;line-height:1.05;margin:0 0 10px;letter-spacing:-.055em}
+    .subtitle{font-size:16px;color:#526174;line-height:1.45;margin:0 auto;max-width:720px}
+
+    .flow-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+    .flow-top{padding:18px;border-bottom:1px solid #edf2f7;background:#fbfdff}
+    .flow-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .flow-title strong{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#475569}
+    .flow-title span{font-size:12px;color:#64748b;font-weight:800}
+    .workflow-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .workflow-tab{min-height:72px;border:2px solid #e2e8f0;background:#fff;border-radius:16px;padding:12px;text-align:left;display:grid;gap:5px;transition:.15s}
+    .workflow-tab:hover{transform:translateY(-1px);background:#eff6ff;border-color:#bfdbfe}
+    .workflow-tab.active{border-color:#2563eb;background:#eff6ff;box-shadow:0 12px 26px rgba(37,99,235,.11)}
+    .workflow-tab b{font-size:14px;color:#0f172a}
+    .workflow-tab small{font-size:12px;color:#64748b;line-height:1.25}
+    .workflow-tab .dot{width:24px;height:24px;border-radius:9px;display:grid;place-items:center;color:#fff;background:#2563eb;font-size:12px}
+
+    .composer-area{padding:18px}
+    .selected-line{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+    .current-pill{display:inline-flex;align-items:center;gap:8px;height:34px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:0 12px;font-size:13px;font-weight:950}
+    .current-pill span{width:20px;height:20px;display:grid;place-items:center;border-radius:999px;color:#fff;background:#2563eb;font-size:11px}
+    .step-mini{display:flex;gap:8px;flex-wrap:wrap}
+    .step-mini span{display:inline-flex;height:28px;align-items:center;border:1px solid #e2e8f0;background:#fff;border-radius:999px;padding:0 10px;color:#64748b;font-size:12px;font-weight:850}
+    .step-mini span.on{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+
+    .composer{border:1px solid #bfdbfe;border-radius:20px;overflow:hidden;box-shadow:0 18px 52px rgba(37,99,235,.10)}
+    textarea{width:100%;height:150px;min-height:150px;max-height:220px;resize:vertical;border:0;outline:0;padding:20px 22px;color:#0f172a;font-size:17px;line-height:1.45;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .composer-foot{min-height:64px;border-top:1px solid #edf2f7;background:#fbfdff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px}
+    .hint{font-size:12.5px;color:#64748b;font-weight:750}
+    .run-status{display:none;align-items:center;gap:8px;color:#1d4ed8;font-size:12px;font-weight:900;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:6px 9px}
+    .run-status.show{display:inline-flex}
+    .spinner{width:12px;height:12px;border:2px solid #bfdbfe;border-top-color:#2563eb;border-radius:50%;animation:spin .75s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .run-btn{height:44px;min-width:150px;border:0;border-radius:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:950;box-shadow:0 12px 24px rgba(37,99,235,.22)}
+
+    .recent-strip{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .recent-card{border:1px solid #dbe3ef;background:#fff;border-radius:15px;padding:12px;text-align:left;cursor:pointer}
+    .recent-card:hover{background:#eff6ff;border-color:#bfdbfe}
+    .recent-card strong{display:block;font-size:13px;line-height:1.25;margin-bottom:4px}
+    .recent-card span{font-size:12px;color:#64748b}
+
+    .page-view{display:none;max-width:1040px;margin:0 auto;padding:38px 24px 80px;text-align:left}
+    .page-view.show{display:block}
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}
+    .page-title-block h2{margin:0 0 8px;font-size:32px;letter-spacing:-.045em}
+    .page-title-block p{margin:0;color:#64748b;font-size:15px;line-height:1.45;max-width:720px}
+    .page-primary{height:42px;border:0;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-radius:13px;padding:0 16px;font-weight:950;box-shadow:0 12px 24px rgba(37,99,235,.20)}
+    .page-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .page-module{border:1px solid #dbe3ef;background:#fff;border-radius:20px;padding:18px;box-shadow:0 12px 34px rgba(15,23,42,.055)}
+    .page-module h3{margin:0 0 8px;font-size:17px}
+    .page-module p{margin:0 0 14px;color:#64748b;font-size:13px;line-height:1.45}
+    .page-module button,.ghost-btn{height:38px;border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:12px;padding:0 12px;font-weight:950}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:grid;gap:7px}.field.full{grid-column:1/-1}
+    .field label{font-size:12px;font-weight:950;color:#475569;text-transform:uppercase;letter-spacing:.08em}
+    .field textarea,.field input{width:100%;border:1px solid #dbe3ef;border-radius:14px;padding:13px;outline:none;font-size:14px}.field textarea{min-height:110px;resize:vertical}.field.full textarea{min-height:170px}
+
+    .chat-shell{display:none;max-width:960px;margin:0 auto;padding:28px 24px 80px}
+    .chat-shell.show{display:block}
+    .chat{display:grid;gap:16px}
+    .msg{display:flex}.msg.user{justify-content:flex-end}.msg.assistant{justify-content:flex-start}
+    .bubble{max-width:800px;border-radius:20px;padding:14px 16px;box-shadow:0 12px 34px rgba(15,23,42,.07)}
+    .user .bubble{background:#2563eb;color:#fff}
+    .assistant .bubble{background:#fff;border:1px solid #dbe3ef;color:#0f172a;width:100%}
+    .response-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.response-card{border:1px solid #dbe3ef;background:#fbfdff;border-radius:16px;padding:13px;text-align:left}.response-card.full{grid-column:1/-1}.response-card.primary{background:linear-gradient(180deg,#eff6ff,#fff);border-color:#93c5fd;border-left:4px solid #2563eb}.response-card.actions{background:linear-gradient(180deg,#ecfdf5,#fff);border-color:#86efac}.label{font-size:10.5px;color:#475569;font-weight:950;letter-spacing:.11em;text-transform:uppercase;margin-bottom:7px}.value{font-size:14px;line-height:1.45;font-weight:800}.value ol{margin:0;padding-left:18px}.value li{margin:5px 0}.priority{display:inline-flex;border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;border-radius:999px;padding:5px 8px;font-size:12px;text-transform:uppercase;font-weight:950}.advanced{display:none;margin-top:9px}.advanced.show{display:grid}.output-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;border-top:1px solid #edf2f7;padding-top:10px;flex-wrap:wrap}.post-actions{display:flex;gap:8px;flex-wrap:wrap}.post-actions button{height:34px;border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:0 10px;font-size:12px;font-weight:950}
+
+    .right{grid-column:3;grid-row:2;background:#fff;border-left:1px solid #e2e8f0;padding:18px 14px;overflow:auto}
+    .panel{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.035)}
+    .panel h3{margin:0 0 12px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#526174}
+    .focus-box{border:1px solid #dbeafe;background:#eff6ff;border-radius:14px;padding:13px}.focus-box strong{display:block;color:#1d4ed8;line-height:1.35;margin-bottom:5px}.focus-box span{font-size:13px;color:#475569;line-height:1.4}.empty{color:#94a3b8;font-size:13px}#queueList ol{margin:0;padding-left:18px}#queueList li{margin:8px 0;font-size:13px;color:#334155}.decision-item{border:1px solid #edf2f7;background:#f8fafc;border-radius:12px;padding:10px;margin:8px 0}.decision-item strong{display:block;font-size:13px;margin-bottom:4px}.decision-item span{font-size:12px;color:#64748b}
+
+    .search-results{display:none;position:fixed;top:66px;left:50%;transform:translateX(-50%);width:min(520px,calc(100vw - 40px));max-height:430px;overflow:auto;background:#fff;border:1px solid #dbe3ef;border-radius:16px;box-shadow:0 26px 80px rgba(15,23,42,.20);padding:10px;z-index:110}.search-results.show{display:block}.search-result{padding:12px;border-radius:12px;cursor:pointer;font-size:13px;color:#334155}.search-result:hover{background:#eff6ff}.search-result strong{display:block;color:#0f172a;margin-bottom:4px}
+    .processing-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.18);backdrop-filter:blur(2px);z-index:90;align-items:flex-end;justify-content:center;padding:0 18px 96px;pointer-events:none}.processing-overlay.show{display:flex}.processing-card{display:flex;align-items:center;gap:12px;background:#071226;color:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 30px 90px rgba(2,8,23,.30)}.processing-spinner{width:28px;height:28px;border-radius:50%;border:3px solid rgba(147,197,253,.35);border-top-color:#60a5fa;animation:spin .75s linear infinite}.processing-card span{display:block;margin-top:3px;color:#bfdbfe;font-size:12px;font-weight:750}
+    .notice{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#071226;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:0 20px 50px rgba(2,8,23,.28);opacity:0;pointer-events:none;transition:.18s;z-index:160;font-weight:850;font-size:13px}.notice.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast-success{background:#047857!important}.toast-danger{background:#b91c1c!important}
+
+    @media(max-width:1200px){.app{grid-template-columns:230px minmax(0,1fr)}.right{display:none}.workflow-tabs{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){body{overflow:auto}.app{display:block;height:auto}.topbar{position:sticky;top:0;display:grid;grid-template-columns:auto 1fr}.top-new{display:none}.sidebar,.right{display:none}.brand-title{display:none}.workflow-tabs,.recent-strip,.page-grid,.form-grid{grid-template-columns:1fr}.workspace,.page-view{padding:24px 14px 40px}.composer-foot{align-items:flex-start;flex-direction:column}.run-btn{width:100%}}
+  
+/* V88 — SPEED + YOUR ENGINE */
+.engine-list{
+  display:grid;
+  gap:8px;
+  max-height:430px;
+  overflow:auto;
+  padding-right:2px;
+}
+.engine-item{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  cursor:pointer;
+  transition:.15s;
+}
+.engine-item:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+  transform:translateY(-1px);
+}
+.engine-item strong{
+  display:block;
+  font-size:12.5px;
+  color:#0f172a;
+  line-height:1.25;
+  margin-bottom:4px;
+}
+.engine-item span{
+  display:block;
+  font-size:11px;
+  color:#64748b;
+}
+.speed-note{
+  margin-top:8px;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+
+
+/* V89 — RIGHT SIDEBAR FUNCTIONAL + FULLER OUTPUT */
+.rail-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.rail-actions button{
+  height:30px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:9px;
+  padding:0 9px;
+  font-size:11px;
+  font-weight:950;
+}
+.rail-actions button:hover{
+  background:#dbeafe;
+}
+.queue-item,.decision-item,.engine-item{
+  user-select:none;
+}
+.queue-item{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  margin:8px 0;
+  cursor:pointer;
+  transition:.15s;
+}
+.queue-item:hover{
+  background:#eff6ff;
+  border-color:#bfdbfe;
+}
+.queue-item strong{
+  display:block;
+  color:#0f172a;
+  font-size:12.5px;
+  line-height:1.35;
+}
+.queue-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  margin-top:4px;
+}
+.sidebar-mini-btn{
+  width:100%;
+  height:34px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:950;
+  margin-top:8px;
+}
+.response-card.more-visible{
+  background:#fff;
+}
+.advanced{
+  display:grid !important;
+}
+.ghost-btn[onclick*="toggleStrategic"]{
+  display:none !important;
+}
+
+
+/* V90 — CLEAN FUNCTIONAL RIGHT PANEL */
+.right{
+  padding:14px 12px !important;
+}
+.panel{
+  padding:14px !important;
+  margin-bottom:12px !important;
+  border-radius:16px !important;
+}
+.panel h3{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px !important;
+}
+.panel h3::after{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#cbd5e1;
+}
+.panel:first-child h3::after{
+  background:#2563eb;
+}
+.engine-help{
+  margin:-4px 0 10px;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.25;
+}
+.engine-list{
+  gap:6px !important;
+  max-height:310px !important;
+}
+.engine-item,
+.queue-item,
+.decision-item,
+.focus-one-line{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:8px 9px !important;
+  border-radius:11px !important;
+}
+.engine-item strong,
+.queue-item strong,
+.decision-item strong,
+.focus-one-line strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px !important;
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+.engine-item span,
+.queue-item span,
+.decision-item span,
+.focus-one-line span{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10.5px !important;
+  line-height:1.2 !important;
+  margin-top:2px !important;
+}
+.row-chip{
+  height:22px;
+  min-width:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 7px;
+  border-radius:999px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.row-chip.green{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#86efac;
+}
+.row-chip.orange{
+  background:#fff7ed;
+  color:#c2410c;
+  border-color:#fed7aa;
+}
+.rail-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr;
+  gap:7px !important;
+  margin-top:10px !important;
+}
+.rail-actions button,
+.sidebar-mini-btn{
+  height:32px !important;
+  border-radius:10px !important;
+  font-size:11.5px !important;
+}
+.sidebar-mini-btn{
+  margin-top:8px !important;
+}
+.focus-box{
+  padding:10px !important;
+}
+.focus-box .focus-one-line{
+  border:1px solid #bfdbfe;
+  background:#fff;
+}
+.empty{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.response-card .value{
+  font-size:15px !important;
+  line-height:1.52 !important;
+  font-weight:850 !important;
+}
+.response-card.actions .value li{
+  margin:7px 0 !important;
+}
+
+
+/* V93 — Backend memory integration */
+.db-status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  height:28px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:999px;
+  padding:0 10px;
+  font-size:11px;
+  font-weight:950;
+  white-space:nowrap;
+}
+.db-status.ok{
+  border-color:#86efac;
+  background:#ecfdf5;
+  color:#047857;
+}
+.db-status.bad{
+  border-color:#fecaca;
+  background:#fef2f2;
+  color:#b91c1c;
+}
+.db-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+}
+.memory-toolbar{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.memory-toolbar button{
+  height:30px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:9px;
+  padding:0 9px;
+  font-size:11px;
+  font-weight:950;
+}
+
+
+/* V94 — Memory-driven execution loop */
+.memory-summary-box{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.memory-summary-box strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.loop-box{
+  margin-top:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  border-radius:14px;
+  padding:12px;
+}
+.loop-box .label{
+  color:#1d4ed8;
+}
+.loop-box .value{
+  font-size:13px !important;
+}
+
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="top-left"><button class="menu-btn" type="button">☰</button><button class="brand-home" id="brandHome" type="button"><div class="brand-icon">EE</div><div class="brand-title">Executive Engine</div></button></div>
+      <button class="top-new" id="newTopBtn">+ New</button>
+      <div class="top-search"><span>⌕</span><input id="globalSearch" placeholder="Search or command..." autocomplete="off" /><div class="shortcut">⌘K</div></div>
+      <div></div>
+    </header>
+
+    <aside class="sidebar">
+      <button class="new-left" id="newLeftBtn">+ New</button>
+      <div class="nav-label">Start Here</div>
+      <button class="nav-btn active" data-page="command" data-mode="execution"><span class="ico">⌘</span>Ask / Execute</button>
+      <button class="nav-btn" data-page="daily" data-mode="daily_brief"><span class="ico">◷</span>Plan Today</button>
+      <button class="nav-btn" data-page="decisions" data-mode="decision"><span class="ico">◆</span>Make Decision</button>
+      <button class="nav-btn" data-page="meetings" data-mode="meeting"><span class="ico">◉</span>Prepare Meeting</button>
+      <button class="nav-btn" data-page="personal" data-mode="personal"><span class="ico">★</span>Personal / Misc</button>
+      <div class="nav-label">Build</div>
+      <button class="nav-btn" data-page="content" data-mode="content"><span class="ico">✎</span>Content Studio</button>
+      <button class="nav-btn" data-page="learning" data-mode="learning"><span class="ico">◈</span>Learning</button>
+      <div class="nav-label">Setup</div>
+      <button class="nav-btn" data-page="profile" data-mode="personal"><span class="ico">☰</span>Your Profile</button>
+      <div class="side-card"><strong>How it works</strong>Pick workflow. Add context. Run Engine. Save the output into Actions or Decisions.</div>
+    </aside>
+
+    <main class="main" id="main">
+      <section class="workspace" id="workspace">
+        <div class="intro">
+          <div class="kicker">◆ Executive Command</div>
+          <h1 id="pageTitle">What needs to move forward?</h1>
+          <p class="subtitle" id="pageDesc">Pick one workflow, add the messy details, then run the engine.</p>
+        </div>
+
+        <div class="flow-card">
+          <div class="flow-top">
+            <div class="flow-title"><strong>1. Pick workflow</strong><span>V95 stability lock: manual execution only. No bots yet.</span></div>
+            <div class="workflow-tabs" id="workflowTabs"></div>
+          </div>
+
+          <div class="composer-area">
+            <div class="selected-line">
+              <div class="current-pill"><span id="currentWorkflowIcon">⌘</span><strong id="currentWorkflowLabel">Ask / Execute</strong></div>
+              <div class="step-mini"><span class="on">1 Pick</span><span class="on">2 Add details</span><span>3 Run</span><span>4 Save</span></div>
+            </div>
+
+            <div class="composer">
+              <textarea id="input" placeholder="Tell me what needs to get done, decided, fixed, or prepared."></textarea>
+              <div class="composer-foot">
+                <div><span class="hint">Enter = send · Shift+Enter = new line</span> <span class="run-status" id="runStatus"><span class="spinner"></span>Thinking</span></div>
+                <button class="run-btn" id="runBtn">Run Engine</button>
+              </div>
+            </div>
+
+            <div class="recent-strip" id="recentStrip"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chat-shell" id="chatShell"><div class="chat" id="chat"></div></section>
+      <section class="page-view" id="pageView"></section>
+    </main>
+
+    <aside class="right">
+      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
+      <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
+      <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
+      <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
+    </aside>
+  </div>
+
+  <div class="search-results" id="searchResults"></div>
+  <div class="processing-overlay" id="processingOverlay"><div class="processing-card"><div class="processing-spinner"></div><div><strong>Processing request</strong><span>Executive Engine is thinking. Do not refresh.</span></div></div></div>
+  <div class="notice" id="notice"></div>
+
+<script>
+const API="https://executive-engine-os.onrender.com";
+const USER_ID="local_user";
+let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null};
+const STORAGE_KEY="eeos_v95_threads",ACTIVE_KEY="eeos_v95_active_thread",PROFILE_KEY="eeos_v95_profile",ACTIONS_KEY="eeos_v95_actions",DECISIONS_KEY="eeos_v95_decisions";
+const $=id=>document.getElementById(id);
+const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
+const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
+let threads=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"),activeThreadId=localStorage.getItem(ACTIVE_KEY),activeMode="execution";
+
+const workflows={
+ execution:{page:"command",label:"Ask / Execute",icon:"⌘",desc:"General task or blocker.",placeholder:"Tell me what needs to get done, decided, fixed, or prepared.",prompt:"Help me execute or fix this: "},
+ daily_brief:{page:"daily",label:"Plan Today",icon:"◷",desc:"Today’s plan and focus.",placeholder:"What is on your plate today? Include meetings, deadlines, follow-ups, and pressure points.",prompt:"Run my day. Here is what is on my plate: "},
+ decision:{page:"decisions",label:"Make Decision",icon:"◆",desc:"Decision, tradeoff, risk.",placeholder:"What decision are you trying to make? Include options, deadline, and what is at stake.",prompt:"Help me make this decision: "},
+ meeting:{page:"meetings",label:"Prepare Meeting",icon:"◉",desc:"Prep, agenda, follow-up.",placeholder:"What meeting are you preparing for? Include people, objective, context, and desired outcome.",prompt:"Prepare me for this meeting: "},
+ personal:{page:"personal",label:"Personal / Misc",icon:"★",desc:"Life, message, admin.",placeholder:"What is going on? Share the messy version. I’ll clarify the next move.",prompt:"Help me make sense of this: "},
+ content:{page:"content",label:"Content Studio",icon:"✎",desc:"Content, Figma, Canva.",placeholder:"What content do you need? Include platform, audience, offer, and tone.",prompt:"Create a content plan for this: "},
+ learning:{page:"learning",label:"Learning",icon:"◈",desc:"Patterns and insights.",placeholder:"What should the system learn from this?",prompt:"Analyze my patterns and recommend how to improve my workflow: "}
+};
+const homeModes=["execution","daily_brief","decision","meeting","personal"];
+const pageInfo={
+ command:{title:"Ask / Execute",desc:"Use this for anything that needs to move forward.",mode:"execution",modules:[["Start a New Request","Use this for blockers, ideas, tasks, or messy situations.","Help me execute or fix this: "],["Open Action Queue","Review actions created from previous outputs.","__queue"],["Search History","Find previous decisions, inputs, and outputs.","__search"]]},
+ daily:{title:"Plan Today",desc:"Turn your day into focus, sequence, risks, and first move.",mode:"daily_brief",modules:[["Today's Focus","Create the one highest-leverage focus for today.","Run my day. Here is what is on my plate: "],["Meetings + Follow-ups","Prioritize meetings, callbacks, messages, and decisions.","Plan my meetings and follow-ups today: "],["What To Ignore","Identify distractions and what not to do.","Tell me what to ignore today based on this: "]]},
+ decisions:{title:"Make Decision",desc:"Evaluate tradeoffs, risk, priority, and the next move.",mode:"decision",modules:[["Decision Brief","Describe the decision, options, deadline, and stakes.","Help me make this decision: "],["Risk + Tradeoffs","Pressure-test downside and weak assumptions.","Check the risk and tradeoffs for this decision: "],["Save Decision Process","Run decision → review output → click Save Decision.","__explain_save"]]},
+ meetings:{title:"Prepare Meeting",desc:"Build agenda, talking points, questions, risks, and follow-up.",mode:"meeting",modules:[["Meeting Brief","Add who, objective, context, and desired outcome.","Prepare me for this meeting: "],["Hard Questions","Generate sharp questions and objections.","Give me the hard questions for this meeting: "],["Follow-Up Plan","Create post-meeting message and action sequence.","Create follow-up for this meeting: "]]},
+ personal:{title:"Personal / Misc",desc:"Use for messy thoughts, personal admin, messages, or anything unclear.",mode:"personal",modules:[["Clarify Thought","Turn messy context into one clear next move.","Help me make sense of this: "],["Draft Message","Create a text, email, or response.","Draft a message for this situation: "],["Organize Admin","Turn personal tasks into action sequence.","Organize this personal/admin list: "]]},
+ content:{title:"Content Studio",desc:"Build content ideas, scripts, creative briefs, and Figma/Canva-ready prompts.",mode:"content",modules:[["Content Brief","Audience, hook, angle, outline, CTA, and distribution.","Create a content brief for this idea: "],["Figma Prompt","Generate a Figma Make prompt for UI or creative layouts.","Create a Figma Make prompt for this design: "],["Canva Brief","Generate Canva-ready creative brief, layout, copy, and asset list.","Create a Canva-ready creative brief for this: "]]},
+ learning:{title:"Learning System",desc:"Analyze personal usage patterns now. Later, send anonymized aggregate insights to a separate DB.",mode:"learning",modules:[["Analyze Me","Review profile, actions, decisions, and message patterns.","Analyze my personal usage patterns and tell me how to improve my execution system: "],["What To Learn","Identify repeated blockers and best workflows.","Identify what the system should learn from my recent usage: "],["Aggregate DB Plan","Plan anonymized all-user insights schema later.","Plan the aggregate insights DB schema: "]]}
+};
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function notify(msg,type=""){notice.textContent=msg;notice.className="notice";if(type)notice.classList.add("toast-"+type);notice.classList.add("show");setTimeout(()=>notice.className="notice",2400)}
+function saveThreads(){localStorage.setItem(STORAGE_KEY,JSON.stringify(threads));localStorage.setItem(ACTIVE_KEY,activeThreadId)}
+function createThread(renderNow=true){const id="t_"+Date.now();threads[id]={id,title:"New Chat",messages:[],createdAt:new Date().toISOString()};activeThreadId=id;saveThreads();if(renderNow)render();return id}
+if(!activeThreadId||!threads[activeThreadId])createThread(false);
+function getThread(){return threads[activeThreadId]}function getMessages(){return getThread()?.messages||[]}
+function profile(){return JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}")}function profileText(){return Object.values(profile()).filter(Boolean).join("\\n")}
+function setProcessing(v){processingOverlay.classList.toggle("show",!!v);runStatus.classList.toggle("show",!!v)}
+function recentItems(mode){const msgs=Object.values(threads).flatMap(t=>(t.messages||[]).filter(m=>m.role==="user").map(m=>({text:m.text||"",mode:m.mode||"execution",at:m.at}))).filter(m=>mode==="execution"?["execution","strategy","risk_review","proposal"].includes(m.mode):m.mode===mode).slice(-3).reverse();if(msgs.length)return msgs;const d={execution:["Fix a blocker","Turn issue into steps","30-minute sprint"],daily_brief:["Highest-leverage work","Meetings + follow-ups","What to ignore"],decision:["Compare options","Risk + tradeoffs","Decide under pressure"],meeting:["Talking points","Agenda + questions","Follow-up plan"],personal:["Personal admin","Draft message","Clarify thoughts"],content:["Create script","Figma/Canva brief","Content calendar"],learning:["Analyze my patterns","Personal learning review","System insight brief"]};return(d[mode]||d.execution).map(text=>({text,at:"Suggested"}))}
+function renderWorkflowTabs(){workflowTabs.innerHTML=homeModes.map(mode=>{const w=workflows[mode];return`<button class="workflow-tab ${activeMode===mode?"active":""}" data-mode="${mode}"><span class="dot">${w.icon}</span><b>${esc(w.label)}</b><small>${esc(w.desc)}</small></button>`}).join("");workflowTabs.querySelectorAll(".workflow-tab").forEach(b=>b.onclick=()=>selectWorkflow(b.dataset.mode,true))}
+function renderRecent(){recentStrip.innerHTML=recentItems(activeMode).map(r=>`<div class="recent-card" data-text="${esc(r.text)}"><strong>${esc(r.text)}</strong><span>${r.at==="Suggested"?"Suggested starter":"Recent input"}</span></div>`).join("");recentStrip.querySelectorAll(".recent-card").forEach(c=>c.onclick=()=>{input.value=c.dataset.text;input.focus()})}
+function selectWorkflow(mode,focus=false){activeMode=mode;const w=workflows[mode]||workflows.execution;input.placeholder=w.placeholder;currentWorkflowIcon.textContent=w.icon;currentWorkflowLabel.textContent=w.label;pageTitle.textContent=mode==="execution"?"What needs to move forward?":w.label;pageDesc.textContent=w.desc+". Add details below and run the engine.";document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode||(mode==="execution"&&b.dataset.page==="command")));renderWorkflowTabs();renderRecent();if(focus)input.focus()}
+function goHome(){pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow("execution",false);input.focus()}
+function newChat(){createThread(false);input.value="";goHome();renderRight();notify("New workspace ready","success")}
+function openPage(page,mode){if(page==="profile")return renderProfile();const info=pageInfo[page]||pageInfo.command;workspace.style.display="none";chatShell.classList.remove("show");pageView.classList.add("show");document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));pageView.innerHTML=`<div class="page-header"><div class="page-title-block"><h2>${esc(info.title)}</h2><p>${esc(info.desc)}</p></div><button class="page-primary" onclick="startWorkflow('${info.mode}')">Start</button></div><div class="page-grid">${info.modules.map(m=>`<div class="page-module"><h3>${esc(m[0])}</h3><p>${esc(m[1])}</p><button onclick="moduleAction('${info.mode}','${esc(m[2])}')">${m[2].startsWith("__")?"Open":"Start"}</button></div>`).join("")}</div>`}
+function startWorkflow(mode){pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow(mode,true);input.value=workflows[mode]?.prompt||""}
+function moduleAction(mode,action){if(action==="__queue")return notify("Action Queue is on the right side.");if(action==="__search"){globalSearch.focus();return notify("Search is ready.")}if(action==="__explain_save")return notify("Run a decision, then click Save Decision under the output.");pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow(mode,false);input.value=action;input.focus()}
+function renderProfile(){const p=profile();workspace.style.display="none";chatShell.classList.remove("show");pageView.classList.add("show");document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page==="profile"));pageView.innerHTML=`<div class="page-header"><div class="page-title-block"><h2>Your Profile</h2><p>Add role, goals, experience, constraints, and resume/context. This is separate from the main workflow.</p></div><button class="page-primary" onclick="useProfilePrompt()">Use Profile Now</button></div><div class="page-module"><div class="form-grid">${["role:Current Role / Target","goals:Goals","experience:Experience / Strengths","constraints:Constraints / Preferences"].map(x=>{const[k,l]=x.split(":");return`<div class="field"><label>${l}</label><textarea data-profile="${k}">${esc(p[k]||"")}</textarea></div>`}).join("")}<div class="field full"><label>Resume / Bio / Context</label><textarea data-profile="resume" placeholder="Paste resume, LinkedIn summary, company context, or background notes here...">${esc(p.resume||"")}</textarea></div><div style="grid-column:1/-1;display:flex;gap:10px"><button class="run-btn" id="saveProfileBtn">Save Profile</button><button class="ghost-btn" id="useProfileBtn">Use Profile Now</button></div></div></div>`;$("saveProfileBtn").onclick=saveProfileFromPage;$("useProfileBtn").onclick=useProfilePrompt}
+async function saveProfileFromPage(){
+  const next={};
+  pageView.querySelectorAll("[data-profile]").forEach(el=>next[el.dataset.profile]=el.value.trim());
+  localStorage.setItem(PROFILE_KEY,JSON.stringify(next));
+  if(backendMemory.supabase){
+    try{
+      await apiPost("/profile",{user_id:USER_ID,role:next.role,goals:next.goals,experience:next.experience,constraints:next.constraints,resume_context:next.resume,preferences:{}});
+      await refreshBackendMemory();
+      return notify("Profile saved to DB","success");
+    }catch(e){
+      notify("DB profile save failed; saved locally");
+      return;
+    }
+  }
+  notify("Profile saved locally","success");
+  renderRight();
+}
+function useProfilePrompt(){saveProfileFromPage();pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow("personal",false);input.value="Based on my profile, identify my highest-leverage direction, strongest positioning, biggest risks, and next move.";input.focus()}
+function normalize(d){return{what_to_do_now:d?.what_to_do_now||"Execute the next move.",decision:d?.decision||"Proceed with the clearest path.",next_move:d?.next_move||"Take the first concrete action.",actions:Array.isArray(d?.actions)?d.actions:["Define outcome","Identify constraint","Execute first move"],risk:d?.risk||"Unclear execution creates wasted time.",priority:d?.priority||"high",reality_check:d?.reality_check||"",leverage:d?.leverage||"",constraint:d?.constraint||"",what_to_ignore:d?.what_to_ignore||"",financial_impact:d?.financial_impact||"",strategic_read:d?.strategic_read||"",execution_loop:d?.execution_loop||null}}
+function renderAssistant(data){const d=normalize(data);return`<div class="response-grid"><div class="response-card full primary"><div class="label">What To Do Now</div><div class="value">${esc(d.what_to_do_now)}</div></div><div class="response-card"><div class="label">Decision</div><div class="value">${esc(d.decision)}</div></div><div class="response-card"><div class="label">Next Move</div><div class="value">${esc(d.next_move)}</div></div><div class="response-card full actions"><div class="label">Actions</div><div class="value"><ol>${d.actions.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div></div><div class="response-card"><div class="label">Risk</div><div class="value">${esc(d.risk)}</div></div><div class="response-card"><div class="label">Priority</div><div class="value"><span class="priority">${esc(d.priority)}</span></div></div></div><div class="advanced response-grid">${[["Reality Check",d.reality_check],["Leverage",d.leverage],["Constraint",d.constraint],["What To Ignore",d.what_to_ignore],["Financial Impact",d.financial_impact],["Strategic Read",d.strategic_read]].filter(x=>x[1]).map(([k,v])=>`<div class="response-card"><div class="label">${esc(k)}</div><div class="value">${esc(v)}</div></div>`).join("")}</div>${d.execution_loop?`<div class="loop-box"><div class="label">Manual Execution Loop</div><div class="value"><strong>Next:</strong> ${esc(d.execution_loop.next_action||d.next_move||"")}<br><strong>Run next:</strong> ${esc(d.execution_loop.next_prompt||d.follow_up_prompt||"")}</div></div>`:""}<div class="output-toolbar"><div class="post-actions"><button onclick="addLatestToQueue()">Add to Action Queue</button><button onclick="saveLatestDecision()">Save Decision</button><button onclick="createFollowUp()">Create Follow-Up</button><button onclick="runDeeperAnalysis()">Run Deeper Analysis</button></div><button class="ghost-btn" onclick="toggleStrategic(this)">Show Strategic Detail</button></div>`}
+function toggleStrategic(btn){const adv=btn.closest(".bubble").querySelector(".advanced");adv.classList.toggle("show");btn.textContent=adv.classList.contains("show")?"Hide Strategic Detail":"Show Strategic Detail"}
+function render(){const msgs=getMessages();if(!pageView.classList.contains("show")){workspace.style.display=msgs.length?"none":"block";chatShell.classList.toggle("show",!!msgs.length)}chat.innerHTML=msgs.map(m=>`<div class="msg ${m.role}"><div class="bubble">${m.role==="user"?esc(m.text):renderAssistant(m.data)}</div></div>`).join("");renderRight();renderEngineList();renderWorkflowTabs();renderRecent();saveThreads();setTimeout(()=>{$("main").scrollTop=$("main").scrollHeight},30)}
+
+
+function openThreadById(id){
+  if(!threads[id]) return notify("Chat not found");
+  activeThreadId = id;
+  saveThreads();
+  pageView.classList.remove("show");
+  workspace.style.display = "none";
+  chatShell.classList.add("show");
+  render();
+  notify("Chat reopened", "success");
+}
+
+function useFocus(){
+  const latest = latestAssistant();
+  if(!latest) return notify("Run the engine first");
+  goHome();
+  input.value = "Turn this focus into an execution plan for today:\n\n" + (latest.what_to_do_now || latest.next_move || latest.decision || "");
+  selectWorkflow("daily_brief", false);
+  input.focus();
+}
+
+function clearQueue(){
+  localStorage.setItem(ACTIONS_KEY, "[]");
+  renderRight();
+  notify("Action Queue cleared", "success");
+}
+
+function useQueueItem(index){
+  const actions = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  const item = actions[index];
+  if(!item) return notify("Action not found");
+  goHome();
+  input.value = "Help me execute this action:\n\n" + (item.text || item);
+  selectWorkflow("execution", false);
+  input.focus();
+}
+
+function removeQueueItem(index){
+  const actions = JSON.parse(localStorage.getItem(ACTIONS_KEY) || "[]");
+  actions.splice(index,1);
+  localStorage.setItem(ACTIONS_KEY, JSON.stringify(actions));
+  renderRight();
+  notify("Action removed", "success");
+}
+
+function useDecision(index){
+  const decisions = JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]");
+  const item = decisions[index];
+  if(!item) return notify("Decision not found");
+  goHome();
+  input.value = "Create the next execution steps for this saved decision:\n\n" + (item.decision || "");
+  selectWorkflow("decision", false);
+  input.focus();
+}
+
+function clearDecisions(){
+  localStorage.setItem(DECISIONS_KEY, "[]");
+  renderRight();
+  notify("Recent Decisions cleared", "success");
+}
+
+function renderEngineList(){
+  if(!engineList) return;
+
+  if(backendMemory.online && Array.isArray(backendMemory.runs) && backendMemory.runs.length){
+    const items = backendMemory.runs.slice(0,20);
+    engineList.innerHTML = items.map(r => {
+      const title = r.input || r.output?.what_to_do_now || "Saved run";
+      const preview = r.output?.decision || r.output?.next_move || r.mode || "Open saved run";
+      return `<div class="engine-item" data-run="${esc(r.id||"")}" onclick="openBackendRun('${esc(r.id||"")}')">
+        <div><strong>${esc(title).slice(0,58)}</strong><span>${esc(r.mode||"run")} · ${esc(preview).slice(0,80)}</span></div>
+        <div class="row-chip">Open</div>
+      </div>`;
+    }).join("");
+    return;
+  }
+
+  const items = Object.values(threads)
+    .sort((a,b)=> new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+    .slice(0,20);
+
+  if(!items.length){
+    engineList.innerHTML = `<div class="empty">No recent chats yet.</div>`;
+    return;
+  }
+
+  engineList.innerHTML = items.map(t => {
+    const last = [...(t.messages || [])].reverse().find(m => m.role === "user" || m.role === "assistant");
+    const preview = last?.text || last?.data?.what_to_do_now || t.title || "New Chat";
+    const count = (t.messages || []).length;
+    return `<div class="engine-item" data-thread="${esc(t.id)}" onclick="openThreadById(this.dataset.thread)">
+      <div><strong>${esc(t.title || "New Chat").slice(0,58)}</strong><span>${count} msg · ${esc(preview).slice(0,80)}</span></div>
+      <div class="row-chip">Open</div>
+    </div>`;
+  }).join("");
+}
+
+function renderRight(){
+  const latest=[...getMessages()].reverse().find(m=>m.role==="assistant")?.data;
+  const localActions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
+  const localDecisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
+  const actions = backendMemory.online && backendMemory.actions?.length ? backendMemory.actions.map(a=>({text:a.text,priority:a.priority,id:a.id,source:"db"})) : localActions;
+  const decisions = backendMemory.online && backendMemory.decisions?.length ? backendMemory.decisions.map(d=>({decision:d.decision,priority:d.priority,date:(d.created_at||"").slice(0,10),id:d.id,source:"db"})) : localDecisions;
+
+  todayFocus.innerHTML = latest?.what_to_do_now
+    ? `<div class="focus-one-line" onclick="useFocus()"><div><strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Click to turn into plan")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+    : `<div class="focus-one-line" onclick="goHome()"><div><strong>No focus yet</strong><span>Run the engine to create one</span></div><div class="row-chip">Start</div></div>`;
+
+  if(actions.length){
+    const latestActions = actions.slice(-8).reverse();
+    queueList.innerHTML = latestActions.map((a,displayIndex)=>{
+      const realIndex = actions.length - 1 - displayIndex;
+      return `<div class="queue-item" onclick="useQueueItem(${realIndex})">
+        <div><strong>${esc(a.text||a)}</strong><span>${esc(a.priority||"action")} · ${a.source==="db"?"saved DB":"local"} · click to run</span></div>
+        <div class="row-chip green">Run</div>
+      </div>`;
+    }).join("") + `<div class="rail-actions"><button onclick="goHome()">Add</button><button onclick="clearQueue()">Clear</button></div>`;
+  }else{
+    queueList.innerHTML = `<div class="queue-item" onclick="goHome()"><div><strong>No actions yet</strong><span>Run output, then Add to Action Queue</span></div><div class="row-chip">Add</div></div>`;
+  }
+
+  if(decisions.length){
+    const latestDecisions = decisions.slice(-8).reverse();
+    recentDecisionList.innerHTML = latestDecisions.map((d,displayIndex)=>{
+      const realIndex = decisions.length - 1 - displayIndex;
+      return `<div class="decision-item" onclick="useDecision(${realIndex})">
+        <div><strong>${esc(d.decision)}</strong><span>${esc(d.priority)} · ${esc(d.date||"saved")} · ${d.source==="db"?"saved DB":"local"} · click to use</span></div>
+        <div class="row-chip orange">Use</div>
+      </div>`;
+    }).join("") + `<div class="rail-actions"><button onclick="goHome()">New</button><button onclick="clearDecisions()">Clear</button></div>`;
+  }else{
+    recentDecisionList.innerHTML = `<div class="decision-item" onclick="goHome()"><div><strong>No decisions saved</strong><span>Click Save Decision under any output</span></div><div class="row-chip">Save</div></div>`;
+  }
+}
+function latestAssistant(){return[...getMessages()].reverse().find(m=>m.role==="assistant")?.data}
+async function addLatestToQueue(){
+  const d=latestAssistant();
+  if(!d) return notify("Run the engine first");
+  const nd=normalize(d);
+
+  if(backendMemory.supabase){
+    try{
+      for(const a of nd.actions){
+        await apiPost("/save-action",{user_id:USER_ID,run_id:d.run_id||null,text:a,priority:nd.priority||"medium",status:"open",metadata:{source:"frontend"}});
+      }
+      await refreshBackendMemory();
+      return notify("Added to DB Action Queue","success");
+    }catch(e){
+      notify("DB save failed; saved locally");
+    }
+  }
+
+  const arr=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
+  nd.actions.forEach(a=>arr.push({text:a,priority:nd.priority||"medium",status:"open",date:new Date().toLocaleDateString()}));
+  localStorage.setItem(ACTIONS_KEY,JSON.stringify(arr.slice(-50)));
+  renderRight();
+  notify("Added to local Action Queue","success");
+}
+async function saveLatestDecision(){
+  const d=latestAssistant();
+  if(!d) return notify("Run the engine first");
+  const nd=normalize(d);
+
+  if(backendMemory.supabase){
+    try{
+      await apiPost("/save-decision",{user_id:USER_ID,run_id:d.run_id||null,decision:nd.decision,risk:nd.risk,priority:nd.priority||"medium",rationale:nd.why_this_matters||nd.strategic_read||"",next_move:nd.next_move,metadata:{source:"frontend"}});
+      await refreshBackendMemory();
+      return notify("Decision saved to DB","success");
+    }catch(e){
+      notify("DB save failed; saved locally");
+    }
+  }
+
+  const arr=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
+  arr.push({decision:nd.decision,priority:nd.priority||"medium",date:new Date().toLocaleDateString(),risk:nd.risk,next_move:nd.next_move});
+  localStorage.setItem(DECISIONS_KEY,JSON.stringify(arr.slice(-50)));
+  renderRight();
+  notify("Decision saved locally","success");
+}
+function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
+function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
+function buildContext(){return["Executive Engine OS V95 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+async function send(){
+  const text=input.value.trim();
+  if(!text) return notify("Add context first");
+
+  pageView.classList.remove("show");
+  const t=getThread();
+  if(t.title==="New Chat") t.title=text.slice(0,52);
+  t.messages.push({role:"user",text,mode:activeMode,at:new Date().toISOString()});
+  input.value="";
+  render();
+  setProcessing(true);
+  runBtn.disabled=true;
+  runBtn.textContent="Running";
+
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 22000);
+
+  try{
+    const res=await fetch(API+"/run",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      signal:controller.signal,
+      body:JSON.stringify({
+        input:text,
+        mode:activeMode,
+        context:buildContext(),
+        depth:"standard",
+        user_id:USER_ID,
+        session_id:activeThreadId,
+        auto_save:true
+      })
+    });
+    clearTimeout(timeout);
+    if(!res.ok) throw new Error("Backend error "+res.status);
+    const data=await res.json();
+    t.messages.push({role:"assistant",data,at:new Date().toISOString()});
+    setTimeout(refreshBackendMemory, 500);
+  }catch(e){
+    clearTimeout(timeout);
+    const timedOut = e.name === "AbortError";
+    t.messages.push({
+      role:"assistant",
+      data:{
+        what_to_do_now: timedOut ? "The backend took too long. Use the fallback direction now and retry if needed." : "Backend connection needs attention.",
+        decision: timedOut ? "Do not wait. Move forward with the clearest immediate action." : "Retry after confirming backend is live.",
+        next_move: timedOut ? "Clarify the outcome, list the constraint, and execute the first concrete step." : "Open backend /health, then retry this request.",
+        actions: timedOut ? ["Write the desired outcome in one sentence","Identify the biggest constraint","Take the first 15-minute action","Retry the engine after deploy/backend check"] : ["Check Render backend service","Confirm OPENAI_API_KEY is set","Retry the last request"],
+        risk: timedOut ? "Waiting on slow AI creates execution drag." : String(e.message||e),
+        priority:"high",
+        reality_check:"Speed matters. The system should return fast or provide a useful fallback.",
+        leverage:"Keep the workflow moving instead of blocking on response time.",
+        constraint: timedOut ? "Backend/OpenAI response exceeded 35 seconds." : "Backend request failed.",
+        what_to_ignore:"Do not keep refreshing repeatedly.",
+        financial_impact:"Slow feedback reduces execution velocity.",
+        strategic_read:"Backend optimization and DB memory are the next build priorities."
+      },
+      at:new Date().toISOString()
+    });
+  }finally{
+    setProcessing(false);
+    runBtn.disabled=false;
+    runBtn.textContent="Run Engine";
+    render();
+  }
+}
+
+async function apiGet(path){
+  const res = await fetch(API + path);
+  if(!res.ok) throw new Error(path + " failed: " + res.status);
+  return await res.json();
+}
+
+async function apiPost(path,payload){
+  const res = await fetch(API + path,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error(path + " failed: " + res.status);
+  return await res.json();
+}
+
+function updateDbStatus(ok=false,msg="Backend offline",supabase=false){
+  const el=document.getElementById("dbStatus");
+  if(!el) return;
+  el.className="db-status " + (ok && supabase ? "ok" : ok ? "" : "bad");
+  el.innerHTML=`<span class="db-dot"></span>${esc(msg)}`;
+}
+
+async function refreshBackendMemory(){
+  try{
+    const health = await apiGet("/health");
+    backendMemory.online = !!health.ok;
+    backendMemory.supabase = !!health.supabase_enabled;
+    updateDbStatus(true, backendMemory.supabase ? "DB memory live · manual mode" : "Backend live · manual mode", backendMemory.supabase);
+
+    const [runs,actions,decisions,profile,memsum] = await Promise.allSettled([
+      apiGet("/recent-runs?user_id="+encodeURIComponent(USER_ID)+"&limit=20"),
+      apiGet("/actions?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/decisions?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/profile?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/memory-summary?user_id="+encodeURIComponent(USER_ID))
+    ]);
+
+    backendMemory.runs = runs.status==="fulfilled" ? (runs.value.runs||[]) : [];
+    backendMemory.actions = actions.status==="fulfilled" ? (actions.value.actions||[]) : [];
+    backendMemory.decisions = decisions.status==="fulfilled" ? (decisions.value.decisions||[]) : [];
+    backendMemory.profile = profile.status==="fulfilled" ? profile.value.profile : null;
+    backendMemory.memorySummary = memsum.status==="fulfilled" ? memsum.value.summary : null;
+
+    const msb=document.getElementById("memorySummaryBox");
+    if(msb){
+      const s=backendMemory.memorySummary||{};
+      const actionCount=(s.open_actions||[]).length||0;
+      const decisionCount=(s.recent_decisions||[]).length||0;
+      const profileStatus=s.profile?.role||s.status||"No profile";
+      msb.innerHTML=`<strong>Memory</strong>${esc(profileStatus)} · ${actionCount} open actions · ${decisionCount} saved decisions`;
+    }
+
+    renderEngineList();
+    renderRight();
+    return true;
+  }catch(e){
+    backendMemory.online=false;
+    backendMemory.supabase=false;
+    updateDbStatus(false,"Backend offline");
+    renderEngineList();
+    renderRight();
+    return false;
+  }
+}
+
+async function syncLocalToBackend(){
+  try{
+    if(!backendMemory.supabase){
+      await refreshBackendMemory();
+      if(!backendMemory.supabase) return notify("Backend DB is not live yet");
+    }
+    const actions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
+    const decisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
+
+    for(const a of actions.slice(-10)){
+      await apiPost("/save-action",{user_id:USER_ID,text:a.text||a,priority:a.priority||"medium",status:"open",metadata:{source:"local_sync"}});
+    }
+    for(const d of decisions.slice(-10)){
+      await apiPost("/save-decision",{user_id:USER_ID,decision:d.decision||String(d),priority:d.priority||"medium",risk:d.risk||"",next_move:d.next_move||"",metadata:{source:"local_sync"}});
+    }
+
+    await refreshBackendMemory();
+    notify("Local items synced to DB","success");
+  }catch(e){
+    notify("Sync failed: "+e.message);
+  }
+}
+
+function openBackendRun(runId){
+  const r = (backendMemory.runs||[]).find(x=>x.id===runId);
+  if(!r) return notify("Run not found");
+  const id="db_"+Date.now();
+  threads[id]={
+    id,
+    title:(r.input||"Saved run").slice(0,52),
+    createdAt:r.created_at||new Date().toISOString(),
+    messages:[
+      {role:"user",text:r.input||"",mode:r.mode||"execution",at:r.created_at||new Date().toISOString()},
+      {role:"assistant",data:r.output||{},at:r.created_at||new Date().toISOString()}
+    ]
+  };
+  activeThreadId=id;
+  saveThreads();
+  pageView.classList.remove("show");
+  workspace.style.display="none";
+  chatShell.classList.add("show");
+  render();
+  notify("DB run opened","success");
+}
+
+function runSearch(){const q=globalSearch.value.trim().toLowerCase();if(!q){searchResults.classList.remove("show");return}const results=[];Object.values(threads).forEach(t=>(t.messages||[]).forEach((m)=>{const txt=(m.text||m.data?.decision||m.data?.what_to_do_now||"");if(txt.toLowerCase().includes(q))results.push({id:t.id,title:t.title,preview:txt})}));const p=profileText();if(p.toLowerCase().includes(q))results.push({id:activeThreadId,title:"Your Profile",preview:p});searchResults.innerHTML=results.length?results.slice(0,12).map(r=>`<div class="search-result" onclick="openSearch('${r.id}')"><strong>${esc(r.title)}</strong>${esc(r.preview).slice(0,180)}</div>`).join(""):`<div class="search-result"><strong>No results</strong>Try another search.</div>`;searchResults.classList.add("show")}
+function openSearch(id){activeThreadId=id;searchResults.classList.remove("show");globalSearch.value="";render()}
+document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>openPage(btn.dataset.page,btn.dataset.mode)));
+$("newTopBtn").onclick=newChat;$("newLeftBtn").onclick=newChat;$("brandHome").onclick=goHome;runBtn.onclick=send;
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
+globalSearch.addEventListener("input",runSearch);globalSearch.addEventListener("focus",runSearch);globalSearch.addEventListener("keydown",e=>{if(e.key==="Escape"){globalSearch.value="";searchResults.classList.remove("show");input.focus()}});
+render();selectWorkflow("execution",false);input.focus();setTimeout(refreshBackendMemory, 300);
+</script>
+</body>
+</html>
