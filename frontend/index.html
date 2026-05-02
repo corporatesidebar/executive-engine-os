@@ -2297,6 +2297,50 @@ textarea#input{
 }
 @media(max-width:1180px){.v1000-calendar{grid-template-columns:1fr}.v1000-grid{grid-template-columns:1fr}}
 
+
+/* V1050 Token Exchange Candidate */
+.v1050-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+.v1050-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
+.v1050-card h3{margin:0 0 8px;color:#071226;font-size:18px}
+.v1050-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
+.v1050-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v1050-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
+.v1050-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
+.v1050-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
+@media(max-width:1180px){.v1050-panel{grid-template-columns:1fr}}
+
+/* V1100 Calendar Events Fetch */
+.v1100-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+.v1100-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
+.v1100-card h3{margin:0 0 8px;color:#071226;font-size:18px}
+.v1100-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
+.v1100-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v1100-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
+.v1100-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
+.v1100-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
+@media(max-width:1180px){.v1100-panel{grid-template-columns:1fr}}
+
+/* V1150 Calendar Intelligence Bridge */
+.v1150-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+.v1150-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
+.v1150-card h3{margin:0 0 8px;color:#071226;font-size:18px}
+.v1150-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
+.v1150-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v1150-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
+.v1150-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
+.v1150-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
+@media(max-width:1180px){.v1150-panel{grid-template-columns:1fr}}
+
+/* V1200 Executive OS Beta */
+.v1200-beta{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+.v1200-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
+.v1200-card h3{margin:0 0 8px;color:#071226;font-size:18px}
+.v1200-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
+.v1200-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v1200-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
+.v1200-actions button.primary{background:#071226;color:#fff;border-color:#071226}
+.v1200-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
+@media(max-width:1180px){.v1200-beta{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2304,11 +2348,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V1000 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V1200 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V1000 Calendar OAuth</div>
+  <div class="lock">▣ V1200 Executive OS Beta</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -2372,7 +2416,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V1000 Calendar OAuth · V1000 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V1200 Executive OS Beta · V1200 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -3280,7 +3324,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V1000 Calendar OAuth · V1000 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V1200 Executive OS Beta · V1200 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
@@ -3500,6 +3544,74 @@ async function loadMemoryIntelligence(){
 async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};appState={actions,decisions,memory:mem,focus};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";const fa=document.getElementById("feedActions");if(fa)fa.textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory");if(activePage!=="command")renderPage(activePage)}catch(e){if(statusBox())status("Backend status issue: "+e.message,"error")}}
 async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
 setDefaultFeed();defaultPreview();renderV300CommandModules();refreshState();stabilityAudit();
+
+async function v1050Refresh(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const gates=await fetch(base+"/oauth/live-gates").then(r=>r.json());
+    const state=await fetch(base+"/calendar/secure-connection-state").then(r=>r.json());
+    const b=document.getElementById("v1050Box"); if(b)b.textContent=JSON.stringify(gates,null,2);
+    const s=document.getElementById("v1050State"); if(s)s.textContent=JSON.stringify(state,null,2);
+    if(typeof toast==="function")toast("V1050 gates refreshed","success");
+  }catch(e){if(typeof toast==="function")toast("V1050 unavailable","error");}
+}
+function v1050LoadCommand(){
+  const input=inputEl?inputEl():document.getElementById("input");
+  if(input){input.value="Review V1050 Token Exchange Candidate. Check live OAuth gates, token storage health, secure connection state, risks, and the next safest build. Keep calendar writes blocked and manual execution only.";input.focus();}
+}
+
+setTimeout(v1050Refresh,650);
+
+async function v1100Refresh(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const fetcher=await fetch(base+"/calendar/events/fetch-candidate").then(r=>r.json());
+    const prep=await fetch(base+"/calendar/meeting-prep-candidate").then(r=>r.json());
+    const b=document.getElementById("v1100Box"); if(b)b.textContent=JSON.stringify(fetcher,null,2);
+    const p=document.getElementById("v1100Prep"); if(p)p.textContent=JSON.stringify(prep,null,2);
+    if(typeof toast==="function")toast("V1100 calendar fetch refreshed","success");
+  }catch(e){if(typeof toast==="function")toast("V1100 unavailable","error");}
+}
+function v1100LoadCommand(){
+  const input=inputEl?inputEl():document.getElementById("input");
+  if(input){input.value="Review V1100 Calendar Events Fetch Candidate. Check event normalization, private event handling, meeting prep candidate, provider fetch gates, and next safest build.";input.focus();}
+}
+
+setTimeout(v1100Refresh,700);
+
+async function v1150Refresh(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const s=await fetch(base+"/calendar/intelligence-summary").then(r=>r.json());
+    const n=await fetch(base+"/calendar/notification-bridge").then(r=>r.json());
+    const b=document.getElementById("v1150Box"); if(b)b.textContent=JSON.stringify(s,null,2);
+    const x=document.getElementById("v1150Notes"); if(x)x.textContent=JSON.stringify(n,null,2);
+    if(typeof toast==="function")toast("V1150 bridge refreshed","success");
+  }catch(e){if(typeof toast==="function")toast("V1150 unavailable","error");}
+}
+function v1150LoadCommand(){
+  const input=inputEl?inputEl():document.getElementById("input");
+  if(input){input.value="Use Calendar Intelligence Bridge context to create a Daily Brief, meeting prep priority, notification risk, and end-day action. Manual execution only.";input.focus();}
+}
+
+setTimeout(v1150Refresh,750);
+
+async function v1200Refresh(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const score=await fetch(base+"/beta/system-score").then(r=>r.json());
+    const brief=await fetch(base+"/beta/operating-brief").then(r=>r.json());
+    const s=document.getElementById("v1200Score"); if(s)s.textContent=JSON.stringify(score,null,2);
+    const b=document.getElementById("v1200Brief"); if(b)b.textContent=JSON.stringify(brief,null,2);
+    if(typeof toast==="function")toast("V1200 beta refreshed","success");
+  }catch(e){if(typeof toast==="function")toast("V1200 unavailable","error");}
+}
+function v1200LoadCommand(){
+  const input=inputEl?inputEl():document.getElementById("input");
+  if(input){input.value="Review V1200 Executive OS Beta. Assess stability, cockpit usefulness, calendar/files connector readiness, manual execution policy, and recommend whether next milestone should be V1250 UX polish or V1300 real Calendar activation.";input.focus();}
+}
+
+setTimeout(v1200Refresh,800);
 </script>
 </body>
 </html>

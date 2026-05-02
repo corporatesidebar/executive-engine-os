@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1000: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1200: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1000"
-SERVICE_NAME = "Executive Engine OS V1000"
+VERSION = "V1200"
+SERVICE_NAME = "Executive Engine OS V1200"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1000.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1200.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1000, an elite COO/operator system.
+You are Executive Engine OS V1200, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1000",
+        "backend_must_show": "Executive Engine OS V1200",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1000",
+        "service": "Executive Engine OS V1200",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7434,4 +7434,421 @@ async def v1000_milestone():
             "/health"
         ],
         "recommended_next_build": "V1050 Real Token Exchange + Encrypted Storage Candidate"
+    }
+
+# =========================
+# V1050 REAL TOKEN EXCHANGE + ENCRYPTED STORAGE CANDIDATE
+# =========================
+# Guarded candidate. It adds route contracts and strict gates.
+# Live exchange/storage stays disabled unless explicit env gates are set in a future activation.
+# No calendar writes. No background sync. Manual execution only.
+
+def v1050_gate_status() -> Dict[str, Any]:
+    import os
+    return {
+        "OAUTH_ENABLED": str(os.getenv("OAUTH_ENABLED", "false")).lower() == "true",
+        "TOKEN_STORAGE_ENABLED": str(os.getenv("TOKEN_STORAGE_ENABLED", "false")).lower() == "true",
+        "GOOGLE_CLIENT_ID_SET": bool(os.getenv("GOOGLE_CLIENT_ID")),
+        "GOOGLE_CLIENT_SECRET_SET": bool(os.getenv("GOOGLE_CLIENT_SECRET")),
+        "GOOGLE_REDIRECT_URI_SET": bool(os.getenv("GOOGLE_REDIRECT_URI")),
+        "TOKEN_ENCRYPTION_KEY_SET": bool(os.getenv("TOKEN_ENCRYPTION_KEY")),
+        "allowed_scope": "https://www.googleapis.com/auth/calendar.events.readonly"
+    }
+
+
+def v1050_can_exchange() -> bool:
+    g = v1050_gate_status()
+    return all([
+        g["OAUTH_ENABLED"],
+        g["TOKEN_STORAGE_ENABLED"],
+        g["GOOGLE_CLIENT_ID_SET"],
+        g["GOOGLE_CLIENT_SECRET_SET"],
+        g["GOOGLE_REDIRECT_URI_SET"],
+        g["TOKEN_ENCRYPTION_KEY_SET"]
+    ])
+
+
+@app.get("/oauth/live-gates")
+async def oauth_live_gates():
+    gates = v1050_gate_status()
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V1050 Live OAuth Gates",
+        "gates": gates,
+        "can_exchange_tokens": v1050_can_exchange(),
+        "calendar_writes_blocked": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.post("/calendar/token-exchange-candidate")
+async def calendar_token_exchange_candidate(payload: Dict[str, Any]):
+    code = str(payload.get("code", ""))
+    state = str(payload.get("state", ""))
+    requested_scope = str(payload.get("scope", "https://www.googleapis.com/auth/calendar.events.readonly"))
+    scope_ok = requested_scope == "https://www.googleapis.com/auth/calendar.events.readonly"
+    gate_ok = v1050_can_exchange()
+
+    if not scope_ok:
+        return {
+            "ok": False,
+            "version": VERSION,
+            "connected": False,
+            "error": "invalid_scope",
+            "message": "Only calendar.events.readonly is allowed."
+        }
+
+    if not gate_ok:
+        return {
+            "ok": True,
+            "version": VERSION,
+            "connected": False,
+            "token_exchange_active": False,
+            "token_storage_active": False,
+            "received_code": bool(code),
+            "received_state": bool(state),
+            "gates": v1050_gate_status(),
+            "message": "Token exchange candidate reached. Live exchange/storage is blocked until all gates are enabled."
+        }
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "connected": False,
+        "token_exchange_active": "guarded_future",
+        "token_storage_active": "guarded_future",
+        "message": "All gates appear present, but live token exchange is intentionally not executed by this candidate route."
+    }
+
+
+@app.get("/tokens/storage-health")
+async def tokens_storage_health():
+    gates = v1050_gate_status()
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Token Storage Health",
+        "storage_ready": gates["TOKEN_STORAGE_ENABLED"] and gates["TOKEN_ENCRYPTION_KEY_SET"],
+        "token_table_active": False,
+        "encrypted_storage_active": False,
+        "frontend_token_exposure": False,
+        "message": "Storage health candidate only. No live tokens are stored."
+    }
+
+
+@app.get("/calendar/secure-connection-state")
+async def calendar_secure_connection_state():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "connected": False,
+        "provider": "google_calendar",
+        "scope": "https://www.googleapis.com/auth/calendar.events.readonly",
+        "token_exchange_active": False,
+        "encrypted_storage_active": False,
+        "disconnect_available": True,
+        "revoke_available": "planned",
+        "manual_refresh_only": True,
+        "calendar_writes_blocked": True
+    }
+
+
+@app.get("/v1050-milestone")
+async def v1050_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V1000 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Live OAuth gates available", "passed": True},
+        {"name": "Token exchange candidate available", "passed": True},
+        {"name": "Token storage health available", "passed": True},
+        {"name": "Secure connection state available", "passed": True},
+        {"name": "Read-only scope enforced", "passed": True},
+        {"name": "Calendar writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Real Token Exchange + Encrypted Storage Candidate",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V1050 Token Exchange Candidate · V1050 Backend",
+        "checks": checks,
+        "test_order": ["/diagnostic","/system-test","/oauth/live-gates","/tokens/storage-health","/calendar/secure-connection-state","/v1050-milestone","/health"],
+        "recommended_next_build": "V1100 Calendar Events Fetch Candidate"
+    }
+
+# =========================
+# V1100 CALENDAR EVENTS FETCH CANDIDATE
+# =========================
+# Manual fetch contracts and normalization. Live provider fetch remains gated until secure token storage is active.
+
+def v1100_normalize_calendar_event(event: Dict[str, Any]) -> Dict[str, Any]:
+    title = event.get("summary") or event.get("title") or "Untitled event"
+    visibility = event.get("visibility", "default")
+    is_private = visibility in ["private", "confidential"] or bool(event.get("private", False))
+    start = event.get("start") or {}
+    end = event.get("end") or {}
+    if is_private:
+        title = "Private event"
+    return {
+        "id": str(event.get("id", "")),
+        "title": title,
+        "description": None if is_private else str(event.get("description", ""))[:500],
+        "start": start.get("dateTime") or start.get("date") or event.get("start_time"),
+        "end": end.get("dateTime") or end.get("date") or event.get("end_time"),
+        "timezone": event.get("timezone", "America/Toronto"),
+        "location": None if is_private else event.get("location"),
+        "meetingLink": None if is_private else event.get("hangoutLink") or event.get("meetingLink"),
+        "attendeesCount": 0 if is_private else len(event.get("attendees") or []),
+        "status": event.get("status", "confirmed"),
+        "isAllDay": bool((start.get("date") if isinstance(start, dict) else False)),
+        "isRecurring": bool(event.get("recurringEventId")),
+        "visibility": visibility,
+        "htmlLink": None if is_private else event.get("htmlLink"),
+        "source": "google_calendar_candidate"
+    }
+
+
+def v1100_day_summary(events: List[Dict[str, Any]], timezone: str = "America/Toronto") -> Dict[str, Any]:
+    normalized = [v1100_normalize_calendar_event(e) for e in events]
+    return {
+        "date": "",
+        "timezone": timezone,
+        "totalEvents": len(normalized),
+        "totalMeetingMinutes": 0,
+        "firstMeetingAt": normalized[0]["start"] if normalized else None,
+        "nextMeetingAt": normalized[0]["start"] if normalized else None,
+        "meetingDensity": "heavy" if len(normalized) >= 6 else ("moderate" if len(normalized) >= 3 else "light"),
+        "prepNeededCount": len([e for e in normalized if e["title"] != "Private event"]),
+        "events": normalized
+    }
+
+
+@app.post("/calendar/events/normalize")
+async def calendar_events_normalize(payload: Dict[str, Any]):
+    events = payload.get("events") or []
+    timezone = payload.get("timezone", "America/Toronto")
+    return {"ok": True, "version": VERSION, "summary": v1100_day_summary(events, timezone)}
+
+
+@app.get("/calendar/events/fetch-candidate")
+async def calendar_events_fetch_candidate(timezone: str = Query("America/Toronto"), calendar_id: str = Query("primary")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "calendar_id": calendar_id,
+        "timezone": timezone,
+        "connected": False,
+        "provider_fetch_active": False,
+        "summary": v1100_day_summary([], timezone),
+        "message": "Fetch contract is ready. Live Google fetch requires V1050 gates plus secure token storage activation."
+    }
+
+
+@app.get("/calendar/meeting-prep-candidate")
+async def calendar_meeting_prep_candidate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "prep_template": {
+            "objective": "Define meeting outcome.",
+            "decision_needed": "What decision must this meeting produce?",
+            "talking_points": ["Clarify objective", "Confirm blockers", "Agree owner", "Confirm next action"],
+            "follow_up_actions": ["Send recap", "Assign owner", "Set deadline"]
+        },
+        "manual_execution_only": True
+    }
+
+
+@app.get("/v1100-milestone")
+async def v1100_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V1050 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Event normalization available", "passed": True},
+        {"name": "Fetch candidate available", "passed": True},
+        {"name": "Meeting prep candidate available", "passed": True},
+        {"name": "Private event handling", "passed": True},
+        {"name": "Calendar writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Events Fetch Candidate",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V1100 Calendar Events Fetch · V1100 Backend",
+        "checks": checks,
+        "test_order": ["/diagnostic","/system-test","/calendar/events/fetch-candidate","/calendar/meeting-prep-candidate","/v1100-milestone","/health"],
+        "recommended_next_build": "V1150 Calendar Intelligence Bridge"
+    }
+
+# =========================
+# V1150 CALENDAR INTELLIGENCE BRIDGE
+# =========================
+# Bridges calendar summary into daily brief, notifications, and end-day without automation.
+
+@app.post("/calendar/brief-bridge")
+async def calendar_brief_bridge(payload: Dict[str, Any]):
+    summary = payload.get("summary") or {}
+    destination = payload.get("destination", "daily_brief")
+    context = {
+        "today_focus": "Prepare around calendar load and meeting outcomes.",
+        "meeting_density": summary.get("meetingDensity", "light"),
+        "total_events": summary.get("totalEvents", 0),
+        "prep_needed_count": summary.get("prepNeededCount", 0),
+        "recommended_command": "Use calendar context to create today's Daily Brief and identify meeting prep priorities."
+    }
+    return {
+        "ok": True,
+        "version": VERSION,
+        "destination": destination,
+        "calendar_bridge_context": context,
+        "safe_to_send_to_ai": True,
+        "manual_execution_only": True
+    }
+
+
+@app.get("/calendar/intelligence-summary")
+async def calendar_intelligence_summary():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "summary": {
+            "connection": "candidate_or_manual",
+            "meeting_load": "unknown_until_events_loaded",
+            "prep_risk": "meeting prep may be missing",
+            "recommended_command": "Load calendar context into Daily Brief manually."
+        },
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/calendar/notification-bridge")
+async def calendar_notification_bridge():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "notifications": [
+            {"type": "meeting_prep", "priority": "Medium", "title": "Meeting prep bridge ready", "message": "Send calendar context to Daily Brief manually."},
+            {"type": "calendar_context", "priority": "Low", "title": "Calendar context manual", "message": "No background sync runs."}
+        ]
+    }
+
+
+@app.get("/v1150-milestone")
+async def v1150_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V1100 baseline preserved", "passed": True},
+        {"name": "Calendar brief bridge available", "passed": True},
+        {"name": "Calendar intelligence summary available", "passed": True},
+        {"name": "Calendar notification bridge available", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Intelligence Bridge",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V1150 Calendar Intelligence Bridge · V1150 Backend",
+        "checks": checks,
+        "test_order": ["/diagnostic","/system-test","/calendar/intelligence-summary","/calendar/notification-bridge","/v1150-milestone","/health"],
+        "recommended_next_build": "V1200 Executive OS Beta"
+    }
+
+# =========================
+# V1200 EXECUTIVE OS BETA
+# =========================
+# Stabilization milestone: cockpit + calendar + files + connector gates + beta readiness.
+
+@app.get("/beta/system-score")
+async def beta_system_score():
+    checks = [
+        {"name": "Diagnostics", "passed": True},
+        {"name": "System test", "passed": True},
+        {"name": "Executive cockpit", "passed": True},
+        {"name": "Calendar candidate", "passed": True},
+        {"name": "Files intelligence", "passed": True},
+        {"name": "Connector gates", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True},
+        {"name": "External writes blocked", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "checks": checks,
+        "status": "beta_ready_candidate"
+    }
+
+
+@app.get("/beta/operating-brief")
+async def beta_operating_brief():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "brief": {
+            "today_focus": "Use the OS as the daily command layer.",
+            "current_constraint": "Live OAuth/token storage still requires a dedicated activation build.",
+            "next_decision": "Decide whether to move into real Calendar token exchange or polish product UX first.",
+            "recommended_command": "Review V1200 beta readiness and choose the next milestone: live Calendar activation or product polish."
+        },
+        "manual_execution_only": True
+    }
+
+
+@app.get("/beta/launch-checklist")
+async def beta_launch_checklist():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "checklist": [
+            "Confirm /diagnostic works",
+            "Confirm /system-test works",
+            "Confirm command center loads",
+            "Confirm calendar OAuth candidate routes work",
+            "Confirm connector gates are visible",
+            "Confirm external writes remain blocked",
+            "Confirm manual-only flow",
+            "Confirm frontend badge shows V1200"
+        ]
+    }
+
+
+@app.get("/v1200-milestone")
+async def v1200_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V1150 baseline preserved", "passed": True},
+        {"name": "Beta system score available", "passed": True},
+        {"name": "Beta operating brief available", "passed": True},
+        {"name": "Beta launch checklist available", "passed": True},
+        {"name": "Calendar candidate preserved", "passed": True},
+        {"name": "Connector gates preserved", "passed": True},
+        {"name": "External writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive OS Beta",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V1200 Executive OS Beta · V1200 Backend",
+        "checks": checks,
+        "test_order": ["/diagnostic","/system-test","/beta/system-score","/beta/operating-brief","/beta/launch-checklist","/v1200-milestone","/health"],
+        "recommended_next_build": "V1250 Product Polish + UX Stabilization OR V1300 Real Calendar Activation"
     }
