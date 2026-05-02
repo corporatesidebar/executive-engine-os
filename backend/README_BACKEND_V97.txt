@@ -1,31 +1,27 @@
 # Executive Engine OS V97
 
-BUILD V97 — Frontend Memory Polish + Engine State
+BUILD V97 — RIGHT SIDEBAR DB POLISH + DUPLICATE CONTROL
 
-Purpose:
-V97 keeps backend stability locked and adds a cleaner backend endpoint for frontend right-panel state.
+Backend:
+- /actions returns deduped action rows.
+- /decisions returns deduped decision rows.
+- /save-action prevents duplicate open actions.
+- /save-decision prevents duplicate saved decisions.
+- /engine-state returns clean right sidebar state:
+  - today_focus
+  - your_engine
+  - open_actions
+  - recent_decisions
+  - memory_items
 
-No bot team.
-No external automation.
-Manual execution only.
+Still locked:
+- No bots
+- No automation
+- Manual execution only
+- No Figma yet
 
-Adds:
-- /engine-state endpoint for frontend right sidebar
-- Context remains injected from V96
-- Version reports V97
-- Compatible with existing /memory, /recent-runs, /actions, /decisions
-
-Upload/replace:
+Upload/replace backend:
 - backend/main.py
 - backend/requirements.txt
 - backend/runtime.txt
 - backend/README_BACKEND_V97.txt
-
-Deploy backend:
-Render -> executive-engine-os -> Clear build cache & deploy
-
-Test:
-- /health
-- /engine-state
-- /project-context
-- /memory

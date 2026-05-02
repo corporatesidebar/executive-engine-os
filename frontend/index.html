@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V95</title>
+  <title>Executive Engine OS V97</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -442,6 +442,48 @@
   font-size:13px !important;
 }
 
+
+/* V97 — right sidebar DB polish */
+.rail-row-one{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:9px 10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:12px;
+  margin-top:8px;
+  cursor:pointer;
+}
+.rail-row-one div{
+  min-width:0;
+}
+.rail-row-one strong{
+  display:block;
+  font-size:12px;
+  color:#0f172a;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:185px;
+}
+.rail-row-one span{
+  display:block;
+  font-size:10px;
+  color:#64748b;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:185px;
+}
+button.saved{
+  opacity:.72;
+  background:#dcfce7!important;
+  color:#047857!important;
+  border-color:#86efac!important;
+}
+
 </style>
 </head>
 <body>
@@ -521,8 +563,10 @@
 <script>
 const API="https://executive-engine-os.onrender.com";
 const USER_ID="local_user";
-let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null};
-const STORAGE_KEY="eeos_v95_threads",ACTIVE_KEY="eeos_v95_active_thread",PROFILE_KEY="eeos_v95_profile",ACTIONS_KEY="eeos_v95_actions",DECISIONS_KEY="eeos_v95_decisions";
+let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null};
+let actionSavedForRun=false;
+let decisionSavedForRun=false;
+const STORAGE_KEY="eeos_v97_threads",ACTIVE_KEY="eeos_v97_active_thread",PROFILE_KEY="eeos_v97_profile",ACTIONS_KEY="eeos_v97_actions",DECISIONS_KEY="eeos_v97_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -688,43 +732,62 @@ function renderEngineList(){
 
 function renderRight(){
   const latest=[...getMessages()].reverse().find(m=>m.role==="assistant")?.data;
+  const engineState=backendMemory.engineState||null;
   const localActions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
   const localDecisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
-  const actions = backendMemory.online && backendMemory.actions?.length ? backendMemory.actions.map(a=>({text:a.text,priority:a.priority,id:a.id,source:"db"})) : localActions;
-  const decisions = backendMemory.online && backendMemory.decisions?.length ? backendMemory.decisions.map(d=>({decision:d.decision,priority:d.priority,date:(d.created_at||"").slice(0,10),id:d.id,source:"db"})) : localDecisions;
 
-  todayFocus.innerHTML = latest?.what_to_do_now
-    ? `<div class="focus-one-line" onclick="useFocus()"><div><strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Click to turn into plan")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
-    : `<div class="focus-one-line" onclick="goHome()"><div><strong>No focus yet</strong><span>Run the engine to create one</span></div><div class="row-chip">Start</div></div>`;
+  const actions = engineState?.open_actions?.length ? engineState.open_actions : (backendMemory.actions?.length ? backendMemory.actions : localActions);
+  const decisions = engineState?.recent_decisions?.length ? engineState.recent_decisions : (backendMemory.decisions?.length ? backendMemory.decisions : localDecisions);
 
-  if(actions.length){
-    const latestActions = actions.slice(-8).reverse();
-    queueList.innerHTML = latestActions.map((a,displayIndex)=>{
-      const realIndex = actions.length - 1 - displayIndex;
-      return `<div class="queue-item" onclick="useQueueItem(${realIndex})">
-        <div><strong>${esc(a.text||a)}</strong><span>${esc(a.priority||"action")} · ${a.source==="db"?"saved DB":"local"} · click to run</span></div>
+  todayFocus.innerHTML = engineState?.today_focus?.title && engineState.today_focus.title !== "No focus yet"
+    ? `<div class="rail-row-one" onclick="useFocus()"><div><strong>${esc(engineState.today_focus.title)}</strong><span>${esc(engineState.today_focus.next_move||"Click to use")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+    : latest?.what_to_do_now
+      ? `<div class="rail-row-one" onclick="useFocus()"><div><strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Click to use")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+      : `<div class="rail-row-one" onclick="goHome()"><div><strong>No focus yet</strong><span>Run the engine to create one</span></div><div class="row-chip">Start</div></div>`;
+
+  const uniqueActions=[];
+  const seenA=new Set();
+  actions.forEach(a=>{
+    const text=(a.text||a||"").trim();
+    const key=text.toLowerCase();
+    if(text && !seenA.has(key)){seenA.add(key);uniqueActions.push(a);}
+  });
+
+  if(uniqueActions.length){
+    queueList.innerHTML = uniqueActions.slice(0,8).map((a,idx)=>{
+      const text=a.text||a;
+      return `<div class="rail-row-one" onclick="input.value='${esc(text).replaceAll("'","\\'")}';input.focus();">
+        <div><strong>${esc(text)}</strong><span>${esc(a.priority||"medium")} · ${esc(a.status||"open")}</span></div>
         <div class="row-chip green">Run</div>
       </div>`;
-    }).join("") + `<div class="rail-actions"><button onclick="goHome()">Add</button><button onclick="clearQueue()">Clear</button></div>`;
+    }).join("") + `<div class="rail-actions"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="goHome()">New</button></div>`;
   }else{
-    queueList.innerHTML = `<div class="queue-item" onclick="goHome()"><div><strong>No actions yet</strong><span>Run output, then Add to Action Queue</span></div><div class="row-chip">Add</div></div>`;
+    queueList.innerHTML = `<div class="rail-row-one" onclick="goHome()"><div><strong>No actions yet</strong><span>Run output, then Add to Action Queue</span></div><div class="row-chip">Add</div></div>`;
   }
 
-  if(decisions.length){
-    const latestDecisions = decisions.slice(-8).reverse();
-    recentDecisionList.innerHTML = latestDecisions.map((d,displayIndex)=>{
-      const realIndex = decisions.length - 1 - displayIndex;
-      return `<div class="decision-item" onclick="useDecision(${realIndex})">
-        <div><strong>${esc(d.decision)}</strong><span>${esc(d.priority)} · ${esc(d.date||"saved")} · ${d.source==="db"?"saved DB":"local"} · click to use</span></div>
+  const uniqueDecisions=[];
+  const seenD=new Set();
+  decisions.forEach(d=>{
+    const text=(d.decision||d||"").trim();
+    const key=text.toLowerCase();
+    if(text && !seenD.has(key)){seenD.add(key);uniqueDecisions.push(d);}
+  });
+
+  if(uniqueDecisions.length){
+    recentDecisionList.innerHTML = uniqueDecisions.slice(0,8).map((d,idx)=>{
+      const text=d.decision||d;
+      return `<div class="rail-row-one" onclick="input.value='Follow up on this decision: ${esc(text).replaceAll("'","\\'")}';input.focus();">
+        <div><strong>${esc(text)}</strong><span>${esc(d.priority||"medium")} · saved</span></div>
         <div class="row-chip orange">Use</div>
       </div>`;
-    }).join("") + `<div class="rail-actions"><button onclick="goHome()">New</button><button onclick="clearDecisions()">Clear</button></div>`;
+    }).join("") + `<div class="rail-actions"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="goHome()">New</button></div>`;
   }else{
-    recentDecisionList.innerHTML = `<div class="decision-item" onclick="goHome()"><div><strong>No decisions saved</strong><span>Click Save Decision under any output</span></div><div class="row-chip">Save</div></div>`;
+    recentDecisionList.innerHTML = `<div class="rail-row-one" onclick="goHome()"><div><strong>No decisions saved</strong><span>Click Save Decision under any output</span></div><div class="row-chip">Save</div></div>`;
   }
 }
 function latestAssistant(){return[...getMessages()].reverse().find(m=>m.role==="assistant")?.data}
 async function addLatestToQueue(){
+  if(actionSavedForRun) return notify("Actions already saved for this output","success");
   const d=latestAssistant();
   if(!d) return notify("Run the engine first");
   const nd=normalize(d);
@@ -735,7 +798,7 @@ async function addLatestToQueue(){
         await apiPost("/save-action",{user_id:USER_ID,run_id:d.run_id||null,text:a,priority:nd.priority||"medium",status:"open",metadata:{source:"frontend"}});
       }
       await refreshBackendMemory();
-      return notify("Added to DB Action Queue","success");
+      actionSavedForRun=true;document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Add to Action Queue")){b.textContent="Actions Saved";b.classList.add("saved");b.disabled=true;}});return notify("Added to DB Action Queue","success");
     }catch(e){
       notify("DB save failed; saved locally");
     }
@@ -745,9 +808,10 @@ async function addLatestToQueue(){
   nd.actions.forEach(a=>arr.push({text:a,priority:nd.priority||"medium",status:"open",date:new Date().toLocaleDateString()}));
   localStorage.setItem(ACTIONS_KEY,JSON.stringify(arr.slice(-50)));
   renderRight();
-  notify("Added to local Action Queue","success");
+  actionSavedForRun=true;document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Add to Action Queue")){b.textContent="Actions Saved";b.classList.add("saved");b.disabled=true;}});notify("Added to local Action Queue","success");
 }
 async function saveLatestDecision(){
+  if(decisionSavedForRun) return notify("Decision already saved for this output","success");
   const d=latestAssistant();
   if(!d) return notify("Run the engine first");
   const nd=normalize(d);
@@ -756,7 +820,7 @@ async function saveLatestDecision(){
     try{
       await apiPost("/save-decision",{user_id:USER_ID,run_id:d.run_id||null,decision:nd.decision,risk:nd.risk,priority:nd.priority||"medium",rationale:nd.why_this_matters||nd.strategic_read||"",next_move:nd.next_move,metadata:{source:"frontend"}});
       await refreshBackendMemory();
-      return notify("Decision saved to DB","success");
+      decisionSavedForRun=true;document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Save Decision")){b.textContent="Decision Saved";b.classList.add("saved");b.disabled=true;}});return notify("Decision saved to DB","success");
     }catch(e){
       notify("DB save failed; saved locally");
     }
@@ -766,11 +830,11 @@ async function saveLatestDecision(){
   arr.push({decision:nd.decision,priority:nd.priority||"medium",date:new Date().toLocaleDateString(),risk:nd.risk,next_move:nd.next_move});
   localStorage.setItem(DECISIONS_KEY,JSON.stringify(arr.slice(-50)));
   renderRight();
-  notify("Decision saved locally","success");
+  decisionSavedForRun=true;document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Save Decision")){b.textContent="Decision Saved";b.classList.add("saved");b.disabled=true;}});notify("Decision saved locally","success");
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V95 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V97 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -806,6 +870,7 @@ async function send(){
     clearTimeout(timeout);
     if(!res.ok) throw new Error("Backend error "+res.status);
     const data=await res.json();
+    actionSavedForRun=false;decisionSavedForRun=false;
     t.messages.push({role:"assistant",data,at:new Date().toISOString()});
     setTimeout(refreshBackendMemory, 500);
   }catch(e){
@@ -872,6 +937,7 @@ async function refreshBackendMemory(){
       apiGet("/actions?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/decisions?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/profile?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/engine-state?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/memory-summary?user_id="+encodeURIComponent(USER_ID))
     ]);
 
@@ -879,6 +945,7 @@ async function refreshBackendMemory(){
     backendMemory.actions = actions.status==="fulfilled" ? (actions.value.actions||[]) : [];
     backendMemory.decisions = decisions.status==="fulfilled" ? (decisions.value.decisions||[]) : [];
     backendMemory.profile = profile.status==="fulfilled" ? profile.value.profile : null;
+    backendMemory.engineState = engineState.status==="fulfilled" ? engineState.value : null;
     backendMemory.memorySummary = memsum.status==="fulfilled" ? memsum.value.summary : null;
 
     const msb=document.getElementById("memorySummaryBox");

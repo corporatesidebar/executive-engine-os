@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V96.3"
+APP_NAME = "Executive Engine OS V97"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="96.3.0")
+app = FastAPI(title=APP_NAME, version="97.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +41,7 @@ Executive Engine OS real project context:
 - Product: AI executive command center for CEOs/COOs/founders.
 - Backend live on Render: https://executive-engine-os.onrender.com
 - Frontend live on Render: https://executive-engine-frontend.onrender.com
-- Current backend: V96.3 quality fix.
+- Current backend: V97 quality fix.
 - Previous confirmed backend: V96.2 technical loop working.
 - OpenAI connected.
 - Supabase connected.
@@ -89,7 +89,7 @@ Forbidden generic advice:
 
 When asked "What should I focus on today to move Executive Engine OS forward?":
 The correct answer must be about:
-- confirming V96.3 backend response quality
+- confirming V97 backend response quality
 - testing /run from frontend
 - checking /memory for a new recent_run
 - using Save Action and Save Decision buttons
@@ -257,7 +257,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
         "constraint": reason,
         "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
         "manual_execution_only": True,
-        "version": "V96.3",
+        "version": "V97",
         "project_context_applied": True
     }
 
@@ -344,7 +344,7 @@ def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
 
     base["execution_loop"] = build_execution_loop(base)
     base["manual_execution_only"] = True
-    base["version"] = "V96.3"
+    base["version"] = "V97"
     base["project_context_applied"] = True
     return base
 
@@ -378,7 +378,7 @@ PROJECT-SPECIFIC DIRECTIVE:
 The user is asking what to do next for Executive Engine OS.
 Do not answer with generic product/customer/market advice.
 Answer with backend/frontend/Supabase execution validation steps.
-Focus on V96.3 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
+Focus on V97 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
 """
     return ""
 
@@ -445,7 +445,7 @@ def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any
 
 def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
     return f"""
-You are Executive Engine OS V96.3.
+You are Executive Engine OS V97.
 
 PROJECT CONTEXT:
 {PROJECT_CONTEXT}
@@ -656,7 +656,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V96.3"}
+    return {"ok": True, "service": APP_NAME, "version": "V97"}
 
 
 @app.get("/health")
@@ -664,7 +664,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V96.3",
+        "version": "V97",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -679,10 +679,10 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V96.3",
+        "version": "V97",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
-            "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
+            "/engine-state", "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
             "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/profile", "/robots.txt"
         ],
         "model": MODEL,
@@ -697,7 +697,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V96.3",
+        "version": "V97",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -708,7 +708,7 @@ async def schema():
 async def project_context():
     return {
         "ok": True,
-        "version": "V96.3",
+        "version": "V97",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
@@ -764,9 +764,9 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V96.3", "output": normalize_output(output)}
+        return {"ok": True, "version": "V97", "output": normalize_output(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V96.3", "output": normalize_output(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V97", "output": normalize_output(fallback_response(str(exc)))}
 
 
 
@@ -790,7 +790,7 @@ async def quality_test():
         generic_hits = [term for term in GENERIC_MEMORY_BLOCKLIST if term in text]
         return {
             "ok": True,
-            "version": "V96.3",
+            "version": "V97",
             "generic_hits": generic_hits,
             "passed_quality_gate": len(generic_hits) == 0,
             "output": normalized
@@ -798,7 +798,7 @@ async def quality_test():
     except Exception as exc:
         return {
             "ok": False,
-            "version": "V96.3",
+            "version": "V97",
             "error": str(exc),
             "output": normalize_output(fallback_response(str(exc)))
         }
@@ -831,7 +831,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V96.3", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
+    return {"ok": True, "version": "V97", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
 @app.get("/memory")
@@ -842,7 +842,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
-    return {"ok": True, "version": "V96.3", "summary": summarize_memory_for_prompt(memory_data)}
+    return {"ok": True, "version": "V97", "summary": summarize_memory_for_prompt(memory_data)}
 
 
 @app.post("/stability-check")
@@ -861,9 +861,49 @@ async def stability_check():
         "memory_injection": "last_3_items",
         "project_context_applied": True
     }
-    return {"ok": True, "version": "V96.3", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V97", "health": health_data, "checks": checks}
 
 
+
+
+@app.get("/engine-state")
+async def engine_state(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    recent_runs = memory_data.get("recent_runs") or []
+    open_actions = dedupe_rows(memory_data.get("open_actions") or [], "text")
+    recent_decisions = dedupe_rows(memory_data.get("recent_decisions") or [], "decision")
+    memory_items = memory_data.get("memory_items") or []
+
+    latest = recent_runs[0] if recent_runs else None
+    latest_output = latest.get("output") if isinstance(latest, dict) else {}
+
+    return {
+        "ok": True,
+        "version": "V97",
+        "supabase_enabled": memory_data.get("supabase_enabled", False),
+        "today_focus": {
+            "title": latest_output.get("what_to_do_now") if isinstance(latest_output, dict) else "No focus yet",
+            "next_move": latest_output.get("next_move") if isinstance(latest_output, dict) else "Run the engine to create one."
+        },
+        "your_engine": [
+            {"id": r.get("id"), "title": str(r.get("input") or "Saved run")[:80], "mode": r.get("mode"), "created_at": r.get("created_at")}
+            for r in recent_runs[:10]
+        ],
+        "open_actions": [
+            {"id": a.get("id"), "text": a.get("text"), "priority": a.get("priority"), "status": a.get("status")}
+            for a in open_actions[:10]
+        ],
+        "recent_decisions": [
+            {"id": d.get("id"), "decision": d.get("decision"), "priority": d.get("priority"), "created_at": d.get("created_at")}
+            for d in recent_decisions[:10]
+        ],
+        "memory_items": [
+            {"type": m.get("type"), "content": m.get("content"), "importance": m.get("importance")}
+            for m in memory_items[:5]
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
 @app.get("/recent-runs")
 async def recent_runs(user_id: str = Query("local_user"), limit: int = Query(20, ge=1, le=50)):
     if not SUPABASE_ENABLED:
@@ -872,19 +912,68 @@ async def recent_runs(user_id: str = Query("local_user"), limit: int = Query(20,
     return {"ok": True, "runs": await sb_get("runs", f"?user_id=eq.{user['id']}&order=created_at.desc&limit={limit}")}
 
 
+
+def normalize_dedupe_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip().lower())
+
+
+async def existing_action(user_id: str, text: str) -> Optional[Dict[str, Any]]:
+    if not SUPABASE_ENABLED:
+        return None
+    try:
+        rows = await sb_get("actions", f"?user_id=eq.{user_id}&status=eq.open&order=created_at.desc&limit=50")
+        target = normalize_dedupe_text(text)
+        for row in rows:
+            if normalize_dedupe_text(row.get("text")) == target:
+                return row
+    except Exception:
+        return None
+    return None
+
+
+async def existing_decision(user_id: str, decision: str) -> Optional[Dict[str, Any]]:
+    if not SUPABASE_ENABLED:
+        return None
+    try:
+        rows = await sb_get("decisions", f"?user_id=eq.{user_id}&order=created_at.desc&limit=50")
+        target = normalize_dedupe_text(decision)
+        for row in rows:
+            if normalize_dedupe_text(row.get("decision")) == target:
+                return row
+    except Exception:
+        return None
+    return None
+
+
+def dedupe_rows(rows: List[Dict[str, Any]], key: str) -> List[Dict[str, Any]]:
+    seen = set()
+    clean = []
+    for row in rows:
+        marker = normalize_dedupe_text(row.get(key))
+        if not marker or marker in seen:
+            continue
+        seen.add(marker)
+        clean.append(row)
+    return clean
+
 @app.get("/actions")
 async def actions(user_id: str = Query("local_user"), status: str = Query("open")):
     if not SUPABASE_ENABLED:
         return {"ok": True, "supabase_enabled": False, "actions": []}
     user = await get_or_create_user(user_id)
-    return {"ok": True, "actions": await sb_get("actions", f"?user_id=eq.{user['id']}&status=eq.{status}&order=created_at.desc&limit=50")}
-
+    rows = await sb_get("actions", f"?user_id=eq.{user['id']}&status=eq.{status}&order=created_at.desc&limit=50")
+    return {"ok": True, "version": "V97", "actions": dedupe_rows(rows, "text")}
 
 @app.post("/save-action")
 async def save_action(req: SaveActionRequest):
     if not SUPABASE_ENABLED:
         return {"ok": False, "supabase_enabled": False, "message": "Supabase is not configured."}
     user = await get_or_create_user(req.user_id or "local_user")
+
+    duplicate = await existing_action(user["id"], req.text)
+    if duplicate:
+        return {"ok": True, "version": "V97", "duplicate": True, "action": duplicate}
+
     row = await sb_insert("actions", {
         "user_id": user["id"],
         "run_id": req.run_id,
@@ -895,22 +984,26 @@ async def save_action(req: SaveActionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "action_saved", None, {"action_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "action": row}
-
+    return {"ok": True, "version": "V97", "duplicate": False, "action": row}
 
 @app.get("/decisions")
 async def decisions(user_id: str = Query("local_user")):
     if not SUPABASE_ENABLED:
         return {"ok": True, "supabase_enabled": False, "decisions": []}
     user = await get_or_create_user(user_id)
-    return {"ok": True, "decisions": await sb_get("decisions", f"?user_id=eq.{user['id']}&order=created_at.desc&limit=50")}
-
+    rows = await sb_get("decisions", f"?user_id=eq.{user['id']}&order=created_at.desc&limit=50")
+    return {"ok": True, "version": "V97", "decisions": dedupe_rows(rows, "decision")}
 
 @app.post("/save-decision")
 async def save_decision(req: SaveDecisionRequest):
     if not SUPABASE_ENABLED:
         return {"ok": False, "supabase_enabled": False, "message": "Supabase is not configured."}
     user = await get_or_create_user(req.user_id or "local_user")
+
+    duplicate = await existing_decision(user["id"], req.decision)
+    if duplicate:
+        return {"ok": True, "version": "V97", "duplicate": True, "decision": duplicate}
+
     row = await sb_insert("decisions", {
         "user_id": user["id"],
         "run_id": req.run_id,
@@ -922,8 +1015,7 @@ async def save_decision(req: SaveDecisionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "decision_saved", None, {"decision_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "decision": row}
-
+    return {"ok": True, "version": "V97", "duplicate": False, "decision": row}
 
 @app.get("/profile")
 async def get_profile(user_id: str = Query("local_user")):

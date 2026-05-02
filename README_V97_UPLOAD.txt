@@ -1,31 +1,34 @@
 Executive Engine OS V97 Full Package
 
-BUILD V97 — Frontend Memory Polish + Engine State
-
-Upload/replace:
+BUILD V97 — RIGHT SIDEBAR DB POLISH + DUPLICATE CONTROL
 
 Backend:
-backend/main.py
-backend/requirements.txt
-backend/runtime.txt
-backend/README_BACKEND_V97.txt
+- /actions returns deduped rows
+- /decisions returns deduped rows
+- /save-action prevents duplicate open actions
+- /save-decision prevents duplicate decisions
+- /engine-state returns clean sidebar state
 
 Frontend:
-frontend/index.html
-frontend/robots.txt
-frontend/_headers
+- Right sidebar rows are one-line and cleaner
+- Pulls /engine-state when available
+- Save buttons disable after successful save
+- Refreshes backend memory after saves
+- Duplicate display is reduced
 
-Deploy order:
-1. Backend first: executive-engine-os -> Clear build cache & deploy
+Deploy:
+1. Backend first:
+   Render -> executive-engine-os -> Clear build cache & deploy
 2. Test:
    /health
    /engine-state
-   /project-context
-3. Frontend second: executive-engine-frontend -> Clear cache & deploy
+   /actions
+   /decisions
+3. Frontend second:
+   Render -> executive-engine-frontend -> Clear cache & deploy
 
-Expected:
-/health version: V97
-/engine-state returns right-panel state
-Supabase enabled: true
-
-No bots. No automation. Manual execution only.
+Still locked:
+- No bots
+- No automation
+- Manual execution only
+- No Figma yet
