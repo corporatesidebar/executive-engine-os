@@ -108,7 +108,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 @media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
 
 
-/* V160 Product Layer */
+/* V160 Executive Layer */
 .exec-banner{border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
 .exec-banner h2{margin:0 0 5px;font-size:22px}.exec-banner p{margin:0;color:#52637a}
 .exec-mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
@@ -243,18 +243,402 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   .quick-nav{display:none}
 }
 
+
+/* V161 logo correction — restore clean backwards EE */
+.logo-ee{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  border-radius:15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:0!important;
+  background:linear-gradient(135deg,#1677ff,#0046d7)!important;
+  box-shadow:0 14px 36px rgba(15,99,255,.32)!important;
+  overflow:hidden!important;
+}
+.ee-letter{
+  display:inline-block!important;
+  color:#fff!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:27px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  letter-spacing:-0.08em!important;
+  transform:none!important;
+}
+.ee-back{
+  transform:scaleX(-1)!important;
+  margin-right:-2px!important;
+}
+.logo svg{
+  display:none!important;
+}
+.brand-copy strong,
+.brand strong{
+  font-weight:700!important;
+}
+
+
+/* V165 Workflow Control */
+.workflow-control-card{
+  border:1px solid #fed7aa;
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(234,88,12,.08);
+}
+.workflow-control-card h3{
+  margin:0 0 8px;
+  color:#c2410c;
+  letter-spacing:-.02em;
+}
+.workflow-control-card p{
+  margin:0;
+  color:#334155;
+  line-height:1.45;
+}
+.complete-btn{
+  height:30px;
+  border:1px solid #bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+  border-radius:9px;
+  padding:0 10px;
+  font-size:11px;
+  font-weight:700;
+}
+.complete-btn:hover{
+  background:#dcfce7;
+}
+.workflow-rule-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+.workflow-rule{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+}
+.workflow-rule b{
+  display:block;
+  margin-bottom:5px;
+}
+.workflow-rule span{
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+@media(max-width:1100px){.workflow-rule-grid{grid-template-columns:1fr}}
+
+
+/* V170 Automation Readiness */
+.automation-card{
+  border:1px solid #bfdbfe;
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(15,99,255,.08);
+}
+.automation-card h3{
+  margin:0 0 8px;
+  color:#0f63ff;
+  letter-spacing:-.02em;
+}
+.automation-score{
+  display:grid;
+  grid-template-columns:96px 1fr;
+  gap:16px;
+  align-items:center;
+}
+.score-ring{
+  width:84px;
+  height:84px;
+  border-radius:50%;
+  background:conic-gradient(#0f63ff 0deg,#0f63ff 270deg,#e5edf7 270deg,#e5edf7 360deg);
+  display:grid;
+  place-items:center;
+}
+.score-ring span{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#0f63ff;
+  font-weight:800;
+}
+.auto-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.auto-candidate{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+}
+.auto-candidate b{
+  display:block;
+  margin-bottom:5px;
+}
+.auto-candidate p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.safety-list{
+  margin:0;
+  padding-left:18px;
+}
+.safety-list li{
+  margin:7px 0;
+  color:#334155;
+  font-size:13px;
+}
+@media(max-width:1100px){.auto-grid,.automation-score{grid-template-columns:1fr}}
+
+
+/* V175 Integrations + Supervised Automation */
+.integration-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.integration-card{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.integration-card b{
+  display:block;
+  margin-bottom:5px;
+  color:#071226;
+}
+.integration-card p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.supervised-panel{
+  border:1px solid #bbf7d0;
+  background:linear-gradient(135deg,#ecfdf5,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(5,150,105,.08);
+}
+.supervised-panel h3{
+  margin:0 0 8px;
+  color:#047857;
+}
+.allowed-blocked{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.allowed-blocked ul{
+  margin:6px 0 0;
+  padding-left:18px;
+  color:#334155;
+  font-size:12px;
+}
+@media(max-width:1100px){.integration-grid,.allowed-blocked{grid-template-columns:1fr}}
+
+
+/* V180 AI Copilot Layer */
+.copilot-panel{
+  border:1px solid #ddd6fe;
+  background:linear-gradient(135deg,#f5f3ff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(124,58,237,.08);
+}
+.copilot-panel h3{
+  margin:0 0 8px;
+  color:#6d28d9;
+}
+.copilot-panel p{
+  margin:0 0 8px;
+  color:#334155;
+  line-height:1.45;
+}
+.copilot-action-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.copilot-action{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.copilot-action b{
+  display:block;
+  margin-bottom:5px;
+}
+.copilot-action p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.copilot-safe{
+  border-left:5px solid #7c3aed;
+}
+@media(max-width:1100px){.copilot-action-grid{grid-template-columns:1fr}}
+
+
+/* V185 + V190 Product Milestone */
+.product-readiness{
+  border:1px solid #bfdbfe;
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(15,99,255,.08);
+}
+.product-readiness h3{
+  margin:0 0 8px;
+  color:#0f63ff;
+}
+.product-module-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.product-module{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.product-module b{
+  display:block;
+  margin-bottom:5px;
+}
+.product-module span{
+  display:inline-block;
+  margin-top:6px;
+}
+.release-list{
+  margin:0;
+  padding-left:18px;
+}
+.release-list li{
+  margin:7px 0;
+  color:#334155;
+  font-size:13px;
+}
+@media(max-width:1100px){.product-module-grid{grid-template-columns:1fr}}
+
+
+/* V195 connector UI + V200 beta candidate */
+.connector-grid,.beta-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.connector-card,.beta-card{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.connector-card b,.beta-card b{
+  display:block;
+  margin-bottom:6px;
+  color:#071226;
+}
+.connector-card p,.beta-card p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.beta-hero{
+  border:1px solid #bbf7d0;
+  background:linear-gradient(135deg,#ecfdf5,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(5,150,105,.08);
+}
+.beta-hero h3{
+  margin:0 0 8px;
+  color:#047857;
+}
+.beta-score{
+  display:grid;
+  grid-template-columns:92px 1fr;
+  gap:15px;
+  align-items:center;
+}
+.beta-ring{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:conic-gradient(#059669 0deg,#059669 288deg,#e5edf7 288deg,#e5edf7 360deg);
+  display:grid;
+  place-items:center;
+}
+.beta-ring span{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#047857;
+  font-weight:800;
+}
+.beta-list{
+  margin:0;
+  padding-left:18px;
+}
+.beta-list li{
+  margin:7px 0;
+  color:#334155;
+  font-size:13px;
+}
+@media(max-width:1100px){.connector-grid,.beta-grid,.beta-score{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 14H12v36h16"/><path d="M26 32H12"/><path d="M36 14h16"/><path d="M36 14v36"/><path d="M36 32h14"/><path d="M36 50h16"/></g></svg></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
+  <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V160 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V200 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V160 Product Layer</div>
+  <div class="lock">▣ V200 Beta Candidate</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -304,7 +688,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V160 Polish · V160 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V200 Beta Candidate · V200 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -345,7 +729,7 @@ function showPage(page){activePage=page;v160PagePolish(page);const meta=pages[pa
 function renderPage(page){
  const host=document.getElementById("pageHost");
  const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];
- if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>loadExecutiveBrief(),50);
+ if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
  const actionRows=(actions.length?actions.slice(0,8):[
   {text:"Review Q2 financial statements with CFO",priority:"critical",status:"open"},
   {text:"Schedule CFO 1:1 for Thursday",priority:"high",status:"open"},
@@ -410,9 +794,11 @@ function renderPage(page){
  }
  if(page==="actions"){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Execution Tracker</div><h2>Action Queue</h2><p class="sub">Track and execute all action items.</p></div><button class="page-action" onclick="runPagePrompt('actions')">New Action</button></div>
+  <div class="workflow-control-card" id="workflowControlBox"><h3>Workflow Control Active</h3><p>Loading next action and execution rule...</p></div>
+  <div class="workflow-rule-grid"><div class="workflow-rule"><b>Focus Rule</b><span>Complete one saved action before creating new work.</span></div><div class="workflow-rule"><b>Decision Rule</b><span>Every command should create one decision or one action.</span></div><div class="workflow-rule"><b>Safety Rule</b><span>Manual execution remains locked. Auto-loop stays off.</span></div></div>
   <div class="stats-row"><div class="stat-card"><small>Total Actions</small><strong>${actions.length||24}</strong></div><div class="stat-card"><small>In Progress</small><strong>8</strong></div><div class="stat-card orange"><small>Overdue</small><strong>3</strong></div><div class="stat-card green"><small>Completion Rate</small><strong>87%</strong></div></div>
-  <div class="action-lane"><div class="action-lane-head critical">Critical Actions</div>${actionRows.slice(0,3).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"high")} · ${esc(a.status||"open")}</div></div><span class="status-pill orange">Critical</span></div>`).join("")}</div>
-  <div class="action-lane"><div class="action-lane-head progress">In Progress</div>${actionRows.slice(3,8).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"medium")} · open</div></div><span class="status-pill">Run</span></div>`).join("")}</div>
+  <div class="action-lane"><div class="action-lane-head critical">Critical Actions</div>${actionRows.slice(0,3).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"high")} · ${esc(a.status||"open")}</div></div>${a.id?`<button class="complete-btn" onclick="completeAction('${a.id}')">Complete</button>`:`<span class="status-pill orange">Critical</span>`}</div>`).join("")}</div>
+  <div class="action-lane"><div class="action-lane-head progress">In Progress</div>${actionRows.slice(3,8).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"medium")} · open</div></div>${a.id?`<button class="complete-btn" onclick="completeAction('${a.id}')">Complete</button>`:`<span class="status-pill">Run</span>`}</div>`).join("")}</div>
   <div class="action-lane"><div class="action-lane-head done">Completed Today</div>${["Approved hiring 3 senior engineers","Reviewed weekly revenue report","Met with product team on roadmap","Signed partnership agreement"].map(x=>`<div class="action-item"><span class="square"></span><div><b>${x}</b><div class="meta">completed</div></div><span class="status-pill green">Done</span></div>`).join("")}</div>`;
   return;
  }
@@ -469,6 +855,167 @@ async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+e
 async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
 function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
 
+
+
+
+
+
+
+
+async function loadConnectorPlan(){
+ try{
+  const d=await api("/connector-plan");
+  const plan=d.plan||{};
+  const grid=document.getElementById("connectorPlanGrid");
+  if(grid){
+    grid.innerHTML=(plan.connectors||[]).map(c=>`<div class="connector-card"><b>${esc(c.name)}</b><p>${esc(c.purpose||"")}</p><p><b>Phase:</b> ${esc(c.phase)} · <b>Priority:</b> ${esc(c.priority)}</p><span class="status-pill ${c.risk==="Low"?"green":c.risk==="Medium"?"orange":""}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
+  }
+  const next=document.getElementById("connectorNextMove");
+  if(next) next.textContent=plan.next_connector_move||"Build Calendar and Files first.";
+ }catch(e){toast("Connector plan unavailable","error")}
+}
+async function loadBetaCandidate(){
+ try{
+  const d=await api("/beta-candidate?user_id="+encodeURIComponent(USER_ID));
+  const c=d.candidate||{};
+  const hero=document.getElementById("betaCandidateBox");
+  if(hero){
+    const score=Math.min(100,Math.max(0,c.beta_score||0));
+    const deg=Math.round(score*3.6);
+    hero.innerHTML=`<div class="beta-score"><div class="beta-ring" style="background:conic-gradient(#059669 0deg,#059669 ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${score}%</span></div><div><h3>V200 Beta Candidate</h3><p><b>Status:</b> ${esc(c.status||"Pre-beta")}</p><p><b>Decision:</b> ${esc(c.decision||"Continue testing.")}</p><p><b>Next Move:</b> ${esc(c.next_move||"Run beta protocol.")}</p></div></div>`;
+  }
+  const ready=document.getElementById("whatIsReady");
+  if(ready) ready.innerHTML=(c.what_is_ready||[]).map(x=>`<div class="beta-card"><b>${esc(x)}</b><p>Ready for internal beta validation.</p><span class="status-pill green">Ready</span></div>`).join("");
+  const blockers=document.getElementById("betaBlockers");
+  if(blockers) blockers.innerHTML=(c.beta_blockers||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  const protocol=document.getElementById("betaProtocol");
+  if(protocol) protocol.innerHTML=(c.beta_test_protocol||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+ }catch(e){toast("Beta candidate unavailable","error")}
+}
+
+async function loadProductReadiness(){
+ try{
+  const d=await api("/product-readiness?user_id="+encodeURIComponent(USER_ID));
+  const r=d.readiness||{};
+  const box=document.getElementById("productReadinessBox");
+  if(box){
+    box.innerHTML=`<h3>Product Readiness</h3><p><b>Score:</b> ${esc(r.score||0)}%</p><p><b>Status:</b> ${esc(r.status||"Building")}</p><p><b>Recommended Move:</b> ${esc(r.recommended_move||"Continue testing.")}</p>`;
+  }
+  const modules=document.getElementById("productModules");
+  if(modules){
+    modules.innerHTML=(r.core_modules||[]).map(m=>`<div class="product-module"><b>${esc(m.name)}</b><p>${esc(m.status)}</p><span class="status-pill ${m.risk==="High"?"orange":m.risk==="Low"?"green":""}">${esc(m.risk)} Risk</span></div>`).join("");
+  }
+  const gaps=document.getElementById("productGaps");
+  if(gaps){
+    gaps.innerHTML=(r.missing_before_beta||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  }
+ }catch(e){
+  toast("Product readiness unavailable","error");
+ }
+}
+async function loadProductMilestone(){
+ try{
+  const d=await api("/product-milestone?user_id="+encodeURIComponent(USER_ID));
+  const p=(d.product||{});
+  const el=document.getElementById("productMilestoneBox");
+  if(el){
+    el.innerHTML=`<h3>${esc(p.release||"V190 Product Milestone")}</h3><p><b>State:</b> ${esc(p.product_state||"Working prototype")}</p><p><b>Baseline:</b> ${esc(p.baseline||"Stable testing baseline")}</p>`;
+  }
+  const path=document.getElementById("nextBuildPath");
+  if(path){
+    path.innerHTML=(p.next_build_path||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  }
+ }catch(e){}
+}
+
+async function loadCopilotState(){
+ try{
+  const d=await api("/copilot-state?user_id="+encodeURIComponent(USER_ID));
+  const c=d.copilot||{};
+  const box=document.getElementById("copilotStateBox");
+  if(box){
+    box.innerHTML=`<h3>AI Copilot Active</h3><p><b>Status:</b> ${esc(c.copilot_status||"Supervised")}</p><p><b>Focus:</b> ${esc(c.recommended_focus||"Run one command.")}</p><p><b>Next Move:</b> ${esc(c.next_move||"Generate a supervised brief.")}</p>`;
+  }
+  const grid=document.getElementById("copilotActionsGrid");
+  if(grid){
+    grid.innerHTML=(c.copilot_actions||[]).map(a=>`<div class="copilot-action ${a.locked?"copilot-safe":""}"><b>${esc(a.title)}</b><p>${esc(a.type)} · ${esc(a.risk)} Risk</p><span class="status-pill ${a.locked?"orange":a.risk==="Low"?"green":""}">${a.locked?"Locked":"Approval Required"}</span></div>`).join("");
+  }
+ }catch(e){
+  toast("Copilot state unavailable","error");
+ }
+}
+
+async function loadIntegrationStatus(){
+ try{
+  const d=await api("/integration-status?user_id="+encodeURIComponent(USER_ID));
+  const s=d.status||{};
+  const grid=document.getElementById("integrationGrid");
+  if(grid){
+    grid.innerHTML=(s.integrations||[]).map(i=>`<div class="integration-card"><b>${esc(i.name)}</b><p>${esc(i.purpose)}</p><span class="status-pill ${i.risk==="Low"?"green":i.risk==="Medium"?"orange":""}">${esc(i.status)} · ${esc(i.risk)} Risk</span></div>`).join("");
+  }
+  const move=document.getElementById("integrationNextMove");
+  if(move) move.textContent=s.next_move||"Connect Calendar first.";
+ }catch(e){toast("Integration status unavailable","error")}
+}
+async function loadSupervisedAutomation(){
+ try{
+  const d=await api("/supervised-automation?user_id="+encodeURIComponent(USER_ID));
+  const panels=document.getElementById("supervisedAutomationPanels");
+  if(panels){
+    panels.innerHTML=(d.panels||[]).map(p=>`<div class="integration-card"><b>${esc(p.name)}</b><p>${esc(p.status)}</p><div class="allowed-blocked"><div><span class="status-pill green">Allowed</span><ul>${(p.allowed||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><span class="status-pill orange">Blocked</span><ul>${(p.blocked||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div>`).join("");
+  }
+  const rules=document.getElementById("supervisedRules");
+  if(rules){
+    rules.innerHTML=(d.rules||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  }
+ }catch(e){toast("Supervised automation unavailable","error")}
+}
+
+async function loadAutomationReadiness(){
+ try{
+  const d=await api("/automation-readiness?user_id="+encodeURIComponent(USER_ID));
+  const r=d.readiness||{};
+  const box=document.getElementById("automationReadinessBox");
+  if(box){
+    const score=Math.min(100,Math.max(0,r.score||0));
+    const deg=Math.round(score*3.6);
+    box.innerHTML=`<div class="automation-score"><div class="score-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${score}%</span></div><div><h3>Automation Readiness</h3><p><b>Status:</b> ${esc(r.status||"Manual mode recommended")}</p><p><b>Next Move:</b> ${esc(r.next_move||"Continue manual workflow testing.")}</p></div></div>`;
+  }
+  const candidates=document.getElementById("automationCandidates");
+  if(candidates){
+    candidates.innerHTML=(r.automation_candidates||[]).map(c=>`<div class="auto-candidate"><b>${esc(c.name)}</b><p>${esc(c.description)}</p><span class="status-pill ${c.risk==="High"?"orange":c.risk==="Low"?"green":""}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
+  }
+  const rules=document.getElementById("automationRules");
+  if(rules){
+    rules.innerHTML=(r.automation_rules||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  }
+ }catch(e){
+  toast("Automation readiness unavailable","error");
+ }
+}
+
+async function loadWorkflowControl(){
+ try{
+  const d=await api("/workflow-control?user_id="+encodeURIComponent(USER_ID));
+  const c=d.control||{};
+  const box=document.getElementById("workflowControlBox");
+  if(box){
+    const next=c.next_action||{};
+    box.innerHTML=`<h3>Workflow Control Active</h3><p><b>Next Action:</b> ${esc(next.text||"Run one executive command.")}</p><p><b>Rule:</b> ${esc(c.focus_rule||"Complete one action before creating new work.")}</p>`;
+  }
+ }catch(e){}
+}
+async function completeAction(actionId){
+ if(!actionId){toast("No action ID available","error");return}
+ try{
+  await api("/complete-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,action_id:actionId,result:"Completed from V165 frontend",next_note:"Refresh workflow control"})});
+  toast("Action completed","success");
+  await refreshState();
+  if(activePage==="actions") renderPage("actions");
+ }catch(e){
+  toast("Complete action failed","error");
+ }
+}
 
 async function loadExecutiveBrief(){
  try{

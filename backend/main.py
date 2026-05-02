@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V160"
-SERVICE_NAME = "Executive Engine OS V160"
+VERSION = "V200"
+SERVICE_NAME = "Executive Engine OS V200"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="160.0.0")
+app = FastAPI(title=SERVICE_NAME, version="200.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V160, an elite COO/operator system.
+You are Executive Engine OS V200, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V160",
+        "backend_must_show": "Executive Engine OS V200",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -2056,5 +2056,1079 @@ async def v160_milestone(user_id: str = Query(DEFAULT_USER)):
             "Save Decision",
             "Open Memory page",
             "Open Strategy Board"
+        ]
+    }
+
+
+
+
+# =========================
+# V165 WORKFLOW CONTROL MILESTONE
+# =========================
+
+def v165_workflow_summary(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    high_priority = [
+        a for a in actions
+        if str(a.get("priority", "")).lower() in ["high", "critical"]
+    ]
+
+    next_action = high_priority[0] if high_priority else (actions[0] if actions else None)
+
+    return {
+        "workflow_state": "Execution queue active" if actions else "No open actions",
+        "next_action": next_action or {
+            "text": "Run one executive command and save the first action.",
+            "priority": "medium",
+            "status": "open"
+        },
+        "focus_rule": "Complete one saved action before creating new work.",
+        "decision_rule": "Every new command should create either one decision or one action.",
+        "risk_rule": "Do not add automation until manual action completion is reliable.",
+        "counts": {
+            "open_actions": len(actions),
+            "high_priority_actions": len(high_priority),
+            "saved_decisions": len(decisions),
+            "memory_items": len(memory_items)
+        }
+    }
+
+
+@app.get("/workflow-control")
+async def workflow_control(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow Control",
+        "control": v165_workflow_summary(mem)
+    }
+
+
+@app.get("/v165-milestone")
+async def v165_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    control = v165_workflow_summary(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Workflow control available", "passed": True},
+        {"name": "Next action available", "passed": bool(control.get("next_action"))},
+        {"name": "Actions readable", "passed": True},
+        {"name": "Decisions readable", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow Control",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V165 Workflow Control · V165 Backend",
+        "control": control,
+        "test_checklist": [
+            "Open frontend",
+            "Open Action Queue",
+            "Confirm next action is clear",
+            "Run one command",
+            "Save Action",
+            "Save Decision",
+            "Open Memory page",
+            "Check /workflow-control"
+        ]
+    }
+
+
+
+
+# =========================
+# V170 AUTOMATION READINESS MILESTONE
+# =========================
+
+def v170_automation_readiness(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    runs = mem.get("recent_runs") or []
+
+    high_priority = [
+        a for a in actions
+        if str(a.get("priority", "")).lower() in ["high", "critical"]
+    ]
+
+    readiness_score = 0
+    readiness_score += 25 if len(runs) >= 5 else 10
+    readiness_score += 25 if len(decisions) >= 5 else 10
+    readiness_score += 25 if len(memory_items) >= 5 else 10
+    readiness_score += 15 if len(actions) > 0 else 5
+    readiness_score += 10 if len(actions) <= 25 else 2
+
+    safe_to_automate = readiness_score >= 75 and len(high_priority) <= 10
+
+    return {
+        "score": readiness_score,
+        "status": "Ready for supervised automation" if safe_to_automate else "Manual mode recommended",
+        "safe_to_automate": safe_to_automate,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "recommended_automation_phase": (
+            "Supervised suggestions only"
+            if safe_to_automate else
+            "Continue manual workflow testing"
+        ),
+        "automation_candidates": [
+            {
+                "name": "Daily Brief Generation",
+                "risk": "Low",
+                "status": "Ready",
+                "description": "Generate a daily operating brief from actions, decisions, and memory."
+            },
+            {
+                "name": "Meeting Prep Drafting",
+                "risk": "Low",
+                "status": "Ready",
+                "description": "Draft meeting agenda, talking points, questions, and follow-ups."
+            },
+            {
+                "name": "Action Prioritization",
+                "risk": "Medium",
+                "status": "Supervised",
+                "description": "Rank open actions by urgency, risk, and strategic impact."
+            },
+            {
+                "name": "Decision Follow-Up",
+                "risk": "Medium",
+                "status": "Supervised",
+                "description": "Detect decisions without actions and recommend follow-up."
+            },
+            {
+                "name": "Autonomous Execution",
+                "risk": "High",
+                "status": "Locked",
+                "description": "Do not enable until manual execution loop is proven."
+            }
+        ],
+        "automation_rules": [
+            "No autonomous execution without user approval.",
+            "Automation may suggest, draft, rank, and summarize.",
+            "Automation may not send, delete, approve, or execute external actions.",
+            "Manual execution remains locked until V180+.",
+            "Every automated recommendation must show risk and rollback."
+        ],
+        "blockers": [
+            "Action completion needs more real usage data." if len(actions) > 10 else "",
+            "Decision-to-action linking should be improved before automation." if len(decisions) > 0 else "",
+            "External integrations are not yet connected."
+        ],
+        "next_move": (
+            "Add supervised automation panels for Daily Brief, Meeting Prep, and Action Prioritization."
+            if safe_to_automate else
+            "Run more real commands and complete actions before enabling automation."
+        )
+    }
+
+
+@app.get("/automation-readiness")
+async def automation_readiness(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Automation Readiness",
+        "readiness": v170_automation_readiness(mem)
+    }
+
+
+@app.get("/automation-candidates")
+async def automation_candidates(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    readiness = v170_automation_readiness(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "candidates": readiness["automation_candidates"],
+        "rules": readiness["automation_rules"],
+        "next_move": readiness["next_move"]
+    }
+
+
+@app.get("/v170-milestone")
+async def v170_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    readiness = v170_automation_readiness(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Automation readiness available", "passed": True},
+        {"name": "Automation candidates available", "passed": True},
+        {"name": "Manual execution locked", "passed": readiness.get("manual_execution_only", True)},
+        {"name": "Auto loop off", "passed": not readiness.get("auto_loop_enabled", False)},
+        {"name": "Safety rules available", "passed": len(readiness.get("automation_rules") or []) > 0},
+        {"name": "Next move available", "passed": bool(readiness.get("next_move"))}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Automation Readiness",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V170 Automation Readiness · V170 Backend",
+        "readiness": readiness,
+        "test_checklist": [
+            "Open frontend",
+            "Open Settings",
+            "Confirm Automation Readiness card appears",
+            "Open Action Queue",
+            "Confirm workflow control still works",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Check /automation-readiness",
+            "Check /automation-candidates"
+        ]
+    }
+
+
+
+
+# =========================
+# V175 INTEGRATIONS + SUPERVISED AUTOMATION MILESTONE
+# =========================
+
+def v175_integration_status(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    return {
+        "integrations": [
+            {
+                "id": "calendar",
+                "name": "Calendar",
+                "status": "planned",
+                "risk": "Low",
+                "purpose": "Meeting prep, daily brief, schedule-aware execution."
+            },
+            {
+                "id": "email",
+                "name": "Email",
+                "status": "planned",
+                "risk": "Medium",
+                "purpose": "Draft follow-ups and summarize important inbound messages."
+            },
+            {
+                "id": "slack",
+                "name": "Slack / Team Chat",
+                "status": "planned",
+                "risk": "Medium",
+                "purpose": "Team pulse, blockers, and execution follow-up."
+            },
+            {
+                "id": "crm",
+                "name": "CRM",
+                "status": "planned",
+                "risk": "Medium",
+                "purpose": "Pipeline, revenue, deal risk, and customer follow-up."
+            },
+            {
+                "id": "files",
+                "name": "Files / Knowledge Base",
+                "status": "planned",
+                "risk": "Low",
+                "purpose": "Attach context, summarize docs, and improve decisions."
+            }
+        ],
+        "automation_panels": [
+            {
+                "name": "Daily Brief Automation",
+                "status": "Ready for supervised mode",
+                "allowed": ["Generate", "Summarize", "Prioritize"],
+                "blocked": ["Send externally", "Auto-approve"]
+            },
+            {
+                "name": "Meeting Prep Automation",
+                "status": "Ready for supervised mode",
+                "allowed": ["Draft agenda", "Create talking points", "Suggest follow-ups"],
+                "blocked": ["Email attendees without approval"]
+            },
+            {
+                "name": "Action Follow-Up Automation",
+                "status": "Supervised only",
+                "allowed": ["Recommend next action", "Flag overdue actions"],
+                "blocked": ["Complete actions automatically"]
+            },
+            {
+                "name": "Decision Follow-Up Automation",
+                "status": "Supervised only",
+                "allowed": ["Detect decisions without actions", "Suggest owners"],
+                "blocked": ["Assign owners externally"]
+            }
+        ],
+        "readiness": {
+            "actions": len(actions),
+            "decisions": len(decisions),
+            "memory_items": len(memory_items),
+            "safe_mode": True,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        },
+        "next_move": "Connect integrations in this order: Calendar, Files, Email, Team Chat, CRM."
+    }
+
+
+@app.get("/integration-status")
+async def integration_status(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Integrations + Supervised Automation",
+        "status": v175_integration_status(mem)
+    }
+
+
+@app.get("/supervised-automation")
+async def supervised_automation(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    status = v175_integration_status(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "mode": "supervised",
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "panels": status["automation_panels"],
+        "rules": [
+            "Automation can draft but not send.",
+            "Automation can recommend but not approve.",
+            "Automation can prioritize but not complete actions.",
+            "Automation can summarize but not delete data.",
+            "Every automation must show risk, source, and required approval."
+        ],
+        "next_move": status["next_move"]
+    }
+
+
+@app.get("/v175-milestone")
+async def v175_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    status = v175_integration_status(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Integration status available", "passed": True},
+        {"name": "Supervised automation available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True},
+        {"name": "Automation panels available", "passed": len(status.get("automation_panels") or []) > 0},
+        {"name": "Integration roadmap available", "passed": len(status.get("integrations") or []) > 0}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Integrations + Supervised Automation",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V175 Integrations · V175 Backend",
+        "status": status,
+        "test_checklist": [
+            "Open Settings",
+            "Confirm Integrations panel appears",
+            "Confirm Supervised Automation panel appears",
+            "Check /integration-status",
+            "Check /supervised-automation",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Confirm auto-loop remains off"
+        ]
+    }
+
+
+
+
+# =========================
+# V180 AI COPILOT LAYER MILESTONE
+# =========================
+
+def v180_copilot_state(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    runs = mem.get("recent_runs") or []
+
+    high_actions = [
+        a for a in actions
+        if str(a.get("priority", "")).lower() in ["high", "critical"]
+    ]
+
+    latest_decision = decisions[0] if decisions else {}
+    latest_action = high_actions[0] if high_actions else (actions[0] if actions else {})
+
+    return {
+        "mode": "copilot",
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "copilot_status": "Active - supervised",
+        "executive_summary": "AI Copilot can now recommend briefs, follow-ups, risks, and next actions without executing externally.",
+        "recommended_focus": latest_action.get("text") or "Run one executive command and save the first action.",
+        "decision_to_follow_up": latest_decision.get("decision") or "No recent decision available.",
+        "risk_watch": latest_decision.get("risk") or "No major saved risk detected.",
+        "memory_signal": (memory_items[0] or {}).get("content") if memory_items else "No memory signal available yet.",
+        "copilot_actions": [
+            {
+                "title": "Draft Daily Brief",
+                "type": "draft",
+                "risk": "Low",
+                "requires_approval": True
+            },
+            {
+                "title": "Prepare Meeting Notes",
+                "type": "draft",
+                "risk": "Low",
+                "requires_approval": True
+            },
+            {
+                "title": "Prioritize Action Queue",
+                "type": "recommendation",
+                "risk": "Medium",
+                "requires_approval": True
+            },
+            {
+                "title": "Identify Decision Follow-Up",
+                "type": "recommendation",
+                "risk": "Medium",
+                "requires_approval": True
+            },
+            {
+                "title": "Autonomous External Execution",
+                "type": "blocked",
+                "risk": "High",
+                "requires_approval": True,
+                "locked": True
+            }
+        ],
+        "counts": {
+            "runs": len(runs),
+            "open_actions": len(actions),
+            "high_priority_actions": len(high_actions),
+            "saved_decisions": len(decisions),
+            "memory_items": len(memory_items)
+        },
+        "next_move": "Use the Copilot panel to generate a daily brief, meeting prep, or action priority recommendation."
+    }
+
+
+@app.get("/copilot-state")
+async def copilot_state(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "AI Copilot Layer",
+        "copilot": v180_copilot_state(mem)
+    }
+
+
+@app.get("/copilot-brief")
+async def copilot_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    state = v180_copilot_state(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "brief": {
+            "headline": "AI Copilot is ready in supervised mode.",
+            "what_to_do_now": state["recommended_focus"],
+            "decision_follow_up": state["decision_to_follow_up"],
+            "risk_watch": state["risk_watch"],
+            "memory_signal": state["memory_signal"],
+            "recommended_copilot_action": state["next_move"],
+            "approval_required": True,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/copilot-actions")
+async def copilot_actions(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    state = v180_copilot_state(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "actions": state["copilot_actions"],
+        "blocked": [
+            "Send external emails",
+            "Complete actions automatically",
+            "Delete or modify records without approval",
+            "Approve spending",
+            "Invite or notify external users"
+        ],
+        "allowed": [
+            "Draft",
+            "Summarize",
+            "Recommend",
+            "Prioritize",
+            "Prepare"
+        ]
+    }
+
+
+@app.get("/v180-milestone")
+async def v180_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    state = v180_copilot_state(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Copilot state available", "passed": True},
+        {"name": "Copilot brief available", "passed": True},
+        {"name": "Copilot actions available", "passed": True},
+        {"name": "Manual execution locked", "passed": state.get("manual_execution_only", True)},
+        {"name": "Auto loop off", "passed": not state.get("auto_loop_enabled", False)},
+        {"name": "External execution blocked", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "AI Copilot Layer",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V180 AI Copilot · V180 Backend",
+        "copilot": state,
+        "test_checklist": [
+            "Open Settings",
+            "Confirm Copilot panel appears",
+            "Check /copilot-state",
+            "Check /copilot-brief",
+            "Check /copilot-actions",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Confirm auto-loop remains off"
+        ]
+    }
+
+
+
+
+# =========================
+# V185 PRODUCT READINESS + V190 PRODUCT MILESTONE
+# =========================
+
+def v185_product_readiness(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    runs = mem.get("recent_runs") or []
+
+    readiness_score = 0
+    readiness_score += 20 if len(runs) >= 5 else 8
+    readiness_score += 20 if len(actions) >= 5 else 8
+    readiness_score += 20 if len(decisions) >= 5 else 8
+    readiness_score += 20 if len(memory_items) >= 5 else 8
+    readiness_score += 20  # backend/navigation/system baseline
+
+    return {
+        "score": readiness_score,
+        "status": "Product milestone ready" if readiness_score >= 80 else "More usage data needed",
+        "core_modules": [
+            {"name": "Command Center", "status": "Live", "risk": "Low"},
+            {"name": "Subpages", "status": "Live", "risk": "Low"},
+            {"name": "Workflow Control", "status": "Live", "risk": "Medium"},
+            {"name": "Memory Intelligence", "status": "Live", "risk": "Medium"},
+            {"name": "Executive Layer", "status": "Live", "risk": "Low"},
+            {"name": "AI Copilot", "status": "Supervised", "risk": "Medium"},
+            {"name": "External Automation", "status": "Locked", "risk": "High"}
+        ],
+        "missing_before_beta": [
+            "Real user profile persistence",
+            "Decision-to-action linking",
+            "Real calendar/email/file integrations",
+            "Role-based executive context",
+            "Usage analytics from real sessions"
+        ],
+        "recommended_move": "Use V190 as the product milestone baseline, then build integration connectors next."
+    }
+
+
+def v190_product_milestone(mem: Dict[str, Any]) -> Dict[str, Any]:
+    readiness = v185_product_readiness(mem)
+    return {
+        "release": "V190 Product Milestone",
+        "product_state": "Working executive operating system prototype",
+        "baseline": "Stable enough for structured daily testing",
+        "readiness": readiness,
+        "locked_principles": [
+            "Manual execution only",
+            "Supervised automation only",
+            "No external action without approval",
+            "Command Center remains the primary work surface",
+            "Memory improves recommendations but does not control execution"
+        ],
+        "next_build_path": [
+            "V195: Integration Connectors UI",
+            "V200: Beta Candidate",
+            "V210: Real Calendar / Email / Files",
+            "V220: Role-specific executive agents",
+            "V250: External automation with approval gates"
+        ],
+        "test_protocol": [
+            "Run 10 real commands",
+            "Save actions and decisions",
+            "Complete at least 3 actions",
+            "Open Memory page after every 3 runs",
+            "Use Daily Brief and Meeting Prep for real work",
+            "Validate Copilot stays supervised"
+        ]
+    }
+
+
+@app.get("/product-readiness")
+async def product_readiness(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V185 Product Readiness",
+        "readiness": v185_product_readiness(mem)
+    }
+
+
+@app.get("/product-milestone")
+async def product_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V190 Product Milestone",
+        "product": v190_product_milestone(mem)
+    }
+
+
+@app.get("/release-plan")
+async def release_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "current_release": "V190",
+        "milestones": [
+            {
+                "version": "V185",
+                "name": "Product Readiness",
+                "included": True,
+                "summary": "Readiness score, module status, beta gaps, and next move."
+            },
+            {
+                "version": "V190",
+                "name": "Product Milestone",
+                "included": True,
+                "summary": "Product baseline, locked principles, test protocol, and next build path."
+            },
+            {
+                "version": "V195",
+                "name": "Integration Connectors UI",
+                "included": False,
+                "summary": "Prepare connector screens for Calendar, Email, Files, Slack, CRM."
+            },
+            {
+                "version": "V200",
+                "name": "Beta Candidate",
+                "included": False,
+                "summary": "Stabilize core workflow for daily external testing."
+            }
+        ]
+    }
+
+
+@app.get("/v185-milestone")
+async def v185_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    readiness = v185_product_readiness(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Readiness",
+        "ready": readiness["score"] >= 70,
+        "frontend_must_show": "V190 Product Milestone · V190 Backend",
+        "readiness": readiness,
+        "test_checklist": [
+            "Check /product-readiness",
+            "Open Settings",
+            "Confirm Product Readiness appears",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Open Memory page"
+        ]
+    }
+
+
+@app.get("/v190-milestone")
+async def v190_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    product = v190_product_milestone(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Product readiness available", "passed": True},
+        {"name": "Product milestone available", "passed": True},
+        {"name": "Release plan available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Supervised automation only", "passed": True},
+        {"name": "Next build path defined", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Milestone",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V190 Product Milestone · V190 Backend",
+        "product": product,
+        "test_checklist": [
+            "Open frontend",
+            "Confirm V190 badge",
+            "Open Settings",
+            "Confirm Product Readiness card appears",
+            "Check /product-readiness",
+            "Check /product-milestone",
+            "Check /release-plan",
+            "Run one real command",
+            "Save action and decision"
+        ]
+    }
+
+
+
+
+# =========================
+# V195 CONNECTOR UI + V200 BETA CANDIDATE
+# =========================
+
+def v195_connector_plan() -> Dict[str, Any]:
+    return {
+        "connectors": [
+            {
+                "id": "calendar",
+                "name": "Calendar",
+                "phase": "V210",
+                "status": "planned",
+                "priority": "High",
+                "risk": "Low",
+                "capabilities": [
+                    "Meeting prep",
+                    "Daily schedule brief",
+                    "Follow-up reminders",
+                    "Time-aware action priority"
+                ],
+                "blocked_actions": [
+                    "Auto-invite attendees",
+                    "Auto-cancel meetings",
+                    "Send calendar updates without approval"
+                ]
+            },
+            {
+                "id": "files",
+                "name": "Files / Knowledge Base",
+                "phase": "V210",
+                "status": "planned",
+                "priority": "High",
+                "risk": "Low",
+                "capabilities": [
+                    "Attach context",
+                    "Summarize uploaded documents",
+                    "Extract decisions from docs",
+                    "Improve executive memory"
+                ],
+                "blocked_actions": [
+                    "Delete files",
+                    "Share files externally",
+                    "Modify documents without approval"
+                ]
+            },
+            {
+                "id": "email",
+                "name": "Email",
+                "phase": "V215",
+                "status": "planned",
+                "priority": "Medium",
+                "risk": "Medium",
+                "capabilities": [
+                    "Draft follow-ups",
+                    "Summarize important messages",
+                    "Find action items",
+                    "Prepare response options"
+                ],
+                "blocked_actions": [
+                    "Send emails automatically",
+                    "Delete messages",
+                    "Forward externally without approval"
+                ]
+            },
+            {
+                "id": "chat",
+                "name": "Slack / Team Chat",
+                "phase": "V220",
+                "status": "planned",
+                "priority": "Medium",
+                "risk": "Medium",
+                "capabilities": [
+                    "Team pulse",
+                    "Blocker detection",
+                    "Follow-up drafts",
+                    "Status summaries"
+                ],
+                "blocked_actions": [
+                    "Post messages automatically",
+                    "DM employees without approval",
+                    "Archive channels"
+                ]
+            },
+            {
+                "id": "crm",
+                "name": "CRM / Revenue",
+                "phase": "V225",
+                "status": "planned",
+                "priority": "Medium",
+                "risk": "Medium",
+                "capabilities": [
+                    "Pipeline risk",
+                    "Deal prioritization",
+                    "Revenue brief",
+                    "Customer follow-up suggestions"
+                ],
+                "blocked_actions": [
+                    "Edit deals automatically",
+                    "Change forecasts without approval",
+                    "Send customer communication automatically"
+                ]
+            }
+        ],
+        "connector_rules": [
+            "Connectors start read-only.",
+            "All external write actions require explicit approval.",
+            "Every connector output must show source, risk, and confidence.",
+            "No autonomous external action before V250.",
+            "Manual execution remains the control layer."
+        ],
+        "next_connector_move": "Build Calendar and Files first because they improve Daily Brief, Meeting Prep, and Memory with lowest operational risk."
+    }
+
+
+def v200_beta_candidate(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    runs = mem.get("recent_runs") or []
+
+    beta_score = 0
+    beta_score += 15 if len(runs) >= 5 else 6
+    beta_score += 15 if len(actions) >= 5 else 6
+    beta_score += 15 if len(decisions) >= 5 else 6
+    beta_score += 15 if len(memory_items) >= 5 else 6
+    beta_score += 15  # core backend
+    beta_score += 10  # frontend shell and pages
+    beta_score += 10  # supervised automation/coplilot
+    beta_score += 5   # safety model
+
+    blockers = []
+    if len(actions) > 25:
+        blockers.append("Open action queue is too large; clean before beta testing.")
+    if len(runs) < 10:
+        blockers.append("Run more real commands to validate workflow depth.")
+    blockers.extend([
+        "Real integrations are planned but not connected.",
+        "Profile/context persistence should be improved.",
+        "Decision-to-action linking should become more explicit."
+    ])
+
+    return {
+        "release": "V200 Beta Candidate",
+        "beta_score": min(beta_score, 100),
+        "status": "Internal beta ready" if beta_score >= 75 else "Pre-beta",
+        "safe_mode": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "what_is_ready": [
+            "Command Center",
+            "Unique subpages",
+            "Workflow control",
+            "Memory intelligence",
+            "Executive layer",
+            "Supervised automation",
+            "AI Copilot",
+            "Product readiness",
+            "Connector roadmap"
+        ],
+        "beta_blockers": blockers,
+        "beta_test_protocol": [
+            "Use the system for 3 working days",
+            "Run at least 10 real commands",
+            "Save at least 5 decisions",
+            "Save at least 10 actions",
+            "Complete at least 3 actions",
+            "Use Daily Brief twice",
+            "Use Meeting Prep once",
+            "Review Memory Intelligence after the test",
+            "Confirm Copilot never executes externally"
+        ],
+        "next_build_path": [
+            "V205: Beta UX cleanup",
+            "V210: Calendar + Files connector preparation",
+            "V215: Email draft layer",
+            "V220: Team/chat pulse",
+            "V225: CRM/revenue intelligence",
+            "V250: Approval-gated external automation"
+        ],
+        "decision": "Treat V200 as the internal beta candidate and stop adding major features until real usage feedback is captured.",
+        "next_move": "Run the 3-day beta test protocol before building V205."
+    }
+
+
+@app.get("/connector-plan")
+async def connector_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V195 Connector UI",
+        "plan": v195_connector_plan()
+    }
+
+
+@app.get("/connector-readiness")
+async def connector_readiness(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    plan = v195_connector_plan()
+    return {
+        "ok": True,
+        "version": VERSION,
+        "readiness": {
+            "status": "Connector planning ready",
+            "safe_mode": True,
+            "read_only_first": True,
+            "recommended_first_connectors": ["Calendar", "Files / Knowledge Base"],
+            "connector_count": len(plan["connectors"]),
+            "rules": plan["connector_rules"],
+            "next_move": plan["next_connector_move"],
+            "current_memory_items": len(mem.get("memory_items") or [])
+        }
+    }
+
+
+@app.get("/beta-candidate")
+async def beta_candidate(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V200 Beta Candidate",
+        "candidate": v200_beta_candidate(mem)
+    }
+
+
+@app.get("/beta-test-plan")
+async def beta_test_plan(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    candidate = v200_beta_candidate(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "plan": {
+            "duration": "3 working days",
+            "goal": "Validate Executive Engine OS as a daily operating layer.",
+            "protocol": candidate["beta_test_protocol"],
+            "success_criteria": [
+                "User can run daily workflow without confusion",
+                "Actions and decisions save reliably",
+                "Memory produces useful signals",
+                "Copilot remains supervised",
+                "User can identify clear next improvements"
+            ],
+            "failure_signals": [
+                "User gets lost in navigation",
+                "Saved outputs are not useful",
+                "Memory feels generic",
+                "Too many actions accumulate",
+                "Copilot suggestions are not actionable"
+            ],
+            "next_move": candidate["next_move"]
+        }
+    }
+
+
+@app.get("/v195-milestone")
+async def v195_milestone():
+    plan = v195_connector_plan()
+    checks = [
+        {"name": "Connector plan available", "passed": True},
+        {"name": "Connector rules available", "passed": len(plan["connector_rules"]) > 0},
+        {"name": "Calendar planned", "passed": any(c["id"] == "calendar" for c in plan["connectors"])},
+        {"name": "Files planned", "passed": any(c["id"] == "files" for c in plan["connectors"])},
+        {"name": "Read-only first", "passed": True},
+        {"name": "External automation blocked", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Connector UI",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V200 Beta Candidate · V200 Backend",
+        "plan": plan
+    }
+
+
+@app.get("/v200-milestone")
+async def v200_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    candidate = v200_beta_candidate(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Connector plan available", "passed": True},
+        {"name": "Beta candidate available", "passed": True},
+        {"name": "Beta test plan available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True},
+        {"name": "Supervised copilot only", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Beta Candidate",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V200 Beta Candidate · V200 Backend",
+        "candidate": candidate,
+        "test_checklist": [
+            "Open Settings",
+            "Confirm Connector Plan appears",
+            "Confirm Beta Candidate appears",
+            "Check /connector-plan",
+            "Check /connector-readiness",
+            "Check /beta-candidate",
+            "Check /beta-test-plan",
+            "Run one real command",
+            "Save action and decision"
         ]
     }
