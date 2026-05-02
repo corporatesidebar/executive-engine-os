@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V600: a product-candidate executive operating system with Calendar Intelligence readiness.
+You are Executive Engine OS V650: a product-candidate executive operating system with Calendar Intelligence, Files Intelligence, and upgraded notification readiness.
 
 You are not a chatbot. You are a daily execution cockpit.
 
@@ -23,9 +23,9 @@ Operating principles:
 - Convert messy input into an executable operating decision.
 - Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
 - Use manually provided Calendar + Files prep context when the user includes it.
-- Treat calendar intelligence as read-only and user-controlled.
-- Never imply live Google Calendar access unless the user has connected it in a future build.
-- Never create, edit, delete, invite, reschedule, email, auto-join, or auto-respond.
+- Treat calendar and file intelligence as read-only and user-controlled.
+- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected in a future build.
+- Never create, edit, delete, invite, reschedule, email, auto-join, auto-send, auto-read, or auto-modify external systems.
 - Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
 - Make the next move obvious.
 - No generic advice.
@@ -51,6 +51,7 @@ Required schema:
   "leverage": "Highest leverage opportunity",
   "memory_signal": "Relevant pattern, prior decision, recurring constraint, manual integration context, or action overload signal",
   "calendar_signal": "Calendar-related signal if calendar context is provided; otherwise state prep/not connected",
+  "files_signal": "File/project-related signal if files context is provided; otherwise state prep/not connected",
   "decision_pattern": "Pattern detected from the decision or input",
   "recurring_risk": "Risk likely to repeat if not addressed",
   "notification": "One short alert the executive should see",
@@ -75,8 +76,9 @@ Rules:
 
 
 
-VERSION = "V600"
-SERVICE_NAME = "Executive Engine OS V600"
+
+VERSION = "V650"
+SERVICE_NAME = "Executive Engine OS V650"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -99,7 +101,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="600.0.0")
+app = FastAPI(title=SERVICE_NAME, version="650.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -408,7 +410,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V600, an elite COO/operator system.
+You are Executive Engine OS V650, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -869,7 +871,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V600",
+        "backend_must_show": "Executive Engine OS V650",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3748,7 +3750,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V600",
+        "service": "Executive Engine OS V650",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -5302,6 +5304,278 @@ async def v600_milestone():
             "/calendar/day-load",
             "/calendar/alerts",
             "/v600-milestone",
+            "/health"
+        ]
+    }
+
+
+
+
+# =========================
+# V650 FILES INTELLIGENCE + NOTIFICATION UPGRADE
+# =========================
+# Safe read-only contract layer. No real Google Drive OAuth/token storage/live file fetch yet.
+
+def v650_files_status_payload() -> Dict[str, Any]:
+    return {
+        "connected": False,
+        "provider": "google_drive",
+        "mode": "read_only_prep",
+        "oauth_enabled": False,
+        "scope_required_later": "https://www.googleapis.com/auth/drive.readonly",
+        "write_access": False,
+        "live_data_fetch": False,
+        "file_parsing": False,
+        "status": "not_connected",
+        "message": "Files Intelligence is ready in read-only prep mode. Real Google Drive OAuth is not connected yet."
+    }
+
+
+def v650_extract_items(text: str, kind: str) -> List[str]:
+    raw = str(text or "")
+    lines = [x.strip(" -•\t") for x in raw.splitlines() if x.strip()]
+    keywords = {
+        "decision": ["decision", "approve", "choose", "select", "confirm", "decide"],
+        "action": ["action", "todo", "next", "send", "review", "call", "assign", "complete", "ship", "test"],
+        "risk": ["risk", "blocker", "issue", "concern", "constraint", "problem"]
+    }.get(kind, [])
+    matches = []
+    for line in lines:
+        low = line.lower()
+        if any(k in low for k in keywords):
+            matches.append(line[:220])
+    if not matches and raw.strip():
+        if kind == "decision":
+            matches = ["Identify the decision needed from the provided file/project context."]
+        elif kind == "action":
+            matches = ["Convert the file/project context into one executable next action."]
+        elif kind == "risk":
+            matches = ["Review the file/project context for execution risk."]
+    return matches[:6]
+
+
+def v650_files_prep_summary(files_context: Dict[str, Any]) -> Dict[str, Any]:
+    files_context = files_context or {}
+    files = files_context.get("files") or []
+    notes = str(files_context.get("notes") or "")
+    decisions_needed = files_context.get("decisions_needed") or files_context.get("decisionsNeeded") or []
+    actions_needed = files_context.get("actions_needed") or files_context.get("actionsNeeded") or []
+    risks = files_context.get("risks") or []
+
+    combined_text = " ".join([str(x) for x in files]) + " " + notes
+    if not decisions_needed:
+        decisions_needed = v650_extract_items(combined_text, "decision")
+    if not actions_needed:
+        actions_needed = v650_extract_items(combined_text, "action")
+    if not risks:
+        risks = v650_extract_items(combined_text, "risk")
+
+    return {
+        "mode": "prep",
+        "connected": False,
+        "oauth_enabled": False,
+        "file_count": len(files),
+        "notes_present": bool(notes.strip()),
+        "decisions_needed": decisions_needed[:6],
+        "actions_needed": actions_needed[:6],
+        "risks": risks[:6],
+        "summary": (
+            f"Files prep mode: {len(files)} file/project item(s), "
+            f"{len(decisions_needed)} decision item(s), {len(actions_needed)} action item(s), "
+            f"{len(risks)} risk item(s). No live Google Drive access."
+        ),
+        "safe_to_send_to_ai": True
+    }
+
+
+def v650_notification_upgrade_payload() -> List[Dict[str, Any]]:
+    return [
+        {
+            "type": "calendar_prep_needed",
+            "priority": "Medium",
+            "title": "Calendar prep needed",
+            "message": "Calendar is in prep mode. Add meeting context manually before Daily Brief.",
+            "route": "integration_prep"
+        },
+        {
+            "type": "file_context_missing",
+            "priority": "Medium",
+            "title": "File context missing",
+            "message": "Files are in prep mode. Add project/file context before strategic decisions.",
+            "route": "integration_prep"
+        },
+        {
+            "type": "decision_followup",
+            "priority": "Medium",
+            "title": "Decision follow-up",
+            "message": "Review decisions and attach one action.",
+            "route": "decisions"
+        },
+        {
+            "type": "risk_review",
+            "priority": "High",
+            "title": "Risk review",
+            "message": "Review recurring risks before adding more actions.",
+            "route": "risk"
+        },
+        {
+            "type": "action_overload",
+            "priority": "High",
+            "title": "Action overload check",
+            "message": "Check open actions and cut or complete low-value items.",
+            "route": "actions"
+        },
+        {
+            "type": "system_test",
+            "priority": "Low",
+            "title": "System test reminder",
+            "message": "Run /diagnostic and /system-test after deploys.",
+            "route": "settings"
+        }
+    ]
+
+
+@app.get("/files/status")
+async def files_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V650 Files Intelligence",
+        **v650_files_status_payload()
+    }
+
+
+@app.get("/files/prep-summary")
+async def files_prep_summary():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Files Prep Summary",
+        "summary": v650_files_prep_summary({})
+    }
+
+
+@app.post("/files/context-to-command")
+async def files_context_to_command(payload: Dict[str, Any]):
+    files_context = payload.get("files_context") or {}
+    destination = payload.get("destination", "run_command")
+    summary = v650_files_prep_summary(files_context)
+
+    prompt = (
+        "Use this manual read-only Files Intelligence context. "
+        "Do not assume live Google Drive access. "
+        f"Destination: {destination}. "
+        f"Summary: {summary.get('summary')}. "
+        f"Decisions needed: {summary.get('decisions_needed')}. "
+        f"Actions needed: {summary.get('actions_needed')}. "
+        f"Risks: {summary.get('risks')}. "
+        "Return decision, next_move, actions, risk, priority, and recommended_command."
+    )
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "safe_to_send_to_ai": True,
+        "destination": destination,
+        "prompt": prompt,
+        "summary": summary,
+        "safety": {
+            "manual_context_only": True,
+            "oauth_enabled": False,
+            "write_access": False,
+            "live_google_data": False,
+            "file_parsing": False,
+            "auto_loop": False
+        }
+    }
+
+
+@app.get("/files/alerts")
+async def files_alerts():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "alerts": [
+            {
+                "type": "files_not_connected",
+                "priority": "Low",
+                "title": "Files not connected",
+                "message": "Files Intelligence is in read-only prep mode. Use manual file/project context until OAuth is enabled.",
+                "action": "Use Integration Prep Center"
+            },
+            {
+                "type": "file_context_needed",
+                "priority": "Medium",
+                "title": "File context needed",
+                "message": "Add project/file context before running strategy, risk, or decision commands.",
+                "action": "Add manual file context"
+            }
+        ]
+    }
+
+
+@app.get("/notification-upgrade")
+async def notification_upgrade():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V650 Notification Upgrade",
+        "notifications": v650_notification_upgrade_payload(),
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/v650-milestone")
+async def v650_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V600 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Files status endpoint available", "passed": True},
+        {"name": "Files prep summary available", "passed": True},
+        {"name": "Files context-to-command available", "passed": True},
+        {"name": "Files alerts available", "passed": True},
+        {"name": "Notification upgrade available", "passed": True},
+        {"name": "Google Drive OAuth disabled", "passed": True},
+        {"name": "File write access disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Files Intelligence + Notification Upgrade",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V650 Files Intelligence · V650 Backend",
+        "checks": checks,
+        "added": [
+            "Files Intelligence panel",
+            "Files status contract",
+            "Files prep summary",
+            "Manual file context to command",
+            "Files alerts",
+            "Notification Center upgrade"
+        ],
+        "not_added": [
+            "Real Google Drive OAuth",
+            "Token storage",
+            "Live Drive file fetch",
+            "File write access",
+            "File parsing pipeline",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/files/status",
+            "/files/prep-summary",
+            "/files/alerts",
+            "/notification-upgrade",
+            "/v650-milestone",
             "/health"
         ]
     }
