@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V96.2"
+APP_NAME = "Executive Engine OS V96.3"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="96.2.0")
+app = FastAPI(title=APP_NAME, version="96.3.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,10 +41,14 @@ Executive Engine OS real project context:
 - Product: AI executive command center for CEOs/COOs/founders.
 - Backend live on Render: https://executive-engine-os.onrender.com
 - Frontend live on Render: https://executive-engine-frontend.onrender.com
-- Previous confirmed backend: V95.2.
+- Current backend: V96.3 quality fix.
+- Previous confirmed backend: V96.2 technical loop working.
 - OpenAI connected.
 - Supabase connected.
 - RLS enabled and safe.
+- /health works.
+- /debug works.
+- /schema works.
 - /run works and returns structured JSON.
 - /memory works and returns recent_runs and memory_items.
 - Runs save to Supabase.
@@ -58,19 +62,42 @@ Executive Engine OS real project context:
 - Frontend renders structured output and right sidebar memory/status.
 - UI is usable but not final.
 - Figma redesign comes later, after backend/output quality is stable.
-- Current priority: stability, response quality, project-specific intelligence, memory-driven execution.
+- Current priority: response quality, frontend DB validation, right-panel persistence, and manual execution loop.
 - Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
 - Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
 
-Response rules:
-- Do not give generic SaaS advice.
-- Do not say review market trends/user feedback/product roadmap unless directly tied to the current build.
-- Do not invent a team.
-- Do not recommend bots or automation yet.
-- Do not recommend Figma redesign before backend response quality is locked.
-- Prefer exact tests, endpoints, files, deploy steps, and expected results.
-- When asked what to focus on, prioritize: /run, /memory, /recent-runs, /save-action, /save-decision, frontend right panel, Supabase persistence, and response specificity.
+Current execution stage:
+1. Stop building new features.
+2. Validate backend-memory loop with real inputs.
+3. Confirm /run saves new recent_runs.
+4. Confirm /memory shows the newest run.
+5. Confirm /save-action creates open_actions.
+6. Confirm /save-decision creates recent_decisions.
+7. Confirm frontend right panel reads backend memory, not only local storage.
+8. Only after this: profile-aware output, then frontend polish, then Figma.
+
+Forbidden generic advice:
+- Do not tell the user to review market trends.
+- Do not tell the user to review user feedback unless the specific feedback source exists.
+- Do not say product roadmap unless referring to the actual Executive Engine build sequence.
+- Do not invent a product development team, marketing team, or team members.
+- Do not recommend meetings unless the user asks for meeting prep.
+- Do not recommend customer research, market share, churn, retention, or feature adoption unless the user asks about customers.
+- Do not recommend new features before validation of the existing execution loop.
+- Do not recommend automation, agents, or bots yet.
+- Do not recommend Figma redesign yet.
+
+When asked "What should I focus on today to move Executive Engine OS forward?":
+The correct answer must be about:
+- confirming V96.3 backend response quality
+- testing /run from frontend
+- checking /memory for a new recent_run
+- using Save Action and Save Decision buttons
+- verifying /actions and /decisions endpoints
+- confirming right sidebar displays saved backend state
+- documenting pass/fail results
 """
+
 
 
 class RunRequest(BaseModel):
@@ -186,16 +213,16 @@ def now_iso() -> str:
 def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
     return {
         "executive_summary": "The full AI response was not completed, so use this fallback to keep execution moving.",
-        "what_to_do_now": "Clarify the desired outcome, identify the biggest constraint, and execute the first concrete action immediately.",
-        "decision": "Move forward with the clearest low-regret next step instead of waiting for perfect information.",
+        "what_to_do_now": "Verify the live Executive Engine OS loop: run one frontend command, confirm /memory creates a new recent_run, then test Save Action and Save Decision.",
+        "decision": "Do not build new features until the backend-memory-frontend loop is verified end to end.",
         "why_this_matters": "Execution velocity matters. Waiting for a perfect answer creates drag and prevents momentum.",
-        "next_move": "Write the desired outcome in one sentence, list the top constraint, and take a 15-minute action that moves the situation forward.",
+        "next_move": "Run the frontend prompt again, then check /memory, /actions, and /decisions to confirm Supabase persistence.",
         "actions": [
-            "Write the desired outcome in one clear sentence.",
-            "Identify the one constraint blocking progress.",
-            "Choose the first action that can be completed in 15 minutes.",
-            "Execute it now, then reassess with better context.",
-            "Retry the engine if a deeper strategic answer is still needed."
+            "Run a real frontend command through /run.",
+            "Open /memory and confirm a new recent_run appears at the top.",
+            "Click Save Action in the frontend and confirm /actions returns it.",
+            "Click Save Decision in the frontend and confirm /decisions returns it.",
+            "Document pass/fail before building V97."
         ],
         "priority": "high",
         "risk": "The main risk is staying stuck because the input, backend, or decision context is incomplete.",
@@ -230,7 +257,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
         "constraint": reason,
         "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
         "manual_execution_only": True,
-        "version": "V96.2",
+        "version": "V96.3",
         "project_context_applied": True
     }
 
@@ -317,20 +344,53 @@ def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
 
     base["execution_loop"] = build_execution_loop(base)
     base["manual_execution_only"] = True
-    base["version"] = "V96.2"
+    base["version"] = "V96.3"
     base["project_context_applied"] = True
     return base
 
+
+
+GENERIC_MEMORY_BLOCKLIST = [
+    "market trends",
+    "user feedback",
+    "product roadmap",
+    "product development team",
+    "marketing team",
+    "market demands",
+    "feature adoption",
+    "customer loyalty",
+    "user satisfaction scores",
+    "churn",
+    "market share",
+    "requested features",
+    "pain points"
+]
+
+def is_generic_prior_context(value: Any) -> bool:
+    text = json.dumps(value, default=str).lower()
+    return any(term in text for term in GENERIC_MEMORY_BLOCKLIST)
+
+def project_directive_for_input(user_input: str) -> str:
+    text = (user_input or "").lower()
+    if "executive engine" in text or "os forward" in text or "move executive" in text:
+        return """
+PROJECT-SPECIFIC DIRECTIVE:
+The user is asking what to do next for Executive Engine OS.
+Do not answer with generic product/customer/market advice.
+Answer with backend/frontend/Supabase execution validation steps.
+Focus on V96.3 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
+"""
+    return ""
 
 def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
     if not memory or not memory.get("supabase_enabled"):
         return {"project_context": PROJECT_CONTEXT, "status": "no_db_memory"}
 
     profile = memory.get("profile") or {}
-    recent_runs = memory.get("recent_runs") or []
-    recent_decisions = memory.get("recent_decisions") or []
+    recent_runs = [r for r in (memory.get("recent_runs") or []) if not is_generic_prior_context(r)]
+    recent_decisions = [d for d in (memory.get("recent_decisions") or []) if not is_generic_prior_context(d)]
     open_actions = memory.get("open_actions") or []
-    memory_items = memory.get("memory_items") or []
+    memory_items = [m for m in (memory.get("memory_items") or []) if not is_generic_prior_context(m)]
 
     return {
         "project_context": PROJECT_CONTEXT,
@@ -385,7 +445,7 @@ def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any
 
 def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
     return f"""
-You are Executive Engine OS V96.2.
+You are Executive Engine OS V96.3.
 
 PROJECT CONTEXT:
 {PROJECT_CONTEXT}
@@ -403,6 +463,10 @@ Use this exact schema:
 
 QUALITY:
 - Make answers specific to Executive Engine OS, Render backend, Supabase memory, frontend behavior, and manual execution.
+- Treat old generic memory as contamination if it talks about market trends, user feedback, product roadmap, feature requests, marketing team, retention, churn, or customers.
+- If the input asks what to focus on today for Executive Engine OS, the answer must be a validation plan for the live system, not business/product strategy.
+- Use exact endpoint names and exact checks.
+- The first action must be something the user can do immediately in the browser or Render/Supabase.
 - Avoid generic SaaS/product advice unless the user specifically provides that context.
 - Give exact next steps, endpoints, files, deploy checks, and success criteria.
 - Be specific, direct, and execution-focused.
@@ -439,6 +503,8 @@ CONTEXT:
 
 USER INPUT:
 {req.input}
+
+{project_directive_for_input(req.input)}
 """
 
 
@@ -590,7 +656,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V96.2"}
+    return {"ok": True, "service": APP_NAME, "version": "V96.3"}
 
 
 @app.get("/health")
@@ -598,7 +664,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V96.2",
+        "version": "V96.3",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -613,10 +679,10 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V96.2",
+        "version": "V96.3",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
-            "/project-context", "/memory", "/memory-summary", "/stability-check",
+            "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
             "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/profile", "/robots.txt"
         ],
         "model": MODEL,
@@ -631,7 +697,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V96.2",
+        "version": "V96.3",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -642,7 +708,7 @@ async def schema():
 async def project_context():
     return {
         "ok": True,
-        "version": "V96.2",
+        "version": "V96.3",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
@@ -688,7 +754,7 @@ async def run(req: RunRequest):
 @app.post("/run-test")
 async def run_test():
     req = RunRequest(
-        input="What should I focus on today to move Executive Engine OS forward? Answer specifically using Render backend, Supabase memory, frontend, /run, /memory, manual execution only, and no automation yet.",
+        input="What should I focus on today to move Executive Engine OS forward?",
         mode="execution",
         depth="standard",
         user_id="local_user",
@@ -698,10 +764,44 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V96.2", "output": normalize_output(output)}
+        return {"ok": True, "version": "V96.3", "output": normalize_output(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V96.2", "output": normalize_output(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V96.3", "output": normalize_output(fallback_response(str(exc)))}
 
+
+
+
+@app.post("/quality-test")
+@app.get("/quality-test")
+async def quality_test():
+    req = RunRequest(
+        input="What should I focus on today to move Executive Engine OS forward?",
+        mode="execution",
+        depth="standard",
+        user_id="local_user",
+        session_id="v96_3_quality_test",
+        auto_save=False
+    )
+    try:
+        memory = await load_memory("local_user")
+        output = await ai_run(req, memory, False)
+        normalized = normalize_output(output)
+        text = json.dumps(normalized).lower()
+        generic_hits = [term for term in GENERIC_MEMORY_BLOCKLIST if term in text]
+        return {
+            "ok": True,
+            "version": "V96.3",
+            "generic_hits": generic_hits,
+            "passed_quality_gate": len(generic_hits) == 0,
+            "output": normalized
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "version": "V96.3",
+            "error": str(exc),
+            "output": normalize_output(fallback_response(str(exc)))
+        }
 
 @app.post("/auto-loop")
 async def auto_loop(req: AutoLoopRequest):
@@ -731,7 +831,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V96.2", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
+    return {"ok": True, "version": "V96.3", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
 @app.get("/memory")
@@ -742,7 +842,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
-    return {"ok": True, "version": "V96.2", "summary": summarize_memory_for_prompt(memory_data)}
+    return {"ok": True, "version": "V96.3", "summary": summarize_memory_for_prompt(memory_data)}
 
 
 @app.post("/stability-check")
@@ -761,7 +861,7 @@ async def stability_check():
         "memory_injection": "last_3_items",
         "project_context_applied": True
     }
-    return {"ok": True, "version": "V96.2", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V96.3", "health": health_data, "checks": checks}
 
 
 @app.get("/recent-runs")
