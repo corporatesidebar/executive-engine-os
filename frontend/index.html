@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V115</title>
+  <title>Executive Engine OS V117</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -1664,6 +1664,136 @@ button:disabled{
   .v115-block.full{grid-column:auto;}
 }
 
+
+/* V116 — output button action fix */
+.v116-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v116-status.error{border-color:#fecaca;background:#fef2f2;color:#991b1b;}
+.v116-status.success{border-color:#bbf7d0;background:#ecfdf5;color:#047857;}
+.v116-output-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.10);
+  overflow:hidden;
+}
+.v116-output-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:#f8fbff;
+}
+.v116-output-body{padding:16px;display:grid;gap:12px;}
+.v116-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.v116-block{border:1px solid #e2e8f0;border-radius:14px;padding:12px;background:#fff;}
+.v116-block.full{grid-column:1/-1;}
+.v116-block h4{margin:0 0 7px;font-size:11px;color:#475569;letter-spacing:.08em;text-transform:uppercase;}
+.v116-block p,.v116-block li{color:#0f172a;font-size:13px;line-height:1.5;font-weight:730;}
+.v116-actions{
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+  padding:12px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v116-actions button{
+  height:34px;
+  border-radius:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:0 11px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v116-actions button.primary{background:#2563eb!important;color:white!important;border-color:#1d4ed8!important;}
+.v116-actions button:disabled{opacity:.65;cursor:not-allowed;}
+@media(max-width:800px){
+  .v116-grid{grid-template-columns:1fr;}
+  .v116-block.full{grid-column:auto;}
+}
+
+
+/* V117 — button persistence verifier */
+.v117-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v117-status.error{border-color:#fecaca;background:#fef2f2;color:#991b1b;}
+.v117-status.success{border-color:#bbf7d0;background:#ecfdf5;color:#047857;}
+.v117-output-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.10);
+  overflow:hidden;
+}
+.v117-output-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:#f8fbff;
+}
+.v117-output-body{padding:16px;display:grid;gap:12px;}
+.v117-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.v117-block{border:1px solid #e2e8f0;border-radius:14px;padding:12px;background:#fff;}
+.v117-block.full{grid-column:1/-1;}
+.v117-block h4{margin:0 0 7px;font-size:11px;color:#475569;letter-spacing:.08em;text-transform:uppercase;}
+.v117-block p,.v117-block li{color:#0f172a;font-size:13px;line-height:1.5;font-weight:730;}
+.v117-actions{
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+  padding:12px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v117-actions button{
+  height:34px;
+  border-radius:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:0 11px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v117-actions button.primary{background:#2563eb!important;color:white!important;border-color:#1d4ed8!important;}
+.v117-actions button.saved{
+  border-color:#86efac!important;
+  background:#ecfdf5!important;
+  color:#047857!important;
+}
+@media(max-width:800px){
+  .v117-grid{grid-template-columns:1fr;}
+  .v117-block.full{grid-column:auto;}
+}
+
 </style>
 </head>
 <body>
@@ -1729,7 +1859,7 @@ button:disabled{
     </main>
 
     <aside class="right">
-      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V115 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div><div id="frontendLiveStatusBox" class="v110-live-box"><strong>Backend Live Status</strong>Checking backend...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
+      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V117 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div><div id="frontendLiveStatusBox" class="v110-live-box"><strong>Backend Live Status</strong>Checking backend...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
       <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
       <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
       <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
@@ -1746,7 +1876,7 @@ const USER_ID="local_user";
 let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null,profileStatus:null};
 let actionSavedForRun=false;
 let decisionSavedForRun=false;
-const STORAGE_KEY="eeos_v115_threads",ACTIVE_KEY="eeos_v115_active_thread",PROFILE_KEY="eeos_v115_profile",ACTIONS_KEY="eeos_v115_actions",DECISIONS_KEY="eeos_v115_decisions";
+const STORAGE_KEY="eeos_v117_threads",ACTIVE_KEY="eeos_v117_active_thread",PROFILE_KEY="eeos_v117_profile",ACTIONS_KEY="eeos_v117_actions",DECISIONS_KEY="eeos_v117_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -2016,7 +2146,7 @@ async function saveLatestDecision(){
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V115 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V117 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -2171,7 +2301,7 @@ async function refreshBackendMemory(){
       const gl=backendMemory.goLive||{};
       const ready=gl.ready_for_frontend_polish?"Ready":"Validate";
       const score=gl.score||"—";
-      rsb.innerHTML=`<strong>V115 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
+      rsb.innerHTML=`<strong>V117 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
     }
     const uxb=document.getElementById("uxBriefBox");
     if(uxb){
@@ -2304,7 +2434,7 @@ function renderV103Home(){
             <button class="${activeMode==="content"?"active":""}" onclick="selectWorkflow('content');renderV103Home()">Content</button>
             <button class="${activeMode==="personal"?"active":""}" onclick="selectWorkflow('personal');renderV103Home()">Personal</button>
           </div>
-          <button class="run-btn" onclick="runV115Command()">Run Engine</button>
+          <button class="run-btn" onclick="runV117Command()">Run Engine</button>
         </div>
       </div>
 
@@ -2316,14 +2446,14 @@ function renderV103Home(){
   const v103Input=document.getElementById("v103Input");
   if(v103Input){
     v103Input.addEventListener("keydown",e=>{
-      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV115Command();
+      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV117Command();
     });
     v103Input.focus();
   }
   renderRight();
 }
 
-function runV115Command(){
+function runV117Command(){
   const v103Input=document.getElementById("v103Input");
   if(!v103Input || !v103Input.value.trim()) return notify("Type a command first");
   input.value=v103Input.value.trim();
@@ -2399,7 +2529,7 @@ async function directRunFallback(command){
   return data;
 }
 
-async function runV115Command(){
+async function runV117Command(){
   const command=getVisibleCommandValue();
   if(!command){
     setRunStatus("Type a command first.", "error");
@@ -2588,7 +2718,7 @@ async function saveV111Decision(){
   }
 }
 
-async function runV115Command(){
+async function runV117Command(){
   const command=getV111Command();
   if(!command){
     setV111Status("Type a command first.", "error");
@@ -3372,6 +3502,577 @@ window.runV103Command=runV111Command;
   window.runV110Command=run115;
   window.runV109Command=run115;
   window.runV103Command=run115;
+})();
+
+
+
+(function(){
+  function esc116(value){
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function status116(message,type=""){
+    let box=document.getElementById("v116Status");
+    if(!box){
+      const host=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+      box=document.createElement("div");
+      box.id="v116Status";
+      host.appendChild(box);
+    }
+    box.className="v116-status " + (type||"");
+    box.textContent=message;
+  }
+
+  function getCommand116(){
+    const candidates=[
+      document.getElementById("v103Input"),
+      document.getElementById("input"),
+      document.querySelector("textarea"),
+      document.querySelector("input[type='text']")
+    ].filter(Boolean);
+    for(const el of candidates){
+      if(el.value && el.value.trim()) return el.value.trim();
+    }
+    return "";
+  }
+
+  function host116(){
+    return document.querySelector(".v103-hero") || (typeof workspace !== "undefined" ? workspace : document.body);
+  }
+
+  function remember116(data, command){
+    window.__lastV116Output=data;
+    window.__lastV115Output=data;
+    window.__lastV114Output=data;
+    window.__lastV112Output=data;
+    window.__lastV111Output=data;
+    window.__lastV116Command=command;
+  }
+
+  function getLast116(){
+    return window.__lastV116Output || window.__lastV115Output || window.__lastV114Output || window.__lastV112Output || window.__lastV111Output || null;
+  }
+
+  function renderOutput116(data, command){
+    const host=host116();
+    let card=document.getElementById("v116OutputCard");
+    if(!card){
+      card=document.createElement("section");
+      card.id="v116OutputCard";
+      card.className="v116-output-card";
+      host.appendChild(card);
+    }
+
+    const actions=Array.isArray(data.actions) ? data.actions : [];
+    card.innerHTML=`
+      <div class="v116-output-head">
+        <strong>Executive Engine Output</strong>
+        <span class="v115-pill">V116 · Buttons Fixed</span>
+      </div>
+      <div class="v116-output-body">
+        <div class="v116-grid">
+          <div class="v116-block full"><h4>What to do now</h4><p>${esc116(data.what_to_do_now || data.executive_summary || "Review output and execute the first action.")}</p></div>
+          <div class="v116-block"><h4>Decision</h4><p>${esc116(data.decision || "No decision returned.")}</p></div>
+          <div class="v116-block"><h4>Next Move</h4><p>${esc116(data.next_move || "No next move returned.")}</p></div>
+          <div class="v116-block full"><h4>Actions</h4><ol>${actions.length ? actions.map(a=>`<li>${esc116(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol></div>
+          <div class="v116-block"><h4>Risk</h4><p>${esc116(data.risk || "No risk returned.")}</p></div>
+          <div class="v116-block"><h4>Priority</h4><p>${esc116(data.priority || "medium")}</p></div>
+        </div>
+      </div>
+      <div class="v116-actions">
+        <button class="primary" id="v116SaveActions" onclick="saveV116Actions()">Add to Action Queue</button>
+        <button id="v116SaveDecision" onclick="saveV116Decision()">Save Decision</button>
+        <button id="v116ValidateRun" onclick="validateV116Run()">Validate Run</button>
+        <button id="v116RefreshRail" onclick="refreshV116Rail()">Refresh Right Panel</button>
+      </div>
+    `;
+
+    remember116(data, command);
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  async function refreshV116Rail(){
+    try{
+      if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+      if(typeof renderRight==="function") renderRight();
+      status116("Right panel refreshed.", "success");
+    }catch(e){
+      status116("Right panel refresh failed: "+e.message, "error");
+    }
+  }
+
+  async function validateV116Run(){
+    try{
+      status116("Validating latest run...", "");
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      const res=await fetch(API+"/run-validation?user_id="+encodeURIComponent(user));
+      if(!res.ok) throw new Error("Validation failed: "+res.status);
+      const data=await res.json();
+      const latest=data.checks?.latest_input || "latest run found";
+      status116("Validated: "+latest, "success");
+    }catch(e){
+      status116("Validate Run failed: "+e.message, "error");
+    }
+  }
+
+  async function saveV116Actions(){
+    const data=getLast116();
+    const btn=document.getElementById("v116SaveActions") || [...document.querySelectorAll("button")].find(b=>b.textContent.includes("Add to Action"));
+    if(!data || !Array.isArray(data.actions) || !data.actions.length){
+      status116("No actions available to save.", "error");
+      return;
+    }
+    if(btn){btn.disabled=true;btn.textContent="Saving Actions...";}
+    try{
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      for(const text of data.actions){
+        const res=await fetch(API+"/save-action",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            user_id:user,
+            run_id:data.run_id||null,
+            text:String(text),
+            priority:data.priority||"medium",
+            status:"open",
+            metadata:{source:"frontend_v116"}
+          })
+        });
+        if(!res.ok) throw new Error("Save action failed: "+res.status);
+      }
+      if(btn){btn.textContent="Actions Saved";}
+      status116("Actions saved to Supabase.", "success");
+      await refreshV116Rail();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+      status116("Add to Action Queue failed: "+e.message, "error");
+    }
+  }
+
+  async function saveV116Decision(){
+    const data=getLast116();
+    const btn=document.getElementById("v116SaveDecision") || [...document.querySelectorAll("button")].find(b=>b.textContent.includes("Save Decision"));
+    if(!data || !data.decision){
+      status116("No decision available to save.", "error");
+      return;
+    }
+    if(btn){btn.disabled=true;btn.textContent="Saving Decision...";}
+    try{
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      const res=await fetch(API+"/save-decision",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:user,
+          run_id:data.run_id||null,
+          decision:data.decision,
+          risk:data.risk||"",
+          priority:data.priority||"medium",
+          rationale:data.why_this_matters||data.reality_check||"",
+          next_move:data.next_move||"",
+          metadata:{source:"frontend_v116"}
+        })
+      });
+      if(!res.ok) throw new Error("Save decision failed: "+res.status);
+      if(btn){btn.textContent="Decision Saved";}
+      status116("Decision saved to Supabase.", "success");
+      await refreshV116Rail();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+      status116("Save Decision failed: "+e.message, "error");
+    }
+  }
+
+  async function runV117Command(){
+    const command=getCommand116();
+    if(!command){
+      status116("Type a command first.", "error");
+      return;
+    }
+
+    const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+    btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+    status116("Running /run...", "");
+
+    try{
+      const payload={
+        input:command,
+        mode:(typeof activeMode!=="undefined"&&activeMode)?activeMode:"execution",
+        depth:(typeof activeDepth!=="undefined"&&activeDepth)?activeDepth:"standard",
+        user_id:(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user",
+        session_id:(typeof activeThreadId!=="undefined"&&activeThreadId)?activeThreadId:"frontend_v116",
+        auto_save:true
+      };
+
+      const res=await fetch(API+"/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const text=await res.text();
+        throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,180));
+      }
+
+      const data=await res.json();
+
+      try{
+        if(typeof input!=="undefined" && input) input.value=command;
+        if(typeof getActiveThread==="function"){
+          const t=getActiveThread();
+          t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+          t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+          if(typeof saveThreads==="function") saveThreads();
+        }
+      }catch(e){ console.warn("Thread save skipped",e); }
+
+      renderOutput116(data,command);
+      status116("Engine response received.", "success");
+      setTimeout(refreshV116Rail,900);
+
+    }catch(e){
+      status116("Run failed: "+e.message, "error");
+      console.error(e);
+    }finally{
+      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText||"Run Engine";});
+    }
+  }
+
+  document.addEventListener("click", function(e){
+    const btn=e.target.closest("button");
+    if(!btn) return;
+    const text=(btn.textContent||"").trim().toLowerCase();
+    if(text.includes("add to action queue")){ e.preventDefault(); saveV116Actions(); }
+    if(text.includes("save decision")){ e.preventDefault(); saveV116Decision(); }
+    if(text.includes("validate run")){ e.preventDefault(); validateV116Run(); }
+    if(text.includes("refresh right panel")){ e.preventDefault(); refreshV116Rail(); }
+  }, true);
+
+  window.renderOutput116=renderOutput116;
+  window.saveV116Actions=saveV116Actions;
+  window.saveV116Decision=saveV116Decision;
+  window.validateV116Run=validateV116Run;
+  window.refreshV116Rail=refreshV116Rail;
+  window.runV116Command=runV116Command;
+
+  window.runV115Command=runV116Command;
+  window.runV114Command=runV116Command;
+  window.runV112Command=runV116Command;
+  window.runV111Command=runV116Command;
+  window.runV110Command=runV116Command;
+  window.runV109Command=runV116Command;
+  window.runV103Command=runV116Command;
+
+  window.saveV115Actions=saveV116Actions;
+  window.saveV114Actions=saveV116Actions;
+  window.saveV112Actions=saveV116Actions;
+  window.saveV111Actions=saveV116Actions;
+
+  window.saveV115Decision=saveV116Decision;
+  window.saveV114Decision=saveV116Decision;
+  window.saveV112Decision=saveV116Decision;
+  window.saveV111Decision=saveV116Decision;
+})();
+
+
+
+(function(){
+  function esc117(value){
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function status117(message,type=""){
+    let box=document.getElementById("v117Status");
+    if(!box){
+      const host=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+      box=document.createElement("div");
+      box.id="v117Status";
+      host.appendChild(box);
+    }
+    box.className="v117-status " + (type||"");
+    box.textContent=message;
+  }
+
+  function getCommand117(){
+    const candidates=[
+      document.getElementById("v103Input"),
+      document.getElementById("input"),
+      document.querySelector("textarea"),
+      document.querySelector("input[type='text']")
+    ].filter(Boolean);
+    for(const el of candidates){
+      if(el.value && el.value.trim()) return el.value.trim();
+    }
+    return "";
+  }
+
+  function host117(){
+    return document.querySelector(".v103-hero") || (typeof workspace !== "undefined" ? workspace : document.body);
+  }
+
+  function remember117(data, command){
+    window.__lastV117Output=data;
+    window.__lastV116Output=data;
+    window.__lastV115Output=data;
+    window.__lastV114Output=data;
+    window.__lastV112Output=data;
+    window.__lastV111Output=data;
+    window.__lastV117Command=command;
+  }
+
+  function getLast117(){
+    return window.__lastV117Output || window.__lastV116Output || window.__lastV115Output || window.__lastV114Output || window.__lastV112Output || window.__lastV111Output || null;
+  }
+
+  function renderOutput117(data, command){
+    const host=host117();
+    let card=document.getElementById("v117OutputCard");
+    if(!card){
+      card=document.createElement("section");
+      card.id="v117OutputCard";
+      card.className="v117-output-card";
+      host.appendChild(card);
+    }
+
+    const actions=Array.isArray(data.actions) ? data.actions : [];
+    card.innerHTML=`
+      <div class="v117-output-head">
+        <strong>Executive Engine Output</strong>
+        <span class="v115-pill">V117 · Persistence Check</span>
+      </div>
+      <div class="v117-output-body">
+        <div class="v117-grid">
+          <div class="v117-block full"><h4>What to do now</h4><p>${esc117(data.what_to_do_now || data.executive_summary || "Review output and execute the first action.")}</p></div>
+          <div class="v117-block"><h4>Decision</h4><p>${esc117(data.decision || "No decision returned.")}</p></div>
+          <div class="v117-block"><h4>Next Move</h4><p>${esc117(data.next_move || "No next move returned.")}</p></div>
+          <div class="v117-block full"><h4>Actions</h4><ol>${actions.length ? actions.map(a=>`<li>${esc117(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol></div>
+          <div class="v117-block"><h4>Risk</h4><p>${esc117(data.risk || "No risk returned.")}</p></div>
+          <div class="v117-block"><h4>Priority</h4><p>${esc117(data.priority || "medium")}</p></div>
+        </div>
+      </div>
+      <div class="v117-actions">
+        <button class="primary" id="v117SaveActions" onclick="saveV117Actions()">Add to Action Queue</button>
+        <button id="v117SaveDecision" onclick="saveV117Decision()">Save Decision</button>
+        <button id="v117ValidateRun" onclick="validateV117Run()">Validate Run</button>
+        <button id="v117CheckPersistence" onclick="checkV117Persistence()">Check Persistence</button>
+        <button id="v117RefreshRail" onclick="refreshV117Rail()">Refresh Right Panel</button>
+      </div>
+    `;
+
+    remember117(data, command);
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  async function refreshV117Rail(){
+    try{
+      if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+      if(typeof renderRight==="function") renderRight();
+      status117("Right panel refreshed.", "success");
+    }catch(e){
+      status117("Right panel refresh failed: "+e.message, "error");
+    }
+  }
+
+  async function checkV117Persistence(){
+    try{
+      status117("Checking saved rows...", "");
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      const res=await fetch(API+"/button-persistence-check?user_id="+encodeURIComponent(user));
+      if(!res.ok) throw new Error("Persistence check failed: "+res.status);
+      const data=await res.json();
+      status117(`Persistence: ${data.counts.open_actions} actions · ${data.counts.saved_decisions} decisions`, "success");
+      return data;
+    }catch(e){
+      status117("Persistence check failed: "+e.message, "error");
+    }
+  }
+
+  async function validateV117Run(){
+    try{
+      status117("Validating latest run...", "");
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      const res=await fetch(API+"/run-validation?user_id="+encodeURIComponent(user));
+      if(!res.ok) throw new Error("Validation failed: "+res.status);
+      const data=await res.json();
+      const latest=data.checks?.latest_input || "latest run found";
+      status117("Validated: "+latest, "success");
+    }catch(e){
+      status117("Validate Run failed: "+e.message, "error");
+    }
+  }
+
+  async function saveV117Actions(){
+    const data=getLast117();
+    const btn=document.getElementById("v117SaveActions") || [...document.querySelectorAll("button")].find(b=>b.textContent.includes("Add to Action"));
+    if(!data || !Array.isArray(data.actions) || !data.actions.length){
+      status117("No actions available to save.", "error");
+      return;
+    }
+    if(btn){btn.disabled=true;btn.textContent="Saving Actions...";}
+    try{
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      let saved=0;
+      for(const text of data.actions){
+        const res=await fetch(API+"/save-action",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            user_id:user,
+            run_id:data.run_id||null,
+            text:String(text),
+            priority:data.priority||"medium",
+            status:"open",
+            metadata:{source:"frontend_v117"}
+          })
+        });
+        if(!res.ok) throw new Error("Save action failed: "+res.status);
+        saved++;
+      }
+      if(btn){btn.textContent="Actions Saved";btn.classList.add("saved");}
+      status117(`${saved} action(s) saved to Supabase.`, "success");
+      await refreshV117Rail();
+      setTimeout(checkV117Persistence, 600);
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+      status117("Add to Action Queue failed: "+e.message, "error");
+    }
+  }
+
+  async function saveV117Decision(){
+    const data=getLast117();
+    const btn=document.getElementById("v117SaveDecision") || [...document.querySelectorAll("button")].find(b=>b.textContent.includes("Save Decision"));
+    if(!data || !data.decision){
+      status117("No decision available to save.", "error");
+      return;
+    }
+    if(btn){btn.disabled=true;btn.textContent="Saving Decision...";}
+    try{
+      const user=(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user";
+      const res=await fetch(API+"/save-decision",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:user,
+          run_id:data.run_id||null,
+          decision:data.decision,
+          risk:data.risk||"",
+          priority:data.priority||"medium",
+          rationale:data.why_this_matters||data.reality_check||"",
+          next_move:data.next_move||"",
+          metadata:{source:"frontend_v117"}
+        })
+      });
+      if(!res.ok) throw new Error("Save decision failed: "+res.status);
+      if(btn){btn.textContent="Decision Saved";btn.classList.add("saved");}
+      status117("Decision saved to Supabase.", "success");
+      await refreshV117Rail();
+      setTimeout(checkV117Persistence, 600);
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+      status117("Save Decision failed: "+e.message, "error");
+    }
+  }
+
+  async function runV117Command(){
+    const command=getCommand117();
+    if(!command){
+      status117("Type a command first.", "error");
+      return;
+    }
+
+    const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+    btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+    status117("Running /run...", "");
+
+    try{
+      const payload={
+        input:command,
+        mode:(typeof activeMode!=="undefined"&&activeMode)?activeMode:"execution",
+        depth:(typeof activeDepth!=="undefined"&&activeDepth)?activeDepth:"standard",
+        user_id:(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user",
+        session_id:(typeof activeThreadId!=="undefined"&&activeThreadId)?activeThreadId:"frontend_v117",
+        auto_save:true
+      };
+
+      const res=await fetch(API+"/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const text=await res.text();
+        throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,180));
+      }
+
+      const data=await res.json();
+
+      try{
+        if(typeof input!=="undefined" && input) input.value=command;
+        if(typeof getActiveThread==="function"){
+          const t=getActiveThread();
+          t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+          t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+          if(typeof saveThreads==="function") saveThreads();
+        }
+      }catch(e){ console.warn("Thread save skipped",e); }
+
+      renderOutput117(data,command);
+      status117("Engine response received.", "success");
+      setTimeout(refreshV117Rail,900);
+
+    }catch(e){
+      status117("Run failed: "+e.message, "error");
+      console.error(e);
+    }finally{
+      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText||"Run Engine";});
+    }
+  }
+
+  document.addEventListener("click", function(e){
+    const btn=e.target.closest("button");
+    if(!btn) return;
+    const text=(btn.textContent||"").trim().toLowerCase();
+    if(text.includes("add to action queue")){ e.preventDefault(); saveV117Actions(); }
+    if(text.includes("save decision")){ e.preventDefault(); saveV117Decision(); }
+    if(text.includes("validate run")){ e.preventDefault(); validateV117Run(); }
+    if(text.includes("check persistence")){ e.preventDefault(); checkV117Persistence(); }
+    if(text.includes("refresh right panel")){ e.preventDefault(); refreshV117Rail(); }
+  }, true);
+
+  window.renderOutput117=renderOutput117;
+  window.saveV117Actions=saveV117Actions;
+  window.saveV117Decision=saveV117Decision;
+  window.validateV117Run=validateV117Run;
+  window.checkV117Persistence=checkV117Persistence;
+  window.refreshV117Rail=refreshV117Rail;
+  window.runV117Command=runV117Command;
+
+  window.runV116Command=runV117Command;
+  window.runV115Command=runV117Command;
+  window.runV114Command=runV117Command;
+  window.runV112Command=runV117Command;
+  window.runV111Command=runV117Command;
+  window.runV110Command=runV117Command;
+  window.runV109Command=runV117Command;
+  window.runV103Command=runV117Command;
+
+  window.saveV116Actions=saveV117Actions;
+  window.saveV115Actions=saveV117Actions;
+  window.saveV114Actions=saveV117Actions;
+  window.saveV112Actions=saveV117Actions;
+  window.saveV111Actions=saveV117Actions;
+
+  window.saveV116Decision=saveV117Decision;
+  window.saveV115Decision=saveV117Decision;
+  window.saveV114Decision=saveV117Decision;
+  window.saveV112Decision=saveV117Decision;
+  window.saveV111Decision=saveV117Decision;
 })();
 
 </script>

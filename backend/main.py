@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V115"
+APP_NAME = "Executive Engine OS V117"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="115.0.0")
+app = FastAPI(title=APP_NAME, version="117.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +41,7 @@ Executive Engine OS real project context:
 - Product: AI executive command center for CEOs/COOs/founders.
 - Backend live on Render: https://executive-engine-os.onrender.com
 - Frontend live on Render: https://executive-engine-frontend.onrender.com
-- Current backend: V115 quality fix.
+- Current backend: V117 quality fix.
 - Previous confirmed backend: V96.2 technical loop working.
 - OpenAI connected.
 - Supabase connected.
@@ -62,7 +62,7 @@ Executive Engine OS real project context:
 - Frontend renders structured output and right sidebar memory/status.
 - UI is usable but not final.
 - Figma redesign comes later, after backend/output quality is stable.
-- Current priority: V115 release candidate stability, learning dashboard, profile-aware output, response quality, frontend DB validation, right-panel persistence, and manual execution loop.
+- Current priority: V117 release candidate stability, learning dashboard, profile-aware output, response quality, frontend DB validation, right-panel persistence, and manual execution loop.
 - Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
 - Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
 
@@ -89,7 +89,7 @@ Forbidden generic advice:
 
 When asked "What should I focus on today to move Executive Engine OS forward?":
 The correct answer must be about:
-- confirming V115 backend response quality
+- confirming V117 backend response quality
 - testing /run from frontend
 - checking /memory for a new recent_run
 - using Save Action and Save Decision buttons
@@ -222,7 +222,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
             "Open /memory and confirm a new recent_run appears at the top.",
             "Click Save Action in the frontend and confirm /actions returns it.",
             "Click Save Decision in the frontend and confirm /decisions returns it.",
-            "Document pass/fail before building V115."
+            "Document pass/fail before building V117."
         ],
         "priority": "high",
         "risk": "The main risk is staying stuck because the input, backend, or decision context is incomplete.",
@@ -257,7 +257,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
         "constraint": reason,
         "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
         "manual_execution_only": True,
-        "version": "V115",
+        "version": "V117",
         "project_context_applied": True
     }
 
@@ -344,7 +344,7 @@ def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
 
     base["execution_loop"] = build_execution_loop(base)
     base["manual_execution_only"] = True
-    base["version"] = "V115"
+    base["version"] = "V117"
     base["project_context_applied"] = True
     return base
 
@@ -378,7 +378,7 @@ PROJECT-SPECIFIC DIRECTIVE:
 The user is asking what to do next for Executive Engine OS.
 Do not answer with generic product/customer/market advice.
 Answer with backend/frontend/Supabase execution validation steps.
-Focus on V115 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
+Focus on V117 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
 """
     return ""
 
@@ -464,7 +464,7 @@ def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any
 
 def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
     return f"""
-You are Executive Engine OS V115.
+You are Executive Engine OS V117.
 
 PROJECT CONTEXT:
 {PROJECT_CONTEXT}
@@ -679,7 +679,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V115"}
+    return {"ok": True, "service": APP_NAME, "version": "V117"}
 
 
 @app.get("/health")
@@ -687,7 +687,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V115",
+        "version": "V117",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -702,11 +702,11 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
             "/engine-state", "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
-            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/frontend-contract", "/v115-smoke", "/ship-readiness", "/deploy-verifier", "/frontend-smoke-test", "/v114-check", "/run-validation", "/frontend-recovery", "/run-execution-check", "/frontend-live-status", "/v111-check", "/run-button-diagnostics", "/frontend-stability", "/navigation-map", "/frontend-diagnostics", "/v108-check", "/frontend-config", "/cleanup-check", "/visual-brief", "/layout-brief", "/figma-brief", "/ux-flow", "/ux-brief", "/next-build", "/system-status", "/go-live-check", "/learning", "/learning-events", "/operator-brief", "/profile-status", "/profile", "/robots.txt"
+            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/button-persistence-check", "/v117-smoke", "/frontend-button-map", "/button-action-contract", "/v116-smoke", "/frontend-contract", "/v115-smoke", "/ship-readiness", "/deploy-verifier", "/frontend-smoke-test", "/v114-check", "/run-validation", "/frontend-recovery", "/run-execution-check", "/frontend-live-status", "/v111-check", "/run-button-diagnostics", "/frontend-stability", "/navigation-map", "/frontend-diagnostics", "/v108-check", "/frontend-config", "/cleanup-check", "/visual-brief", "/layout-brief", "/figma-brief", "/ux-flow", "/ux-brief", "/next-build", "/system-status", "/go-live-check", "/learning", "/learning-events", "/operator-brief", "/profile-status", "/profile", "/robots.txt"
         ],
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
@@ -720,7 +720,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -731,7 +731,7 @@ async def schema():
 async def project_context():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
@@ -787,9 +787,9 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V115", "output": normalize_output(output)}
+        return {"ok": True, "version": "V117", "output": normalize_output(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V115", "output": normalize_output(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V117", "output": normalize_output(fallback_response(str(exc)))}
 
 
 
@@ -813,7 +813,7 @@ async def quality_test():
         generic_hits = [term for term in GENERIC_MEMORY_BLOCKLIST if term in text]
         return {
             "ok": True,
-            "version": "V115",
+            "version": "V117",
             "generic_hits": generic_hits,
             "passed_quality_gate": len(generic_hits) == 0,
             "output": normalized
@@ -821,7 +821,7 @@ async def quality_test():
     except Exception as exc:
         return {
             "ok": False,
-            "version": "V115",
+            "version": "V117",
             "error": str(exc),
             "output": normalize_output(fallback_response(str(exc)))
         }
@@ -854,7 +854,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V115", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
+    return {"ok": True, "version": "V117", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
 @app.get("/memory")
@@ -865,7 +865,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
-    return {"ok": True, "version": "V115", "summary": summarize_memory_for_prompt(memory_data)}
+    return {"ok": True, "version": "V117", "summary": summarize_memory_for_prompt(memory_data)}
 
 
 @app.post("/stability-check")
@@ -884,7 +884,7 @@ async def stability_check():
         "memory_injection": "last_3_items",
         "project_context_applied": True
     }
-    return {"ok": True, "version": "V115", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V117", "health": health_data, "checks": checks}
 
 
 
@@ -902,7 +902,7 @@ async def engine_state(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "supabase_enabled": memory_data.get("supabase_enabled", False),
         "today_focus": {
             "title": latest_output.get("what_to_do_now") if isinstance(latest_output, dict) else "No focus yet",
@@ -985,7 +985,7 @@ async def actions(user_id: str = Query("local_user"), status: str = Query("open"
         return {"ok": True, "supabase_enabled": False, "actions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("actions", f"?user_id=eq.{user['id']}&status=eq.{status}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V115", "actions": dedupe_rows(rows, "text")}
+    return {"ok": True, "version": "V117", "actions": dedupe_rows(rows, "text")}
 
 @app.post("/save-action")
 async def save_action(req: SaveActionRequest):
@@ -995,7 +995,7 @@ async def save_action(req: SaveActionRequest):
 
     duplicate = await existing_action(user["id"], req.text)
     if duplicate:
-        return {"ok": True, "version": "V115", "duplicate": True, "action": duplicate}
+        return {"ok": True, "version": "V117", "duplicate": True, "action": duplicate}
 
     row = await sb_insert("actions", {
         "user_id": user["id"],
@@ -1007,7 +1007,7 @@ async def save_action(req: SaveActionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "action_saved", None, {"action_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V115", "duplicate": False, "action": row}
+    return {"ok": True, "version": "V117", "duplicate": False, "action": row}
 
 @app.get("/decisions")
 async def decisions(user_id: str = Query("local_user")):
@@ -1015,7 +1015,7 @@ async def decisions(user_id: str = Query("local_user")):
         return {"ok": True, "supabase_enabled": False, "decisions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("decisions", f"?user_id=eq.{user['id']}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V115", "decisions": dedupe_rows(rows, "decision")}
+    return {"ok": True, "version": "V117", "decisions": dedupe_rows(rows, "decision")}
 
 @app.post("/save-decision")
 async def save_decision(req: SaveDecisionRequest):
@@ -1025,7 +1025,7 @@ async def save_decision(req: SaveDecisionRequest):
 
     duplicate = await existing_decision(user["id"], req.decision)
     if duplicate:
-        return {"ok": True, "version": "V115", "duplicate": True, "decision": duplicate}
+        return {"ok": True, "version": "V117", "duplicate": True, "decision": duplicate}
 
     row = await sb_insert("decisions", {
         "user_id": user["id"],
@@ -1038,7 +1038,7 @@ async def save_decision(req: SaveDecisionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "decision_saved", None, {"decision_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V115", "duplicate": False, "decision": row}
+    return {"ok": True, "version": "V117", "duplicate": False, "decision": row}
 
 
 
@@ -1117,14 +1117,141 @@ def build_learning_summary(memory_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 
+
+
+@app.get("/button-persistence-check")
+async def button_persistence_check(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    recent_runs = memory_data.get("recent_runs") or []
+    open_actions = memory_data.get("open_actions") or []
+    recent_decisions = memory_data.get("recent_decisions") or []
+
+    latest_run = recent_runs[0] if recent_runs else None
+    latest_action = open_actions[0] if open_actions else None
+    latest_decision = recent_decisions[0] if recent_decisions else None
+
+    return {
+        "ok": True,
+        "version": "V117",
+        "purpose": "Confirm output buttons save data and the right rail can refresh from Supabase.",
+        "counts": {
+            "recent_runs": len(recent_runs),
+            "open_actions": len(open_actions),
+            "saved_decisions": len(recent_decisions),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "latest": {
+            "run_input": latest_run.get("input") if isinstance(latest_run, dict) else None,
+            "action": latest_action.get("text") if isinstance(latest_action, dict) else None,
+            "decision": latest_decision.get("decision") if isinstance(latest_decision, dict) else None
+        },
+        "pass_condition": "After clicking Add to Action Queue and Save Decision, open_actions and saved_decisions counts should increase or dedupe should return an existing row.",
+        "next_move": "Run one command, click Add to Action Queue, click Save Decision, then refresh /button-persistence-check."
+    }
+
+
+@app.get("/v117-smoke")
+async def v117_smoke(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V117",
+        "backend_ready": True,
+        "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+        "frontend_buttons": {
+            "run": "runV117Command()",
+            "save_actions": "saveV117Actions()",
+            "save_decision": "saveV117Decision()",
+            "validate": "validateV117Run()",
+            "refresh": "refreshV117Rail()"
+        },
+        "test": [
+            "Hard refresh frontend.",
+            "Run one command.",
+            "Confirm V117 output card appears.",
+            "Click Add to Action Queue.",
+            "Confirm button changes to Actions Saved or visible success appears.",
+            "Click Save Decision.",
+            "Confirm button changes to Decision Saved or visible success appears.",
+            "Click Validate Run.",
+            "Check /button-persistence-check."
+        ]
+    }
+
+
+@app.get("/frontend-button-map")
+async def frontend_button_map():
+    return {
+        "ok": True,
+        "version": "V117",
+        "button_contract": {
+            "Run Engine": "runV117Command",
+            "Add to Action Queue": "saveV117Actions",
+            "Save Decision": "saveV117Decision",
+            "Validate Run": "validateV117Run",
+            "Refresh Right Panel": "refreshV117Rail"
+        },
+        "fallbacks": [
+            "inline onclick",
+            "document click listener",
+            "legacy alias mapping",
+            "visible status box"
+        ]
+    }
+
+@app.get("/button-action-contract")
+async def button_action_contract():
+    return {
+        "ok": True,
+        "version": "V117",
+        "problem_fixed": "Output buttons could render from older output cards and not bind correctly.",
+        "contract": {
+            "add_action_button": "window.saveV117Actions()",
+            "save_decision_button": "window.saveV117Decision()",
+            "refresh_right_panel_button": "window.refreshV117Rail()",
+            "validate_run_button": "window.validateV117Run()",
+            "run_button": "window.runV117Command()"
+        },
+        "rules": [
+            "Buttons use inline onclick handlers.",
+            "Event delegation also catches button clicks.",
+            "All old run/save/validate aliases point to V117.",
+            "Failure messages show visibly in the command card."
+        ]
+    }
+
+
+@app.get("/v116-smoke")
+async def v116_smoke(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V117",
+        "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+        "counts": {
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "test": [
+            "Run Engine",
+            "Click Add to Action Queue",
+            "Click Save Decision",
+            "Click Validate Run",
+            "Confirm visible status messages appear",
+            "Confirm right rail refreshes"
+        ]
+    }
+
 @app.get("/frontend-contract")
 async def frontend_contract():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "contract": {
             "visible_input_id": "v103Input",
-            "run_function": "runV115Command",
+            "run_function": "runV117Command",
             "run_endpoint": "POST /run",
             "output_renderer": "renderOutput115",
             "save_actions_endpoint": "POST /save-action",
@@ -1148,7 +1275,7 @@ async def v115_smoke(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "backend_ready": True,
         "supabase_enabled": bool(memory_data.get("supabase_enabled")),
         "counts": {
@@ -1159,7 +1286,7 @@ async def v115_smoke(user_id: str = Query("local_user")):
         },
         "frontend_test": [
             "Hard refresh frontend.",
-            "Confirm V115 appears in UI/status.",
+            "Confirm V117 appears in UI/status.",
             "Type a real command.",
             "Click Run Engine.",
             "Confirm output card appears.",
@@ -1190,11 +1317,11 @@ async def ship_readiness(user_id: str = Query("local_user")):
     passed = sum(1 for c in checks if c["passed"])
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "score": f"{passed}/{len(checks)}",
         "ready": passed >= 6,
         "checks": checks,
-        "decision": "Frontend can be considered usable if V115 smoke test passes.",
+        "decision": "Frontend can be considered usable if V117 smoke test passes.",
         "next_move": "Stop building versions and test the deployed frontend end-to-end."
     }
 
@@ -1203,7 +1330,7 @@ async def deploy_verifier(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "purpose": "Verify backend, database, frontend contract, and run/save loop before more feature work.",
         "checks": {
             "backend_live": True,
@@ -1225,7 +1352,7 @@ async def deploy_verifier(user_id: str = Query("local_user")):
             "inline_output_required": True,
             "right_panel_refresh_required": True
         },
-        "go_no_go": "GO if V115 frontend can run a command, render output, save an action, save a decision, and refresh right rail."
+        "go_no_go": "GO if V117 frontend can run a command, render output, save an action, save a decision, and refresh right rail."
     }
 
 
@@ -1233,7 +1360,7 @@ async def deploy_verifier(user_id: str = Query("local_user")):
 async def frontend_smoke_test():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "manual_test": [
             "Hard refresh frontend.",
             "Confirm command box is visible.",
@@ -1246,7 +1373,7 @@ async def frontend_smoke_test():
             "Open /run-validation and confirm latest_input matches your prompt."
         ],
         "common_failure": {
-            "button_no_response": "Open browser console. Check whether runV115Command is defined.",
+            "button_no_response": "Open browser console. Check whether runV117Command is defined.",
             "backend_offline": "Check /health and Render backend deploy.",
             "no_right_panel_data": "Check /engine-state.",
             "old_ui_cached": "Hard refresh or clear browser cache."
@@ -1258,7 +1385,7 @@ async def frontend_smoke_test():
 async def v114_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     checks = [
-        {"name": "Backend V115 live", "passed": True},
+        {"name": "Backend V117 live", "passed": True},
         {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
         {"name": "Supabase accessible", "passed": bool(memory_data.get("supabase_enabled"))},
         {"name": "Recent run exists", "passed": len(memory_data.get("recent_runs") or []) >= 1},
@@ -1267,11 +1394,11 @@ async def v114_check(user_id: str = Query("local_user")):
     ]
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "passed": sum(1 for c in checks if c["passed"]),
         "total": len(checks),
         "checks": checks,
-        "next_move": "Deploy V115 frontend, hard refresh, and run the smoke test."
+        "next_move": "Deploy V117 frontend, hard refresh, and run the smoke test."
     }
 
 @app.get("/run-validation")
@@ -1283,7 +1410,7 @@ async def run_validation(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "purpose": "Validate that frontend Run Engine creates a saved backend run and returns renderable output.",
         "checks": {
             "backend_live": True,
@@ -1305,7 +1432,7 @@ async def run_validation(user_id: str = Query("local_user")):
 async def frontend_recovery():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "recovery_strategy": "The frontend now includes a visible recovery output area and direct run fallback that does not depend on the older chat renderer.",
         "fixed_paths": [
             "Visible command textarea -> direct POST /run",
@@ -1331,12 +1458,12 @@ async def run_execution_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "purpose": "Confirm the frontend Run Engine button has a direct, reliable execution path.",
         "execution_path": [
             "Visible textarea is read directly.",
             "Payload is posted directly to POST /run.",
-            "Assistant output is rendered by V115 renderer.",
+            "Assistant output is rendered by V117 renderer.",
             "Right rail refreshes with /engine-state.",
             "Saved run appears in Supabase recent_runs."
         ],
@@ -1355,7 +1482,7 @@ async def frontend_live_status(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "backend_live": True,
         "api_base": "https://executive-engine-os.onrender.com",
         "supabase_enabled": bool(memory_data.get("supabase_enabled")),
@@ -1367,7 +1494,7 @@ async def frontend_live_status(user_id: str = Query("local_user")):
             "memory_items": len(memory_data.get("memory_items") or [])
         },
         "frontend_message": "Backend live. Use /run for command execution and /engine-state for right rail refresh.",
-        "run_button_expected": "Visible command box -> runV115Command -> POST /run fallback if sendMessage fails."
+        "run_button_expected": "Visible command box -> runV117Command -> POST /run fallback if sendMessage fails."
     }
 
 
@@ -1375,7 +1502,7 @@ async def frontend_live_status(user_id: str = Query("local_user")):
 async def v110_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     checks = [
-        {"name": "Backend V115 live", "passed": True},
+        {"name": "Backend V117 live", "passed": True},
         {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
         {"name": "Supabase memory accessible", "passed": bool(memory_data.get("supabase_enabled"))},
         {"name": "Engine state available", "passed": True},
@@ -1383,21 +1510,21 @@ async def v110_check(user_id: str = Query("local_user")):
     ]
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "checks": checks,
         "passed": sum(1 for c in checks if c["passed"]),
         "total": len(checks),
-        "next_move": "Deploy V115 frontend, hard refresh, click Refresh/Sync Local, then run one command from the visible command box."
+        "next_move": "Deploy V117 frontend, hard refresh, click Refresh/Sync Local, then run one command from the visible command box."
     }
 
 @app.get("/run-button-diagnostics")
 async def run_button_diagnostics():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "issue_fixed": "V108 Run Engine button could fail because the simplified V103 command UI did not reliably sync the visible textarea with the original hidden input/send flow.",
         "frontend_fix": [
-            "Run button now calls runV115Command() directly.",
+            "Run button now calls runV117Command() directly.",
             "Visible command textarea is read directly.",
             "If sendMessage exists, it is used after syncing input.",
             "If sendMessage fails, frontend posts directly to /run.",
@@ -1411,7 +1538,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "stability_status": "frontend_stability_polish",
         "checks": {
             "backend_live": True,
@@ -1430,7 +1557,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
             "No hidden input box",
             "No broken navigation links"
         ],
-        "next_move": "Deploy V115 frontend and confirm the home screen, right sidebar, Learning page, and Profile page all render without layout breaks."
+        "next_move": "Deploy V117 frontend and confirm the home screen, right sidebar, Learning page, and Profile page all render without layout breaks."
     }
 
 
@@ -1438,7 +1565,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
 async def navigation_map():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "routes": {
             "Command": "Home command center",
             "Plan Today": "daily_brief workflow",
@@ -1456,7 +1583,7 @@ async def frontend_diagnostics(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "frontend_expected": {
             "api_base": "https://executive-engine-os.onrender.com",
             "frontend_base": "https://executive-engine-frontend.onrender.com",
@@ -1485,7 +1612,7 @@ async def frontend_diagnostics(user_id: str = Query("local_user")):
 async def v107_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     checks = [
-        {"name": "Backend V115 live", "passed": True},
+        {"name": "Backend V117 live", "passed": True},
         {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
         {"name": "Supabase enabled", "passed": bool(memory_data.get("supabase_enabled"))},
         {"name": "Recent runs available", "passed": len(memory_data.get("recent_runs") or []) >= 1},
@@ -1494,18 +1621,18 @@ async def v107_check(user_id: str = Query("local_user")):
     ]
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "checks": checks,
         "passed": sum(1 for c in checks if c["passed"]),
         "total": len(checks),
-        "next_move": "Deploy V115 frontend, hard refresh, and verify the command box plus right panel load cleanly."
+        "next_move": "Deploy V117 frontend, hard refresh, and verify the command box plus right panel load cleanly."
     }
 
 @app.get("/frontend-config")
 async def frontend_config():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "api_base": "https://executive-engine-os.onrender.com",
         "frontend_base": "https://executive-engine-frontend.onrender.com",
         "required_frontend_behaviors": [
@@ -1526,7 +1653,7 @@ async def cleanup_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "checks": {
             "backend_live": True,
             "supabase_enabled": bool(memory_data.get("supabase_enabled")),
@@ -1538,14 +1665,14 @@ async def cleanup_check(user_id: str = Query("local_user")):
             "auto_loop_enabled": False
         },
         "decision": "Frontend cleanup can proceed if command input, right rail, save buttons, learning page, and profile page all load without console errors.",
-        "next_move": "Deploy V115 frontend, hard refresh, run one prompt, save one action, save one decision, and confirm right rail updates."
+        "next_move": "Deploy V117 frontend, hard refresh, run one prompt, save one action, save one decision, and confirm right rail updates."
     }
 
 @app.get("/visual-brief")
 async def visual_brief():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "visual_decision": "Polish the existing V103 command-first layout without changing backend logic.",
         "style_direction": {
             "tone": "high-end executive SaaS",
@@ -1580,7 +1707,7 @@ async def visual_brief():
 async def layout_brief():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "layout_decision": "Command-first executive workspace.",
         "primary_screen_order": [
             "Top bar: product name + compact system state",
@@ -1612,7 +1739,7 @@ async def figma_brief(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "title": "Executive Engine OS — Figma UI Brief",
         "purpose": "Create a high-end executive command center that is obvious in under 5 seconds.",
         "current_product_state": {
@@ -1700,7 +1827,7 @@ async def figma_brief(user_id: str = Query("local_user")):
 async def ux_flow():
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "screen_order": [
             {
                 "screen": "Home / Command",
@@ -1739,7 +1866,7 @@ async def ux_brief(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "brief": {
             "ux_goal": "Make Executive Engine OS feel obvious when a CEO logs in: choose a workflow, type one command, get a decision, save actions/decisions, and see memory update.",
             "current_state": {
@@ -1787,9 +1914,9 @@ async def ux_brief(user_id: str = Query("local_user")):
 async def next_build():
     return {
         "ok": True,
-        "version": "V115",
-        "recommended_next": "V115 — Frontend UX Simplification Build",
-        "why": "V115 defines the Figma-ready flow. V115 should implement the simplified frontend layout without changing backend logic.",
+        "version": "V117",
+        "recommended_next": "V117 — Frontend UX Simplification Build",
+        "why": "V117 defines the Figma-ready flow. V117 should implement the simplified frontend layout without changing backend logic.",
         "requirements": [
             "No new backend features unless a frontend bug blocks usage.",
             "Simplify the home screen.",
@@ -1813,7 +1940,7 @@ async def system_status(user_id: str = Query("local_user")):
     learning_data = build_learning_summary(memory_data) if "build_learning_summary" in globals() else {}
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "status": "release_candidate",
         "backend": {
             "live": True,
@@ -1867,11 +1994,11 @@ async def go_live_check(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "ready_for_frontend_polish": ready,
         "score": f"{passed}/{total}",
         "checks": checks,
-        "decision": "Proceed to Figma/UI polish after verifying frontend displays V115 status cleanly." if ready else "Do not add new features. Fix failed checks first.",
+        "decision": "Proceed to Figma/UI polish after verifying frontend displays V117 status cleanly." if ready else "Do not add new features. Fix failed checks first.",
         "next_move": "Run one frontend prompt, save one action and one decision, then recheck /go-live-check."
     }
 
@@ -1880,7 +2007,7 @@ async def learning(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "learning": build_learning_summary(memory_data)
     }
 
@@ -1891,7 +2018,7 @@ async def learning_events(user_id: str = Query("local_user"), limit: int = Query
         return {"ok": True, "supabase_enabled": False, "events": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("learning_events", f"?user_id=eq.{user['id']}&order=created_at.desc&limit={limit}")
-    return {"ok": True, "version": "V115", "events": rows}
+    return {"ok": True, "version": "V117", "events": rows}
 
 
 @app.get("/operator-brief")
@@ -1900,7 +2027,7 @@ async def operator_brief(user_id: str = Query("local_user")):
     learning_data = build_learning_summary(memory_data)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "brief": {
             "today_focus": learning_data["product_read"]["recommended_next"],
             "system_status": "Backend + Supabase memory live. Learning dashboard active. Manual execution only.",
@@ -1928,7 +2055,7 @@ async def profile_status(user_id: str = Query("local_user")):
     score = sum(1 for v in completion.values() if v)
     return {
         "ok": True,
-        "version": "V115",
+        "version": "V117",
         "completion_score": score,
         "completion": completion,
         "profile_used_for_prompt": merged,
@@ -1960,4 +2087,4 @@ async def save_profile(req: ProfileRequest):
         "updated_at": now_iso()
     }, "user_id")
     await save_learning_event(req.user_id or "local_user", "profile_saved", None, {})
-    return {"ok": True, "version": "V115", "profile": row, "profile_status": "saved"}
+    return {"ok": True, "version": "V117", "profile": row, "profile_status": "saved"}
