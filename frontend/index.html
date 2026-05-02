@@ -746,6 +746,68 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 }
 @media(max-width:1100px){.connector-prep-grid,.email-draft-grid{grid-template-columns:1fr}}
 
+
+/* V225 Team Pulse + V230 Revenue Intelligence */
+.team-pulse-grid,.revenue-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.team-card,.revenue-card{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.team-card b,.revenue-card b{
+  display:block;
+  margin-bottom:6px;
+}
+.team-card p,.revenue-card p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.team-pulse-box{
+  border:1px solid #bbf7d0;
+  background:linear-gradient(135deg,#ecfdf5,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(5,150,105,.08);
+}
+.team-pulse-box h3{
+  margin:0 0 8px;
+  color:#047857;
+}
+.revenue-box{
+  border:1px solid #bfdbfe;
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(15,99,255,.08);
+}
+.revenue-box h3{
+  margin:0 0 8px;
+  color:#0f63ff;
+}
+.message-preview{
+  white-space:pre-wrap;
+  background:#fff;
+  border:1px solid #bbf7d0;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+  color:#334155;
+  line-height:1.45;
+  margin-top:10px;
+}
+@media(max-width:1100px){.team-pulse-grid,.revenue-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -753,11 +815,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V215 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V230 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V215 Email Draft</div>
+  <div class="lock">▣ V230 Revenue Intelligence</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -807,7 +869,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V215 Email Draft · V215 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V230 Revenue Intelligence · V230 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -848,7 +910,7 @@ function showPage(page){activePage=page;v160PagePolish(page);const meta=pages[pa
 function renderPage(page){
  const host=document.getElementById("pageHost");
  const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];
- if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadConnectorPrep();loadEmailDraftMode();runSystemTest();loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
+ if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadTeamPulse();loadRevenueIntelligence();loadConnectorPrep();loadEmailDraftMode();runSystemTest();loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
  const actionRows=(actions.length?actions.slice(0,8):[
   {text:"Review Q2 financial statements with CFO",priority:"critical",status:"open"},
   {text:"Schedule CFO 1:1 for Thursday",priority:"high",status:"open"},
@@ -983,6 +1045,42 @@ function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"><
 
 
 
+
+async function loadTeamPulse(){
+ try{
+  const d=await api("/team-pulse?user_id="+encodeURIComponent(USER_ID));
+  const p=d.team_pulse||{};
+  const box=document.getElementById("teamPulseBox");
+  if(box){
+    const draft=p.draft_team_message||{};
+    box.innerHTML=`<h3>Team Pulse</h3><p><b>Mode:</b> ${esc(p.chat_mode||"draft_only")}</p><p><b>Post Enabled:</b> ${p.post_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(p.next_move||"Draft only.")}</p><div class="message-preview">${esc(draft.message||"Draft not available.")}</div>`;
+  }
+  const grid=document.getElementById("teamPulseGrid");
+  if(grid){
+    const signals=(p.team_signals||[]).map(s=>`<div class="team-card"><b>${esc(s.name)}</b><p>${esc(s.interpretation)}</p><span class="status-pill ${s.status==="High"?"orange":"green"}">${esc(s.status)} · ${esc(s.value)}</span></div>`).join("");
+    const blockers=(p.blockers||[]).map(b=>`<div class="team-card"><b>${esc(b.source)}</b><p>${esc(b.signal)}</p><span class="status-pill orange">${esc(b.priority||"medium")}</span></div>`).join("");
+    grid.innerHTML=signals+blockers;
+  }
+ }catch(e){toast("Team pulse unavailable","error")}
+}
+async function loadRevenueIntelligence(){
+ try{
+  const d=await api("/crm-intelligence?user_id="+encodeURIComponent(USER_ID));
+  const c=d.crm||{};
+  const box=document.getElementById("revenueIntelBox");
+  if(box){
+    const brief=c.sample_revenue_brief||{};
+    box.innerHTML=`<h3>Revenue Intelligence</h3><p><b>Status:</b> ${esc(c.crm_mode||"readiness_only")}</p><p><b>External Write Enabled:</b> ${c.external_write_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(c.next_move||"Keep CRM read-only first.")}</p><p><b>Brief:</b> ${esc(brief.priority||"Review revenue actions.")}</p>`;
+  }
+  const grid=document.getElementById("revenueIntelGrid");
+  if(grid){
+    const signals=(c.revenue_signals||[]).map(s=>`<div class="revenue-card"><b>${esc(s.name)}</b><p>${esc(s.signal)}</p><span class="status-pill ${s.risk==="Medium"?"orange":"green"}">${esc(s.status)} · ${esc(s.risk)} Risk</span></div>`).join("");
+    const caps=(c.crm_capabilities||[]).slice(0,4).map(x=>`<div class="revenue-card"><b>${esc(x)}</b><p>Read-only CRM intelligence capability.</p><span class="status-pill green">Planned</span></div>`).join("");
+    grid.innerHTML=signals+caps;
+  }
+ }catch(e){toast("Revenue intelligence unavailable","error")}
+}
+
 async function loadConnectorPrep(){
  try{
   const d=await api("/connector-prep?user_id="+encodeURIComponent(USER_ID));
@@ -1024,7 +1122,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V215 Email Draft · V215 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V230 Revenue Intelligence · V230 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");

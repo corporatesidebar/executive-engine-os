@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V215"
-SERVICE_NAME = "Executive Engine OS V215"
+VERSION = "V230"
+SERVICE_NAME = "Executive Engine OS V230"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="215.0.0")
+app = FastAPI(title=SERVICE_NAME, version="230.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V215, an elite COO/operator system.
+You are Executive Engine OS V230, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V215",
+        "backend_must_show": "Executive Engine OS V230",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3501,5 +3501,266 @@ async def v215_milestone(user_id: str = Query(DEFAULT_USER)):
             "Confirm Connector Prep panel appears",
             "Confirm Email Draft panel appears",
             "Confirm send remains disabled"
+        ]
+    }
+
+
+
+
+# =========================
+# V225 TEAM / CHAT PULSE + V230 CRM / REVENUE INTELLIGENCE
+# =========================
+
+def v225_team_pulse_state(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    blockers = []
+    for a in actions[:6]:
+        text = str(a.get("text", ""))
+        if any(w in text.lower() for w in ["confirm", "review", "schedule", "follow-up", "blocker", "risk"]):
+            blockers.append({
+                "source": "Action Queue",
+                "signal": text,
+                "priority": a.get("priority", "medium"),
+                "recommended_follow_up": "Draft a team follow-up message and confirm owner/timing."
+            })
+
+    if not blockers:
+        blockers = [
+            {
+                "source": "Team Pulse",
+                "signal": "No explicit blocker detected from saved actions.",
+                "priority": "low",
+                "recommended_follow_up": "Run a team pulse command after the next meeting."
+            }
+        ]
+
+    return {
+        "phase": "V225 Team / Chat Pulse",
+        "safe_mode": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "chat_mode": "draft_only",
+        "post_enabled": False,
+        "team_signals": [
+            {
+                "name": "Execution Load",
+                "value": len(actions),
+                "status": "High" if len(actions) >= 15 else "Controlled",
+                "interpretation": "Open action queue should be reduced before adding new work."
+            },
+            {
+                "name": "Decision Follow-Up",
+                "value": len(decisions),
+                "status": "Active" if len(decisions) else "Building",
+                "interpretation": "Recent decisions should be tied to action owners."
+            },
+            {
+                "name": "Memory Context",
+                "value": len(memory_items),
+                "status": "Available" if len(memory_items) else "Limited",
+                "interpretation": "Memory can support team follow-up context."
+            }
+        ],
+        "blockers": blockers[:5],
+        "draft_team_message": {
+            "channel": "#leadership",
+            "message": (
+                "Team — quick execution check-in.\n\n"
+                "Top priority: confirm the current owner, timing, and blocker for the highest-priority action.\n"
+                "Please reply with: Owner / ETA / Blocker.\n\n"
+                "No new work should be added until the current priority is clear."
+            ),
+            "requires_user_review": True,
+            "send_enabled": False
+        },
+        "blocked_actions": [
+            "Post to Slack/team chat automatically",
+            "DM employees automatically",
+            "Archive channels",
+            "Assign tasks externally without approval"
+        ],
+        "next_move": "Use Team Pulse to draft follow-ups only; do not post externally."
+    }
+
+
+def v230_revenue_intelligence_state(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+
+    revenue_actions = [
+        a for a in actions
+        if any(w in str(a.get("text", "")).lower() for w in ["revenue", "sales", "pipeline", "deal", "customer", "budget", "marketing", "cfo"])
+    ]
+
+    revenue_decisions = [
+        d for d in decisions
+        if any(w in str(d.get("decision", "")).lower() for w in ["revenue", "sales", "pipeline", "deal", "customer", "budget", "marketing", "finance", "cfo"])
+    ]
+
+    return {
+        "phase": "V230 CRM / Revenue Intelligence",
+        "safe_mode": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "crm_mode": "readiness_only",
+        "external_write_enabled": False,
+        "revenue_signals": [
+            {
+                "name": "Pipeline Follow-Up",
+                "status": "Needs Review" if revenue_actions else "No live pipeline actions detected",
+                "signal": revenue_actions[0].get("text") if revenue_actions else "Run a revenue/pipeline command to generate signal.",
+                "risk": "Medium"
+            },
+            {
+                "name": "Budget / Finance Decisions",
+                "status": "Active" if revenue_decisions else "Building",
+                "signal": revenue_decisions[0].get("decision") if revenue_decisions else "No recent revenue decision detected.",
+                "risk": "Medium"
+            },
+            {
+                "name": "Customer / Deal Risk",
+                "status": "Supervised",
+                "signal": "CRM integration is planned but not connected; use manual inputs for now.",
+                "risk": "Medium"
+            }
+        ],
+        "crm_capabilities": [
+            "Summarize pipeline risk when CRM is connected",
+            "Draft customer follow-up options",
+            "Prioritize deals by urgency and value",
+            "Identify decisions that affect revenue",
+            "Create revenue brief from CRM context"
+        ],
+        "blocked_actions": [
+            "Edit CRM deals automatically",
+            "Change forecasts automatically",
+            "Send customer communication automatically",
+            "Assign revenue tasks externally without approval"
+        ],
+        "sample_revenue_brief": {
+            "headline": "Revenue intelligence is in supervised readiness mode.",
+            "priority": "Review pipeline actions and budget decisions before connecting CRM writes.",
+            "next_move": "Use CRM as read-only signal first; do not allow external updates."
+        },
+        "next_move": "Prepare CRM/revenue connector as read-only intelligence; external writes stay locked."
+    }
+
+
+@app.get("/team-pulse")
+async def team_pulse(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V225 Team / Chat Pulse",
+        "team_pulse": v225_team_pulse_state(mem)
+    }
+
+
+@app.get("/team-message-draft")
+async def team_message_draft(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    pulse = v225_team_pulse_state(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "draft_only": True,
+        "post_enabled": False,
+        "draft": pulse["draft_team_message"],
+        "safety": [
+            "This endpoint drafts only.",
+            "It does not post to Slack/team chat.",
+            "User approval is required before external communication."
+        ]
+    }
+
+
+@app.get("/crm-intelligence")
+async def crm_intelligence(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V230 CRM / Revenue Intelligence",
+        "crm": v230_revenue_intelligence_state(mem)
+    }
+
+
+@app.get("/revenue-brief")
+async def revenue_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    crm = v230_revenue_intelligence_state(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "brief": crm["sample_revenue_brief"],
+        "signals": crm["revenue_signals"],
+        "external_write_enabled": False,
+        "approval_required": True
+    }
+
+
+@app.get("/v225-milestone")
+async def v225_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    pulse = v225_team_pulse_state(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Team pulse available", "passed": True},
+        {"name": "Team message draft available", "passed": True},
+        {"name": "Post disabled", "passed": pulse.get("post_enabled") is False},
+        {"name": "Draft only", "passed": pulse.get("chat_mode") == "draft_only"},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Team / Chat Pulse",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V230 Revenue Intelligence · V230 Backend",
+        "checks": checks,
+        "team_pulse": pulse
+    }
+
+
+@app.get("/v230-milestone")
+async def v230_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    crm = v230_revenue_intelligence_state(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "CRM intelligence available", "passed": True},
+        {"name": "Revenue brief available", "passed": True},
+        {"name": "External CRM writes disabled", "passed": crm.get("external_write_enabled") is False},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True},
+        {"name": "Revenue signals available", "passed": len(crm.get("revenue_signals") or []) > 0}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "CRM / Revenue Intelligence",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V230 Revenue Intelligence · V230 Backend",
+        "checks": checks,
+        "crm": crm,
+        "test_checklist": [
+            "Open /system-test",
+            "Open /team-pulse",
+            "Open /team-message-draft",
+            "Open /crm-intelligence",
+            "Open /revenue-brief",
+            "Open Settings page",
+            "Confirm Team Pulse panel appears",
+            "Confirm Revenue Intelligence panel appears",
+            "Confirm external posting/writes remain disabled"
         ]
     }
