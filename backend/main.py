@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1203: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1204: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1203"
-SERVICE_NAME = "Executive Engine OS V1203"
+VERSION = "V1204"
+SERVICE_NAME = "Executive Engine OS V1204"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1203.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1204.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1203, an elite COO/operator system.
+You are Executive Engine OS V1204, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1203",
+        "backend_must_show": "Executive Engine OS V1204",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1203",
+        "service": "Executive Engine OS V1204",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7923,7 +7923,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1203 Test Links</title>
+      <title>Executive Engine OS V1204 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7937,7 +7937,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1203 Test Links</h1>
+        <h1>Executive Engine OS V1204 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8128,7 +8128,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1203 Test Links</title>
+      <title>Executive Engine OS V1204 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8150,7 +8150,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1203 Test Links</h1>
+          <h1>Executive Engine OS V1204 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8197,5 +8197,191 @@ async def v1203_milestone():
             "/test-links",
             "/test-links-json",
             "/v1203-milestone"
+        ]
+    }
+
+
+
+
+# =========================
+# V1204 ABSOLUTE TEST LINKS FIX
+# =========================
+
+V1204_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V1204_TEST_LINKS = {
+    "Start Here": [
+        "/health",
+        "/diagnostic",
+        "/system-test",
+        "/test-links",
+        "/test-links-json",
+        "/v1204-milestone"
+    ],
+    "Beta": [
+        "/beta/system-score",
+        "/beta/operating-brief",
+        "/beta/launch-checklist",
+        "/v1200-milestone"
+    ],
+    "Calendar": [
+        "/calendar/connect-status",
+        "/calendar/auth-url",
+        "/calendar/status-live-candidate",
+        "/calendar/events/today-live-candidate",
+        "/calendar/oauth-test-page",
+        "/calendar/intelligence-summary",
+        "/calendar/events/fetch-candidate",
+        "/calendar/meeting-prep-candidate",
+        "/calendar/status",
+        "/calendar/events/today",
+        "/calendar/events/upcoming",
+        "/calendar/day-load",
+        "/calendar/alerts"
+    ],
+    "OAuth + Tokens": [
+        "/oauth/live-gates",
+        "/oauth/readiness",
+        "/oauth/config-check",
+        "/oauth/activation-prep",
+        "/oauth/scope-policy",
+        "/oauth/env-readiness",
+        "/oauth/activation-checklist",
+        "/security-gates",
+        "/tokens/storage-health",
+        "/tokens/storage-plan",
+        "/tokens/encryption-check",
+        "/calendar/token-storage-plan",
+        "/calendar/disconnect-flow",
+        "/calendar/refresh-policy",
+        "/calendar/connection-state-candidate",
+        "/calendar/secure-connection-state"
+    ],
+    "Connectors": [
+        "/connector-command-center",
+        "/connector-notifications",
+        "/connectors/status",
+        "/approval-queue",
+        "/supervised-actions",
+        "/google/connector-blueprint",
+        "/google/activation-plan",
+        "/google/provider-requirements",
+        "/google/privacy-rules"
+    ],
+    "Files + Integrations": [
+        "/files/status",
+        "/files/prep-summary",
+        "/files/alerts",
+        "/notification-upgrade",
+        "/integrations/status"
+    ],
+    "Executive OS": [
+        "/executive-cockpit",
+        "/notifications",
+        "/daily-workflow",
+        "/end-day-summary",
+        "/memory-quality",
+        "/decision-patterns-v400",
+        "/recurring-risks",
+        "/action-overload",
+        "/executive-signal-summary",
+        "/daily-brief-intelligence",
+        "/workflow-layer",
+        "/command-center-3",
+        "/command-templates",
+        "/next-command"
+    ]
+}
+
+@app.get("/test-links-json")
+async def test_links_json():
+    flat = []
+    for category, routes in V1204_TEST_LINKS.items():
+        for route in routes:
+            flat.append({"category": category, "route": route, "url": V1204_BACKEND_BASE + route})
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Absolute Test Links Fix",
+        "backend_base": V1204_BACKEND_BASE,
+        "links": flat,
+        "categories": V1204_TEST_LINKS,
+        "note": "Use the absolute url values. Frontend static domain cannot serve backend API routes."
+    }
+
+
+@app.get("/test-links")
+async def test_links():
+    base = V1204_BACKEND_BASE
+    sections = []
+    for category, routes in V1204_TEST_LINKS.items():
+        items = "".join([
+            '<div class="linkrow">'
+            '<a href="' + base + route + '" target="_blank" rel="noopener noreferrer">' + base + route + '</a>'
+            '<button onclick="navigator.clipboard.writeText(\'' + base + route + '\')">Copy</button>'
+            '</div>'
+            for route in routes
+        ])
+        sections.append('<section><h2>' + category + '</h2><div class="links">' + items + '</div></section>')
+    body = "".join(sections)
+    html_content = """
+    <!doctype html>
+    <html>
+    <head>
+      <title>Executive Engine OS V1204 Absolute Test Links</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <style>
+        body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
+        .wrap{max-width:1220px;margin:auto}
+        .hero,section{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:22px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:16px}
+        h1{margin:0 0 8px;font-size:28px}
+        p{color:#64748b;line-height:1.5}
+        code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}
+        h2{margin:0 0 12px;font-size:18px}
+        .links{display:grid;grid-template-columns:1fr;gap:8px}
+        .linkrow{display:grid;grid-template-columns:1fr 80px;gap:8px;align-items:center}
+        a{display:block;text-decoration:none;border:1px solid #dbe5f1;border-radius:12px;padding:10px;color:#0f63ff;font-weight:800;font-size:13px;background:#fff;word-break:break-all}
+        a:hover{background:#eff6ff;border-color:#93c5fd}
+        button{border:1px solid #dbe5f1;border-radius:12px;background:#f8fbff;font-weight:800;padding:10px;cursor:pointer}
+        .warning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:700}
+        @media(max-width:900px){body{padding:14px}.linkrow{grid-template-columns:1fr}}
+      </style>
+    </head>
+    <body>
+      <div class="wrap">
+        <div class="hero">
+          <h1>Executive Engine OS V1204 Absolute Test Links</h1>
+          <p>These links point directly to the backend API domain.</p>
+          <p>Backend base: <code>__BASE__</code></p>
+          <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
+        </div>
+        __BODY__
+      </div>
+    </body>
+    </html>
+    """.replace("__BASE__", base).replace("__BODY__", body)
+    return HTMLResponse(html_content)
+
+
+@app.get("/v1204-milestone")
+async def v1204_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Absolute Test Links Fix",
+        "ready": True,
+        "frontend_must_show": "V1204 Absolute Test Links · V1204 Backend",
+        "backend_base": V1204_BACKEND_BASE,
+        "fixed": [
+            "Test links now show full backend URLs",
+            "Each link opens the backend API domain",
+            "Copy buttons included",
+            "Clarifies frontend static domain cannot serve backend routes"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/diagnostic",
+            "https://executive-engine-os.onrender.com/system-test",
+            "https://executive-engine-os.onrender.com/test-links",
+            "https://executive-engine-os.onrender.com/v1204-milestone"
         ]
     }
