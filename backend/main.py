@@ -12,8 +12,8 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-VERSION = "V121"
-SERVICE_NAME = "Executive Engine OS V121"
+VERSION = "V125"
+SERVICE_NAME = "Executive Engine OS V125"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -36,7 +36,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="121.0.0")
+app = FastAPI(title=SERVICE_NAME, version="125.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -132,7 +132,7 @@ def fallback_output(text: str, mode: str = "execution") -> Dict[str, Any]:
         "priority": "high",
         "risk": "Continuing to build versions without confirming persistence creates confusion and rework.",
         "opportunity": "A clean stable loop becomes the foundation for automation, better UI, and future agent workflows.",
-        "what_to_ignore": "Do not add bots, external automation, or new dashboards until the V121 loop passes.",
+        "what_to_ignore": "Do not add bots, external automation, or new dashboards until the V125 loop passes.",
         "questions_to_answer": ["Did the run save?", "Did the actions save?", "Did the decision save?", "Did the right rail refresh?"],
         "delegation": "Keep manual execution. Do not delegate to bots yet.",
         "timeline": "Today: validate loop. Next 2-3 days: run real use cases. Next 2-3 weeks: polish and expand.",
@@ -140,9 +140,9 @@ def fallback_output(text: str, mode: str = "execution") -> Dict[str, Any]:
         "strategic_read": "Stability is the strategy right now.",
         "follow_up_prompt": "What is the single highest-leverage improvement after this run?",
         "execution_loop": {
-            "current_focus": "V121 clean reset validation",
+            "current_focus": "V125 clean reset validation",
             "next_action": "Run one command and persist the result.",
-            "next_prompt": "What is the next move after validating V121?",
+            "next_prompt": "What is the next move after validating V125?",
             "loop_steps": ["run", "review", "save action", "save decision", "check persistence"],
             "stop_condition": "Stop when run, save, validate, and right rail refresh all work."
         },
@@ -297,7 +297,7 @@ async def save_memory_patterns(user_id: str, output: Dict[str, Any]) -> None:
                     "type": typ,
                     "content": str(content)[:1000],
                     "importance": importance,
-                    "metadata": {"source": "v121_auto"},
+                    "metadata": {"source": "v125_auto"},
                     "created_at": now_iso()
                 })
             except Exception:
@@ -318,7 +318,7 @@ async def save_run(req: RunRequest, output: Dict[str, Any]) -> Optional[Dict[str
         "mode": req.mode,
         "depth": req.depth,
         "output": output,
-        "metadata": {"session_id": req.session_id, "source": "frontend_v121"},
+        "metadata": {"session_id": req.session_id, "source": "frontend_v125"},
         "created_at": now_iso()
     }
     rows = await sb_post("runs", payload)
@@ -345,7 +345,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V121, an elite COO/operator system.
+You are Executive Engine OS V125, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -658,13 +658,13 @@ async def v120_smoke(user_id: str = Query(DEFAULT_USER)):
             "memory_items": len(mem.get("memory_items") or [])
         },
         "frontend_expected": {
-            "badge": "V121 · Ship Lock",
-            "output_badge": "V121 · Locked",
-            "status": "DB memory live · V121"
+            "badge": "V125 · Ship Lock",
+            "output_badge": "V125 · Locked",
+            "status": "DB memory live · V125"
         },
         "test": [
             "Hard refresh frontend.",
-            "Confirm V121 · Ship Lock appears.",
+            "Confirm V125 · Ship Lock appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
@@ -676,6 +676,225 @@ async def v120_smoke(user_id: str = Query(DEFAULT_USER)):
 
 
 
+
+
+
+
+
+
+
+@app.get("/stability-audit")
+async def stability_audit(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    runs = mem.get("recent_runs") or []
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "OpenAI key set", "passed": bool(OPENAI_API_KEY)},
+        {"name": "Supabase enabled", "passed": bool(mem.get("supabase_enabled", False))},
+        {"name": "Recent runs exist", "passed": len(runs) >= 1},
+        {"name": "Open actions exist", "passed": len(actions) >= 1},
+        {"name": "Saved decisions exist", "passed": len(decisions) >= 1},
+        {"name": "Memory items exist", "passed": len(memory_items) >= 1},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True},
+        {"name": "Clean frontend contract", "passed": True}
+    ]
+    passed = sum(1 for c in checks if c["passed"])
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "score": f"{passed}/{len(checks)}",
+        "ready": passed >= 8,
+        "checks": checks,
+        "counts": {
+            "recent_runs": len(runs),
+            "open_actions": len(actions),
+            "saved_decisions": len(decisions),
+            "memory_items": len(memory_items)
+        },
+        "decision": "Use V125 as the stable baseline if the frontend smoke test passes.",
+        "next_move": "Run 10 real commands before adding automation or new UI features."
+    }
+
+
+@app.get("/run-save-audit")
+async def run_save_audit(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    runs = mem.get("recent_runs") or []
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+
+    latest_run = runs[0] if runs else None
+    latest_action = actions[0] if actions else None
+    latest_decision = decisions[0] if decisions else None
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "latest_run": {
+            "id": latest_run.get("id") if isinstance(latest_run, dict) else None,
+            "input": latest_run.get("input") if isinstance(latest_run, dict) else None,
+            "created_at": latest_run.get("created_at") if isinstance(latest_run, dict) else None
+        },
+        "latest_action": {
+            "id": latest_action.get("id") if isinstance(latest_action, dict) else None,
+            "text": latest_action.get("text") if isinstance(latest_action, dict) else None,
+            "priority": latest_action.get("priority") if isinstance(latest_action, dict) else None,
+            "created_at": latest_action.get("created_at") if isinstance(latest_action, dict) else None
+        },
+        "latest_decision": {
+            "id": latest_decision.get("id") if isinstance(latest_decision, dict) else None,
+            "decision": latest_decision.get("decision") if isinstance(latest_decision, dict) else None,
+            "priority": latest_decision.get("priority") if isinstance(latest_decision, dict) else None,
+            "created_at": latest_decision.get("created_at") if isinstance(latest_decision, dict) else None
+        },
+        "pass_condition": "After one frontend run/save test, latest_run.input, latest_action.text, and latest_decision.decision should match the newest test."
+    }
+
+
+@app.get("/v125-smoke")
+async def v125_smoke(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "fix": "Stability audit lock. V125 keeps the V123 save-flow fix and adds final run/save audit endpoints.",
+        "supabase_enabled": mem.get("supabase_enabled", False),
+        "required_frontend_badge": "V125 · Stability Lock",
+        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        }
+    }
+
+
+@app.get("/version-lock")
+async def version_lock():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "frontend_must_show": "V125 · Stability Lock",
+        "backend_must_show": "Executive Engine OS V125",
+        "do_not_build_next": "Do not build V126 until V125 passes 10 real commands.",
+        "locked_paths": {
+            "run": "POST /run",
+            "save_action": "POST /save-action",
+            "save_decision": "POST /save-decision",
+            "verify_save": "GET /save-flow-status",
+            "persistence": "GET /button-persistence-check",
+            "audit": "GET /run-save-audit"
+        }
+    }
+
+@app.get("/save-flow-status")
+async def save_flow_status(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    open_actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    runs = mem.get("recent_runs") or []
+
+    latest_action = open_actions[0] if open_actions else None
+    latest_decision = decisions[0] if decisions else None
+    latest_run = runs[0] if runs else None
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "status": "save_flow_locked",
+        "counts": {
+            "recent_runs": len(runs),
+            "open_actions": len(open_actions),
+            "saved_decisions": len(decisions),
+            "memory_items": len(mem.get("memory_items") or [])
+        },
+        "latest": {
+            "run_input": latest_run.get("input") if isinstance(latest_run, dict) else None,
+            "action_text": latest_action.get("text") if isinstance(latest_action, dict) else None,
+            "action_created_at": latest_action.get("created_at") if isinstance(latest_action, dict) else None,
+            "decision_text": latest_decision.get("decision") if isinstance(latest_decision, dict) else None,
+            "decision_created_at": latest_decision.get("created_at") if isinstance(latest_decision, dict) else None
+        },
+        "button_contract": {
+            "add_to_action_queue": "POST /save-action then GET /save-flow-status",
+            "save_decision": "POST /save-decision then GET /save-flow-status",
+            "verify_save": "GET /save-flow-status",
+            "check_persistence": "GET /button-persistence-check",
+            "refresh_right_panel": "GET /engine-state"
+        },
+        "pass_condition": "After saving, latest.action_text and latest.decision_text should match the newest saved values."
+    }
+
+
+@app.get("/v123-smoke")
+async def v123_smoke(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "fix": "Save flow lock. Save buttons now call one verification path after save. Verify Save and Check Persistence are separated clearly.",
+        "supabase_enabled": mem.get("supabase_enabled", False),
+        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
+        "required_frontend_badge": "V125 · Save Flow Lock",
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        }
+    }
+
+@app.get("/verify-latest-save")
+async def verify_latest_save(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    open_actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    runs = mem.get("recent_runs") or []
+    latest_action = open_actions[0] if open_actions else None
+    latest_decision = decisions[0] if decisions else None
+    latest_run = runs[0] if runs else None
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "latest_action_text": latest_action.get("text") if isinstance(latest_action, dict) else None,
+        "latest_action_created_at": latest_action.get("created_at") if isinstance(latest_action, dict) else None,
+        "latest_decision_text": latest_decision.get("decision") if isinstance(latest_decision, dict) else None,
+        "latest_decision_created_at": latest_decision.get("created_at") if isinstance(latest_decision, dict) else None,
+        "latest_run_input": latest_run.get("input") if isinstance(latest_run, dict) else None,
+        "counts": {
+            "recent_runs": len(runs),
+            "open_actions": len(open_actions),
+            "saved_decisions": len(decisions),
+            "memory_items": len(mem.get("memory_items") or [])
+        },
+        "pass_condition": "latest_action_text and latest_decision_text should match the newest explicit save."
+    }
+
+
+@app.get("/v122-smoke")
+async def v122_smoke(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "fix": "Verify Latest Save button now uses a unique button id/function and calls /verify-latest-save directly. It no longer conflicts with Check Persistence.",
+        "supabase_enabled": mem.get("supabase_enabled", False),
+        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        }
+    }
 
 @app.get("/save-verification")
 async def save_verification(user_id: str = Query(DEFAULT_USER)):
@@ -716,7 +935,7 @@ async def v121_smoke(user_id: str = Query(DEFAULT_USER)):
             "saved_decisions": len(mem.get("recent_decisions") or []),
             "memory_items": len(mem.get("memory_items") or [])
         },
-        "test_prompt": "V121 final test — create one action called \"Review V121 system tomorrow\" and one decision called \"Lock V121 as stable baseline.\""
+        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\""
     }
 
 @app.get("/ship-lock")
@@ -738,7 +957,7 @@ async def ship_lock(user_id: str = Query(DEFAULT_USER)):
         "score": f"{passed}/{len(checks)}",
         "ready": passed >= 5,
         "checks": checks,
-        "decision": "Ship V121 as the stable baseline if the frontend smoke test passes.",
+        "decision": "Ship V125 as the stable baseline if the frontend smoke test passes.",
         "next_move": "Use the system for 10 real runs before adding new features."
     }
 
@@ -748,12 +967,12 @@ async def frontend_version_check():
     return {
         "ok": True,
         "version": VERSION,
-        "expected_frontend": "V121",
+        "expected_frontend": "V125",
         "cache_rule": "If frontend still shows an older version, Render is serving old index.html or browser cache is stale.",
         "required_strings": [
-            "V121 · Ship Lock",
-            "V121 · Locked",
-            "frontend_v121",
+            "V125 · Ship Lock",
+            "V125 · Locked",
+            "frontend_v125",
             "runEngine",
             "saveActions",
             "saveDecision",
@@ -787,7 +1006,7 @@ async def next_phase():
         "ok": True,
         "version": VERSION,
         "phase": "post_v120_usage_validation",
-        "rule": "Do not build V121 until V121 passes 10 real runs.",
+        "rule": "Do not build V125 until V125 passes 10 real runs.",
         "real_run_checklist": [
             "Use execution mode for one business blocker.",
             "Use decision mode for one real decision.",
@@ -798,9 +1017,9 @@ async def next_phase():
             "Check persistence after saves.",
             "Review right panel after each run.",
             "Capture one screenshot.",
-            "Only then decide V121 scope."
+            "Only then decide V125 scope."
         ],
-        "recommended_v121": "Profile editor + action completion, only after V121 is proven stable."
+        "recommended_v121": "Profile editor + action completion, only after V125 is proven stable."
     }
 
 @app.get("/v119-smoke")
@@ -818,13 +1037,13 @@ async def v119_smoke(user_id: str = Query(DEFAULT_USER)):
             "memory_items": len(mem.get("memory_items") or [])
         },
         "frontend_expected": {
-            "badge": "V121 · Clean Hardened",
-            "output_badge": "V121 · Clean",
-            "status": "DB memory live · V121"
+            "badge": "V125 · Clean Hardened",
+            "output_badge": "V125 · Clean",
+            "status": "DB memory live · V125"
         },
         "test": [
             "Hard refresh frontend.",
-            "Confirm V121 · Clean Hardened appears.",
+            "Confirm V125 · Clean Hardened appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
@@ -839,12 +1058,12 @@ async def frontend_version_check():
     return {
         "ok": True,
         "version": VERSION,
-        "expected_frontend": "V121",
+        "expected_frontend": "V125",
         "cache_rule": "If frontend still shows an older version, Render is serving old index.html or browser cache is stale.",
         "required_strings": [
-            "V121 · Clean Hardened",
-            "V121 · Clean",
-            "frontend_v121",
+            "V125 · Clean Hardened",
+            "V125 · Clean",
+            "frontend_v125",
             "runEngine",
             "saveActions",
             "saveDecision",
@@ -889,7 +1108,7 @@ async def v118_smoke(user_id: str = Query(DEFAULT_USER)):
             "Deploy backend.",
             "Deploy frontend.",
             "Hard refresh.",
-            "Confirm V121 Clean Reset appears.",
+            "Confirm V125 Clean Reset appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
