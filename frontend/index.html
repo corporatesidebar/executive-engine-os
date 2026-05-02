@@ -828,11 +828,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V251 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V270 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V251 System Test Route Fix</div>
+  <div class="lock">▣ V270 Deploy Stable</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -882,7 +882,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V251 System Test Route Fix · V251 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V270 Deploy Stable · V270 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1135,7 +1135,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V251 System Test Route Fix · V251 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V270 Deploy Stable · V270 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
