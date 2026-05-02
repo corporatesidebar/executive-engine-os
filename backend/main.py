@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V128"
-SERVICE_NAME = "Executive Engine OS V128"
+VERSION = "V130"
+SERVICE_NAME = "Executive Engine OS V130"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="128.0.0")
+app = FastAPI(title=SERVICE_NAME, version="130.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V128, an elite COO/operator system.
+You are Executive Engine OS V130, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V128",
+        "backend_must_show": "Executive Engine OS V130",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1473,5 +1473,75 @@ async def workflow_audit(user_id: str = Query(DEFAULT_USER)):
         "brief": brief,
         "decision": "Use V128 as the operator loop baseline if /run and /operator-brief both return useful output.",
         "next_move": brief.get("next_action")
+    }
+
+
+
+
+
+# =========================
+# V130 NAVIGATION + PAGES MILESTONE
+# =========================
+
+@app.get("/pages")
+async def pages():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V130 Navigation + Pages",
+        "pages": [
+            {"id": "command", "title": "Command Center", "status": "live", "purpose": "Run the executive engine."},
+            {"id": "daily_brief", "title": "Daily Brief", "status": "connected", "purpose": "Generate daily operating focus."},
+            {"id": "decisions", "title": "Decisions", "status": "connected", "purpose": "Review saved decisions."},
+            {"id": "meeting", "title": "Meeting Prep", "status": "connected", "purpose": "Prepare high-level meeting agendas."},
+            {"id": "strategy", "title": "Strategy Board", "status": "connected", "purpose": "Convert strategy into execution."},
+            {"id": "risk", "title": "Risk Monitor", "status": "connected", "purpose": "Surface risks and constraints."},
+            {"id": "actions", "title": "Action Queue", "status": "connected", "purpose": "Track open and completed actions."},
+            {"id": "analytics", "title": "Analytics", "status": "preview", "purpose": "View execution metrics."},
+            {"id": "memory", "title": "Memory", "status": "connected", "purpose": "Review memory signals."},
+            {"id": "profile", "title": "Profile", "status": "preview", "purpose": "Manage executive context."},
+            {"id": "settings", "title": "Settings", "status": "preview", "purpose": "System controls."}
+        ],
+        "backend_contract": [
+            "POST /run",
+            "GET /engine-state",
+            "GET /operator-brief",
+            "GET /next-action",
+            "GET /workflow-audit",
+            "GET /save-flow-status",
+            "GET /button-persistence-check",
+            "GET /run-save-audit",
+            "POST /save-action",
+            "POST /save-decision"
+        ]
+    }
+
+
+@app.get("/v130-milestone")
+async def v130_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Navigation + Pages",
+        "ready": True,
+        "frontend_must_show": "V130 Navigation · V128 Operator Loop",
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        },
+        "test_checklist": [
+            "Open frontend",
+            "Click each left navigation item",
+            "Confirm center page changes",
+            "Run Engine from Command Center",
+            "Save Action",
+            "Save Decision",
+            "Open Action Queue page",
+            "Open Decisions page",
+            "Open Memory page"
+        ]
     }
 
