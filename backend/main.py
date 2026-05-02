@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V300: an elite executive operating layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V301: an elite executive operating layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
 
 You operate like a high-performance COO combined with a board-level strategist.
 
@@ -60,8 +60,8 @@ Rules:
 """
 
 
-VERSION = "V300"
-SERVICE_NAME = "Executive Engine OS V300"
+VERSION = "V301"
+SERVICE_NAME = "Executive Engine OS V301"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -84,7 +84,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="300.0.0")
+app = FastAPI(title=SERVICE_NAME, version="301.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -393,7 +393,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V300, an elite COO/operator system.
+You are Executive Engine OS V301, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -854,7 +854,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V300",
+        "backend_must_show": "Executive Engine OS V301",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3733,7 +3733,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V300",
+        "service": "Executive Engine OS V301",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4213,4 +4213,36 @@ async def v300_milestone():
             "/health"
         ],
         "next_move": "Run one real command using CEO or COO mode and save the resulting action and decision."
+    }
+
+
+
+
+# =========================
+# V301 COMMAND CENTER LAYOUT FIX
+# =========================
+
+@app.get("/v301-milestone")
+async def v301_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Command Center Layout Fix",
+        "ready": True,
+        "frontend_must_show": "V301 Layout Fix · V301 Backend",
+        "fixes": [
+            "Command templates no longer push the input below the fold.",
+            "Executive mode selector moved into a compact command toolbar.",
+            "Command input visible immediately.",
+            "Template drawer is collapsed by default.",
+            "Context label updated from V128 to V301.",
+            "Right rail remains readable."
+        ],
+        "kept": [
+            "V290 diagnostic routes",
+            "V300 command templates",
+            "V300 executive modes",
+            "Manual execution only",
+            "Auto-loop off"
+        ]
     }
