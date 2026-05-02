@@ -4,7 +4,7 @@ import re
 import time
 import asyncio
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any, List, List
+from typing import Optional, Dict, Any, List
 
 import httpx
 from fastapi import FastAPI, Query
@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V96.1"
+APP_NAME = "Executive Engine OS V96.2"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="96.1.0")
+app = FastAPI(title=APP_NAME, version="96.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,6 +34,43 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+PROJECT_CONTEXT = """
+Executive Engine OS real project context:
+- Product: AI executive command center for CEOs/COOs/founders.
+- Backend live on Render: https://executive-engine-os.onrender.com
+- Frontend live on Render: https://executive-engine-frontend.onrender.com
+- Previous confirmed backend: V95.2.
+- OpenAI connected.
+- Supabase connected.
+- RLS enabled and safe.
+- /run works and returns structured JSON.
+- /memory works and returns recent_runs and memory_items.
+- Runs save to Supabase.
+- Auto memory extraction works.
+- Manual execution loop works.
+- Manual execution only.
+- Auto-loop disabled.
+- No bot team yet.
+- No external automation yet.
+- No Gmail/Calendar/CRM/Figma/Canva write integration yet.
+- Frontend renders structured output and right sidebar memory/status.
+- UI is usable but not final.
+- Figma redesign comes later, after backend/output quality is stable.
+- Current priority: stability, response quality, project-specific intelligence, memory-driven execution.
+- Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
+- Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
+
+Response rules:
+- Do not give generic SaaS advice.
+- Do not say review market trends/user feedback/product roadmap unless directly tied to the current build.
+- Do not invent a team.
+- Do not recommend bots or automation yet.
+- Do not recommend Figma redesign before backend response quality is locked.
+- Prefer exact tests, endpoints, files, deploy steps, and expected results.
+- When asked what to focus on, prioritize: /run, /memory, /recent-runs, /save-action, /save-decision, frontend right panel, Supabase persistence, and response specificity.
+"""
 
 
 class RunRequest(BaseModel):
@@ -63,7 +100,7 @@ class SaveActionRequest(BaseModel):
     priority: Optional[str] = "medium"
     status: Optional[str] = "open"
     owner: Optional[str] = None
-    metadata: Optional[Dict] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class SaveDecisionRequest(BaseModel):
@@ -74,7 +111,7 @@ class SaveDecisionRequest(BaseModel):
     priority: Optional[str] = "medium"
     rationale: Optional[str] = None
     next_move: Optional[str] = None
-    metadata: Optional[Dict] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class ProfileRequest(BaseModel):
@@ -84,10 +121,10 @@ class ProfileRequest(BaseModel):
     experience: Optional[str] = None
     constraints: Optional[str] = None
     resume_context: Optional[str] = None
-    preferences: Optional[Dict] = None
+    preferences: Optional[Dict[str, Any]] = None
 
 
-CANONICAL_SCHEMA = {
+CANONICAL_SCHEMA: Dict[str, Any] = {
     "executive_summary": "",
     "what_to_do_now": "",
     "decision": "",
@@ -142,48 +179,11 @@ DEPTH_GUIDANCE = {
 }
 
 
-
-PROJECT_CONTEXT = """
-Executive Engine OS real project context:
-- Product: AI executive command center for CEOs/COOs/founders.
-- Current confirmed backend before this build: V95.2 live on Render.
-- Backend URL: https://executive-engine-os.onrender.com
-- Frontend URL: https://executive-engine-frontend.onrender.com
-- OpenAI connected.
-- Supabase connected.
-- RLS enabled and safe.
-- /run works and returns structured JSON.
-- /memory works and returns recent_runs and memory_items.
-- Runs save to Supabase.
-- Auto memory extraction works.
-- Manual execution loop works.
-- Manual execution only.
-- Auto-loop disabled.
-- No bot team yet.
-- No external automation yet.
-- No Gmail/Calendar/CRM/Figma/Canva write integration yet.
-- Frontend renders structured output and right sidebar memory/status.
-- UI is usable but not final.
-- Figma redesign comes later, after backend/output quality is stable.
-- Current priority: stability, response quality, project-specific intelligence, memory-driven execution.
-- Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
-- Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
-
-Response rules:
-- Do not give generic SaaS advice.
-- Do not say review market trends/user feedback/product roadmap unless directly tied to the current build.
-- Do not invent a team.
-- Do not recommend bots or automation yet.
-- Do not recommend Figma redesign before backend response quality is locked.
-- Prefer exact tests, endpoints, files, deploy steps, and expected results.
-- When asked what to focus on, prioritize: /run, /memory, /recent-runs, /save-action, /save-decision, frontend right panel, Supabase persistence, and response specificity.
-"""
-
-def now_iso():
+def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def fallback_response(reason="Backend fallback"):
+def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
     return {
         "executive_summary": "The full AI response was not completed, so use this fallback to keep execution moving.",
         "what_to_do_now": "Clarify the desired outcome, identify the biggest constraint, and execute the first concrete action immediately.",
@@ -217,14 +217,25 @@ def fallback_response(reason="Backend fallback"):
             "suggested_loop": ["Clarify outcome", "Identify constraint", "Execute first action"],
             "stop_condition": "Stop when the next physical or digital action is clear."
         },
+        "execution_loop": {
+            "current_focus": "Restore a stable backend response.",
+            "next_action": "Check the failed route/import error and redeploy a clean backend file.",
+            "next_prompt": "Fix the backend deploy error and return a stable /health response.",
+            "save_recommendation": {"save_memory": False, "save_actions": False, "save_decision": False},
+            "loop_steps": ["Fix backend file", "Deploy", "Test /health", "Test /run"],
+            "stop_condition": "Stop when /health and /run both work."
+        },
         "reality_check": "The current response is a fallback, not a full strategic answer.",
         "leverage": "Momentum and clarity are the leverage points.",
         "constraint": reason,
-        "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag."
+        "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
+        "manual_execution_only": True,
+        "version": "V96.2",
+        "project_context_applied": True
     }
 
 
-def extract_json(text):
+def extract_json(text: str) -> Dict[str, Any]:
     if not text:
         raise ValueError("Empty model response")
     try:
@@ -236,45 +247,7 @@ def extract_json(text):
     raise ValueError("No valid JSON object found")
 
 
-
-
-def required_schema_keys() -> List[str]:
-    return [
-        "executive_summary", "what_to_do_now", "decision", "why_this_matters",
-        "next_move", "actions", "priority", "risk", "opportunity",
-        "what_to_ignore", "questions_to_answer", "delegation", "timeline",
-        "success_metric", "strategic_read", "follow_up_prompt",
-        "auto_execution", "execution_loop", "reality_check", "leverage",
-        "constraint", "financial_impact"
-    ]
-
-
-def validate_output_shape(output: Dict[str, Any]) -> Dict[str, Any]:
-    """Guarantees /run always returns a full stable JSON object."""
-    normalized = normalize_output(output)
-    for key in required_schema_keys():
-        if key not in normalized:
-            normalized[key] = CANONICAL_SCHEMA.get(key, "")
-
-    if not isinstance(normalized.get("actions"), list):
-        normalized["actions"] = ensure_list(normalized.get("actions"))
-
-    if not isinstance(normalized.get("questions_to_answer"), list):
-        normalized["questions_to_answer"] = ensure_list(normalized.get("questions_to_answer"))
-
-    if not isinstance(normalized.get("auto_execution"), dict):
-        normalized["auto_execution"] = CANONICAL_SCHEMA["auto_execution"]
-
-    if not isinstance(normalized.get("execution_loop"), dict):
-        normalized["execution_loop"] = build_execution_loop(normalized)
-
-    normalized["auto_execution"]["enabled"] = False
-    normalized["manual_execution_only"] = True
-    normalized["version"] = "V96"
-    normalized["project_context_applied"] = True
-    return normalized
-
-def ensure_list(value):
+def ensure_list(value: Any) -> List[str]:
     if isinstance(value, list):
         return [str(x).strip() for x in value if str(x).strip()]
     if isinstance(value, str) and value.strip():
@@ -282,7 +255,28 @@ def ensure_list(value):
     return []
 
 
-def normalize_output(data, reason=""):
+def build_execution_loop(output: Dict[str, Any]) -> Dict[str, Any]:
+    actions = output.get("actions") or []
+    return {
+        "current_focus": output.get("what_to_do_now") or output.get("next_move") or "",
+        "next_action": actions[0] if actions else output.get("next_move", ""),
+        "next_prompt": output.get("follow_up_prompt") or (output.get("auto_execution") or {}).get("next_prompt") or "",
+        "save_recommendation": {
+            "save_actions": bool(actions),
+            "save_decision": bool(output.get("decision")),
+            "save_memory": True
+        },
+        "loop_steps": [
+            "Run the engine",
+            "Save actions/decision",
+            "Execute first action manually",
+            "Run follow-up prompt manually if context changes"
+        ],
+        "stop_condition": (output.get("auto_execution") or {}).get("stop_condition") or "Stop when the next concrete action is clear and assigned."
+    }
+
+
+def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
     base = fallback_response(reason or "Normalization fallback")
 
     if isinstance(data, dict):
@@ -322,154 +316,15 @@ def normalize_output(data, reason=""):
         base["financial_impact"] = "The financial impact depends on execution speed, decision quality, and whether the next move removes a real constraint."
 
     base["execution_loop"] = build_execution_loop(base)
+    base["manual_execution_only"] = True
+    base["version"] = "V96.2"
+    base["project_context_applied"] = True
     return base
 
 
-def build_system_prompt(mode, depth, loop_mode=False):
-    loop_rules = (
-        "AUTO-EXECUTION LOOP: Provide the next internal prompt, suggested internal loop steps, and stop condition. Do not claim external actions were completed."
-        if loop_mode
-        else "AUTO-EXECUTION: Provide a useful next_prompt for the next run. Do not claim external actions were completed."
-    )
-
-    return f"""
-You are Executive Engine OS V96.1.
-
-ROLE:
-Act like an elite CEO, COO, President, Chief of Staff, strategist, and operator.
-Turn messy input into decisive executive execution using profile, recent runs, saved actions, saved decisions, and memory when available.
-
-PROJECT CONTEXT:
-{PROJECT_CONTEXT}
-
-OUTPUT:
-Return ONLY valid JSON.
-No markdown.
-No prose outside JSON.
-Use this exact schema:
-{json.dumps(CANONICAL_SCHEMA)}
-
-QUALITY:
-- Be specific, direct, and execution-focused.
-- Make answers specific to Executive Engine OS, Render backend, Supabase memory, frontend behavior, and manual execution.
-- Avoid generic SaaS/product advice unless the user specifically provides that context.
-- Give exact next steps, endpoints, files, deploy checks, and success criteria.
-- Do not give generic, shallow, obvious, or motivational advice.
-- Every field must add distinct useful context.
-- Use memory when available: profile, recent decisions, open actions, repeated constraints, and previous runs.
-- Do not repeat old advice blindly; use memory to make the next move more relevant.
-- Create a manual execution loop only: what to do now, what to save, what the user should run next, and when to stop. Do not create autonomous or scheduled actions.
-- Each action must be executable today.
-- Include reasoning, tradeoffs, risk, sequence, delegation, timeline, and success metric.
-- If context is weak, still produce a useful answer and ask sharp questions.
-- Do not claim DB, Gmail, Calendar, Canva, Figma, CRM, or external app access unless explicitly provided. Do not claim automation is running. Manual execution only.
-- Make follow_up_prompt a copy/paste prompt the user can run next.
-
-MODE:
-{MODE_GUIDANCE.get(mode, MODE_GUIDANCE["execution"])}
-
-DEPTH:
-{DEPTH_GUIDANCE.get(depth, DEPTH_GUIDANCE["standard"])}
-
-{loop_rules}
-"""
-
-
-def build_user_prompt(req, memory=None):
-    return f"""
-REQUEST:
-user_id: {req.user_id or "local_user"}
-session_id: {req.session_id or "none"}
-mode: {req.mode or "execution"}
-depth: {req.depth or "standard"}
-timestamp: {now_iso()}
-
-MEMORY:
-{json.dumps(summarize_memory_for_prompt(memory or {}), indent=2)}
-
-CONTEXT:
-{req.context or "No additional context provided."}
-
-USER INPUT:
-{req.input}
-"""
-
-
-def supabase_headers():
-    return {
-        "apikey": SUPABASE_SERVICE_ROLE_KEY,
-        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
-        "Content-Type": "application/json",
-        "Prefer": "return=representation"
-    }
-
-
-async def sb_get(table, query=""):
-    if not SUPABASE_ENABLED:
-        return []
-    async with httpx.AsyncClient(timeout=12) as c:
-        r = await c.get(f"{SUPABASE_URL}/rest/v1/{table}{query}", headers=supabase_headers())
-        r.raise_for_status()
-        return r.json()
-
-
-async def sb_insert(table, payload):
-    if not SUPABASE_ENABLED:
-        return None
-    async with httpx.AsyncClient(timeout=12) as c:
-        r = await c.post(f"{SUPABASE_URL}/rest/v1/{table}", headers=supabase_headers(), json=payload)
-        r.raise_for_status()
-        data = r.json()
-        return data[0] if isinstance(data, list) and data else data
-
-
-async def sb_upsert(table, payload, conflict):
-    if not SUPABASE_ENABLED:
-        return None
-    headers = supabase_headers()
-    headers["Prefer"] = "resolution=merge-duplicates,return=representation"
-    async with httpx.AsyncClient(timeout=12) as c:
-        r = await c.post(f"{SUPABASE_URL}/rest/v1/{table}?on_conflict={conflict}", headers=headers, json=payload)
-        r.raise_for_status()
-        data = r.json()
-        return data[0] if isinstance(data, list) and data else data
-
-
-async def get_or_create_user(external_user_id):
-    if not SUPABASE_ENABLED:
-        return None
-    existing = await sb_get("users", f"?external_user_id=eq.{external_user_id}&limit=1")
-    if existing:
-        return existing[0]
-    return await sb_insert("users", {"external_user_id": external_user_id})
-
-
-async def load_memory(external_user_id):
-    if not SUPABASE_ENABLED:
-        return {"supabase_enabled": False}
-    try:
-        user = await get_or_create_user(external_user_id)
-        user_id = user["id"]
-        profile = await sb_get("profiles", f"?user_id=eq.{user_id}&limit=1")
-        return {
-            "supabase_enabled": True,
-            "user": user,
-            "profile": profile[0] if profile else None,
-            "recent_runs": await sb_get("runs", f"?user_id=eq.{user_id}&order=created_at.desc&limit=5"),
-            "recent_decisions": await sb_get("decisions", f"?user_id=eq.{user_id}&order=created_at.desc&limit=5"),
-            "open_actions": await sb_get("actions", f"?user_id=eq.{user_id}&status=eq.open&order=created_at.desc&limit=10"),
-            "memory_items": await sb_get("memory_items", f"?user_id=eq.{user_id}&order=importance.desc,created_at.desc&limit=10")
-        }
-    except Exception as exc:
-        return {"supabase_enabled": False, "memory_error": str(exc)}
-
-
-
-
 def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
-    """Compact memory so prompts stay fast and useful."""
     if not memory or not memory.get("supabase_enabled"):
-        return {"status": "no_db_memory"}
+        return {"project_context": PROJECT_CONTEXT, "status": "no_db_memory"}
 
     profile = memory.get("profile") or {}
     recent_runs = memory.get("recent_runs") or []
@@ -478,6 +333,7 @@ def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
     memory_items = memory.get("memory_items") or []
 
     return {
+        "project_context": PROJECT_CONTEXT,
         "status": "db_memory_live",
         "profile": {
             "role": profile.get("role"),
@@ -513,73 +369,149 @@ def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any]]:
-    """Create small durable memory candidates from each run."""
     items = []
-    decision = output.get("decision")
-    risk = output.get("risk")
-    constraint = output.get("constraint")
-    what_to_ignore = output.get("what_to_ignore")
-    strategic_read = output.get("strategic_read")
-    priority = output.get("priority", "medium")
-
-    if decision:
-        items.append({"type": "decision_pattern", "content": f"Mode {mode}: {decision}", "importance": 4 if priority in ["high", "critical"] else 3})
-    if risk:
-        items.append({"type": "recurring_risk", "content": risk, "importance": 4 if priority in ["high", "critical"] else 3})
-    if constraint:
-        items.append({"type": "constraint", "content": constraint, "importance": 4})
-    if what_to_ignore:
-        items.append({"type": "focus_filter", "content": what_to_ignore, "importance": 3})
-    if strategic_read:
-        items.append({"type": "strategic_read", "content": strategic_read, "importance": 3})
+    for mem_type, key, importance in [
+        ("decision_pattern", "decision", 4),
+        ("recurring_risk", "risk", 4),
+        ("constraint", "constraint", 4),
+        ("focus_filter", "what_to_ignore", 3),
+        ("strategic_read", "strategic_read", 3),
+    ]:
+        value = output.get(key)
+        if value:
+            items.append({"type": mem_type, "content": value, "importance": importance})
     return items[:5]
 
 
-async def save_memory_items(external_user_id: str, output: Dict[str, Any], mode: str, source_run_id: Optional[str] = None):
-    if not SUPABASE_ENABLED:
-        return []
-    user = await get_or_create_user(external_user_id)
-    if not user:
-        return []
+def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
+    return f"""
+You are Executive Engine OS V96.2.
 
-    saved = []
-    for item in derive_memory_items(output, mode):
-        try:
-            row = await sb_insert("memory_items", {
-                "user_id": user["id"],
-                "type": item["type"],
-                "content": item["content"],
-                "importance": item["importance"],
-                "source_run_id": source_run_id,
-                "metadata": {"source": "v94_auto_memory", "mode": mode}
-            })
-            saved.append(row)
-        except Exception:
-            pass
-    return saved
+PROJECT CONTEXT:
+{PROJECT_CONTEXT}
+
+ROLE:
+Act like an elite CEO, COO, President, Chief of Staff, strategist, and operator for this specific product.
+Turn messy input into decisive executive execution using the real Executive Engine OS project context.
+
+OUTPUT:
+Return ONLY valid JSON.
+No markdown.
+No prose outside JSON.
+Use this exact schema:
+{json.dumps(CANONICAL_SCHEMA)}
+
+QUALITY:
+- Make answers specific to Executive Engine OS, Render backend, Supabase memory, frontend behavior, and manual execution.
+- Avoid generic SaaS/product advice unless the user specifically provides that context.
+- Give exact next steps, endpoints, files, deploy checks, and success criteria.
+- Be specific, direct, and execution-focused.
+- Do not give generic, shallow, obvious, or motivational advice.
+- Every field must add distinct useful context.
+- Each action must be executable today.
+- Include reasoning, tradeoffs, risk, sequence, delegation, timeline, and success metric.
+- Manual execution only. Do not claim automation is running.
+- Do not claim DB, Gmail, Calendar, Canva, Figma, CRM, or external app access unless explicitly provided.
+- Make follow_up_prompt a copy/paste prompt the user can run next.
+
+MODE:
+{MODE_GUIDANCE.get(mode, MODE_GUIDANCE["execution"])}
+
+DEPTH:
+{DEPTH_GUIDANCE.get(depth, DEPTH_GUIDANCE["standard"])}
+"""
 
 
-def build_execution_loop(output: Dict[str, Any]) -> Dict[str, Any]:
-    actions = output.get("actions") or []
+def build_user_prompt(req: RunRequest, memory: Optional[Dict[str, Any]] = None) -> str:
+    return f"""
+REQUEST:
+user_id: {req.user_id or "local_user"}
+session_id: {req.session_id or "none"}
+mode: {req.mode or "execution"}
+depth: {req.depth or "standard"}
+timestamp: {now_iso()}
+
+MEMORY:
+{json.dumps(summarize_memory_for_prompt(memory or {}), indent=2)}
+
+CONTEXT:
+{req.context or "No additional context provided."}
+
+USER INPUT:
+{req.input}
+"""
+
+
+def supabase_headers() -> Dict[str, str]:
     return {
-        "current_focus": output.get("what_to_do_now") or output.get("next_move") or "",
-        "next_action": actions[0] if actions else output.get("next_move", ""),
-        "next_prompt": output.get("follow_up_prompt") or (output.get("auto_execution") or {}).get("next_prompt") or "",
-        "save_recommendation": {
-            "save_actions": bool(actions),
-            "save_decision": bool(output.get("decision")),
-            "save_memory": True
-        },
-        "loop_steps": [
-            "Run the engine",
-            "Save actions/decision",
-            "Execute first action",
-            "Run follow-up prompt if context changes"
-        ],
-        "stop_condition": (output.get("auto_execution") or {}).get("stop_condition") or "Stop when the next concrete action is clear and assigned."
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
     }
 
-async def save_run_to_db(req, output, latency_ms, status="completed"):
+
+async def sb_get(table: str, query: str = "") -> Any:
+    if not SUPABASE_ENABLED:
+        return []
+    async with httpx.AsyncClient(timeout=12) as c:
+        r = await c.get(f"{SUPABASE_URL}/rest/v1/{table}{query}", headers=supabase_headers())
+        r.raise_for_status()
+        return r.json()
+
+
+async def sb_insert(table: str, payload: Dict[str, Any]) -> Any:
+    if not SUPABASE_ENABLED:
+        return None
+    async with httpx.AsyncClient(timeout=12) as c:
+        r = await c.post(f"{SUPABASE_URL}/rest/v1/{table}", headers=supabase_headers(), json=payload)
+        r.raise_for_status()
+        data = r.json()
+        return data[0] if isinstance(data, list) and data else data
+
+
+async def sb_upsert(table: str, payload: Dict[str, Any], conflict: str) -> Any:
+    if not SUPABASE_ENABLED:
+        return None
+    headers = supabase_headers()
+    headers["Prefer"] = "resolution=merge-duplicates,return=representation"
+    async with httpx.AsyncClient(timeout=12) as c:
+        r = await c.post(f"{SUPABASE_URL}/rest/v1/{table}?on_conflict={conflict}", headers=headers, json=payload)
+        r.raise_for_status()
+        data = r.json()
+        return data[0] if isinstance(data, list) and data else data
+
+
+async def get_or_create_user(external_user_id: str) -> Optional[Dict[str, Any]]:
+    if not SUPABASE_ENABLED:
+        return None
+    existing = await sb_get("users", f"?external_user_id=eq.{external_user_id}&limit=1")
+    if existing:
+        return existing[0]
+    return await sb_insert("users", {"external_user_id": external_user_id})
+
+
+async def load_memory(external_user_id: str) -> Dict[str, Any]:
+    if not SUPABASE_ENABLED:
+        return {"supabase_enabled": False}
+    try:
+        user = await get_or_create_user(external_user_id)
+        user_id = user["id"]
+        profile = await sb_get("profiles", f"?user_id=eq.{user_id}&limit=1")
+        return {
+            "supabase_enabled": True,
+            "user": user,
+            "profile": profile[0] if profile else None,
+            "recent_runs": await sb_get("runs", f"?user_id=eq.{user_id}&order=created_at.desc&limit=5"),
+            "recent_decisions": await sb_get("decisions", f"?user_id=eq.{user_id}&order=created_at.desc&limit=5"),
+            "open_actions": await sb_get("actions", f"?user_id=eq.{user_id}&status=eq.open&order=created_at.desc&limit=10"),
+            "memory_items": await sb_get("memory_items", f"?user_id=eq.{user_id}&order=importance.desc,created_at.desc&limit=10")
+        }
+    except Exception as exc:
+        return {"supabase_enabled": False, "memory_error": str(exc)}
+
+
+async def save_run_to_db(req: RunRequest, output: Dict[str, Any], latency_ms: int, status: str = "completed") -> Optional[Dict[str, Any]]:
     if not SUPABASE_ENABLED or not req.auto_save:
         return None
     user = await get_or_create_user(req.user_id or "local_user")
@@ -597,7 +529,7 @@ async def save_run_to_db(req, output, latency_ms, status="completed"):
     })
 
 
-async def save_learning_event(external_user_id, event_type, mode=None, metadata=None):
+async def save_learning_event(external_user_id: str, event_type: str, mode: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None):
     if not SUPABASE_ENABLED:
         return None
     user = await get_or_create_user(external_user_id)
@@ -609,7 +541,30 @@ async def save_learning_event(external_user_id, event_type, mode=None, metadata=
     })
 
 
-async def ai_run(req, memory, loop_mode=False):
+async def save_memory_items(external_user_id: str, output: Dict[str, Any], mode: str, source_run_id: Optional[str] = None):
+    if not SUPABASE_ENABLED:
+        return []
+    user = await get_or_create_user(external_user_id)
+    if not user:
+        return []
+    saved = []
+    for item in derive_memory_items(output, mode):
+        try:
+            row = await sb_insert("memory_items", {
+                "user_id": user["id"],
+                "type": item["type"],
+                "content": item["content"],
+                "importance": item["importance"],
+                "source_run_id": source_run_id,
+                "metadata": {"source": "v96_2_auto_memory", "mode": mode}
+            })
+            saved.append(row)
+        except Exception:
+            pass
+    return saved
+
+
+async def ai_run(req: RunRequest, memory: Dict[str, Any], loop_mode: bool = False) -> Dict[str, Any]:
     mode = req.mode if req.mode in MODE_GUIDANCE else "execution"
     depth = req.depth if req.depth in DEPTH_GUIDANCE else "standard"
     response = await asyncio.wait_for(
@@ -635,7 +590,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V96.1"}
+    return {"ok": True, "service": APP_NAME, "version": "V96.2"}
 
 
 @app.get("/health")
@@ -643,7 +598,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V96.1",
+        "version": "V96.2",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -658,11 +613,11 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V96.1",
+        "version": "V96.2",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
-            "/recent-runs", "/project-context", "/memory", "/memory-summary", "/stability-check", "/actions", "/save-action",
-            "/decisions", "/save-decision", "/profile", "/robots.txt"
+            "/project-context", "/memory", "/memory-summary", "/stability-check",
+            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/profile", "/robots.txt"
         ],
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
@@ -676,10 +631,21 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V96.1",
+        "version": "V96.2",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
+    }
+
+
+@app.get("/project-context")
+async def project_context():
+    return {
+        "ok": True,
+        "version": "V96.2",
+        "project_context": PROJECT_CONTEXT,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
     }
 
 
@@ -696,35 +662,49 @@ async def run(req: RunRequest):
             await save_learning_event(req.user_id or "local_user", "run_created", req.mode, {
                 "depth": req.depth,
                 "latency_ms": latency_ms,
-                "saved": bool(saved)
+                "saved": bool(saved),
+                "project_context_applied": True
             })
             if saved and isinstance(saved, dict):
                 output["run_id"] = saved.get("id")
-                try:
-                    memory_saved = await save_memory_items(req.user_id or "local_user", output, req.mode or "execution", saved.get("id"))
-                    output["memory_items_saved"] = len(memory_saved)
-                except Exception as memory_error:
-                    output["memory_item_warning"] = str(memory_error)
+                memory_saved = await save_memory_items(req.user_id or "local_user", output, req.mode or "execution", saved.get("id"))
+                output["memory_items_saved"] = len(memory_saved)
         except Exception as save_error:
             output["memory_save_warning"] = str(save_error)
 
-        return validate_output_shape(output)
+        return normalize_output(output)
 
     except asyncio.TimeoutError:
         out = fallback_response(f"Backend/OpenAI request exceeded {TIMEOUT} seconds.")
         out["status"] = "timeout_fallback"
-        return validate_output_shape(out)
+        return normalize_output(out)
 
     except Exception as exc:
         out = fallback_response(f"Backend error: {str(exc)}")
         out["status"] = "error_fallback"
-        return validate_output_shape(out)
+        return normalize_output(out)
+
+
+@app.post("/run-test")
+async def run_test():
+    req = RunRequest(
+        input="What should I focus on today to move Executive Engine OS forward? Answer specifically using Render backend, Supabase memory, frontend, /run, /memory, manual execution only, and no automation yet.",
+        mode="execution",
+        depth="standard",
+        user_id="local_user",
+        session_id="v96_2_test",
+        auto_save=False
+    )
+    try:
+        memory = await load_memory("local_user")
+        output = await ai_run(req, memory, False)
+        return {"ok": True, "version": "V96.2", "output": normalize_output(output)}
+    except Exception as exc:
+        return {"ok": False, "version": "V96.2", "output": normalize_output(fallback_response(str(exc)))}
 
 
 @app.post("/auto-loop")
 async def auto_loop(req: AutoLoopRequest):
-    # V95 stability lock: no autonomous loop yet.
-    # Manual execution only until /run, /memory, frontend rendering, and DB saves are proven stable.
     base_req = RunRequest(
         input=req.input,
         context=req.context,
@@ -740,7 +720,7 @@ async def auto_loop(req: AutoLoopRequest):
     except Exception as exc:
         output = fallback_response(f"Manual loop planning failed: {str(exc)}")
 
-    output = validate_output_shape(output)
+    output = normalize_output(output)
     output["auto_execution"]["enabled"] = False
     output["manual_execution_only"] = True
     output["execution_loop"]["loop_steps"] = [
@@ -751,51 +731,22 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V96.1", "auto_enabled": False, "message": "Manual execution loop only in V95.", "final": output}
+    return {"ok": True, "version": "V96.2", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
-
-@app.post("/run-test")
-async def run_test():
-    req = RunRequest(
-        input="What should I focus on today to move Executive Engine OS forward? Answer specifically using Render backend, Supabase memory, frontend, /run, /memory, manual execution only, and no automation yet.",
-        mode="execution",
-        depth="standard",
-        user_id="local_user",
-        session_id="v95_test",
-        auto_save=False
-    )
-    try:
-        memory = await load_memory("local_user")
-        output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V96.1", "output": validate_output_shape(output)}
-    except Exception as exc:
-        return {"ok": False, "version": "V96.1", "output": validate_output_shape(fallback_response(str(exc)))}
-
-
-@app.get("/project-context")
-async def project_context():
-    return {
-        "ok": True,
-        "version": "V96.1",
-        "project_context": PROJECT_CONTEXT,
-        "manual_execution_only": True,
-        "auto_loop_enabled": False
-    }
-
-@app.get("/project-context", "/memory")
+@app.get("/memory")
 async def memory(user_id: str = Query("local_user")):
     return await load_memory(user_id)
 
 
-
-
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
-    memory = await load_memory(user_id)
-    return {"ok": True, "version": "V96.1", "summary": summarize_memory_for_prompt(memory)}
+    memory_data = await load_memory(user_id)
+    return {"ok": True, "version": "V96.2", "summary": summarize_memory_for_prompt(memory_data)}
+
 
 @app.post("/stability-check")
+@app.get("/stability-check")
 async def stability_check():
     health_data = await health()
     checks = {
@@ -807,9 +758,11 @@ async def stability_check():
         "max_tokens": MAX_TOKENS,
         "manual_execution_only": True,
         "auto_loop_enabled": False,
-        "memory_injection": "last_3_items"
+        "memory_injection": "last_3_items",
+        "project_context_applied": True
     }
-    return {"ok": True, "version": "V96.1", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V96.2", "health": health_data, "checks": checks}
+
 
 @app.get("/recent-runs")
 async def recent_runs(user_id: str = Query("local_user"), limit: int = Query(20, ge=1, le=50)):
