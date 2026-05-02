@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V110</title>
+  <title>Executive Engine OS V115</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -1205,6 +1205,465 @@ button:disabled{
   background:#059669;
 }
 
+
+/* V111 — direct run output renderer */
+.v111-output-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#ffffff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(37,99,235,.10);
+  overflow:hidden;
+}
+.v111-output-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:#f8fbff;
+}
+.v111-output-head strong{
+  color:#0f172a;
+  font-size:13px;
+}
+.v111-output-body{
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.v111-block{
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:12px;
+  background:#fff;
+}
+.v111-block h4{
+  margin:0 0 6px;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#475569;
+}
+.v111-block p{
+  margin:0;
+  color:#0f172a;
+  font-size:14px;
+  line-height:1.45;
+  font-weight:750;
+}
+.v111-actions{
+  margin:6px 0 0;
+  padding-left:18px;
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.45;
+  font-weight:700;
+}
+.v111-output-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:12px 16px;
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+}
+.v111-output-actions button{
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:10px;
+  height:34px;
+  padding:0 11px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v111-output-actions button.primary{
+  background:#2563eb!important;
+  color:#fff!important;
+  border-color:#1d4ed8!important;
+}
+.v111-run-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v111-run-status.error{
+  border-color:#fecaca;
+  background:#fef2f2;
+  color:#991b1b;
+}
+.v111-run-status.success{
+  border-color:#bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+}
+
+
+/* V112 — run validation and recovery */
+.v112-recovery-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#ffffff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.10);
+  overflow:hidden;
+}
+.v112-recovery-head{
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:linear-gradient(180deg,#f8fbff,#ffffff);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+}
+.v112-recovery-head strong{
+  color:#0f172a;
+  font-size:14px;
+}
+.v112-recovery-body{
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.v112-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.v112-block{
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  background:#fff;
+  padding:12px;
+}
+.v112-block.full{
+  grid-column:1 / -1;
+}
+.v112-block h4{
+  margin:0 0 7px;
+  font-size:11px;
+  color:#475569;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.v112-block p{
+  margin:0;
+  color:#0f172a;
+  font-size:14px;
+  line-height:1.45;
+  font-weight:760;
+}
+.v112-block ol{
+  margin:0;
+  padding-left:19px;
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.55;
+  font-weight:720;
+}
+.v112-actions-bar{
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+  padding:12px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v112-actions-bar button{
+  height:34px;
+  border-radius:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  font-size:12px;
+  font-weight:900;
+  padding:0 11px;
+  cursor:pointer;
+}
+.v112-actions-bar button.primary{
+  background:#2563eb!important;
+  color:white!important;
+  border-color:#1d4ed8!important;
+}
+.v112-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v112-status.error{
+  border-color:#fecaca;
+  background:#fef2f2;
+  color:#991b1b;
+}
+.v112-status.success{
+  border-color:#bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+}
+@media(max-width:800px){
+  .v112-grid{grid-template-columns:1fr;}
+  .v112-block.full{grid-column:auto;}
+}
+
+
+/* V114 — deployment verifier and smoke-test UI */
+.v114-verifier-box{
+  border:1px solid #bbf7d0;
+  background:#ecfdf5;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#047857;
+  line-height:1.35;
+}
+.v114-verifier-box strong{
+  display:block;
+  color:#064e3b;
+  margin-bottom:4px;
+}
+.v114-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:24px;
+  border-radius:999px;
+  border:1px solid #86efac;
+  background:#ffffff;
+  color:#047857;
+  padding:0 9px;
+  font-size:10px;
+  font-weight:950;
+  margin-top:6px;
+}
+.v114-pill::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#059669;
+}
+.v114-output-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.10);
+  overflow:hidden;
+}
+.v114-output-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:#f8fbff;
+}
+.v114-output-body{
+  display:grid;
+  gap:12px;
+  padding:16px;
+}
+.v114-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.v114-block{
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:12px;
+  background:#fff;
+}
+.v114-block.full{grid-column:1/-1;}
+.v114-block h4{
+  margin:0 0 7px;
+  font-size:11px;
+  color:#475569;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.v114-block p,.v114-block li{
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.5;
+  font-weight:730;
+}
+.v114-actions{
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+  padding:12px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v114-actions button{
+  height:34px;
+  border-radius:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:0 11px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v114-actions button.primary{
+  background:#2563eb!important;
+  color:white!important;
+  border-color:#1d4ed8!important;
+}
+.v114-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v114-status.error{border-color:#fecaca;background:#fef2f2;color:#991b1b;}
+.v114-status.success{border-color:#bbf7d0;background:#ecfdf5;color:#047857;}
+@media(max-width:800px){
+  .v114-grid{grid-template-columns:1fr;}
+  .v114-block.full{grid-column:auto;}
+}
+
+
+/* V115 — frontend contract lock */
+.v115-contract-box{
+  border:1px solid #bbf7d0;
+  background:#ecfdf5;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#047857;
+  line-height:1.35;
+}
+.v115-contract-box strong{
+  display:block;
+  color:#064e3b;
+  margin-bottom:4px;
+}
+.v115-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:24px;
+  border-radius:999px;
+  border:1px solid #86efac;
+  background:#fff;
+  color:#047857;
+  padding:0 9px;
+  font-size:10px;
+  font-weight:950;
+  margin-top:6px;
+}
+.v115-output-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.10);
+  overflow:hidden;
+}
+.v115-output-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #e2e8f0;
+  background:#f8fbff;
+}
+.v115-output-body{
+  display:grid;
+  gap:12px;
+  padding:16px;
+}
+.v115-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.v115-block{
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:12px;
+  background:#fff;
+}
+.v115-block.full{grid-column:1/-1;}
+.v115-block h4{
+  margin:0 0 7px;
+  font-size:11px;
+  color:#475569;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.v115-block p,.v115-block li{
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.5;
+  font-weight:730;
+}
+.v115-actions{
+  border-top:1px solid #e2e8f0;
+  background:#f8fafc;
+  padding:12px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v115-actions button{
+  height:34px;
+  border-radius:10px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:0 11px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v115-actions button.primary{
+  background:#2563eb!important;
+  color:white!important;
+  border-color:#1d4ed8!important;
+}
+.v115-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:850;
+}
+.v115-status.error{border-color:#fecaca;background:#fef2f2;color:#991b1b;}
+.v115-status.success{border-color:#bbf7d0;background:#ecfdf5;color:#047857;}
+@media(max-width:800px){
+  .v115-grid{grid-template-columns:1fr;}
+  .v115-block.full{grid-column:auto;}
+}
+
 </style>
 </head>
 <body>
@@ -1270,7 +1729,7 @@ button:disabled{
     </main>
 
     <aside class="right">
-      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V110 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div><div id="frontendLiveStatusBox" class="v110-live-box"><strong>Backend Live Status</strong>Checking backend...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
+      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V115 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div><div id="frontendLiveStatusBox" class="v110-live-box"><strong>Backend Live Status</strong>Checking backend...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
       <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
       <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
       <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
@@ -1287,7 +1746,7 @@ const USER_ID="local_user";
 let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null,profileStatus:null};
 let actionSavedForRun=false;
 let decisionSavedForRun=false;
-const STORAGE_KEY="eeos_v110_threads",ACTIVE_KEY="eeos_v110_active_thread",PROFILE_KEY="eeos_v110_profile",ACTIONS_KEY="eeos_v110_actions",DECISIONS_KEY="eeos_v110_decisions";
+const STORAGE_KEY="eeos_v115_threads",ACTIVE_KEY="eeos_v115_active_thread",PROFILE_KEY="eeos_v115_profile",ACTIONS_KEY="eeos_v115_actions",DECISIONS_KEY="eeos_v115_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -1557,7 +2016,7 @@ async function saveLatestDecision(){
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V110 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V115 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -1712,7 +2171,7 @@ async function refreshBackendMemory(){
       const gl=backendMemory.goLive||{};
       const ready=gl.ready_for_frontend_polish?"Ready":"Validate";
       const score=gl.score||"—";
-      rsb.innerHTML=`<strong>V110 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
+      rsb.innerHTML=`<strong>V115 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
     }
     const uxb=document.getElementById("uxBriefBox");
     if(uxb){
@@ -1845,7 +2304,7 @@ function renderV103Home(){
             <button class="${activeMode==="content"?"active":""}" onclick="selectWorkflow('content');renderV103Home()">Content</button>
             <button class="${activeMode==="personal"?"active":""}" onclick="selectWorkflow('personal');renderV103Home()">Personal</button>
           </div>
-          <button class="run-btn" onclick="runV110Command()">Run Engine</button>
+          <button class="run-btn" onclick="runV115Command()">Run Engine</button>
         </div>
       </div>
 
@@ -1857,14 +2316,14 @@ function renderV103Home(){
   const v103Input=document.getElementById("v103Input");
   if(v103Input){
     v103Input.addEventListener("keydown",e=>{
-      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV110Command();
+      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV115Command();
     });
     v103Input.focus();
   }
   renderRight();
 }
 
-function runV103Command(){
+function runV115Command(){
   const v103Input=document.getElementById("v103Input");
   if(!v103Input || !v103Input.value.trim()) return notify("Type a command first");
   input.value=v103Input.value.trim();
@@ -1940,7 +2399,7 @@ async function directRunFallback(command){
   return data;
 }
 
-async function runV110Command(){
+async function runV115Command(){
   const command=getVisibleCommandValue();
   if(!command){
     setRunStatus("Type a command first.", "error");
@@ -1985,6 +2444,935 @@ async function runV110Command(){
 if(typeof runV110Command === "function" && typeof runV109Command === "undefined"){
   window.runV109Command = runV110Command;
 }
+
+
+
+function v111Esc(value){
+  return String(value ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[m]));
+}
+
+function getV111Command(){
+  const candidates=[
+    document.getElementById("v103Input"),
+    document.getElementById("input"),
+    document.querySelector("textarea"),
+    document.querySelector("input[type='text']")
+  ].filter(Boolean);
+  for(const el of candidates){
+    if(el.value && el.value.trim()) return el.value.trim();
+  }
+  return "";
+}
+
+function setV111Status(message,type=""){
+  let box=document.getElementById("v111RunStatus");
+  if(!box){
+    const card=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+    box=document.createElement("div");
+    box.id="v111RunStatus";
+    card.appendChild(box);
+  }
+  box.className="v111-run-status " + (type||"");
+  box.textContent=message;
+}
+
+function renderV111Output(data, command){
+  const host=document.querySelector(".v103-hero") || workspace || document.body;
+  let card=document.getElementById("v111OutputCard");
+  if(!card){
+    card=document.createElement("section");
+    card.id="v111OutputCard";
+    card.className="v111-output-card";
+    host.appendChild(card);
+  }
+
+  const actions=Array.isArray(data.actions) ? data.actions : [];
+  card.innerHTML=`
+    <div class="v111-output-head">
+      <strong>Executive Engine Output</strong>
+      <span class="v110-live-pill">V111 · Live</span>
+    </div>
+    <div class="v111-output-body">
+      <div class="v111-block">
+        <h4>What to do now</h4>
+        <p>${v111Esc(data.what_to_do_now || data.executive_summary || "Review the output and take the first action.")}</p>
+      </div>
+      <div class="v111-block">
+        <h4>Decision</h4>
+        <p>${v111Esc(data.decision || "No decision returned.")}</p>
+      </div>
+      <div class="v111-block">
+        <h4>Next Move</h4>
+        <p>${v111Esc(data.next_move || "No next move returned.")}</p>
+      </div>
+      <div class="v111-block">
+        <h4>Actions</h4>
+        <ol class="v111-actions">${actions.length ? actions.map(a=>`<li>${v111Esc(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol>
+      </div>
+      <div class="v111-block">
+        <h4>Risk + Priority</h4>
+        <p>${v111Esc(data.risk || "No risk returned.")} · ${v111Esc(data.priority || "medium")}</p>
+      </div>
+    </div>
+    <div class="v111-output-actions">
+      <button class="primary" onclick="saveV111Actions()">Add to Action Queue</button>
+      <button onclick="saveV111Decision()">Save Decision</button>
+      <button onclick="refreshV111Rail()">Refresh Right Panel</button>
+    </div>
+  `;
+  window.__lastV111Output=data;
+  window.__lastV111Command=command;
+  card.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+async function refreshV111Rail(){
+  try{
+    if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+    if(typeof renderRight==="function") renderRight();
+    setV111Status("Right panel refreshed.", "success");
+  }catch(e){
+    console.warn(e);
+    setV111Status("Could not refresh right panel: "+e.message, "error");
+  }
+}
+
+async function saveV111Actions(){
+  const data=window.__lastV111Output;
+  if(!data || !Array.isArray(data.actions) || !data.actions.length) return setV111Status("No actions to save.", "error");
+  try{
+    for(const text of data.actions){
+      await fetch(API+"/save-action",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:(typeof USER_ID!=="undefined" ? USER_ID : "local_user"),
+          run_id:data.run_id || null,
+          text:text,
+          priority:data.priority || "medium",
+          status:"open",
+          metadata:{source:"frontend_v111"}
+        })
+      });
+    }
+    setV111Status("Actions saved.", "success");
+    await refreshV111Rail();
+  }catch(e){
+    setV111Status("Save actions failed: "+e.message, "error");
+  }
+}
+
+async function saveV111Decision(){
+  const data=window.__lastV111Output;
+  if(!data || !data.decision) return setV111Status("No decision to save.", "error");
+  try{
+    await fetch(API+"/save-decision",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        user_id:(typeof USER_ID!=="undefined" ? USER_ID : "local_user"),
+        run_id:data.run_id || null,
+        decision:data.decision,
+        risk:data.risk || "",
+        priority:data.priority || "medium",
+        rationale:data.why_this_matters || data.reality_check || "",
+        next_move:data.next_move || "",
+        metadata:{source:"frontend_v111"}
+      })
+    });
+    setV111Status("Decision saved.", "success");
+    await refreshV111Rail();
+  }catch(e){
+    setV111Status("Save decision failed: "+e.message, "error");
+  }
+}
+
+async function runV115Command(){
+  const command=getV111Command();
+  if(!command){
+    setV111Status("Type a command first.", "error");
+    return;
+  }
+
+  const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+  btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+  setV111Status("Running engine through /run...", "");
+
+  try{
+    const payload={
+      input:command,
+      mode:(typeof activeMode!=="undefined" && activeMode) ? activeMode : "execution",
+      depth:(typeof activeDepth!=="undefined" && activeDepth) ? activeDepth : "standard",
+      user_id:(typeof USER_ID!=="undefined" && USER_ID) ? USER_ID : "local_user",
+      session_id:(typeof activeThreadId!=="undefined" && activeThreadId) ? activeThreadId : "frontend_v111",
+      auto_save:true
+    };
+
+    const res=await fetch(API+"/run",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+
+    if(!res.ok){
+      const text=await res.text();
+      throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,160));
+    }
+
+    const data=await res.json();
+
+    try{
+      if(typeof input!=="undefined" && input) input.value=command;
+      if(typeof getActiveThread==="function"){
+        const t=getActiveThread();
+        t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+        t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+        if(typeof saveThreads==="function") saveThreads();
+      }
+    }catch(threadErr){
+      console.warn("Thread save skipped:",threadErr);
+    }
+
+    renderV111Output(data, command);
+    setV111Status("Engine response received.", "success");
+
+    setTimeout(async()=>{
+      try{ await refreshV111Rail(); }catch(e){}
+    },800);
+
+  }catch(err){
+    console.error("V111 Run failed:",err);
+    setV111Status("Run Engine failed: "+err.message, "error");
+  }finally{
+    btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText || "Run Engine";});
+  }
+}
+
+window.runV111Command=runV111Command;
+window.runV110Command=runV111Command;
+window.runV109Command=runV111Command;
+window.runV103Command=runV111Command;
+
+
+
+(function(){
+  function esc112(value){
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function command112(){
+    const list=[
+      document.getElementById("v103Input"),
+      document.getElementById("input"),
+      document.querySelector("textarea"),
+      document.querySelector("input[type='text']")
+    ].filter(Boolean);
+    for(const el of list){
+      if(el.value && el.value.trim()) return el.value.trim();
+    }
+    return "";
+  }
+
+  function status112(message,type=""){
+    let box=document.getElementById("v112Status");
+    if(!box){
+      const host=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+      box=document.createElement("div");
+      box.id="v112Status";
+      host.appendChild(box);
+    }
+    box.className="v112-status " + (type||"");
+    box.textContent=message;
+  }
+
+  function outputHost112(){
+    const hero=document.querySelector(".v103-hero");
+    if(hero) return hero;
+    const workspaceEl=(typeof workspace!=="undefined" && workspace) ? workspace : document.body;
+    return workspaceEl;
+  }
+
+  function render112(data, command){
+    const host=outputHost112();
+    let card=document.getElementById("v112RecoveryCard");
+    if(!card){
+      card=document.createElement("section");
+      card.id="v112RecoveryCard";
+      card.className="v112-recovery-card";
+      host.appendChild(card);
+    }
+
+    const actions=Array.isArray(data.actions) ? data.actions : [];
+    card.innerHTML=`
+      <div class="v112-recovery-head">
+        <strong>Executive Engine Output</strong>
+        <span class="v110-live-pill">V112 · Direct /run</span>
+      </div>
+      <div class="v112-recovery-body">
+        <div class="v112-grid">
+          <div class="v112-block full">
+            <h4>What to do now</h4>
+            <p>${esc112(data.what_to_do_now || data.executive_summary || "Review the output and execute the first concrete action.")}</p>
+          </div>
+          <div class="v112-block">
+            <h4>Decision</h4>
+            <p>${esc112(data.decision || "No decision returned.")}</p>
+          </div>
+          <div class="v112-block">
+            <h4>Next Move</h4>
+            <p>${esc112(data.next_move || "No next move returned.")}</p>
+          </div>
+          <div class="v112-block full">
+            <h4>Actions</h4>
+            <ol>${actions.length ? actions.map(a=>`<li>${esc112(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol>
+          </div>
+          <div class="v112-block">
+            <h4>Risk</h4>
+            <p>${esc112(data.risk || "No risk returned.")}</p>
+          </div>
+          <div class="v112-block">
+            <h4>Priority</h4>
+            <p>${esc112(data.priority || "medium")}</p>
+          </div>
+        </div>
+      </div>
+      <div class="v112-actions-bar">
+        <button class="primary" id="v112SaveActionsBtn">Add to Action Queue</button>
+        <button id="v112SaveDecisionBtn">Save Decision</button>
+        <button id="v112RefreshBtn">Refresh Right Panel</button>
+      </div>
+    `;
+
+    window.__lastV112Output=data;
+    window.__lastV112Command=command;
+
+    document.getElementById("v112SaveActionsBtn").onclick=save112Actions;
+    document.getElementById("v112SaveDecisionBtn").onclick=save112Decision;
+    document.getElementById("v112RefreshBtn").onclick=refresh112;
+
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  async function refresh112(){
+    try{
+      if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+      if(typeof renderRight==="function") renderRight();
+      status112("Right panel refreshed.", "success");
+    }catch(e){
+      console.warn(e);
+      status112("Right panel refresh failed: "+e.message, "error");
+    }
+  }
+
+  async function save112Actions(){
+    const data=window.__lastV112Output;
+    if(!data || !Array.isArray(data.actions) || !data.actions.length){
+      return status112("No actions to save.", "error");
+    }
+    const btn=document.getElementById("v112SaveActionsBtn");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      for(const text of data.actions){
+        await fetch(API+"/save-action",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            user_id:(typeof USER_ID!=="undefined" ? USER_ID : "local_user"),
+            run_id:data.run_id || null,
+            text:String(text),
+            priority:data.priority || "medium",
+            status:"open",
+            metadata:{source:"frontend_v112"}
+          })
+        });
+      }
+      if(btn){btn.textContent="Actions Saved";}
+      status112("Actions saved.", "success");
+      await refresh112();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+      status112("Save actions failed: "+e.message, "error");
+    }
+  }
+
+  async function save112Decision(){
+    const data=window.__lastV112Output;
+    if(!data || !data.decision){
+      return status112("No decision to save.", "error");
+    }
+    const btn=document.getElementById("v112SaveDecisionBtn");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      await fetch(API+"/save-decision",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:(typeof USER_ID!=="undefined" ? USER_ID : "local_user"),
+          run_id:data.run_id || null,
+          decision:data.decision,
+          risk:data.risk || "",
+          priority:data.priority || "medium",
+          rationale:data.why_this_matters || data.reality_check || "",
+          next_move:data.next_move || "",
+          metadata:{source:"frontend_v112"}
+        })
+      });
+      if(btn){btn.textContent="Decision Saved";}
+      status112("Decision saved.", "success");
+      await refresh112();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+      status112("Save decision failed: "+e.message, "error");
+    }
+  }
+
+  async function run112(){
+    const command=command112();
+    if(!command){
+      status112("Type a command first.", "error");
+      return;
+    }
+
+    const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+    btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+
+    try{
+      status112("Running engine through backend /run...", "");
+      const payload={
+        input:command,
+        mode:(typeof activeMode!=="undefined" && activeMode) ? activeMode : "execution",
+        depth:(typeof activeDepth!=="undefined" && activeDepth) ? activeDepth : "standard",
+        user_id:(typeof USER_ID!=="undefined" && USER_ID) ? USER_ID : "local_user",
+        session_id:(typeof activeThreadId!=="undefined" && activeThreadId) ? activeThreadId : "frontend_v112",
+        auto_save:true
+      };
+
+      const res=await fetch(API+"/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const text=await res.text();
+        throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,180));
+      }
+
+      const data=await res.json();
+
+      try{
+        if(typeof input!=="undefined" && input) input.value=command;
+        if(typeof getActiveThread==="function"){
+          const t=getActiveThread();
+          t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+          t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+          if(typeof saveThreads==="function") saveThreads();
+        }
+      }catch(e){ console.warn("Thread save skipped:",e); }
+
+      render112(data, command);
+      status112("Engine response received.", "success");
+      setTimeout(refresh112,900);
+
+    }catch(e){
+      console.error("V112 run failed",e);
+      status112("Run failed: "+e.message, "error");
+    }finally{
+      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText || "Run Engine";});
+    }
+  }
+
+  window.runV112Command=run112;
+  window.runV111Command=run112;
+  window.runV110Command=run112;
+  window.runV109Command=run112;
+  window.runV103Command=run112;
+})();
+
+
+
+(function(){
+  function esc114(value){
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function getCommand114(){
+    const candidates=[
+      document.getElementById("v103Input"),
+      document.getElementById("input"),
+      document.querySelector("textarea"),
+      document.querySelector("input[type='text']")
+    ].filter(Boolean);
+    for(const el of candidates){
+      if(el.value && el.value.trim()) return el.value.trim();
+    }
+    return "";
+  }
+
+  function status114(message,type=""){
+    let box=document.getElementById("v114Status");
+    if(!box){
+      const host=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+      box=document.createElement("div");
+      box.id="v114Status";
+      host.appendChild(box);
+    }
+    box.className="v114-status " + (type||"");
+    box.textContent=message;
+  }
+
+  function host114(){
+    return document.querySelector(".v103-hero") || (typeof workspace !== "undefined" ? workspace : document.body);
+  }
+
+  function renderOutput114(data, command){
+    const host=host114();
+    let card=document.getElementById("v114OutputCard");
+    if(!card){
+      card=document.createElement("section");
+      card.id="v114OutputCard";
+      card.className="v114-output-card";
+      host.appendChild(card);
+    }
+
+    const actions=Array.isArray(data.actions) ? data.actions : [];
+    card.innerHTML=`
+      <div class="v114-output-head">
+        <strong>Executive Engine Output</strong>
+        <span class="v114-pill">V114 · Verified Run</span>
+      </div>
+      <div class="v114-output-body">
+        <div class="v114-grid">
+          <div class="v114-block full">
+            <h4>What to do now</h4>
+            <p>${esc114(data.what_to_do_now || data.executive_summary || "Review output and take the first action.")}</p>
+          </div>
+          <div class="v114-block">
+            <h4>Decision</h4>
+            <p>${esc114(data.decision || "No decision returned.")}</p>
+          </div>
+          <div class="v114-block">
+            <h4>Next Move</h4>
+            <p>${esc114(data.next_move || "No next move returned.")}</p>
+          </div>
+          <div class="v114-block full">
+            <h4>Actions</h4>
+            <ol>${actions.length ? actions.map(a=>`<li>${esc114(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol>
+          </div>
+          <div class="v114-block">
+            <h4>Risk</h4>
+            <p>${esc114(data.risk || "No risk returned.")}</p>
+          </div>
+          <div class="v114-block">
+            <h4>Priority</h4>
+            <p>${esc114(data.priority || "medium")}</p>
+          </div>
+        </div>
+      </div>
+      <div class="v114-actions">
+        <button class="primary" id="v114SaveActions">Add to Action Queue</button>
+        <button id="v114SaveDecision">Save Decision</button>
+        <button id="v114RefreshRail">Refresh Right Panel</button>
+        <button id="v114ValidateRun">Validate Run</button>
+      </div>
+    `;
+
+    window.__lastV114Output=data;
+    window.__lastV114Command=command;
+
+    document.getElementById("v114SaveActions").onclick=saveActions114;
+    document.getElementById("v114SaveDecision").onclick=saveDecision114;
+    document.getElementById("v114RefreshRail").onclick=refreshRail114;
+    document.getElementById("v114ValidateRun").onclick=validateRun114;
+
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  async function refreshRail114(){
+    try{
+      if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+      if(typeof renderRight==="function") renderRight();
+      status114("Right panel refreshed.", "success");
+    }catch(e){
+      status114("Right panel refresh failed: "+e.message, "error");
+    }
+  }
+
+  async function validateRun114(){
+    try{
+      const res=await fetch(API+"/run-validation?user_id="+encodeURIComponent(typeof USER_ID!=="undefined"?USER_ID:"local_user"));
+      const data=await res.json();
+      status114("Run validation: "+(data.checks?.latest_input || "checked"), "success");
+    }catch(e){
+      status114("Run validation failed: "+e.message, "error");
+    }
+  }
+
+  async function saveActions114(){
+    const data=window.__lastV114Output;
+    if(!data || !Array.isArray(data.actions) || !data.actions.length) return status114("No actions to save.", "error");
+    const btn=document.getElementById("v114SaveActions");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      for(const text of data.actions){
+        await fetch(API+"/save-action",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            user_id:(typeof USER_ID!=="undefined"?USER_ID:"local_user"),
+            run_id:data.run_id||null,
+            text:String(text),
+            priority:data.priority||"medium",
+            status:"open",
+            metadata:{source:"frontend_v114"}
+          })
+        });
+      }
+      if(btn) btn.textContent="Actions Saved";
+      status114("Actions saved.", "success");
+      await refreshRail114();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+      status114("Save actions failed: "+e.message, "error");
+    }
+  }
+
+  async function saveDecision114(){
+    const data=window.__lastV114Output;
+    if(!data || !data.decision) return status114("No decision to save.", "error");
+    const btn=document.getElementById("v114SaveDecision");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      await fetch(API+"/save-decision",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:(typeof USER_ID!=="undefined"?USER_ID:"local_user"),
+          run_id:data.run_id||null,
+          decision:data.decision,
+          risk:data.risk||"",
+          priority:data.priority||"medium",
+          rationale:data.why_this_matters||data.reality_check||"",
+          next_move:data.next_move||"",
+          metadata:{source:"frontend_v114"}
+        })
+      });
+      if(btn) btn.textContent="Decision Saved";
+      status114("Decision saved.", "success");
+      await refreshRail114();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+      status114("Save decision failed: "+e.message, "error");
+    }
+  }
+
+  async function run114(){
+    const command=getCommand114();
+    if(!command) return status114("Type a command first.", "error");
+
+    const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+    btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+    status114("Running /run...", "");
+
+    try{
+      const payload={
+        input:command,
+        mode:(typeof activeMode!=="undefined"&&activeMode)?activeMode:"execution",
+        depth:(typeof activeDepth!=="undefined"&&activeDepth)?activeDepth:"standard",
+        user_id:(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user",
+        session_id:(typeof activeThreadId!=="undefined"&&activeThreadId)?activeThreadId:"frontend_v114",
+        auto_save:true
+      };
+
+      const res=await fetch(API+"/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const text=await res.text();
+        throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,180));
+      }
+
+      const data=await res.json();
+
+      try{
+        if(typeof input!=="undefined" && input) input.value=command;
+        if(typeof getActiveThread==="function"){
+          const t=getActiveThread();
+          t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+          t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+          if(typeof saveThreads==="function") saveThreads();
+        }
+      }catch(e){ console.warn("Thread save skipped",e); }
+
+      renderOutput114(data,command);
+      status114("Engine response received.", "success");
+      setTimeout(refreshRail114,900);
+
+    }catch(e){
+      console.error("V114 run failed",e);
+      status114("Run failed: "+e.message, "error");
+    }finally{
+      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText||"Run Engine";});
+    }
+  }
+
+  window.runV114Command=run114;
+  window.runV112Command=run114;
+  window.runV111Command=run114;
+  window.runV110Command=run114;
+  window.runV109Command=run114;
+  window.runV103Command=run114;
+})();
+
+
+
+(function(){
+  function esc115(value){
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function getCommand115(){
+    const candidates=[
+      document.getElementById("v103Input"),
+      document.getElementById("input"),
+      document.querySelector("textarea"),
+      document.querySelector("input[type='text']")
+    ].filter(Boolean);
+    for(const el of candidates){
+      if(el.value && el.value.trim()) return el.value.trim();
+    }
+    return "";
+  }
+
+  function status115(message,type=""){
+    let box=document.getElementById("v115Status");
+    if(!box){
+      const host=document.querySelector(".v103-command-card") || document.querySelector(".v103-hero") || document.body;
+      box=document.createElement("div");
+      box.id="v115Status";
+      host.appendChild(box);
+    }
+    box.className="v115-status " + (type||"");
+    box.textContent=message;
+  }
+
+  function host115(){
+    return document.querySelector(".v103-hero") || (typeof workspace !== "undefined" ? workspace : document.body);
+  }
+
+  function renderOutput115(data, command){
+    const host=host115();
+    let card=document.getElementById("v115OutputCard");
+    if(!card){
+      card=document.createElement("section");
+      card.id="v115OutputCard";
+      card.className="v115-output-card";
+      host.appendChild(card);
+    }
+
+    const actions=Array.isArray(data.actions) ? data.actions : [];
+    card.innerHTML=`
+      <div class="v115-output-head">
+        <strong>Executive Engine Output</strong>
+        <span class="v115-pill">V115 · Contract Locked</span>
+      </div>
+      <div class="v115-output-body">
+        <div class="v115-grid">
+          <div class="v115-block full">
+            <h4>What to do now</h4>
+            <p>${esc115(data.what_to_do_now || data.executive_summary || "Review output and execute the first action.")}</p>
+          </div>
+          <div class="v115-block">
+            <h4>Decision</h4>
+            <p>${esc115(data.decision || "No decision returned.")}</p>
+          </div>
+          <div class="v115-block">
+            <h4>Next Move</h4>
+            <p>${esc115(data.next_move || "No next move returned.")}</p>
+          </div>
+          <div class="v115-block full">
+            <h4>Actions</h4>
+            <ol>${actions.length ? actions.map(a=>`<li>${esc115(a)}</li>`).join("") : "<li>No actions returned.</li>"}</ol>
+          </div>
+          <div class="v115-block">
+            <h4>Risk</h4>
+            <p>${esc115(data.risk || "No risk returned.")}</p>
+          </div>
+          <div class="v115-block">
+            <h4>Priority</h4>
+            <p>${esc115(data.priority || "medium")}</p>
+          </div>
+        </div>
+      </div>
+      <div class="v115-actions">
+        <button class="primary" id="v115SaveActions">Add to Action Queue</button>
+        <button id="v115SaveDecision">Save Decision</button>
+        <button id="v115RefreshRail">Refresh Right Panel</button>
+        <button id="v115ValidateRun">Validate Run</button>
+      </div>
+    `;
+
+    window.__lastV115Output=data;
+    window.__lastV115Command=command;
+
+    document.getElementById("v115SaveActions").onclick=saveActions115;
+    document.getElementById("v115SaveDecision").onclick=saveDecision115;
+    document.getElementById("v115RefreshRail").onclick=refreshRail115;
+    document.getElementById("v115ValidateRun").onclick=validateRun115;
+
+    card.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  async function refreshRail115(){
+    try{
+      if(typeof refreshBackendMemory==="function") await refreshBackendMemory();
+      if(typeof renderRight==="function") renderRight();
+      status115("Right panel refreshed.", "success");
+    }catch(e){
+      status115("Right panel refresh failed: "+e.message, "error");
+    }
+  }
+
+  async function validateRun115(){
+    try{
+      const res=await fetch(API+"/run-validation?user_id="+encodeURIComponent(typeof USER_ID!=="undefined"?USER_ID:"local_user"));
+      const data=await res.json();
+      status115("Run validation checked. Latest: "+(data.checks?.latest_input || "available"), "success");
+    }catch(e){
+      status115("Run validation failed: "+e.message, "error");
+    }
+  }
+
+  async function saveActions115(){
+    const data=window.__lastV115Output;
+    if(!data || !Array.isArray(data.actions) || !data.actions.length) return status115("No actions to save.", "error");
+    const btn=document.getElementById("v115SaveActions");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      for(const text of data.actions){
+        await fetch(API+"/save-action",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            user_id:(typeof USER_ID!=="undefined"?USER_ID:"local_user"),
+            run_id:data.run_id||null,
+            text:String(text),
+            priority:data.priority||"medium",
+            status:"open",
+            metadata:{source:"frontend_v115"}
+          })
+        });
+      }
+      if(btn) btn.textContent="Actions Saved";
+      status115("Actions saved.", "success");
+      await refreshRail115();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+      status115("Save actions failed: "+e.message, "error");
+    }
+  }
+
+  async function saveDecision115(){
+    const data=window.__lastV115Output;
+    if(!data || !data.decision) return status115("No decision to save.", "error");
+    const btn=document.getElementById("v115SaveDecision");
+    if(btn){btn.disabled=true;btn.textContent="Saving...";}
+    try{
+      await fetch(API+"/save-decision",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:(typeof USER_ID!=="undefined"?USER_ID:"local_user"),
+          run_id:data.run_id||null,
+          decision:data.decision,
+          risk:data.risk||"",
+          priority:data.priority||"medium",
+          rationale:data.why_this_matters||data.reality_check||"",
+          next_move:data.next_move||"",
+          metadata:{source:"frontend_v115"}
+        })
+      });
+      if(btn) btn.textContent="Decision Saved";
+      status115("Decision saved.", "success");
+      await refreshRail115();
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+      status115("Save decision failed: "+e.message, "error");
+    }
+  }
+
+  async function run115(){
+    const command=getCommand115();
+    if(!command) return status115("Type a command first.", "error");
+
+    const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+    btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+    status115("Running /run...", "");
+
+    try{
+      const payload={
+        input:command,
+        mode:(typeof activeMode!=="undefined"&&activeMode)?activeMode:"execution",
+        depth:(typeof activeDepth!=="undefined"&&activeDepth)?activeDepth:"standard",
+        user_id:(typeof USER_ID!=="undefined"&&USER_ID)?USER_ID:"local_user",
+        session_id:(typeof activeThreadId!=="undefined"&&activeThreadId)?activeThreadId:"frontend_v115",
+        auto_save:true
+      };
+
+      const res=await fetch(API+"/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+
+      if(!res.ok){
+        const text=await res.text();
+        throw new Error("Backend /run failed: "+res.status+" "+text.slice(0,180));
+      }
+
+      const data=await res.json();
+
+      try{
+        if(typeof input!=="undefined" && input) input.value=command;
+        if(typeof getActiveThread==="function"){
+          const t=getActiveThread();
+          t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+          t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+          if(typeof saveThreads==="function") saveThreads();
+        }
+      }catch(e){ console.warn("Thread save skipped",e); }
+
+      renderOutput115(data,command);
+      status115("Engine response received.", "success");
+      setTimeout(refreshRail115,900);
+
+    }catch(e){
+      console.error("V115 run failed",e);
+      status115("Run failed: "+e.message, "error");
+    }finally{
+      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText||"Run Engine";});
+    }
+  }
+
+  window.renderOutput115=renderOutput115;
+  window.runV115Command=run115;
+  window.runV114Command=run115;
+  window.runV112Command=run115;
+  window.runV111Command=run115;
+  window.runV110Command=run115;
+  window.runV109Command=run115;
+  window.runV103Command=run115;
+})();
 
 </script>
 </body>
