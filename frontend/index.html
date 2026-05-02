@@ -1,609 +1,161 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
-  <title>Executive Engine OS — Locked Frontend V1</title>
-  <style>
-    :root{
-      --nav:#061120;
-      --nav2:#08182d;
-      --ink:#071226;
-      --muted:#65758f;
-      --line:#dbe5f1;
-      --line2:#e7eef7;
-      --bg:#f5f8fc;
-      --card:#ffffff;
-      --blue:#0f63ff;
-      --blue2:#0047d7;
-      --orange:#ff6a00;
-      --green:#09a66d;
-      --purple:#7c3aed;
-      --red:#ef4444;
-      --shadow:0 18px 50px rgba(10,25,52,.10);
-      --shadow2:0 28px 70px rgba(9,32,82,.18);
-      --radius:18px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      overflow:hidden;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-      background:linear-gradient(180deg,#fff 0%,#f3f7fb 100%);
-      color:var(--ink);
-      -webkit-font-smoothing:antialiased;
-      text-rendering:geometricPrecision;
-    }
-    button,input,textarea{font:inherit}
-    button{cursor:pointer}
-    .app{
-      height:100vh;
-      display:grid;
-      grid-template-columns:270px minmax(720px,1fr) 380px;
-      grid-template-rows:64px 1fr;
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
+<title>Executive Engine OS — Locked Frontend V2</title>
+<style>
+:root{
+  --nav:#061120;--ink:#071226;--muted:#5d6f89;--line:#dbe5f1;--bg:#f6f9fd;--blue:#0f63ff;--blue2:#0047d7;--orange:#ff6a00;--green:#09a66d;--purple:#7c3aed;--shadow:0 18px 50px rgba(10,25,52,.10)
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#fff 0%,#f4f8fc 100%);color:var(--ink);-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.app{height:100vh;display:grid;grid-template-columns:270px minmax(720px,1fr) 380px;grid-template-rows:64px 1fr}
 
-    /* TOP BAR */
-    .top{
-      grid-column:1/-1;
-      display:grid;
-      grid-template-columns:270px 1fr 380px;
-      align-items:center;
-      background:rgba(255,255,255,.94);
-      border-bottom:1px solid var(--line);
-      backdrop-filter:blur(14px);
-      z-index:10;
-    }
-    .brand{
-      height:64px;
-      background:linear-gradient(180deg,#071226,#040a13);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:0 18px;
-      border-right:1px solid rgba(255,255,255,.08);
-    }
-    .logo{
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#1677ff,#0046d7);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:0;
-      overflow:hidden;
-      box-shadow:0 14px 36px rgba(15,99,255,.32);
-      flex:0 0 auto;
-    }
-    .logo-e{
-      display:block;
-      color:#fff;
-      font-size:24px;
-      line-height:1;
-      font-weight:1000;
-      letter-spacing:-.06em;
-    }
-    .logo-e.back{transform:scaleX(-1);margin-right:-1px}
-    .brand strong{
-      display:block;
-      font-size:18px;
-      line-height:1.03;
-      letter-spacing:-.04em;
-      font-weight:900;
-    }
-    .brand span{
-      display:block;
-      color:#9db0c8;
-      font-size:12px;
-      margin-top:4px;
-      font-weight:500;
-    }
-    .top-mid{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding:0 22px;
-    }
-    .new-btn{
-      height:42px;
-      border:0;
-      border-radius:13px;
-      padding:0 18px;
-      background:linear-gradient(135deg,var(--orange),#ff8a1d);
-      color:#fff;
-      font-weight:850;
-      box-shadow:0 14px 32px rgba(255,106,0,.24);
-    }
-    .search{
-      height:42px;
-      max-width:620px;
-      flex:1;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:14px;
-      padding:0 14px;
-      box-shadow:0 8px 22px rgba(7,18,38,.04);
-      color:#71829c;
-    }
-    .search input{border:0;outline:0;background:transparent;width:100%;color:#0f172a}
-    .key{font-size:12px;color:#64748b;font-weight:800}
-    .top-right{
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      gap:10px;
-      padding:0 18px;
-    }
-    .pill{
-      height:34px;
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:999px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:0 13px;
-      font-size:12px;
-      font-weight:850;
-      white-space:nowrap;
-    }
-    .pill.live{background:#ecfdf5;border-color:#bbf7d0;color:#047857}
-    .pill.live:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
-    .avatar{width:36px;height:36px;border-radius:50%;background:#071226;color:#fff;display:grid;place-items:center;font-weight:900}
-    .bell{position:relative;font-size:21px;color:#1e2b44}
-    .bell:after{
-      content:"2";
-      position:absolute;
-      right:-6px;
-      top:-6px;
-      background:#ff5a00;
-      color:#fff;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:900;
-      width:17px;height:17px;
-      display:grid;place-items:center;
-    }
+/* TOP */
+.top{grid-column:1/-1;display:grid;grid-template-columns:270px 1fr 380px;align-items:center;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);z-index:10}
+.brand{height:64px;background:linear-gradient(180deg,#071226,#040a13);color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px;border-right:1px solid rgba(255,255,255,.08);overflow:hidden}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#1677ff,#0046d7);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(15,99,255,.32);flex:0 0 46px;overflow:hidden}
+.logo-e{display:block;color:#fff;font-size:23px;line-height:1;font-weight:900;letter-spacing:-.07em}
+.logo-e.back{transform:scaleX(-1);margin-right:-1px}
+.brand strong{display:block;font-size:18px;line-height:1.03;letter-spacing:-.04em;font-weight:760}
+.brand span{display:block;color:#a5b4c9;font-size:12px;margin-top:4px;font-weight:450}
+.top-mid{display:flex;align-items:center;gap:14px;padding:0 22px}
+.new-btn{height:42px;border:0;border-radius:13px;padding:0 18px;background:linear-gradient(135deg,var(--orange),#ff8a1d);color:#fff;font-weight:780;box-shadow:0 14px 32px rgba(255,106,0,.24)}
+.search{height:42px;max-width:620px;flex:1;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:0 14px;box-shadow:0 8px 22px rgba(7,18,38,.04);color:#71829c}
+.search input{border:0;outline:0;background:transparent;width:100%;color:#0f172a}
+.key{font-size:12px;color:#64748b;font-weight:700}
+.top-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 18px}
+.pill{height:34px;border:1px solid var(--line);background:#fff;border-radius:999px;display:flex;align-items:center;gap:8px;padding:0 13px;font-size:12px;font-weight:760;white-space:nowrap}
+.pill.live{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.pill.live:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
+.avatar{width:36px;height:36px;border-radius:50%;background:#071226;color:#fff;display:grid;place-items:center;font-weight:800}.bell{position:relative;font-size:21px;color:#1e2b44}.bell:after{content:"2";position:absolute;right:-6px;top:-6px;background:#ff5a00;color:#fff;border-radius:999px;font-size:10px;font-weight:800;width:17px;height:17px;display:grid;place-items:center}
 
-    /* SIDEBAR */
-    .sidebar{
-      grid-row:2;
-      background:linear-gradient(180deg,#071226 0%,#050b14 100%);
-      color:#dce8ff;
-      padding:14px;
-      overflow:auto;
-    }
-    .lock{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.045);
-      border-radius:13px;
-      color:#a7f3d0;
-      font-size:12px;
-      font-weight:850;
-      padding:11px;
-      margin-bottom:18px;
-    }
-    .group{
-      font-size:11px;
-      color:#7c8ba4;
-      font-weight:850;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      margin:18px 7px 8px;
-    }
-    .nav{
-      width:100%;
-      height:42px;
-      border:0;
-      border-radius:12px;
-      background:transparent;
-      color:#c7d4e7;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 12px;
-      margin:5px 0;
-      font-weight:760;
-      text-align:left;
-    }
-    .nav:hover{background:rgba(255,255,255,.06);color:#fff}
-    .nav.active{
-      background:linear-gradient(135deg,#0f63ff,#0049d8);
-      color:#fff;
-      box-shadow:0 14px 28px rgba(15,99,255,.27);
-    }
-    .nav-main{display:flex;align-items:center;gap:11px}
-    .ico{
-      width:22px;height:22px;
-      display:grid;place-items:center;
-      border-radius:7px;
-      background:rgba(255,255,255,.08);
-      font-size:13px;
-    }
-    .count{
-      min-width:22px;
-      height:22px;
-      display:grid;place-items:center;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:850;
-      background:rgba(15,99,255,.18);
-      color:#63a0ff;
-      border:1px solid rgba(15,99,255,.28);
-    }
-    .count.orange{background:rgba(255,106,0,.16);color:#fb923c;border-color:rgba(255,106,0,.30)}
-    .system-box{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.045);
-      border-radius:16px;
-      padding:14px;
-      margin-top:18px;
-    }
-    .system-box h4{margin:0 0 12px;font-size:13px;color:#fff;display:flex;justify-content:space-between}
-    .live-tag{background:#064e3b;color:#a7f3d0;border-radius:999px;padding:4px 9px;font-size:11px}
-    .sysline{display:flex;justify-content:space-between;font-size:12px;margin:9px 0}
-    .sysline b{color:#22c55e}
-    .bar{height:5px;background:rgba(255,255,255,.12);border-radius:999px;margin-top:12px;overflow:hidden}
-    .bar span{display:block;height:100%;width:98%;background:#22c55e}
-    .collapse{
-      height:42px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:12px;
-      margin-top:18px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:0 12px;
-      color:#cbd5e1;
-      font-weight:720;
-    }
+/* SIDEBAR */
+.sidebar{grid-row:2;background:linear-gradient(180deg,#071226 0%,#050b14 100%);color:#dce8ff;padding:14px;overflow:auto}
+.lock{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);border-radius:13px;color:#a7f3d0;font-size:12px;font-weight:760;padding:11px;margin-bottom:18px}
+.group{font-size:11px;color:#7c8ba4;font-weight:760;letter-spacing:.16em;text-transform:uppercase;margin:18px 7px 8px}
+.nav{width:100%;height:42px;border:0;border-radius:12px;background:transparent;color:#c7d4e7;display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin:5px 0;font-weight:650;text-align:left;font-size:14px}
+.nav:hover{background:rgba(255,255,255,.06);color:#fff}.nav.active{background:linear-gradient(135deg,#0f63ff,#0049d8);color:#fff;box-shadow:0 14px 28px rgba(15,99,255,.27)}
+.nav-main{display:flex;align-items:center;gap:11px}.ico{width:22px;height:22px;display:grid;place-items:center;border-radius:7px;background:rgba(255,255,255,.08);font-size:13px}
+.count{min-width:22px;height:22px;display:grid;place-items:center;border-radius:999px;font-size:11px;font-weight:800;background:rgba(15,99,255,.18);color:#63a0ff;border:1px solid rgba(15,99,255,.28)}.count.orange{background:rgba(255,106,0,.16);color:#fb923c;border-color:rgba(255,106,0,.30)}
+.system-box{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);border-radius:16px;padding:14px;margin-top:18px}.system-box h4{margin:0 0 12px;font-size:13px;color:#fff;display:flex;justify-content:space-between;font-weight:760}.live-tag{background:#064e3b;color:#a7f3d0;border-radius:999px;padding:4px 9px;font-size:11px}.sysline{display:flex;justify-content:space-between;font-size:12px;margin:9px 0}.sysline b{color:#22c55e}.bar{height:5px;background:rgba(255,255,255,.12);border-radius:999px;margin-top:12px;overflow:hidden}.bar span{display:block;height:100%;width:98%;background:#22c55e}.collapse{height:42px;border:1px solid rgba(255,255,255,.10);border-radius:12px;margin-top:18px;display:flex;align-items:center;gap:10px;padding:0 12px;color:#cbd5e1;font-weight:650}
 
-    /* MAIN */
-    .main{
-      grid-column:2;
-      grid-row:2;
-      overflow:auto;
-      padding:24px 26px 80px;
-    }
-    .shell{max-width:1120px;margin:0 auto}
-    .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
-    .eyebrow{color:var(--orange);font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
-    h1{font-size:34px;line-height:1.05;margin:6px 0 6px;letter-spacing:-.055em;font-weight:850}
-    .sub{margin:0;color:#52637a;font-weight:570}
-    .custom{height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-weight:750;color:#334155}
+/* MAIN */
+.main{grid-column:2;grid-row:2;overflow:auto;padding:24px 26px 80px}.shell{max-width:1120px;margin:0 auto}
+.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.eyebrow{color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:34px;line-height:1.05;margin:6px 0 6px;letter-spacing:-.055em;font-weight:740}.sub{margin:0;color:#52637a;font-weight:450}
+.custom{height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-weight:650;color:#334155}
+.snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;min-height:126px;box-shadow:0 12px 30px rgba(7,18,38,.06);position:relative;overflow:hidden}
+.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}.metric.green:before{background:#10b981}.metric.purple:before{background:var(--purple)}.metric.orange:before{background:var(--orange)}
+.metric .label{font-size:11px;font-weight:760;letter-spacing:.11em;text-transform:uppercase;color:#1d4ed8;margin-bottom:14px}.metric.green .label{color:#059669}.metric.purple .label{color:#6d28d9}.metric.orange .label{color:#ea580c}
+.metric strong{display:block;font-size:20px;line-height:1.22;margin-bottom:8px;font-weight:690}.metric span{font-size:13px;color:#64748b;font-weight:450}.metric a{display:inline-block;margin-top:10px;color:#075eea;text-decoration:none;font-size:13px;font-weight:650}.badge{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}
 
-    .snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-    .metric{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      min-height:126px;
-      box-shadow:0 12px 30px rgba(7,18,38,.06);
-      position:relative;
-      overflow:hidden;
-    }
-    .metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}
-    .metric.green:before{background:#10b981}
-    .metric.purple:before{background:var(--purple)}
-    .metric.orange:before{background:var(--orange)}
-    .metric .label{font-size:11px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:#1d4ed8;margin-bottom:14px}
-    .metric.green .label{color:#059669}
-    .metric.purple .label{color:#6d28d9}
-    .metric.orange .label{color:#ea580c}
-    .metric strong{display:block;font-size:20px;line-height:1.2;margin-bottom:8px;font-weight:790}
-    .metric span{font-size:13px;color:#64748b;font-weight:600}
-    .metric a{display:inline-block;margin-top:10px;color:#075eea;text-decoration:none;font-size:13px;font-weight:780}
-    .badge{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:850}
+/* COMMAND */
+.command{border-radius:24px;overflow:hidden;border:1px solid rgba(15,99,255,.26);box-shadow:0 28px 70px rgba(9,32,82,.18);margin-bottom:20px;background:#fff}
+.command-head{height:58px;background:radial-gradient(circle at 8% 0,rgba(255,106,0,.34),transparent 26%),linear-gradient(135deg,#071226 0%,#073b91 52%,#145dff 100%);display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 18px}.command-head strong{letter-spacing:.02em;font-weight:720}
+.mode-row{display:flex;align-items:center;gap:10px}.mode-label{font-size:12px;color:#dbeafe;font-weight:450}.mode-label b{color:#fff}.mode{height:30px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;border-radius:9px;padding:0 11px;font-size:12px;font-weight:600}.mode.active{background:#fff;color:#0f63ff}
+.command-body{background:linear-gradient(180deg,rgba(15,99,255,.08),#fff 35%);padding:18px}
+textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border-radius:16px;outline:0;background:#fff;padding:18px;font-size:15px;color:#071226;line-height:1.5;font-weight:400}textarea::placeholder{color:#8ca0bb}
+.command-actions{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:14px}.tools{display:flex;gap:8px;flex-wrap:wrap}.tool{height:36px;border:1px solid #d6e1ee;background:#fff;border-radius:10px;padding:0 12px;color:#34435b;font-size:12px;font-weight:600}.run{height:48px;min-width:176px;border:0;border-radius:14px;background:linear-gradient(135deg,#0f63ff,#0044cc);box-shadow:0 18px 42px rgba(15,99,255,.30);color:#fff;font-weight:720;font-size:15px}.context{margin-top:14px;border-top:1px solid #e3ebf5;padding-top:11px;color:#047857;font-size:12px;font-weight:600}
+.status{display:none;margin-top:11px;border:1px solid #bbf7d0;background:#ecfdf5;color:#047857;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:650}.status.show{display:block}.status.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
 
-    /* COMMAND */
-    .command{
-      border-radius:24px;
-      overflow:hidden;
-      border:1px solid rgba(15,99,255,.26);
-      box-shadow:var(--shadow2);
-      margin-bottom:20px;
-      background:#fff;
-    }
-    .command-head{
-      height:58px;
-      background:
-        radial-gradient(circle at 8% 0,rgba(255,106,0,.34),transparent 26%),
-        linear-gradient(135deg,#071226 0%,#073b91 52%,#145dff 100%);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      color:#fff;
-      padding:0 18px;
-    }
-    .command-head strong{letter-spacing:.02em;font-weight:820}
-    .mode-row{display:flex;align-items:center;gap:10px}
-    .mode-label{font-size:12px;color:#dbeafe;font-weight:590}
-    .mode-label b{color:#fff}
-    .mode{
-      height:30px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.10);
-      color:#fff;
-      border-radius:9px;
-      padding:0 11px;
-      font-size:12px;
-      font-weight:760;
-    }
-    .mode.active{background:#fff;color:#0f63ff}
-    .command-body{background:linear-gradient(180deg,rgba(15,99,255,.08),#fff 35%);padding:18px}
-    textarea{
-      width:100%;
-      height:150px;
-      resize:vertical;
-      border:1px solid #ccd9ea;
-      border-radius:16px;
-      outline:0;
-      background:#fff;
-      padding:18px;
-      font-size:15px;
-      color:#071226;
-      line-height:1.5;
-      font-weight:500;
-    }
-    textarea::placeholder{color:#8ca0bb}
-    .command-actions{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:14px}
-    .tools{display:flex;gap:8px;flex-wrap:wrap}
-    .tool{
-      height:36px;
-      border:1px solid #d6e1ee;
-      background:#fff;
-      border-radius:10px;
-      padding:0 12px;
-      color:#34435b;
-      font-size:12px;
-      font-weight:750;
-    }
-    .run{
-      height:48px;
-      min-width:176px;
-      border:0;
-      border-radius:14px;
-      background:linear-gradient(135deg,#0f63ff,#0044cc);
-      box-shadow:0 18px 42px rgba(15,99,255,.30);
-      color:#fff;
-      font-weight:850;
-      font-size:15px;
-    }
-    .context{margin-top:14px;border-top:1px solid #e3ebf5;padding-top:11px;color:#047857;font-size:12px;font-weight:720}
-    .status{
-      display:none;
-      margin-top:11px;
-      border:1px solid #bbf7d0;
-      background:#ecfdf5;
-      color:#047857;
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:12px;
-      font-weight:800;
-    }
-    .status.show{display:block}
-    .status.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+/* FEED */
+.feed{border:1px solid var(--line);background:#fff;border-radius:22px;box-shadow:0 14px 42px rgba(7,18,38,.08);padding:18px;margin-bottom:22px}.feed-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.feed-head h3{margin:0;font-size:15px;letter-spacing:.02em;font-weight:700}.feed-head span{color:#64748b;font-size:13px}.feed-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.feed-card{border:1px solid #e2e8f0;background:#fff;border-radius:16px;padding:14px;min-height:160px}.feed-card h4{margin:0 0 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#0f63ff;font-weight:740}.feed-card.orange h4{color:#ea580c}.feed-card.green h4{color:#059669}.feed-card.purple h4{color:#6d28d9}.feed-card strong{display:block;font-size:16px;line-height:1.25;margin-bottom:10px;font-weight:670}.feed-card p{margin:0;color:#52637a;font-size:12px;line-height:1.45;font-weight:400}.feed-card a{display:block;margin-top:12px;color:#075eea;font-weight:620;text-decoration:none;font-size:12px}
 
-    /* FEED */
-    .feed{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:22px;
-      box-shadow:0 14px 42px rgba(7,18,38,.08);
-      padding:18px;
-      margin-bottom:22px;
-    }
-    .feed-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-    .feed-head h3{margin:0;font-size:15px;letter-spacing:.02em;font-weight:830}
-    .feed-head span{color:#64748b;font-size:13px}
-    .feed-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-    .feed-card{border:1px solid #e2e8f0;background:#fff;border-radius:16px;padding:14px;min-height:160px}
-    .feed-card h4{margin:0 0 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#0f63ff;font-weight:900}
-    .feed-card.orange h4{color:#ea580c}
-    .feed-card.green h4{color:#059669}
-    .feed-card.purple h4{color:#6d28d9}
-    .feed-card strong{display:block;font-size:16px;line-height:1.25;margin-bottom:10px;font-weight:790}
-    .feed-card p{margin:0;color:#52637a;font-size:12px;line-height:1.45;font-weight:560}
-    .feed-card a{display:block;margin-top:12px;color:#075eea;font-weight:780;text-decoration:none;font-size:12px}
+/* RIGHT */
+.right{grid-column:3;grid-row:2;background:#f8fbff;border-left:1px solid #dce5f0;overflow:auto;padding:14px 16px 80px}.rtitle{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px;color:#0f172a}.rsection{margin-bottom:14px}.r-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:9px;box-shadow:0 10px 26px rgba(7,18,38,.045)}
+.preview-card{border-left:5px solid var(--blue);padding:16px 18px}.preview-card h4{margin:0 0 10px;color:#0f63ff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:720}.preview-card ol{margin:0;padding-left:19px}.preview-card li{font-size:13px;line-height:1.7;font-weight:400}.preview-card p{font-size:13px;line-height:1.55;margin:0}.r-card.orange{border-left:5px solid var(--orange)}.r-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;border:1px solid #e3ebf5;border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.check{width:15px;height:15px;border:1px solid #9fb0ca;border-radius:4px}.r-row strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}.r-row span{font-size:11px;color:#64748b}.tag{border-radius:999px;padding:4px 8px;font-size:10px;font-weight:700;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8}.tag.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.tag.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.tag.red{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.version{position:fixed;right:18px;bottom:18px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:8px 12px;font-weight:700;font-size:11px;box-shadow:0 12px 32px rgba(7,18,38,.10)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);opacity:0;background:#071226;color:#fff;border-radius:14px;padding:12px 15px;font-weight:650;transition:.18s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast.success{background:#047857}.toast.error{background:#b91c1c}
 
-    /* RIGHT */
-    .right{
-      grid-column:3;
-      grid-row:2;
-      background:#f8fbff;
-      border-left:1px solid #dce5f0;
-      overflow:auto;
-      padding:14px 16px 80px;
-    }
-    .rtitle{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px;color:#0f172a}
-    .rsection{margin-bottom:14px}
-    .r-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:9px;box-shadow:0 10px 26px rgba(7,18,38,.045)}
-    .preview-card{border-left:5px solid var(--blue);padding:16px 18px}
-    .preview-card h4{margin:0 0 10px;color:#0f63ff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
-    .preview-card ol{margin:0;padding-left:19px}
-    .preview-card li{font-size:13px;line-height:1.7;font-weight:520}
-    .preview-card p{font-size:13px;line-height:1.55;margin:0}
-    .r-card.orange{border-left:5px solid var(--orange)}
-    .r-row{
-      display:grid;
-      grid-template-columns:18px 1fr auto;
-      gap:8px;
-      align-items:center;
-      border:1px solid #e3ebf5;
-      border-radius:12px;
-      padding:10px;
-      margin-bottom:8px;
-      background:#fff;
-    }
-    .check{width:15px;height:15px;border:1px solid #9fb0ca;border-radius:4px}
-    .r-row strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:750}
-    .r-row span{font-size:11px;color:#64748b}
-    .tag{border-radius:999px;padding:4px 8px;font-size:10px;font-weight:850;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8}
-    .tag.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}
-    .tag.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
-    .tag.red{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
-    .version{position:fixed;right:18px;bottom:18px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:8px 12px;font-weight:850;font-size:11px;box-shadow:0 12px 32px rgba(7,18,38,.10)}
-    .toast{
-      position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);
-      opacity:0;background:#071226;color:#fff;border-radius:14px;padding:12px 15px;
-      font-weight:800;transition:.18s;z-index:20
-    }
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .toast.success{background:#047857}.toast.error{background:#b91c1c}
-
-    @media(max-width:1280px){
-      .app{grid-template-columns:250px 1fr}
-      .right{display:none}
-      .top{grid-template-columns:250px 1fr}
-      .top-right{display:none}
-      .snapshot{grid-template-columns:repeat(2,1fr)}
-      .feed-grid{grid-template-columns:repeat(2,1fr)}
-    }
-    @media(max-width:820px){
-      body{overflow:auto}
-      .app{display:block;height:auto}
-      .brand{height:64px}
-      .sidebar,.right,.top-mid{display:none}
-      .main{padding:16px}
-      .hero{display:block}
-      .snapshot,.feed-grid{grid-template-columns:1fr}
-      .command-actions{display:block}
-      .run{width:100%;margin-top:12px}
-    }
-  </style>
+@media(max-width:1280px){.app{grid-template-columns:250px 1fr}.right{display:none}.top{grid-template-columns:250px 1fr}.top-right{display:none}.snapshot{grid-template-columns:repeat(2,1fr)}.feed-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){body{overflow:auto}.app{display:block;height:auto}.brand{height:64px}.sidebar,.right,.top-mid{display:none}.main{padding:16px}.hero{display:block}.snapshot,.feed-grid{grid-template-columns:1fr}.command-actions{display:block}.run{width:100%;margin-top:12px}}
+</style>
 </head>
 <body>
 <div class="app">
-  <header class="top">
-    <div class="brand">
-      <div class="logo"><span class="logo-e back">E</span><span class="logo-e">E</span></div>
-      <div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div>
+<header class="top">
+  <div class="brand"><div class="logo"><span class="logo-e back">E</span><span class="logo-e">E</span></div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div></div>
+  <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V125 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+</header>
+
+<aside class="sidebar">
+  <div class="lock">▣ V125 Stability Lock</div>
+  <div class="group">Command</div>
+  <button class="nav active" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
+  <button class="nav" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
+  <div class="group">Intelligence</div>
+  <button class="nav" data-mode="decision"><span class="nav-main"><span class="ico">◎</span>Decisions</span></button>
+  <button class="nav" data-mode="meeting"><span class="nav-main"><span class="ico">◫</span>Meeting Prep</span></button>
+  <button class="nav" data-mode="strategy"><span class="nav-main"><span class="ico">↗</span>Strategy Board</span></button>
+  <button class="nav" data-mode="risk"><span class="nav-main"><span class="ico">△</span>Risk Monitor</span><span class="count orange">3</span></button>
+  <div class="group">Intelligence</div>
+  <button class="nav" data-mode="actions"><span class="nav-main"><span class="ico">☷</span>Action Queue</span><span class="count" id="actionCountSide">0</span></button>
+  <button class="nav" data-mode="analytics"><span class="nav-main"><span class="ico">▥</span>Analytics</span></button>
+  <div class="group">Knowledge</div>
+  <button class="nav" data-mode="memory"><span class="nav-main"><span class="ico">◌</span>Memory</span></button>
+  <div class="group">System</div>
+  <button class="nav" data-mode="profile"><span class="nav-main"><span class="ico">◍</span>Profile</span></button>
+  <button class="nav" data-mode="settings"><span class="nav-main"><span class="ico">⚙</span>Settings</span></button>
+  <button class="nav" data-mode="more"><span class="nav-main"><span class="ico">▱</span>More</span><span>⌄</span></button>
+  <div class="system-box"><h4>System Status <span class="live-tag">Live</span></h4><div class="sysline">Backend <b id="backendSmall">Live</b></div><div class="sysline">Database <b id="dbSmall">Live</b></div><div class="sysline">API <b id="apiSmall">Healthy</b></div><div class="sysline">System Health <b>99%</b></div><div class="bar"><span></span></div></div>
+  <div class="collapse">↤ Collapse</div>
+</aside>
+
+<main class="main">
+<div class="shell">
+  <div class="hero"><div><div class="eyebrow">Executive Command System</div><h1>Today's Command Center</h1><p class="sub">Run decisions, actions, and execution from one high-signal input.</p></div><button class="custom">⚙ Customize View</button></div>
+  <section class="snapshot">
+    <article class="metric"><div class="label">◎ Today's Focus</div><strong id="snapFocus">Ready</strong><span id="snapFocusSub">Run one executive command</span></article>
+    <article class="metric green"><div class="label">↗ Open Actions</div><strong id="snapActions">—</strong><span id="snapActionsSub">Loading queue</span><a>View all actions →</a></article>
+    <article class="metric purple"><div class="label">▣ Latest Decision</div><strong id="snapDecision">—</strong><span id="snapDecisionSub">Awaiting memory</span><a>View decision →</a></article>
+    <article class="metric orange"><div class="label">⚡ Priority Signal</div><strong id="snapPriority">Medium</strong><span>Risk and urgency monitor</span><a id="auditText">10/10 stability audit</a></article>
+  </section>
+  <section class="command">
+    <div class="command-head"><strong>COMMAND INPUT</strong><div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div><span class="mode-label">Context: <b>V125 Executive</b>⌄</span></div>
+    <div class="command-body"><textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea><div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div><div class="context">✓ Using latest intelligence, risk models, and company context</div><div class="status" id="status"></div></div>
+  </section>
+  <section class="feed">
+    <div class="feed-head"><div><h3>EXECUTIVE FEED</h3><span>Real-time intelligence and execution readiness.</span></div><button class="custom">Show: All Signals⌄</button></div>
+    <div id="outputHost" class="feed-grid">
+      <article class="feed-card purple"><h4>Decision</h4><strong>Awaiting command</strong><p>Run the engine to generate a recommended decision.</p><a>View Decision →</a></article>
+      <article class="feed-card"><h4>Next Move</h4><strong>Awaiting command</strong><p>The system will prioritize the next move.</p><a>View Next Steps →</a></article>
+      <article class="feed-card green"><h4>Actions</h4><strong id="feedActions">— Total</strong><p>Saved action queue will appear here.</p><a>Go to Action Queue →</a></article>
+      <article class="feed-card orange"><h4>Risk</h4><strong>Medium Risk</strong><p>Risk monitor activates after run.</p><a>View Risk Monitor →</a></article>
+      <article class="feed-card"><h4>Insights</h4><strong>System Ready</strong><p>Memory signals will update from saved runs.</p><a>View Analytics →</a></article>
     </div>
-    <div class="top-mid">
-      <button class="new-btn" onclick="newRun()">+ New Command</button>
-      <div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div>
-    </div>
-    <div class="top-right"><span class="pill live">System Live</span><span class="pill">V125 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
-  </header>
-
-  <aside class="sidebar">
-    <div class="lock">▣ V125 Stability Lock</div>
-    <div class="group">Command</div>
-    <button class="nav active" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
-    <button class="nav" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
-    <div class="group">Intelligence</div>
-    <button class="nav" data-mode="decision"><span class="nav-main"><span class="ico">◎</span>Decisions</span></button>
-    <button class="nav" data-mode="meeting"><span class="nav-main"><span class="ico">◫</span>Meeting Prep</span></button>
-    <button class="nav" data-mode="strategy"><span class="nav-main"><span class="ico">↗</span>Strategy Board</span></button>
-    <button class="nav" data-mode="risk"><span class="nav-main"><span class="ico">△</span>Risk Monitor</span><span class="count orange">3</span></button>
-    <div class="group">Intelligence</div>
-    <button class="nav" data-mode="actions"><span class="nav-main"><span class="ico">☷</span>Action Queue</span><span class="count" id="actionCountSide">0</span></button>
-    <button class="nav" data-mode="analytics"><span class="nav-main"><span class="ico">▥</span>Analytics</span></button>
-    <div class="group">Knowledge</div>
-    <button class="nav" data-mode="memory"><span class="nav-main"><span class="ico">◌</span>Memory</span></button>
-    <div class="group">System</div>
-    <button class="nav" data-mode="profile"><span class="nav-main"><span class="ico">◍</span>Profile</span></button>
-    <button class="nav" data-mode="settings"><span class="nav-main"><span class="ico">⚙</span>Settings</span></button>
-    <button class="nav" data-mode="more"><span class="nav-main"><span class="ico">▱</span>More</span><span>⌄</span></button>
-
-    <div class="system-box">
-      <h4>System Status <span class="live-tag">Live</span></h4>
-      <div class="sysline">Backend <b id="backendSmall">Live</b></div>
-      <div class="sysline">Database <b id="dbSmall">Live</b></div>
-      <div class="sysline">API <b id="apiSmall">Healthy</b></div>
-      <div class="sysline">System Health <b>99%</b></div>
-      <div class="bar"><span></span></div>
-    </div>
-    <div class="collapse">↤ Collapse</div>
-  </aside>
-
-  <main class="main">
-    <div class="shell">
-      <div class="hero">
-        <div><div class="eyebrow">Executive Command System</div><h1>Today's Command Center</h1><p class="sub">Run decisions, actions, and execution from one high-signal input.</p></div>
-        <button class="custom">⚙ Customize View</button>
-      </div>
-
-      <section class="snapshot">
-        <article class="metric"><div class="label">◎ Today's Focus</div><strong id="snapFocus">Ready</strong><span id="snapFocusSub">Run one executive command</span></article>
-        <article class="metric green"><div class="label">↗ Open Actions</div><strong id="snapActions">—</strong><span id="snapActionsSub">Loading queue</span><a>View all actions →</a></article>
-        <article class="metric purple"><div class="label">▣ Latest Decision</div><strong id="snapDecision">—</strong><span id="snapDecisionSub">Awaiting memory</span><a>View decision →</a></article>
-        <article class="metric orange"><div class="label">⚡ Priority Signal</div><strong id="snapPriority">Medium</strong><span>Risk and urgency monitor</span><a id="auditText">10/10 stability audit</a></article>
-      </section>
-
-      <section class="command">
-        <div class="command-head">
-          <strong>COMMAND INPUT</strong>
-          <div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div>
-          <span class="mode-label">Context: <b>V125 Executive</b>⌄</span>
-        </div>
-        <div class="command-body">
-          <textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea>
-          <div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div>
-          <div class="context">✓ Using latest intelligence, risk models, and company context</div>
-          <div class="status" id="status"></div>
-        </div>
-      </section>
-
-      <section class="feed">
-        <div class="feed-head"><div><h3>EXECUTIVE FEED</h3><span>Real-time intelligence and execution readiness.</span></div><button class="custom">Show: All Signals⌄</button></div>
-        <div id="outputHost" class="feed-grid">
-          <article class="feed-card purple"><h4>Decision</h4><strong>Awaiting command</strong><p>Run the engine to generate a recommended decision.</p><a>View Decision →</a></article>
-          <article class="feed-card"><h4>Next Move</h4><strong>Awaiting command</strong><p>The system will prioritize the next move.</p><a>View Next Steps →</a></article>
-          <article class="feed-card green"><h4>Actions</h4><strong id="feedActions">— Total</strong><p>Saved action queue will appear here.</p><a>Go to Action Queue →</a></article>
-          <article class="feed-card orange"><h4>Risk</h4><strong>Medium Risk</strong><p>Risk monitor activates after run.</p><a>View Risk Monitor →</a></article>
-          <article class="feed-card"><h4>Insights</h4><strong>System Ready</strong><p>Memory signals will update from saved runs.</p><a>View Analytics →</a></article>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <aside class="right">
-    <section class="rsection"><h3 class="rtitle">Executive Output Preview <span class="tag green">Live</span></h3><div id="previewList"><div class="r-card preview-card"><h4>What To Do Now</h4><ol><li>Run one command to generate output.</li><li>Save action and decision.</li><li>Verify persistence.</li></ol></div></div></section>
-    <section class="rsection"><h3 class="rtitle">Today's Focus</h3><div id="focusList"><div class="r-card">Run the engine to create focus.</div></div></section>
-    <section class="rsection"><h3 class="rtitle">Action Queue <span class="tag green" id="actionCount">0</span></h3><div id="actionsList"><div class="r-card">No actions yet.</div></div></section>
-    <section class="rsection"><h3 class="rtitle">Recent Decisions</h3><div id="decisionsList"><div class="r-card">No decisions yet.</div></div></section>
-    <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
-  </aside>
+  </section>
 </div>
-<div class="version">LOCKED FRONTEND V1 · V125 Backend</div>
-<div class="toast" id="toast"></div>
+</main>
+
+<aside class="right">
+  <section class="rsection"><h3 class="rtitle">Executive Output Preview <span class="tag green">Live</span></h3><div id="previewList"><div class="r-card preview-card"><h4>What To Do Now</h4><ol><li>Finalize board presentation and key metrics</li><li>Review and approve hiring plan for 3 engineers</li><li>Approve 15% increase to marketing budget</li></ol></div><div class="r-card preview-card"><h4>Decision</h4><p>Approve hiring of 3 engineers in Q2 to support product roadmap acceleration.</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>Prepare board materials and align with finance on updated projections.</p></div><div class="r-card orange"><h4>Risk</h4><p>High workload this week. Focus on board prep and hiring decisions to stay on track.</p><span class="tag orange">Medium</span></div></div></section>
+  <section class="rsection"><h3 class="rtitle">Action Queue <span class="tag green" id="actionCount">0</span></h3><div id="actionsList"><div class="r-card">No actions yet.</div></div></section>
+  <section class="rsection"><h3 class="rtitle">Recent Decisions</h3><div id="decisionsList"><div class="r-card">No decisions yet.</div></div></section>
+  <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
+</aside>
+</div>
+<div class="version">LOCKED FRONTEND V2 · V125 Backend</div><div class="toast" id="toast"></div>
 
 <script>
-const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",lastOutput=null,lastCommand="";
-const input=document.getElementById("input"),statusBox=document.getElementById("status");
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
-function short(v,n=44){v=String(v||"");return v.length>n?v.slice(0,n-1)+"…":v}
-function status(m,t=""){statusBox.textContent=m;statusBox.className="status show "+t}
-function toast(m,t=""){const x=document.querySelector(".toast");x.textContent=m;x.className="toast show "+t;setTimeout(()=>x.className="toast",2400)}
-function priorityTag(p){p=String(p||"medium").toLowerCase();return p==="high"?"orange":p==="critical"?"red":p==="low"?"green":""}
+const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",lastOutput=null,lastCommand="";const input=document.getElementById("input"),statusBox=document.getElementById("status");
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}function short(v,n=44){v=String(v||"");return v.length>n?v.slice(0,n-1)+"…":v}function status(m,t=""){statusBox.textContent=m;statusBox.className="status show "+t}function toast(m,t=""){const x=document.querySelector(".toast");x.textContent=m;x.className="toast show "+t;setTimeout(()=>x.className="toast",2400)}function priorityTag(p){p=String(p||"medium").toLowerCase();return p==="high"?"orange":p==="critical"?"red":p==="low"?"green":""}
 async function api(p,o={}){const r=await fetch(API+p,o),txt=await r.text();let d;try{d=txt?JSON.parse(txt):{}}catch(e){d={raw:txt}}if(!r.ok)throw new Error(d.error||d.detail||txt||`HTTP ${r.status}`);return d}
-function newRun(){input.value="";lastOutput=null;lastCommand="";status("Ready for new command.","success");input.focus()}
-document.querySelectorAll(".mode,.nav").forEach(b=>b.addEventListener("click",()=>{if(!b.dataset.mode)return;activeMode=b.dataset.mode;document.querySelectorAll(".mode,.nav").forEach(x=>x.classList.remove("active"));document.querySelectorAll(`[data-mode="${activeMode}"]`).forEach(x=>x.classList.add("active"));input.focus()}));
-async function runEngine(){const command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,depth:"standard",user_id:USER_ID,session_id:"locked_frontend_v1",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
-function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>`;
-document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
-function extractQuotedAfter(label,s){s=String(s||"");for(const p of [new RegExp(label+'\\s+called\\s+"([^"]+)"','i'),new RegExp(label+"\\s+called\\s+'([^']+)'",'i')]){const m=s.match(p);if(m&&m[1])return m[1].trim()}return""}
-function explicitActionText(){return extractQuotedAfter("one action",lastCommand)||extractQuotedAfter("action",lastCommand)}
-function explicitDecisionText(){return extractQuotedAfter("one decision",lastCommand)||extractQuotedAfter("decision",lastCommand)}
-async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"locked_frontend_v1",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
-async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"locked_frontend_v1",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
-async function saveFlowStatus(){const d=await api("/save-flow-status?user_id="+encodeURIComponent(USER_ID));status(`Save Flow: ${d.latest?.action_text||"no latest action"} · ${d.latest?.decision_text||"no latest decision"}`,"success");return d}
-async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=document.getElementById("verifySaveBtn");if(btn){btn.textContent="Verified";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Save verified","success");return d}catch(e){status("Verify Save failed: "+e.message,"error")}}
-async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}
-async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
-function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}
-function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
-async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";document.getElementById("feedActions").textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);document.getElementById("focusList").innerHTML=`<div class="r-card"><strong>${esc(short(focus.title||"No focus yet",48))}</strong><br><span>${esc(short(focus.next_move||"Run engine to create one",80))}</span></div>`;if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory")}catch(e){status("Backend status issue: "+e.message,"error")}}
-async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
-refreshState();stabilityAudit();status("Locked Frontend V1 loaded. Backend remains V125.","success");
+function newRun(){input.value="";lastOutput=null;lastCommand="";input.focus()}document.querySelectorAll(".mode,.nav").forEach(b=>b.addEventListener("click",()=>{if(!b.dataset.mode)return;activeMode=b.dataset.mode;document.querySelectorAll(".mode,.nav").forEach(x=>x.classList.remove("active"));document.querySelectorAll(`[data-mode="${activeMode}"]`).forEach(x=>x.classList.add("active"));input.focus()}));
+async function runEngine(){const command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,depth:"standard",user_id:USER_ID,session_id:"locked_frontend_v2",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
+function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>`;document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
+function extractQuotedAfter(label,s){s=String(s||"");for(const p of [new RegExp(label+'\\s+called\\s+"([^"]+)"','i'),new RegExp(label+"\\s+called\\s+'([^']+)'",'i')]){const m=s.match(p);if(m&&m[1])return m[1].trim()}return""}function explicitActionText(){return extractQuotedAfter("one action",lastCommand)||extractQuotedAfter("action",lastCommand)}function explicitDecisionText(){return extractQuotedAfter("one decision",lastCommand)||extractQuotedAfter("decision",lastCommand)}
+async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"locked_frontend_v2",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
+async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"locked_frontend_v2",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
+async function saveFlowStatus(){const d=await api("/save-flow-status?user_id="+encodeURIComponent(USER_ID));status(`Save Flow: ${d.latest?.action_text||"no latest action"} · ${d.latest?.decision_text||"no latest decision"}`,"success");return d}async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=document.getElementById("verifySaveBtn");if(btn){btn.textContent="Verified";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Save verified","success");return d}catch(e){status("Verify Save failed: "+e.message,"error")}}async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
+function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
+async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";document.getElementById("feedActions").textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory")}catch(e){status("Backend status issue: "+e.message,"error")}}async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
+refreshState();stabilityAudit();
 </script>
 </body>
 </html>
