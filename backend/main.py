@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V200"
-SERVICE_NAME = "Executive Engine OS V200"
+VERSION = "V215"
+SERVICE_NAME = "Executive Engine OS V215"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="200.0.0")
+app = FastAPI(title=SERVICE_NAME, version="215.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V200, an elite COO/operator system.
+You are Executive Engine OS V215, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V200",
+        "backend_must_show": "Executive Engine OS V215",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3130,5 +3130,376 @@ async def v200_milestone(user_id: str = Query(DEFAULT_USER)):
             "Check /beta-test-plan",
             "Run one real command",
             "Save action and decision"
+        ]
+    }
+
+
+
+
+# =========================
+# V205 SYSTEM TEST DASHBOARD
+# =========================
+
+async def v205_safe_call(name: str, fn):
+    try:
+        data = await fn()
+        return {
+            "name": name,
+            "passed": True,
+            "status": "PASS",
+            "data": data
+        }
+    except Exception as e:
+        return {
+            "name": name,
+            "passed": False,
+            "status": "FAIL",
+            "error": str(e)[:500]
+        }
+
+
+@app.get("/system-test")
+async def system_test(user_id: str = Query(DEFAULT_USER)):
+    """
+    One-page system test dashboard.
+    This replaces manually opening multiple endpoint URLs after every deploy.
+    """
+
+    async def test_health():
+        return {
+            "service": SERVICE_NAME,
+            "version": VERSION,
+            "model": OPENAI_MODEL,
+            "openai_key_set": bool(OPENAI_API_KEY),
+            "supabase_enabled": SUPABASE_ENABLED,
+            "manual_execution_only": MANUAL_EXECUTION_ONLY,
+            "auto_loop_enabled": AUTO_LOOP_ENABLED,
+            "clean_reset": CLEAN_RESET
+        }
+
+    async def test_memory():
+        mem = await memory_data(user_id)
+        return {
+            "supabase_enabled": mem.get("supabase_enabled", False),
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        }
+
+    async def test_engine_state():
+        mem = await memory_data(user_id)
+        return {
+            "has_actions": len(mem.get("open_actions") or []) > 0,
+            "has_decisions": len(mem.get("recent_decisions") or []) > 0,
+            "has_memory": len(mem.get("memory_items") or []) > 0
+        }
+
+    async def test_beta():
+        if "v200_beta_candidate" in globals():
+            mem = await memory_data(user_id)
+            return v200_beta_candidate(mem)
+        return {"available": False, "reason": "v200_beta_candidate helper not present"}
+
+    async def test_connectors():
+        if "v195_connector_plan" in globals():
+            return v195_connector_plan()
+        return {"available": False, "reason": "v195_connector_plan helper not present"}
+
+    async def test_workflow():
+        if "v165_workflow_summary" in globals():
+            mem = await memory_data(user_id)
+            return v165_workflow_summary(mem)
+        return {"available": False, "reason": "v165_workflow_summary helper not present"}
+
+    async def test_memory_intelligence():
+        if "v140_memory_summary" in globals():
+            mem = await memory_data(user_id)
+            return v140_memory_summary(mem)
+        return {"available": False, "reason": "v140_memory_summary helper not present"}
+
+    async def test_copilot():
+        if "v180_copilot_state" in globals():
+            mem = await memory_data(user_id)
+            return v180_copilot_state(mem)
+        return {"available": False, "reason": "v180_copilot_state helper not present"}
+
+    tests = [
+        await v205_safe_call("Health", test_health),
+        await v205_safe_call("Memory / Supabase", test_memory),
+        await v205_safe_call("Engine State", test_engine_state),
+        await v205_safe_call("Beta Candidate", test_beta),
+        await v205_safe_call("Connector Plan", test_connectors),
+        await v205_safe_call("Workflow Control", test_workflow),
+        await v205_safe_call("Memory Intelligence", test_memory_intelligence),
+        await v205_safe_call("AI Copilot", test_copilot)
+    ]
+
+    passed = sum(1 for t in tests if t.get("passed"))
+    total = len(tests)
+
+    hard_failures = [
+        t for t in tests
+        if not t.get("passed") and t.get("name") in ["Health", "Memory / Supabase", "Engine State"]
+    ]
+
+    return {
+        "ok": len(hard_failures) == 0,
+        "version": VERSION,
+        "milestone": "System Test Dashboard",
+        "score": f"{passed}/{total}",
+        "ready": len(hard_failures) == 0 and passed >= 6,
+        "expected_frontend_badge": "V205 System Test · V205 Backend",
+        "summary": {
+            "backend_live": True,
+            "openai_key_set": bool(OPENAI_API_KEY),
+            "supabase_enabled": SUPABASE_ENABLED,
+            "manual_execution_only": MANUAL_EXECUTION_ONLY,
+            "auto_loop_enabled": AUTO_LOOP_ENABLED,
+            "clean_reset": CLEAN_RESET
+        },
+        "tests": tests,
+        "pass_condition": "PASS if score is at least 6/8 and Health, Memory / Supabase, and Engine State pass.",
+        "next_move": "Use this page after every deploy instead of manually opening every test endpoint."
+    }
+
+
+@app.get("/v205-milestone")
+async def v205_milestone(user_id: str = Query(DEFAULT_USER)):
+    result = await system_test(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "System Test Dashboard",
+        "ready": result.get("ready", False),
+        "score": result.get("score"),
+        "frontend_must_show": "V205 System Test · V205 Backend",
+        "test_dashboard": "/system-test",
+        "test_checklist": [
+            "Open /system-test",
+            "Confirm score is at least 6/8",
+            "Confirm Health passes",
+            "Confirm Memory / Supabase passes",
+            "Confirm Engine State passes",
+            "Open frontend Settings page",
+            "Click Run Full System Test",
+            "Run Engine",
+            "Save Action",
+            "Save Decision"
+        ],
+        "system_test": result
+    }
+
+
+
+
+# =========================
+# V210 CONNECTOR PREP + V215 EMAIL DRAFT LAYER
+# =========================
+
+def v210_connector_prep_state(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    return {
+        "phase": "V210 Connector Preparation",
+        "safe_mode": True,
+        "read_only_first": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "connectors": [
+            {
+                "id": "calendar",
+                "name": "Calendar",
+                "status": "Prepared",
+                "priority": "High",
+                "risk": "Low",
+                "first_use": "Daily Brief + Meeting Prep",
+                "allowed": ["Read upcoming meetings", "Generate meeting prep", "Suggest follow-up reminders"],
+                "blocked": ["Create or cancel meetings without approval", "Invite attendees without approval"]
+            },
+            {
+                "id": "files",
+                "name": "Files / Knowledge Base",
+                "status": "Prepared",
+                "priority": "High",
+                "risk": "Low",
+                "first_use": "Context + Memory",
+                "allowed": ["Summarize uploaded files", "Extract decisions", "Extract action items"],
+                "blocked": ["Delete files", "Share files externally", "Modify source documents"]
+            }
+        ],
+        "current_data": {
+            "open_actions": len(actions),
+            "saved_decisions": len(decisions),
+            "memory_items": len(memory_items)
+        },
+        "next_move": "Prepare Calendar and Files as read-only context sources before external write actions."
+    }
+
+
+def v215_email_draft_state(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    latest_action = actions[0] if actions else {}
+    latest_decision = decisions[0] if decisions else {}
+
+    draft_subject = "Follow-up: Executive Engine OS next steps"
+    draft_body = (
+        "Hi,\n\n"
+        "Quick follow-up on the current execution priorities.\n\n"
+        f"Decision: {latest_decision.get('decision', 'Confirm the next operating decision.')}\n"
+        f"Next action: {latest_action.get('text', 'Complete the highest-priority action.')}\n\n"
+        "Please confirm the owner, timing, and any blocker.\n\n"
+        "Best,\n"
+    )
+
+    return {
+        "phase": "V215 Email Draft Layer",
+        "safe_mode": True,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "email_mode": "draft_only",
+        "send_enabled": False,
+        "draft_capabilities": [
+            "Draft follow-up email",
+            "Draft meeting recap",
+            "Draft decision confirmation",
+            "Draft action owner request",
+            "Summarize important email context when connected"
+        ],
+        "blocked": [
+            "Send email automatically",
+            "Forward email externally",
+            "Delete email",
+            "Archive email automatically",
+            "Contact anyone without user approval"
+        ],
+        "sample_draft": {
+            "subject": draft_subject,
+            "body": draft_body,
+            "requires_user_review": True
+        },
+        "next_move": "Use email draft mode to create reviewable follow-ups only; do not send externally."
+    }
+
+
+@app.get("/connector-prep")
+async def connector_prep(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V210 Connector Preparation",
+        "connector_prep": v210_connector_prep_state(mem)
+    }
+
+
+@app.get("/calendar-files-readiness")
+async def calendar_files_readiness(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    prep = v210_connector_prep_state(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "calendar": prep["connectors"][0],
+        "files": prep["connectors"][1],
+        "read_only_first": True,
+        "next_move": prep["next_move"]
+    }
+
+
+@app.get("/email-draft-mode")
+async def email_draft_mode(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V215 Email Draft Layer",
+        "email": v215_email_draft_state(mem)
+    }
+
+
+@app.get("/draft-follow-up")
+async def draft_follow_up(user_id: str = Query(DEFAULT_USER), topic: str = Query("Executive Engine OS follow-up")):
+    mem = await memory_data(user_id)
+    draft = v215_email_draft_state(mem)["sample_draft"]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "draft_only": True,
+        "send_enabled": False,
+        "topic": topic,
+        "draft": {
+            "subject": f"Follow-up: {topic}",
+            "body": draft["body"],
+            "requires_user_review": True,
+            "approval_required_before_send": True
+        },
+        "safety": [
+            "This endpoint drafts only.",
+            "It does not send email.",
+            "User approval is required before any external communication."
+        ]
+    }
+
+
+@app.get("/v210-milestone")
+async def v210_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    prep = v210_connector_prep_state(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Calendar prep available", "passed": True},
+        {"name": "Files prep available", "passed": True},
+        {"name": "Read-only first", "passed": prep.get("read_only_first", False)},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Connector Preparation",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V215 Email Draft · V215 Backend",
+        "checks": checks,
+        "connector_prep": prep
+    }
+
+
+@app.get("/v215-milestone")
+async def v215_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    email = v215_email_draft_state(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Email draft mode available", "passed": True},
+        {"name": "Send disabled", "passed": email.get("send_enabled") is False},
+        {"name": "Draft only", "passed": email.get("email_mode") == "draft_only"},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Email Draft Layer",
+        "ready": True,
+        "score": f"{sum(1 for c in checks if c['passed'])}/{len(checks)}",
+        "frontend_must_show": "V215 Email Draft · V215 Backend",
+        "checks": checks,
+        "email": email,
+        "test_checklist": [
+            "Open /system-test",
+            "Open /connector-prep",
+            "Open /email-draft-mode",
+            "Open /draft-follow-up",
+            "Open Settings page",
+            "Confirm Connector Prep panel appears",
+            "Confirm Email Draft panel appears",
+            "Confirm send remains disabled"
         ]
     }

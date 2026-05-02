@@ -627,6 +627,125 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 }
 @media(max-width:1100px){.connector-grid,.beta-grid,.beta-score{grid-template-columns:1fr}}
 
+
+/* V205 System Test Dashboard */
+.system-test-panel{
+  border:1px solid #bfdbfe;
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(15,99,255,.08);
+}
+.system-test-panel h3{
+  margin:0 0 8px;
+  color:#0f63ff;
+}
+.system-score{
+  display:grid;
+  grid-template-columns:92px 1fr;
+  gap:15px;
+  align-items:center;
+}
+.system-ring{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:conic-gradient(#0f63ff 0deg,#0f63ff 288deg,#e5edf7 288deg,#e5edf7 360deg);
+  display:grid;
+  place-items:center;
+}
+.system-ring span{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#0f63ff;
+  font-weight:800;
+}
+.system-test-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.system-test-card{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.system-test-card b{
+  display:block;
+  margin-bottom:5px;
+}
+.system-test-card p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.test-pass{
+  border-left:5px solid #10b981;
+}
+.test-fail{
+  border-left:5px solid #ef4444;
+}
+@media(max-width:1100px){.system-test-grid,.system-score{grid-template-columns:1fr}}
+
+
+/* V210 connector prep + V215 email draft */
+.connector-prep-grid,.email-draft-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.connector-prep-card,.email-draft-card{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+}
+.connector-prep-card b,.email-draft-card b{
+  display:block;
+  margin-bottom:6px;
+}
+.connector-prep-card p,.email-draft-card p{
+  margin:0 0 8px;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
+}
+.email-draft-box{
+  border:1px solid #fed7aa;
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 14px 34px rgba(234,88,12,.08);
+}
+.email-draft-box h3{
+  margin:0 0 8px;
+  color:#c2410c;
+}
+.draft-preview{
+  white-space:pre-wrap;
+  background:#fff;
+  border:1px solid #fed7aa;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+  color:#334155;
+  line-height:1.45;
+  margin-top:10px;
+}
+@media(max-width:1100px){.connector-prep-grid,.email-draft-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -634,11 +753,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V200 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V215 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V200 Beta Candidate</div>
+  <div class="lock">▣ V215 Email Draft</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -688,7 +807,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V200 Beta Candidate · V200 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V215 Email Draft · V215 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -729,7 +848,7 @@ function showPage(page){activePage=page;v160PagePolish(page);const meta=pages[pa
 function renderPage(page){
  const host=document.getElementById("pageHost");
  const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];
- if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
+ if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadConnectorPrep();loadEmailDraftMode();runSystemTest();loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
  const actionRows=(actions.length?actions.slice(0,8):[
   {text:"Review Q2 financial statements with CFO",priority:"critical",status:"open"},
   {text:"Schedule CFO 1:1 for Thursday",priority:"high",status:"open"},
@@ -861,6 +980,62 @@ function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"><
 
 
 
+
+
+
+async function loadConnectorPrep(){
+ try{
+  const d=await api("/connector-prep?user_id="+encodeURIComponent(USER_ID));
+  const p=d.connector_prep||{};
+  const grid=document.getElementById("connectorPrepGrid");
+  if(grid){
+    grid.innerHTML=(p.connectors||[]).map(c=>`<div class="connector-prep-card"><b>${esc(c.name)}</b><p>${esc(c.first_use)}</p><p>${esc((c.allowed||[]).join(", ")||"Read-only context")}</p><span class="status-pill ${c.risk==="Low"?"green":"orange"}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
+  }
+  const move=document.getElementById("connectorPrepMove");
+  if(move) move.textContent=p.next_move||"Prepare read-only connectors first.";
+ }catch(e){toast("Connector prep unavailable","error")}
+}
+async function loadEmailDraftMode(){
+ try{
+  const d=await api("/email-draft-mode?user_id="+encodeURIComponent(USER_ID));
+  const e=d.email||{};
+  const box=document.getElementById("emailDraftModeBox");
+  if(box){
+    const draft=e.sample_draft||{};
+    box.innerHTML=`<h3>Email Draft Mode</h3><p><b>Mode:</b> ${esc(e.email_mode||"draft_only")}</p><p><b>Send Enabled:</b> ${e.send_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(e.next_move||"Draft only. Review required.")}</p><div class="draft-preview"><b>${esc(draft.subject||"Follow-up")}</b>\n\n${esc(draft.body||"Draft not available.")}</div>`;
+  }
+  const grid=document.getElementById("emailDraftGrid");
+  if(grid){
+    grid.innerHTML=(e.draft_capabilities||[]).map(x=>`<div class="email-draft-card"><b>${esc(x)}</b><p>Draft-only. User review required before external communication.</p><span class="status-pill green">Draft Only</span></div>`).join("");
+  }
+ }catch(e){toast("Email draft mode unavailable","error")}
+}
+
+async function runSystemTest(){
+ try{
+  const d=await api("/system-test?user_id="+encodeURIComponent(USER_ID));
+  const panel=document.getElementById("systemTestPanel");
+  const tests=document.getElementById("systemTestResults");
+  const scoreText=String(d.score||"0/8");
+  const parts=scoreText.split("/");
+  const passed=parseInt(parts[0]||"0",10);
+  const total=parseInt(parts[1]||"8",10);
+  const percent=total?Math.round((passed/total)*100):0;
+  const deg=Math.round(percent*3.6);
+
+  if(panel){
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V215 Email Draft · V215 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+  }
+  if(tests){
+    tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
+  }
+  toast("System test complete","success");
+ }catch(e){
+  toast("System test failed","error");
+  const panel=document.getElementById("systemTestPanel");
+  if(panel) panel.innerHTML=`<h3>System Test Failed</h3><p>${esc(e.message||e)}</p>`;
+ }
+}
 
 async function loadConnectorPlan(){
  try{
