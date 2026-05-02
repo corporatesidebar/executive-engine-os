@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V95</title>
+  <title>Executive Engine OS V97</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -442,6 +442,29 @@
   font-size:13px !important;
 }
 
+
+/* V97 — right panel memory polish */
+.engine-state-line{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:8px 10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:12px;
+  font-size:11px;
+  margin-top:8px;
+}
+.engine-state-line strong{
+  color:#0f172a;
+}
+.engine-state-line span{
+  color:#64748b;
+  display:block;
+  margin-top:2px;
+}
+
 </style>
 </head>
 <body>
@@ -479,7 +502,7 @@
 
         <div class="flow-card">
           <div class="flow-top">
-            <div class="flow-title"><strong>1. Pick workflow</strong><span>V95 stability lock: manual execution only. No bots yet.</span></div>
+            <div class="flow-title"><strong>1. Pick workflow</strong><span>V97 memory polish: manual execution only. No bots yet.</span></div>
             <div class="workflow-tabs" id="workflowTabs"></div>
           </div>
 
@@ -521,8 +544,8 @@
 <script>
 const API="https://executive-engine-os.onrender.com";
 const USER_ID="local_user";
-let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null};
-const STORAGE_KEY="eeos_v95_threads",ACTIVE_KEY="eeos_v95_active_thread",PROFILE_KEY="eeos_v95_profile",ACTIONS_KEY="eeos_v95_actions",DECISIONS_KEY="eeos_v95_decisions";
+let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null};
+const STORAGE_KEY="eeos_v97_threads",ACTIVE_KEY="eeos_v97_active_thread",PROFILE_KEY="eeos_v97_profile",ACTIONS_KEY="eeos_v97_actions",DECISIONS_KEY="eeos_v97_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -688,12 +711,15 @@ function renderEngineList(){
 
 function renderRight(){
   const latest=[...getMessages()].reverse().find(m=>m.role==="assistant")?.data;
+  const engineState=backendMemory.engineState||null;
   const localActions=JSON.parse(localStorage.getItem(ACTIONS_KEY)||"[]");
   const localDecisions=JSON.parse(localStorage.getItem(DECISIONS_KEY)||"[]");
   const actions = backendMemory.online && backendMemory.actions?.length ? backendMemory.actions.map(a=>({text:a.text,priority:a.priority,id:a.id,source:"db"})) : localActions;
   const decisions = backendMemory.online && backendMemory.decisions?.length ? backendMemory.decisions.map(d=>({decision:d.decision,priority:d.priority,date:(d.created_at||"").slice(0,10),id:d.id,source:"db"})) : localDecisions;
 
-  todayFocus.innerHTML = latest?.what_to_do_now
+  todayFocus.innerHTML = engineState?.today_focus?.title && engineState.today_focus.title !== "No focus yet"
+    ? `<div class="focus-one-line" onclick="useFocus()"><div><strong>${esc(engineState.today_focus.title)}</strong><span>${esc(engineState.today_focus.next_move||"Click to use")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
+    : latest?.what_to_do_now
     ? `<div class="focus-one-line" onclick="useFocus()"><div><strong>${esc(latest.what_to_do_now)}</strong><span>${esc(latest.next_move||"Click to turn into plan")}</span></div><div class="row-chip green">Use</div></div><div class="rail-actions"><button onclick="useFocus()">Use Focus</button><button onclick="goHome()">New Run</button></div>`
     : `<div class="focus-one-line" onclick="goHome()"><div><strong>No focus yet</strong><span>Run the engine to create one</span></div><div class="row-chip">Start</div></div>`;
 
@@ -770,7 +796,7 @@ async function saveLatestDecision(){
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V95 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V97 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -872,6 +898,7 @@ async function refreshBackendMemory(){
       apiGet("/actions?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/decisions?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/profile?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/engine-state?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/memory-summary?user_id="+encodeURIComponent(USER_ID))
     ]);
 
@@ -879,6 +906,7 @@ async function refreshBackendMemory(){
     backendMemory.actions = actions.status==="fulfilled" ? (actions.value.actions||[]) : [];
     backendMemory.decisions = decisions.status==="fulfilled" ? (decisions.value.decisions||[]) : [];
     backendMemory.profile = profile.status==="fulfilled" ? profile.value.profile : null;
+    backendMemory.engineState = engineState.status==="fulfilled" ? engineState.value : null;
     backendMemory.memorySummary = memsum.status==="fulfilled" ? memsum.value.summary : null;
 
     const msb=document.getElementById("memorySummaryBox");
