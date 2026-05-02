@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V108</title>
+  <title>Executive Engine OS V109</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -1139,6 +1139,33 @@ button:disabled{
   .v108-stability-box{display:none;}
 }
 
+
+/* V109 — Run Engine button fix */
+.v109-run-status{
+  margin-top:10px;
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  color:#1e293b;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:12px;
+  font-weight:800;
+  display:none;
+}
+.v109-run-status.show{
+  display:block;
+}
+.v109-run-status.error{
+  border-color:#fecaca;
+  background:#fef2f2;
+  color:#991b1b;
+}
+.v109-run-status.success{
+  border-color:#bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+}
+
 </style>
 </head>
 <body>
@@ -1204,7 +1231,7 @@ button:disabled{
     </main>
 
     <aside class="right">
-      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V108 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
+      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V109 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
       <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
       <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
       <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
@@ -1221,7 +1248,7 @@ const USER_ID="local_user";
 let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null,profileStatus:null};
 let actionSavedForRun=false;
 let decisionSavedForRun=false;
-const STORAGE_KEY="eeos_v108_threads",ACTIVE_KEY="eeos_v108_active_thread",PROFILE_KEY="eeos_v108_profile",ACTIONS_KEY="eeos_v108_actions",DECISIONS_KEY="eeos_v108_decisions";
+const STORAGE_KEY="eeos_v109_threads",ACTIVE_KEY="eeos_v109_active_thread",PROFILE_KEY="eeos_v109_profile",ACTIONS_KEY="eeos_v109_actions",DECISIONS_KEY="eeos_v109_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -1491,7 +1518,7 @@ async function saveLatestDecision(){
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V108 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V109 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -1603,6 +1630,7 @@ async function refreshBackendMemory(){
       apiGet("/cleanup-check?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/frontend-diagnostics?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/frontend-stability?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/run-button-diagnostics"),
       apiGet("/memory-summary?user_id="+encodeURIComponent(USER_ID))
     ]);
 
@@ -1619,6 +1647,7 @@ async function refreshBackendMemory(){
     backendMemory.cleanupCheck = cleanupCheck.status==="fulfilled" ? cleanupCheck.value : null;
     backendMemory.frontendDiagnostics = frontendDiagnostics.status==="fulfilled" ? frontendDiagnostics.value : null;
     backendMemory.frontendStability = frontendStability.status==="fulfilled" ? frontendStability.value : null;
+    backendMemory.runButtonDiagnostics = runButtonDiagnostics.status==="fulfilled" ? runButtonDiagnostics.value : null;
     backendMemory.memorySummary = memsum.status==="fulfilled" ? memsum.value.summary : null;
 
     const msb=document.getElementById("memorySummaryBox");
@@ -1642,7 +1671,7 @@ async function refreshBackendMemory(){
       const gl=backendMemory.goLive||{};
       const ready=gl.ready_for_frontend_polish?"Ready":"Validate";
       const score=gl.score||"—";
-      rsb.innerHTML=`<strong>V108 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
+      rsb.innerHTML=`<strong>V109 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
     }
     const uxb=document.getElementById("uxBriefBox");
     if(uxb){
@@ -1775,7 +1804,7 @@ function renderV103Home(){
             <button class="${activeMode==="content"?"active":""}" onclick="selectWorkflow('content');renderV103Home()">Content</button>
             <button class="${activeMode==="personal"?"active":""}" onclick="selectWorkflow('personal');renderV103Home()">Personal</button>
           </div>
-          <button class="run-btn" onclick="runV103Command()">Run Engine</button>
+          <button class="run-btn" onclick="runV109Command()">Run Engine</button>
         </div>
       </div>
 
@@ -1787,7 +1816,7 @@ function renderV103Home(){
   const v103Input=document.getElementById("v103Input");
   if(v103Input){
     v103Input.addEventListener("keydown",e=>{
-      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV103Command();
+      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV109Command();
     });
     v103Input.focus();
   }
@@ -1803,6 +1832,113 @@ function runV103Command(){
 
 
 selectWorkflow("execution",false);renderV103Home();setTimeout(refreshBackendMemory, 300);
+
+
+function getVisibleCommandValue(){
+  const v103=document.getElementById("v103Input");
+  if(v103 && v103.value && v103.value.trim()) return v103.value.trim();
+  if(typeof input !== "undefined" && input && input.value && input.value.trim()) return input.value.trim();
+  const anyText=document.querySelector("textarea");
+  if(anyText && anyText.value && anyText.value.trim()) return anyText.value.trim();
+  return "";
+}
+
+function setRunStatus(message,type=""){
+  let box=document.getElementById("v109RunStatus");
+  if(!box){
+    const card=document.querySelector(".v103-command-card") || document.querySelector(".composer") || document.body;
+    box=document.createElement("div");
+    box.id="v109RunStatus";
+    box.className="v109-run-status";
+    card.appendChild(box);
+  }
+  box.className="v109-run-status show " + (type||"");
+  box.textContent=message;
+}
+
+async function directRunFallback(command){
+  setRunStatus("Running engine through backend...", "");
+  const payload={
+    input:command,
+    mode:(typeof activeMode!=="undefined" && activeMode) ? activeMode : "execution",
+    depth:(typeof activeDepth!=="undefined" && activeDepth) ? activeDepth : "standard",
+    user_id:(typeof USER_ID!=="undefined" && USER_ID) ? USER_ID : "local_user",
+    session_id:(typeof activeThreadId!=="undefined" && activeThreadId) ? activeThreadId : "frontend_v109",
+    auto_save:true
+  };
+  const res=await fetch(API + "/run", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  if(!res.ok){
+    const text=await res.text();
+    throw new Error("Backend /run failed: " + res.status + " " + text.slice(0,180));
+  }
+  const data=await res.json();
+
+  try{
+    if(typeof getActiveThread==="function"){
+      const t=getActiveThread();
+      t.messages.push({role:"user",text:command,at:new Date().toISOString()});
+      t.messages.push({role:"assistant",data:data,at:new Date().toISOString()});
+      if(typeof saveThreads==="function") saveThreads();
+      if(typeof render==="function") render();
+      if(typeof renderRight==="function") renderRight();
+      if(typeof refreshBackendMemory==="function") setTimeout(refreshBackendMemory,500);
+    }else{
+      console.log("Executive Engine output:",data);
+      alert("Engine ran successfully. Check console/output.");
+    }
+  }catch(renderErr){
+    console.error("Render fallback issue:",renderErr,data);
+    alert("Engine ran, but render failed. Check console.");
+  }
+
+  setRunStatus("Engine response received.", "success");
+  return data;
+}
+
+async function runV109Command(){
+  const command=getVisibleCommandValue();
+  if(!command){
+    setRunStatus("Type a command first.", "error");
+    if(typeof notify==="function") notify("Type a command first");
+    return;
+  }
+
+  const btns=[...document.querySelectorAll("button")].filter(b=>b.textContent.trim().toLowerCase().includes("run engine"));
+  btns.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Running...";});
+
+  try{
+    setRunStatus("Running engine...", "");
+    const originalInput=(typeof input!=="undefined") ? input : null;
+    if(originalInput) originalInput.value=command;
+
+    if(typeof sendMessage==="function"){
+      try{
+        await sendMessage();
+        setRunStatus("Engine request sent.", "success");
+        return;
+      }catch(sendErr){
+        console.warn("sendMessage failed; using direct /run fallback",sendErr);
+        await directRunFallback(command);
+        return;
+      }
+    }
+
+    await directRunFallback(command);
+
+  }catch(err){
+    console.error("Run Engine failed:",err);
+    setRunStatus("Run Engine failed: " + err.message, "error");
+    if(typeof notify==="function") notify("Run Engine failed: " + err.message);
+  }finally{
+    btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText || "Run Engine";});
+  }
+}
+
+
 </script>
 </body>
 </html>
