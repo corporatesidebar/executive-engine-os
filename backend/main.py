@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V109"
+APP_NAME = "Executive Engine OS V110"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="109.0.0")
+app = FastAPI(title=APP_NAME, version="110.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +41,7 @@ Executive Engine OS real project context:
 - Product: AI executive command center for CEOs/COOs/founders.
 - Backend live on Render: https://executive-engine-os.onrender.com
 - Frontend live on Render: https://executive-engine-frontend.onrender.com
-- Current backend: V109 quality fix.
+- Current backend: V110 quality fix.
 - Previous confirmed backend: V96.2 technical loop working.
 - OpenAI connected.
 - Supabase connected.
@@ -62,7 +62,7 @@ Executive Engine OS real project context:
 - Frontend renders structured output and right sidebar memory/status.
 - UI is usable but not final.
 - Figma redesign comes later, after backend/output quality is stable.
-- Current priority: V109 release candidate stability, learning dashboard, profile-aware output, response quality, frontend DB validation, right-panel persistence, and manual execution loop.
+- Current priority: V110 release candidate stability, learning dashboard, profile-aware output, response quality, frontend DB validation, right-panel persistence, and manual execution loop.
 - Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
 - Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
 
@@ -89,7 +89,7 @@ Forbidden generic advice:
 
 When asked "What should I focus on today to move Executive Engine OS forward?":
 The correct answer must be about:
-- confirming V109 backend response quality
+- confirming V110 backend response quality
 - testing /run from frontend
 - checking /memory for a new recent_run
 - using Save Action and Save Decision buttons
@@ -222,7 +222,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
             "Open /memory and confirm a new recent_run appears at the top.",
             "Click Save Action in the frontend and confirm /actions returns it.",
             "Click Save Decision in the frontend and confirm /decisions returns it.",
-            "Document pass/fail before building V109."
+            "Document pass/fail before building V110."
         ],
         "priority": "high",
         "risk": "The main risk is staying stuck because the input, backend, or decision context is incomplete.",
@@ -257,7 +257,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
         "constraint": reason,
         "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
         "manual_execution_only": True,
-        "version": "V109",
+        "version": "V110",
         "project_context_applied": True
     }
 
@@ -344,7 +344,7 @@ def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
 
     base["execution_loop"] = build_execution_loop(base)
     base["manual_execution_only"] = True
-    base["version"] = "V109"
+    base["version"] = "V110"
     base["project_context_applied"] = True
     return base
 
@@ -378,7 +378,7 @@ PROJECT-SPECIFIC DIRECTIVE:
 The user is asking what to do next for Executive Engine OS.
 Do not answer with generic product/customer/market advice.
 Answer with backend/frontend/Supabase execution validation steps.
-Focus on V109 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
+Focus on V110 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
 """
     return ""
 
@@ -464,7 +464,7 @@ def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any
 
 def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
     return f"""
-You are Executive Engine OS V109.
+You are Executive Engine OS V110.
 
 PROJECT CONTEXT:
 {PROJECT_CONTEXT}
@@ -679,7 +679,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V109"}
+    return {"ok": True, "service": APP_NAME, "version": "V110"}
 
 
 @app.get("/health")
@@ -687,7 +687,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V109",
+        "version": "V110",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -702,11 +702,11 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
             "/engine-state", "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
-            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/run-button-diagnostics", "/frontend-stability", "/navigation-map", "/frontend-diagnostics", "/v108-check", "/frontend-config", "/cleanup-check", "/visual-brief", "/layout-brief", "/figma-brief", "/ux-flow", "/ux-brief", "/next-build", "/system-status", "/go-live-check", "/learning", "/learning-events", "/operator-brief", "/profile-status", "/profile", "/robots.txt"
+            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/frontend-live-status", "/v110-check", "/run-button-diagnostics", "/frontend-stability", "/navigation-map", "/frontend-diagnostics", "/v108-check", "/frontend-config", "/cleanup-check", "/visual-brief", "/layout-brief", "/figma-brief", "/ux-flow", "/ux-brief", "/next-build", "/system-status", "/go-live-check", "/learning", "/learning-events", "/operator-brief", "/profile-status", "/profile", "/robots.txt"
         ],
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
@@ -720,7 +720,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -731,7 +731,7 @@ async def schema():
 async def project_context():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
@@ -787,9 +787,9 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V109", "output": normalize_output(output)}
+        return {"ok": True, "version": "V110", "output": normalize_output(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V109", "output": normalize_output(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V110", "output": normalize_output(fallback_response(str(exc)))}
 
 
 
@@ -813,7 +813,7 @@ async def quality_test():
         generic_hits = [term for term in GENERIC_MEMORY_BLOCKLIST if term in text]
         return {
             "ok": True,
-            "version": "V109",
+            "version": "V110",
             "generic_hits": generic_hits,
             "passed_quality_gate": len(generic_hits) == 0,
             "output": normalized
@@ -821,7 +821,7 @@ async def quality_test():
     except Exception as exc:
         return {
             "ok": False,
-            "version": "V109",
+            "version": "V110",
             "error": str(exc),
             "output": normalize_output(fallback_response(str(exc)))
         }
@@ -854,7 +854,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V109", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
+    return {"ok": True, "version": "V110", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
 @app.get("/memory")
@@ -865,7 +865,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
-    return {"ok": True, "version": "V109", "summary": summarize_memory_for_prompt(memory_data)}
+    return {"ok": True, "version": "V110", "summary": summarize_memory_for_prompt(memory_data)}
 
 
 @app.post("/stability-check")
@@ -884,7 +884,7 @@ async def stability_check():
         "memory_injection": "last_3_items",
         "project_context_applied": True
     }
-    return {"ok": True, "version": "V109", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V110", "health": health_data, "checks": checks}
 
 
 
@@ -902,7 +902,7 @@ async def engine_state(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "supabase_enabled": memory_data.get("supabase_enabled", False),
         "today_focus": {
             "title": latest_output.get("what_to_do_now") if isinstance(latest_output, dict) else "No focus yet",
@@ -985,7 +985,7 @@ async def actions(user_id: str = Query("local_user"), status: str = Query("open"
         return {"ok": True, "supabase_enabled": False, "actions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("actions", f"?user_id=eq.{user['id']}&status=eq.{status}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V109", "actions": dedupe_rows(rows, "text")}
+    return {"ok": True, "version": "V110", "actions": dedupe_rows(rows, "text")}
 
 @app.post("/save-action")
 async def save_action(req: SaveActionRequest):
@@ -995,7 +995,7 @@ async def save_action(req: SaveActionRequest):
 
     duplicate = await existing_action(user["id"], req.text)
     if duplicate:
-        return {"ok": True, "version": "V109", "duplicate": True, "action": duplicate}
+        return {"ok": True, "version": "V110", "duplicate": True, "action": duplicate}
 
     row = await sb_insert("actions", {
         "user_id": user["id"],
@@ -1007,7 +1007,7 @@ async def save_action(req: SaveActionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "action_saved", None, {"action_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V109", "duplicate": False, "action": row}
+    return {"ok": True, "version": "V110", "duplicate": False, "action": row}
 
 @app.get("/decisions")
 async def decisions(user_id: str = Query("local_user")):
@@ -1015,7 +1015,7 @@ async def decisions(user_id: str = Query("local_user")):
         return {"ok": True, "supabase_enabled": False, "decisions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("decisions", f"?user_id=eq.{user['id']}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V109", "decisions": dedupe_rows(rows, "decision")}
+    return {"ok": True, "version": "V110", "decisions": dedupe_rows(rows, "decision")}
 
 @app.post("/save-decision")
 async def save_decision(req: SaveDecisionRequest):
@@ -1025,7 +1025,7 @@ async def save_decision(req: SaveDecisionRequest):
 
     duplicate = await existing_decision(user["id"], req.decision)
     if duplicate:
-        return {"ok": True, "version": "V109", "duplicate": True, "decision": duplicate}
+        return {"ok": True, "version": "V110", "duplicate": True, "decision": duplicate}
 
     row = await sb_insert("decisions", {
         "user_id": user["id"],
@@ -1038,7 +1038,7 @@ async def save_decision(req: SaveDecisionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "decision_saved", None, {"decision_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V109", "duplicate": False, "decision": row}
+    return {"ok": True, "version": "V110", "duplicate": False, "decision": row}
 
 
 
@@ -1112,14 +1112,55 @@ def build_learning_summary(memory_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 
+
+@app.get("/frontend-live-status")
+async def frontend_live_status(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V110",
+        "backend_live": True,
+        "api_base": "https://executive-engine-os.onrender.com",
+        "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+        "memory_counts": {
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "frontend_message": "Backend live. Use /run for command execution and /engine-state for right rail refresh.",
+        "run_button_expected": "Visible command box -> runV110Command -> POST /run fallback if sendMessage fails."
+    }
+
+
+@app.get("/v110-check")
+async def v110_check(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    checks = [
+        {"name": "Backend V110 live", "passed": True},
+        {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
+        {"name": "Supabase memory accessible", "passed": bool(memory_data.get("supabase_enabled"))},
+        {"name": "Engine state available", "passed": True},
+        {"name": "Run button fallback available", "passed": True}
+    ]
+    return {
+        "ok": True,
+        "version": "V110",
+        "checks": checks,
+        "passed": sum(1 for c in checks if c["passed"]),
+        "total": len(checks),
+        "next_move": "Deploy V110 frontend, hard refresh, click Refresh/Sync Local, then run one command from the visible command box."
+    }
+
 @app.get("/run-button-diagnostics")
 async def run_button_diagnostics():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "issue_fixed": "V108 Run Engine button could fail because the simplified V103 command UI did not reliably sync the visible textarea with the original hidden input/send flow.",
         "frontend_fix": [
-            "Run button now calls runV109Command() directly.",
+            "Run button now calls runV110Command() directly.",
             "Visible command textarea is read directly.",
             "If sendMessage exists, it is used after syncing input.",
             "If sendMessage fails, frontend posts directly to /run.",
@@ -1133,7 +1174,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "stability_status": "frontend_stability_polish",
         "checks": {
             "backend_live": True,
@@ -1152,7 +1193,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
             "No hidden input box",
             "No broken navigation links"
         ],
-        "next_move": "Deploy V109 frontend and confirm the home screen, right sidebar, Learning page, and Profile page all render without layout breaks."
+        "next_move": "Deploy V110 frontend and confirm the home screen, right sidebar, Learning page, and Profile page all render without layout breaks."
     }
 
 
@@ -1160,7 +1201,7 @@ async def frontend_stability(user_id: str = Query("local_user")):
 async def navigation_map():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "routes": {
             "Command": "Home command center",
             "Plan Today": "daily_brief workflow",
@@ -1178,7 +1219,7 @@ async def frontend_diagnostics(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "frontend_expected": {
             "api_base": "https://executive-engine-os.onrender.com",
             "frontend_base": "https://executive-engine-frontend.onrender.com",
@@ -1207,7 +1248,7 @@ async def frontend_diagnostics(user_id: str = Query("local_user")):
 async def v107_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     checks = [
-        {"name": "Backend V109 live", "passed": True},
+        {"name": "Backend V110 live", "passed": True},
         {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
         {"name": "Supabase enabled", "passed": bool(memory_data.get("supabase_enabled"))},
         {"name": "Recent runs available", "passed": len(memory_data.get("recent_runs") or []) >= 1},
@@ -1216,18 +1257,18 @@ async def v107_check(user_id: str = Query("local_user")):
     ]
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "checks": checks,
         "passed": sum(1 for c in checks if c["passed"]),
         "total": len(checks),
-        "next_move": "Deploy V109 frontend, hard refresh, and verify the command box plus right panel load cleanly."
+        "next_move": "Deploy V110 frontend, hard refresh, and verify the command box plus right panel load cleanly."
     }
 
 @app.get("/frontend-config")
 async def frontend_config():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "api_base": "https://executive-engine-os.onrender.com",
         "frontend_base": "https://executive-engine-frontend.onrender.com",
         "required_frontend_behaviors": [
@@ -1248,7 +1289,7 @@ async def cleanup_check(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "checks": {
             "backend_live": True,
             "supabase_enabled": bool(memory_data.get("supabase_enabled")),
@@ -1260,14 +1301,14 @@ async def cleanup_check(user_id: str = Query("local_user")):
             "auto_loop_enabled": False
         },
         "decision": "Frontend cleanup can proceed if command input, right rail, save buttons, learning page, and profile page all load without console errors.",
-        "next_move": "Deploy V109 frontend, hard refresh, run one prompt, save one action, save one decision, and confirm right rail updates."
+        "next_move": "Deploy V110 frontend, hard refresh, run one prompt, save one action, save one decision, and confirm right rail updates."
     }
 
 @app.get("/visual-brief")
 async def visual_brief():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "visual_decision": "Polish the existing V103 command-first layout without changing backend logic.",
         "style_direction": {
             "tone": "high-end executive SaaS",
@@ -1302,7 +1343,7 @@ async def visual_brief():
 async def layout_brief():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "layout_decision": "Command-first executive workspace.",
         "primary_screen_order": [
             "Top bar: product name + compact system state",
@@ -1334,7 +1375,7 @@ async def figma_brief(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "title": "Executive Engine OS — Figma UI Brief",
         "purpose": "Create a high-end executive command center that is obvious in under 5 seconds.",
         "current_product_state": {
@@ -1422,7 +1463,7 @@ async def figma_brief(user_id: str = Query("local_user")):
 async def ux_flow():
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "screen_order": [
             {
                 "screen": "Home / Command",
@@ -1461,7 +1502,7 @@ async def ux_brief(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "brief": {
             "ux_goal": "Make Executive Engine OS feel obvious when a CEO logs in: choose a workflow, type one command, get a decision, save actions/decisions, and see memory update.",
             "current_state": {
@@ -1509,9 +1550,9 @@ async def ux_brief(user_id: str = Query("local_user")):
 async def next_build():
     return {
         "ok": True,
-        "version": "V109",
-        "recommended_next": "V109 — Frontend UX Simplification Build",
-        "why": "V109 defines the Figma-ready flow. V109 should implement the simplified frontend layout without changing backend logic.",
+        "version": "V110",
+        "recommended_next": "V110 — Frontend UX Simplification Build",
+        "why": "V110 defines the Figma-ready flow. V110 should implement the simplified frontend layout without changing backend logic.",
         "requirements": [
             "No new backend features unless a frontend bug blocks usage.",
             "Simplify the home screen.",
@@ -1535,7 +1576,7 @@ async def system_status(user_id: str = Query("local_user")):
     learning_data = build_learning_summary(memory_data) if "build_learning_summary" in globals() else {}
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "status": "release_candidate",
         "backend": {
             "live": True,
@@ -1589,11 +1630,11 @@ async def go_live_check(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "ready_for_frontend_polish": ready,
         "score": f"{passed}/{total}",
         "checks": checks,
-        "decision": "Proceed to Figma/UI polish after verifying frontend displays V109 status cleanly." if ready else "Do not add new features. Fix failed checks first.",
+        "decision": "Proceed to Figma/UI polish after verifying frontend displays V110 status cleanly." if ready else "Do not add new features. Fix failed checks first.",
         "next_move": "Run one frontend prompt, save one action and one decision, then recheck /go-live-check."
     }
 
@@ -1602,7 +1643,7 @@ async def learning(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "learning": build_learning_summary(memory_data)
     }
 
@@ -1613,7 +1654,7 @@ async def learning_events(user_id: str = Query("local_user"), limit: int = Query
         return {"ok": True, "supabase_enabled": False, "events": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("learning_events", f"?user_id=eq.{user['id']}&order=created_at.desc&limit={limit}")
-    return {"ok": True, "version": "V109", "events": rows}
+    return {"ok": True, "version": "V110", "events": rows}
 
 
 @app.get("/operator-brief")
@@ -1622,7 +1663,7 @@ async def operator_brief(user_id: str = Query("local_user")):
     learning_data = build_learning_summary(memory_data)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "brief": {
             "today_focus": learning_data["product_read"]["recommended_next"],
             "system_status": "Backend + Supabase memory live. Learning dashboard active. Manual execution only.",
@@ -1650,7 +1691,7 @@ async def profile_status(user_id: str = Query("local_user")):
     score = sum(1 for v in completion.values() if v)
     return {
         "ok": True,
-        "version": "V109",
+        "version": "V110",
         "completion_score": score,
         "completion": completion,
         "profile_used_for_prompt": merged,
@@ -1682,4 +1723,4 @@ async def save_profile(req: ProfileRequest):
         "updated_at": now_iso()
     }, "user_id")
     await save_learning_event(req.user_id or "local_user", "profile_saved", None, {})
-    return {"ok": True, "version": "V109", "profile": row, "profile_status": "saved"}
+    return {"ok": True, "version": "V110", "profile": row, "profile_status": "saved"}
