@@ -1,3617 +1,442 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-<title>Executive Engine OS — V160 Polish</title>
-<style>
-:root{
-  --nav:#061120;--ink:#071226;--muted:#5d6f89;--line:#dbe5f1;--bg:#f6f9fd;--blue:#0f63ff;--blue2:#0047d7;--orange:#ff6a00;--green:#09a66d;--purple:#7c3aed;--red:#ef4444;--shadow:0 18px 50px rgba(10,25,52,.10)
-}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#fff 0%,#f4f8fc 100%);color:var(--ink);-webkit-font-smoothing:antialiased}
-button,input,textarea{font:inherit}button{cursor:pointer}
-.app{height:100vh;display:grid;grid-template-columns:270px minmax(720px,1fr) 380px;grid-template-rows:64px 1fr}
-.top{grid-column:1/-1;display:grid;grid-template-columns:270px 1fr 380px;align-items:center;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);z-index:10}
-.brand{height:64px;background:linear-gradient(180deg,#071226,#040a13);color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px;border-right:1px solid rgba(255,255,255,.08);overflow:hidden}
-.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#1677ff,#0046d7);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(15,99,255,.32);flex:0 0 48px;overflow:hidden}
-.logo svg{display:block;width:38px;height:38px}
-.brand strong{display:block;font-size:18px;line-height:1.04;letter-spacing:-.04em;font-weight:700}
-.brand span{display:block;color:#a5b4c9;font-size:12px;margin-top:4px;font-weight:400}
-.brand-link{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;cursor:pointer}.brand-link:hover{opacity:.98}.brand-copy{display:flex;flex-direction:column;justify-content:center}.brand-copy strong,.brand-copy span{pointer-events:none}
-
-.top-mid{display:flex;align-items:center;gap:14px;padding:0 22px}
-.new-btn{height:42px;border:0;border-radius:13px;padding:0 18px;background:linear-gradient(135deg,var(--orange),#ff8a1d);color:#fff;font-weight:700;box-shadow:0 14px 32px rgba(255,106,0,.24)}
-.search{height:42px;max-width:620px;flex:1;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:0 14px;box-shadow:0 8px 22px rgba(7,18,38,.04);color:#71829c}
-.search input{border:0;outline:0;background:transparent;width:100%;color:#0f172a}
-.key{font-size:12px;color:#64748b;font-weight:700}
-.top-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 18px}
-.pill{height:34px;border:1px solid var(--line);background:#fff;border-radius:999px;display:flex;align-items:center;gap:8px;padding:0 13px;font-size:12px;font-weight:700;white-space:nowrap}
-.pill.live{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.pill.live:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
-.avatar{width:36px;height:36px;border-radius:50%;background:#071226;color:#fff;display:grid;place-items:center;font-weight:800}.bell{position:relative;font-size:21px;color:#1e2b44}.bell:after{content:"2";position:absolute;right:-6px;top:-6px;background:#ff5a00;color:#fff;border-radius:999px;font-size:10px;font-weight:800;width:17px;height:17px;display:grid;place-items:center}
-.sidebar{grid-row:2;background:linear-gradient(180deg,#071226 0%,#050b14 100%);color:#dce8ff;padding:14px;overflow:auto}
-.lock{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);border-radius:13px;color:#a7f3d0;font-size:12px;font-weight:700;padding:11px;margin-bottom:18px}
-.group{font-size:11px;color:#7c8ba4;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin:18px 7px 8px}
-.nav{width:100%;height:42px;border:0;border-radius:12px;background:transparent;color:#c7d4e7;display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin:5px 0;font-weight:550;text-align:left;font-size:14px}
-.nav:hover{background:rgba(255,255,255,.06);color:#fff}.nav.active{background:linear-gradient(135deg,#0f63ff,#0049d8);color:#fff;box-shadow:0 14px 28px rgba(15,99,255,.27)}
-.nav-main{display:flex;align-items:center;gap:11px}.ico{width:22px;height:22px;display:grid;place-items:center;border-radius:7px;background:rgba(255,255,255,.08);font-size:13px}
-.count{min-width:22px;height:22px;display:grid;place-items:center;border-radius:999px;font-size:11px;font-weight:700;background:rgba(15,99,255,.18);color:#63a0ff;border:1px solid rgba(15,99,255,.28)}.count.orange{background:rgba(255,106,0,.16);color:#fb923c;border-color:rgba(255,106,0,.30)}
-.system-box{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);border-radius:16px;padding:14px;margin-top:18px}.system-box h4{margin:0 0 12px;font-size:13px;color:#fff;display:flex;justify-content:space-between;font-weight:700}.live-tag{background:#064e3b;color:#a7f3d0;border-radius:999px;padding:4px 9px;font-size:11px}.sysline{display:flex;justify-content:space-between;font-size:12px;margin:9px 0}.sysline b{color:#22c55e}.bar{height:5px;background:rgba(255,255,255,.12);border-radius:999px;margin-top:12px;overflow:hidden}.bar span{display:block;height:100%;width:98%;background:#22c55e}
-.main{grid-column:2;grid-row:2;overflow:auto;padding:24px 26px 80px}.shell{max-width:1120px;margin:0 auto}
-.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.eyebrow{color:var(--orange);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-h1{font-size:34px;line-height:1.05;margin:6px 0 6px;letter-spacing:-.055em;font-weight:650}.sub{margin:0;color:#52637a;font-weight:400}
-.custom{height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-weight:550;color:#334155}
-.snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-.metric{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;min-height:126px;box-shadow:0 12px 30px rgba(7,18,38,.06);position:relative;overflow:hidden}
-.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}.metric.green:before{background:#10b981}.metric.purple:before{background:var(--purple)}.metric.orange:before{background:var(--orange)}
-.metric .label{font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#1d4ed8;margin-bottom:14px}.metric.green .label{color:#059669}.metric.purple .label{color:#6d28d9}.metric.orange .label{color:#ea580c}
-.metric strong{display:block;font-size:20px;line-height:1.22;margin-bottom:8px;font-weight:600}.metric span{font-size:13px;color:#64748b;font-weight:400}.metric a{display:inline-block;margin-top:10px;color:#075eea;text-decoration:none;font-size:13px;font-weight:550}.badge{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}
-.command{border-radius:24px;overflow:hidden;border:1px solid rgba(15,99,255,.26);box-shadow:0 28px 70px rgba(9,32,82,.18);margin-bottom:20px;background:#fff}
-.command-head{height:58px;background:radial-gradient(circle at 8% 0,rgba(255,106,0,.34),transparent 26%),linear-gradient(135deg,#071226 0%,#073b91 52%,#145dff 100%);display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 18px}.command-head strong{letter-spacing:.02em;font-weight:650}
-.mode-row{display:flex;align-items:center;gap:10px}.mode-label{font-size:12px;color:#dbeafe;font-weight:400}.mode-label b{color:#fff}.mode{height:30px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;border-radius:9px;padding:0 11px;font-size:12px;font-weight:550}.mode.active{background:#fff;color:#0f63ff}
-.command-body{background:linear-gradient(180deg,rgba(15,99,255,.08),#fff 35%);padding:18px}
-textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border-radius:16px;outline:0;background:#fff;padding:18px;font-size:15px;color:#071226;line-height:1.5;font-weight:400}textarea::placeholder{color:#8ca0bb}
-.command-actions{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:14px}.tools{display:flex;gap:8px;flex-wrap:wrap}.tool{height:36px;border:1px solid #d6e1ee;background:#fff;border-radius:10px;padding:0 12px;color:#34435b;font-size:12px;font-weight:500}.run{height:48px;min-width:176px;border:0;border-radius:14px;background:linear-gradient(135deg,#0f63ff,#0044cc);box-shadow:0 18px 42px rgba(15,99,255,.30);color:#fff;font-weight:650;font-size:15px}.context{margin-top:14px;border-top:1px solid #e3ebf5;padding-top:11px;color:#047857;font-size:12px;font-weight:500}
-.status{display:none;margin-top:11px;border:1px solid #bbf7d0;background:#ecfdf5;color:#047857;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600}.status.show{display:block}.status.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
-.feed{border:1px solid var(--line);background:#fff;border-radius:22px;box-shadow:0 14px 42px rgba(7,18,38,.08);padding:18px;margin-bottom:22px}.feed-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.feed-head h3{margin:0;font-size:15px;letter-spacing:.02em;font-weight:650}.feed-head span{color:#64748b;font-size:13px}.feed-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.feed-card{border:1px solid #e2e8f0;background:#fff;border-radius:16px;padding:14px;min-height:160px}.feed-card h4{margin:0 0 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#0f63ff;font-weight:700}.feed-card.orange h4{color:#ea580c}.feed-card.green h4{color:#059669}.feed-card.purple h4{color:#6d28d9}.feed-card strong{display:block;font-size:16px;line-height:1.25;margin-bottom:10px;font-weight:600}.feed-card p{margin:0;color:#52637a;font-size:12px;line-height:1.45;font-weight:400}.feed-card a{display:block;margin-top:12px;color:#075eea;font-weight:550;text-decoration:none;font-size:12px}
-.page-panel{border:1px solid var(--line);background:#fff;border-radius:22px;box-shadow:0 14px 42px rgba(7,18,38,.08);padding:18px;margin-bottom:22px}.page-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.page-card{border:1px solid #e2e8f0;border-radius:16px;padding:16px;background:#fff}.page-card h3{margin:0 0 8px;font-size:17px}.page-card p{margin:0;color:#52637a;font-size:13px;line-height:1.45}.page-card button{margin-top:12px;height:36px;border:1px solid #d6e1ee;background:#fff;border-radius:10px;padding:0 12px;color:#075eea;font-weight:600}
-.right{grid-column:3;grid-row:2;background:#f8fbff;border-left:1px solid #dce5f0;overflow:auto;padding:14px 16px 80px}.rtitle{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px;color:#0f172a}.rsection{margin-bottom:14px}.r-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:9px;box-shadow:0 10px 26px rgba(7,18,38,.045)}
-.preview-card{border-left:5px solid var(--blue);padding:16px 18px}.preview-card h4{margin:0 0 10px;color:#0f63ff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:650}.preview-card ol{margin:0;padding-left:19px}.preview-card li{font-size:13px;line-height:1.7;font-weight:400}.preview-card p{font-size:13px;line-height:1.55;margin:0}.r-card.orange{border-left:5px solid var(--orange)}.r-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;border:1px solid #e3ebf5;border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.check{width:15px;height:15px;border:1px solid #9fb0ca;border-radius:4px}.r-row strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}.r-row span{font-size:11px;color:#64748b}.tag{border-radius:999px;padding:4px 8px;font-size:10px;font-weight:650;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8}.tag.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.tag.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.tag.red{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
-.version{position:fixed;right:18px;bottom:18px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:8px 12px;font-weight:650;font-size:11px;box-shadow:0 12px 32px rgba(7,18,38,.10)}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);opacity:0;background:#071226;color:#fff;border-radius:14px;padding:12px 15px;font-weight:600;transition:.18s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast.success{background:#047857}.toast.error{background:#b91c1c}
-.hidden{display:none!important}
-@media(max-width:1280px){.app{grid-template-columns:250px 1fr}.right{display:none}.top{grid-template-columns:250px 1fr}.top-right{display:none}.snapshot{grid-template-columns:repeat(2,1fr)}.feed-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:820px){body{overflow:auto}.app{display:block;height:auto}.brand{height:64px}.sidebar,.right,.top-mid{display:none}.main{padding:16px}.hero{display:block}.snapshot,.feed-grid,.page-grid{grid-template-columns:1fr}.command-actions{display:block}.run{width:100%;margin-top:12px}}
-
-/* V135 unique Figma-inspired subpages */
-.page-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#0f63ff;font-weight:700}
-.page-topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
-.page-action{height:40px;border:0;border-radius:11px;background:#0f63ff;color:#fff;padding:0 16px;font-weight:650;box-shadow:0 12px 28px rgba(15,99,255,.22)}
-.page-action.orange{background:#ea580c}.page-action.green{background:#059669}.page-action.purple{background:#9333ea}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.stat-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:0 10px 26px rgba(7,18,38,.055);position:relative}
-.stat-card:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 6px 6px 0;background:#0f63ff}
-.stat-card.green:before{background:#10b981}.stat-card.orange:before{background:#ff6a00}.stat-card.purple:before{background:#9333ea}.stat-card.teal:before{background:#06b6d4}
-.stat-card small{display:block;text-transform:uppercase;letter-spacing:.08em;color:#64748b;font-size:10px;font-weight:700;margin-bottom:8px}
-.stat-card strong{display:block;font-size:22px;font-weight:650;margin-bottom:3px}.stat-card span{font-size:12px;color:#64748b}
-.section-card{border:1px solid var(--line);background:#fff;border-radius:18px;box-shadow:0 14px 38px rgba(7,18,38,.07);overflow:hidden;margin-bottom:16px}
-.section-head{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:#fff;background:#0f63ff;font-weight:700}
-.section-head.dark{background:#071226}.section-head.orange{background:#ea580c}.section-head.green{background:#059669}.section-head.purple{background:linear-gradient(90deg,#7c3aed,#a855f7)}.section-head.teal{background:#0891b2}
-.section-body{padding:16px}
-.list-row{border:1px solid #dbe5f1;background:#fff;border-radius:12px;padding:13px 14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:14px;align-items:center}
-.maintext{font-weight:620;margin-bottom:4px}.meta{font-size:12px;color:#64748b}
-.status-pill{border-radius:999px;padding:5px 9px;font-size:11px;font-weight:700;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;white-space:nowrap}
-.status-pill.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.status-pill.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.status-pill.red{background:#fef2f2;border-color:#fecaca;color:#b91c1c}.status-pill.purple{background:#f5f3ff;border-color:#ddd6fe;color:#6d28d9}
-.objective{border:1px solid #dbe5f1;border-radius:14px;padding:14px;margin-bottom:14px;background:#fff}
-.objective h3{margin:0 0 8px;font-size:16px}.objective-sub{display:flex;justify-content:space-between;color:#64748b;font-size:12px;margin-bottom:8px}
-.progress-line{height:6px;background:#e5edf7;border-radius:999px;overflow:hidden}.progress-line span{display:block;height:100%;background:#0f63ff}.progress-line.green span{background:#10b981}.progress-line.orange span{background:#ff6a00}
-.numbered-item{display:grid;grid-template-columns:28px 1fr 54px;align-items:center;gap:12px;margin:10px 0}.num{width:26px;height:26px;border-radius:8px;background:#334155;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
-.meeting-card{border:1px solid #dbe5f1;border-radius:14px;padding:16px;margin-bottom:14px;background:#fff}.agenda-box{border:1px solid #dbe5f1;border-radius:12px;padding:12px;margin:10px 0;color:#334155;background:#fff}
-.split-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.triple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.action-lane{border:1px solid #dbe5f1;border-radius:16px;overflow:hidden;background:#fff;margin-bottom:16px}.action-lane-head{height:44px;display:flex;align-items:center;padding:0 14px;font-weight:700;color:#fff}.critical{background:#ea580c}.progress{background:#0f63ff}.done{background:#059669}
-.action-item{padding:12px 14px;border-bottom:1px solid #e7eef7;display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center}.square{width:14px;height:14px;border:1px solid #94a3b8;border-radius:4px}
-.memory-pattern{background:linear-gradient(90deg,#eff6ff,#faf5ff);border:1px solid #bfdbfe;border-radius:14px;padding:15px;margin-bottom:12px}
-.profile-hero{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;margin-bottom:16px}.profile-gradient{height:92px;background:linear-gradient(90deg,#0f63ff,#a855f7,#0891b2)}.profile-content{padding:0 18px 18px;display:grid;grid-template-columns:86px 1fr;gap:16px}.profile-avatar{width:78px;height:78px;border-radius:12px;background:#0f63ff;color:#fff;display:grid;place-items:center;font-weight:800;font-size:26px;margin-top:-36px;border:4px solid #fff}
-.toggle{width:36px;height:20px;border-radius:999px;background:#2563eb;position:relative}.toggle:after{content:"";position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;right:2px;top:2px}.toggle.off{background:#cbd5e1}.toggle.off:after{right:18px}
-@media(max-width:1100px){.stats-row,.triple-grid,.split-grid{grid-template-columns:1fr}.page-topbar{display:block}.page-action{margin-top:12px}}
-
-
-/* V140 memory intelligence enhancements */
-.memory-command-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.intel-card{border:1px solid #bfdbfe;background:linear-gradient(90deg,#eff6ff,#f8fbff);border-radius:14px;padding:14px}
-.intel-card h4{margin:0 0 8px;color:#0f63ff;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
-.intel-card p{margin:0;color:#334155;line-height:1.45;font-size:13px}
-.pattern-score{height:8px;background:#e5edf7;border-radius:999px;overflow:hidden;margin-top:10px}
-.pattern-score span{display:block;height:100%;background:linear-gradient(90deg,#0f63ff,#9333ea)}
-.memory-alert{border-left:5px solid #ff6a00;background:#fff7ed;border-color:#fed7aa}
-@media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
-
-
-/* V160 Executive Layer */
-.exec-banner{border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
-.exec-banner h2{margin:0 0 5px;font-size:22px}.exec-banner p{margin:0;color:#52637a}
-.exec-mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
-.exec-mode{border:1px solid #dbe5f1;background:#fff;border-radius:14px;padding:13px;box-shadow:0 10px 24px rgba(7,18,38,.05)}
-.exec-mode b{display:block;color:#071226;margin-bottom:6px}.exec-mode span{font-size:12px;color:#64748b;line-height:1.35}
-.board-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-.board-list{margin:0;padding-left:18px}.board-list li{margin:8px 0;color:#334155}
-.exec-score{font-size:34px;font-weight:700;color:#0f63ff}
-@media(max-width:1100px){.exec-mode-grid,.board-grid{grid-template-columns:1fr}.exec-banner{display:block}.exec-banner button{margin-top:12px}}
-
-
-/* V160 — header/nav polish + subpage UX refinement */
-.top{
-  box-shadow:0 8px 28px rgba(7,18,38,.045);
-}
-.brand{
-  transition:.16s ease;
-}
-.brand:hover{
-  background:linear-gradient(180deg,#0a1830,#050b14);
-}
-.brand-link{
-  width:100%;
-}
-.quick-nav{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:4px;
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:13px;
-}
-.quick-nav button{
-  height:32px;
-  border:0;
-  background:transparent;
-  color:#334155;
-  border-radius:9px;
-  padding:0 10px;
-  font-size:12px;
-  font-weight:650;
-}
-.quick-nav button:hover{
-  background:#fff;
-  color:#0f63ff;
-  box-shadow:0 6px 16px rgba(7,18,38,.06);
-}
-.sidebar{
-  padding-bottom:30px;
-}
-.nav{
-  transition:.14s ease;
-}
-.nav.active{
-  transform:translateX(2px);
-}
-.hero{
-  padding:2px 0 4px;
-}
-.hero h1{
-  max-width:760px;
-}
-.page-topbar{
-  border:1px solid #dbe5f1;
-  background:linear-gradient(180deg,#fff,#f8fbff);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 12px 30px rgba(7,18,38,.055);
-}
-.page-topbar h2{
-  margin:4px 0 5px;
-  letter-spacing:-.035em;
-}
-.section-card{
-  border-color:#d7e3f1!important;
-}
-.section-card + .section-card{
-  margin-top:14px;
-}
-.section-head{
-  min-height:50px;
-  letter-spacing:.01em;
-}
-.section-body{
-  background:#fff;
-}
-.stat-card{
-  min-height:112px;
-}
-.list-row{
-  transition:.14s ease;
-}
-.list-row:hover{
-  border-color:#b9cff0;
-  box-shadow:0 8px 22px rgba(7,18,38,.045);
-}
-.page-card{
-  min-height:128px;
-  box-shadow:0 10px 26px rgba(7,18,38,.045);
-}
-.page-card h3{
-  letter-spacing:-.02em;
-}
-.meeting-card,
-.objective,
-.action-lane{
-  box-shadow:0 10px 26px rgba(7,18,38,.045);
-}
-.exec-banner{
-  box-shadow:0 14px 36px rgba(15,99,255,.09);
-}
-.memory-pattern{
-  box-shadow:0 8px 20px rgba(79,70,229,.05);
-}
-.version{
-  background:#eff6ff!important;
-  color:#1d4ed8!important;
-  border-color:#bfdbfe!important;
-}
-.v160-page-note{
-  border:1px solid #fed7aa;
-  background:#fff7ed;
-  color:#9a3412;
-  border-radius:14px;
-  padding:12px 14px;
-  font-size:13px;
-  font-weight:550;
-  margin-bottom:14px;
-}
-@media(max-width:1280px){
-  .quick-nav{display:none}
-}
-
-
-/* V161 logo correction — restore clean backwards EE */
-.logo-ee{
-  width:48px!important;
-  height:48px!important;
-  min-width:48px!important;
-  border-radius:15px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:0!important;
-  padding:0!important;
-  background:linear-gradient(135deg,#1677ff,#0046d7)!important;
-  box-shadow:0 14px 36px rgba(15,99,255,.32)!important;
-  overflow:hidden!important;
-}
-.ee-letter{
-  display:inline-block!important;
-  color:#fff!important;
-  font-family:Inter,Arial,sans-serif!important;
-  font-size:27px!important;
-  line-height:1!important;
-  font-weight:850!important;
-  letter-spacing:-0.08em!important;
-  transform:none!important;
-}
-.ee-back{
-  transform:scaleX(-1)!important;
-  margin-right:-2px!important;
-}
-.logo svg{
-  display:none!important;
-}
-.brand-copy strong,
-.brand strong{
-  font-weight:700!important;
-}
-
-
-/* V165 Workflow Control */
-.workflow-control-card{
-  border:1px solid #fed7aa;
-  background:linear-gradient(135deg,#fff7ed,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(234,88,12,.08);
-}
-.workflow-control-card h3{
-  margin:0 0 8px;
-  color:#c2410c;
-  letter-spacing:-.02em;
-}
-.workflow-control-card p{
-  margin:0;
-  color:#334155;
-  line-height:1.45;
-}
-.complete-btn{
-  height:30px;
-  border:1px solid #bbf7d0;
-  background:#ecfdf5;
-  color:#047857;
-  border-radius:9px;
-  padding:0 10px;
-  font-size:11px;
-  font-weight:700;
-}
-.complete-btn:hover{
-  background:#dcfce7;
-}
-.workflow-rule-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:16px;
-}
-.workflow-rule{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-}
-.workflow-rule b{
-  display:block;
-  margin-bottom:5px;
-}
-.workflow-rule span{
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-@media(max-width:1100px){.workflow-rule-grid{grid-template-columns:1fr}}
-
-
-/* V170 Automation Readiness */
-.automation-card{
-  border:1px solid #bfdbfe;
-  background:linear-gradient(135deg,#eff6ff,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(15,99,255,.08);
-}
-.automation-card h3{
-  margin:0 0 8px;
-  color:#0f63ff;
-  letter-spacing:-.02em;
-}
-.automation-score{
-  display:grid;
-  grid-template-columns:96px 1fr;
-  gap:16px;
-  align-items:center;
-}
-.score-ring{
-  width:84px;
-  height:84px;
-  border-radius:50%;
-  background:conic-gradient(#0f63ff 0deg,#0f63ff 270deg,#e5edf7 270deg,#e5edf7 360deg);
-  display:grid;
-  place-items:center;
-}
-.score-ring span{
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  background:#fff;
-  display:grid;
-  place-items:center;
-  color:#0f63ff;
-  font-weight:800;
-}
-.auto-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.auto-candidate{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-}
-.auto-candidate b{
-  display:block;
-  margin-bottom:5px;
-}
-.auto-candidate p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.safety-list{
-  margin:0;
-  padding-left:18px;
-}
-.safety-list li{
-  margin:7px 0;
-  color:#334155;
-  font-size:13px;
-}
-@media(max-width:1100px){.auto-grid,.automation-score{grid-template-columns:1fr}}
-
-
-/* V175 Integrations + Supervised Automation */
-.integration-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.integration-card{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.integration-card b{
-  display:block;
-  margin-bottom:5px;
-  color:#071226;
-}
-.integration-card p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.supervised-panel{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(5,150,105,.08);
-}
-.supervised-panel h3{
-  margin:0 0 8px;
-  color:#047857;
-}
-.allowed-blocked{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:10px;
-}
-.allowed-blocked ul{
-  margin:6px 0 0;
-  padding-left:18px;
-  color:#334155;
-  font-size:12px;
-}
-@media(max-width:1100px){.integration-grid,.allowed-blocked{grid-template-columns:1fr}}
-
-
-/* V180 AI Copilot Layer */
-.copilot-panel{
-  border:1px solid #ddd6fe;
-  background:linear-gradient(135deg,#f5f3ff,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(124,58,237,.08);
-}
-.copilot-panel h3{
-  margin:0 0 8px;
-  color:#6d28d9;
-}
-.copilot-panel p{
-  margin:0 0 8px;
-  color:#334155;
-  line-height:1.45;
-}
-.copilot-action-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.copilot-action{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.copilot-action b{
-  display:block;
-  margin-bottom:5px;
-}
-.copilot-action p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.copilot-safe{
-  border-left:5px solid #7c3aed;
-}
-@media(max-width:1100px){.copilot-action-grid{grid-template-columns:1fr}}
-
-
-/* V185 + V190 Product Milestone */
-.product-readiness{
-  border:1px solid #bfdbfe;
-  background:linear-gradient(135deg,#eff6ff,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(15,99,255,.08);
-}
-.product-readiness h3{
-  margin:0 0 8px;
-  color:#0f63ff;
-}
-.product-module-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.product-module{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.product-module b{
-  display:block;
-  margin-bottom:5px;
-}
-.product-module span{
-  display:inline-block;
-  margin-top:6px;
-}
-.release-list{
-  margin:0;
-  padding-left:18px;
-}
-.release-list li{
-  margin:7px 0;
-  color:#334155;
-  font-size:13px;
-}
-@media(max-width:1100px){.product-module-grid{grid-template-columns:1fr}}
-
-
-/* V195 connector UI + V200 beta candidate */
-.connector-grid,.beta-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.connector-card,.beta-card{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.connector-card b,.beta-card b{
-  display:block;
-  margin-bottom:6px;
-  color:#071226;
-}
-.connector-card p,.beta-card p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.beta-hero{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(5,150,105,.08);
-}
-.beta-hero h3{
-  margin:0 0 8px;
-  color:#047857;
-}
-.beta-score{
-  display:grid;
-  grid-template-columns:92px 1fr;
-  gap:15px;
-  align-items:center;
-}
-.beta-ring{
-  width:78px;
-  height:78px;
-  border-radius:50%;
-  background:conic-gradient(#059669 0deg,#059669 288deg,#e5edf7 288deg,#e5edf7 360deg);
-  display:grid;
-  place-items:center;
-}
-.beta-ring span{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#fff;
-  display:grid;
-  place-items:center;
-  color:#047857;
-  font-weight:800;
-}
-.beta-list{
-  margin:0;
-  padding-left:18px;
-}
-.beta-list li{
-  margin:7px 0;
-  color:#334155;
-  font-size:13px;
-}
-@media(max-width:1100px){.connector-grid,.beta-grid,.beta-score{grid-template-columns:1fr}}
-
-
-/* V205 System Test Dashboard */
-.system-test-panel{
-  border:1px solid #bfdbfe;
-  background:linear-gradient(135deg,#eff6ff,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(15,99,255,.08);
-}
-.system-test-panel h3{
-  margin:0 0 8px;
-  color:#0f63ff;
-}
-.system-score{
-  display:grid;
-  grid-template-columns:92px 1fr;
-  gap:15px;
-  align-items:center;
-}
-.system-ring{
-  width:78px;
-  height:78px;
-  border-radius:50%;
-  background:conic-gradient(#0f63ff 0deg,#0f63ff 288deg,#e5edf7 288deg,#e5edf7 360deg);
-  display:grid;
-  place-items:center;
-}
-.system-ring span{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#fff;
-  display:grid;
-  place-items:center;
-  color:#0f63ff;
-  font-weight:800;
-}
-.system-test-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.system-test-card{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.system-test-card b{
-  display:block;
-  margin-bottom:5px;
-}
-.system-test-card p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.test-pass{
-  border-left:5px solid #10b981;
-}
-.test-fail{
-  border-left:5px solid #ef4444;
-}
-@media(max-width:1100px){.system-test-grid,.system-score{grid-template-columns:1fr}}
-
-
-/* V210 connector prep + V215 email draft */
-.connector-prep-grid,.email-draft-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.connector-prep-card,.email-draft-card{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.connector-prep-card b,.email-draft-card b{
-  display:block;
-  margin-bottom:6px;
-}
-.connector-prep-card p,.email-draft-card p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.email-draft-box{
-  border:1px solid #fed7aa;
-  background:linear-gradient(135deg,#fff7ed,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(234,88,12,.08);
-}
-.email-draft-box h3{
-  margin:0 0 8px;
-  color:#c2410c;
-}
-.draft-preview{
-  white-space:pre-wrap;
-  background:#fff;
-  border:1px solid #fed7aa;
-  border-radius:12px;
-  padding:12px;
-  font-size:12px;
-  color:#334155;
-  line-height:1.45;
-  margin-top:10px;
-}
-@media(max-width:1100px){.connector-prep-grid,.email-draft-grid{grid-template-columns:1fr}}
-
-
-/* V225 Team Pulse + V230 Revenue Intelligence */
-.team-pulse-grid,.revenue-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.team-card,.revenue-card{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-}
-.team-card b,.revenue-card b{
-  display:block;
-  margin-bottom:6px;
-}
-.team-card p,.revenue-card p{
-  margin:0 0 8px;
-  color:#64748b;
-  font-size:12px;
-  line-height:1.4;
-}
-.team-pulse-box{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(5,150,105,.08);
-}
-.team-pulse-box h3{
-  margin:0 0 8px;
-  color:#047857;
-}
-.revenue-box{
-  border:1px solid #bfdbfe;
-  background:linear-gradient(135deg,#eff6ff,#ffffff);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 14px 34px rgba(15,99,255,.08);
-}
-.revenue-box h3{
-  margin:0 0 8px;
-  color:#0f63ff;
-}
-.message-preview{
-  white-space:pre-wrap;
-  background:#fff;
-  border:1px solid #bbf7d0;
-  border-radius:12px;
-  padding:12px;
-  font-size:12px;
-  color:#334155;
-  line-height:1.45;
-  margin-top:10px;
-}
-@media(max-width:1100px){.team-pulse-grid,.revenue-grid{grid-template-columns:1fr}}
-
-
-/* V235/V240 system test fix */
-.system-fix-note{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  color:#047857;
-  border-radius:14px;
-  padding:12px 14px;
-  margin-bottom:14px;
-  font-size:13px;
-  font-weight:650;
-}
-
-
-/* V300 Executive Command Center 2.0 */
-.v300-template-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin:14px 0;
-}
-.v300-template{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:12px;
-  text-align:left;
-  box-shadow:0 10px 24px rgba(7,18,38,.045);
-  transition:.15s ease;
-}
-.v300-template:hover{
-  transform:translateY(-1px);
-  border-color:#bfdbfe;
-  box-shadow:0 16px 34px rgba(15,99,255,.10);
-}
-.v300-template b{
-  display:block;
-  color:#071226;
-  margin-bottom:5px;
-  font-size:13px;
-}
-.v300-template span{
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v300-mode-strip{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin:12px 0 0;
-}
-.v300-mode{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:999px;
-  padding:0 12px;
-  font-weight:700;
-  font-size:12px;
-}
-.v300-mode.active{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-  box-shadow:0 10px 24px rgba(15,99,255,.20);
-}
-.v300-next-command{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  border-radius:16px;
-  padding:14px;
-  margin-top:14px;
-}
-.v300-next-command b{
-  color:#047857;
-}
-.v300-next-command code{
-  display:block;
-  margin-top:8px;
-  background:#071226;
-  color:#dbeafe;
-  border-radius:12px;
-  padding:12px;
-  white-space:pre-wrap;
-  font-size:12px;
-  line-height:1.45;
-}
-@media(max-width:1180px){.v300-template-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.v300-template-grid{grid-template-columns:1fr}}
-
-
-/* V301 Command Center Layout Fix */
-.command-shell{
-  overflow:hidden;
-}
-.command-body{
-  padding-top:14px!important;
-}
-.command-body textarea,
-textarea#input{
-  min-height:145px!important;
-  height:145px!important;
-  max-height:210px!important;
-}
-.v301-command-toolbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 14px;
-  background:#f8fbff;
-  border-bottom:1px solid #dbe5f1;
-}
-.v301-mode-block{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  flex-wrap:wrap;
-}
-.v301-mode-block span{
-  font-size:11px;
-  color:#64748b;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-right:4px;
-}
-.v300-mode{
-  height:28px!important;
-  border:1px solid #dbe5f1!important;
-  background:#fff!important;
-  color:#334155!important;
-  border-radius:999px!important;
-  padding:0 10px!important;
-  font-weight:800!important;
-  font-size:11px!important;
-  box-shadow:none!important;
-}
-.v300-mode.active{
-  background:#0f63ff!important;
-  color:#fff!important;
-  border-color:#0f63ff!important;
-  box-shadow:0 8px 18px rgba(15,99,255,.18)!important;
-}
-.v301-template-toggle{
-  height:30px;
-  border:1px solid #fed7aa;
-  background:#fff7ed;
-  color:#c2410c;
-  border-radius:10px;
-  padding:0 12px;
-  font-size:12px;
-  font-weight:850;
-}
-.v301-template-drawer{
-  display:none;
-  padding:12px 14px;
-  border-bottom:1px solid #dbe5f1;
-  background:linear-gradient(180deg,#fff,#f8fbff);
-}
-.v301-template-drawer.open{
-  display:block;
-}
-.v300-template-grid{
-  display:grid!important;
-  grid-template-columns:repeat(4,1fr)!important;
-  gap:8px!important;
-  margin:0!important;
-}
-.v300-template{
-  border:1px solid #dbe5f1!important;
-  background:#fff!important;
-  border-radius:12px!important;
-  padding:10px!important;
-  text-align:left!important;
-  box-shadow:none!important;
-  min-height:74px!important;
-}
-.v300-template b{
-  display:block!important;
-  color:#071226!important;
-  margin-bottom:4px!important;
-  font-size:12px!important;
-  line-height:1.2!important;
-}
-.v300-template span{
-  color:#64748b!important;
-  font-size:10.5px!important;
-  line-height:1.25!important;
-}
-.v300-mode-strip{
-  display:none!important;
-}
-.v300-next-command{
-  border:1px solid #bbf7d0;
-  background:linear-gradient(135deg,#ecfdf5,#ffffff);
-  border-radius:14px;
-  padding:12px;
-  margin-top:12px;
-}
-.v300-next-command b{
-  color:#047857;
-}
-.v300-next-command code{
-  display:block;
-  margin-top:8px;
-  background:#071226;
-  color:#dbeafe;
-  border-radius:10px;
-  padding:10px;
-  white-space:pre-wrap;
-  font-size:12px;
-  line-height:1.45;
-}
-.right-rail{
-  overflow-x:hidden!important;
-}
-.main,
-.workspace,
-.center{
-  min-width:0!important;
-}
-@media(max-width:1180px){
-  .v300-template-grid{grid-template-columns:repeat(2,1fr)!important}
-}
-@media(max-width:760px){
-  .v301-command-toolbar{align-items:flex-start;flex-direction:column}
-  .v300-template-grid{grid-template-columns:1fr!important}
-}
-
-
-/* V350 Command Center 3.0 + Executive Workflow Layer */
-.v350-workflow-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  margin:0 0 14px;
-}
-.v350-workflow-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:16px;
-  padding:13px;
-  box-shadow:0 12px 28px rgba(7,18,38,.055);
-  min-height:92px;
-}
-.v350-workflow-card small{
-  display:block;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#64748b;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:7px;
-}
-.v350-workflow-card strong{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  line-height:1.25;
-}
-.v350-workflow-card.blue{border-left:5px solid #0f63ff}
-.v350-workflow-card.green{border-left:5px solid #10b981}
-.v350-workflow-card.orange{border-left:5px solid #ff6a00}
-.v350-workflow-card.dark{border-left:5px solid #071226}
-.v350-output-block{
-  border:1px solid #dbe5f1;
-  background:linear-gradient(180deg,#fff,#f8fbff);
-  border-radius:18px;
-  padding:16px;
-  margin-top:14px;
-  box-shadow:0 14px 34px rgba(7,18,38,.055);
-}
-.v350-output-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.v350-output-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-}
-.v350-output-item small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:6px;
-}
-.v350-output-item p{
-  margin:0;
-  color:#071226;
-  font-size:13px;
-  line-height:1.45;
-}
-@media(max-width:1280px){.v350-workflow-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.v350-workflow-grid,.v350-output-grid{grid-template-columns:1fr}}
-
-
-/* V400 Intelligence + Memory Quality */
-.v400-intel-strip{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin:0 0 14px;
-}
-.v400-intel-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:16px;
-  padding:13px;
-  box-shadow:0 12px 28px rgba(7,18,38,.055);
-  min-height:98px;
-}
-.v400-intel-card small{
-  display:block;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#64748b;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:7px;
-}
-.v400-intel-card strong{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  line-height:1.28;
-}
-.v400-intel-card.blue{border-left:5px solid #0f63ff}
-.v400-intel-card.green{border-left:5px solid #10b981}
-.v400-intel-card.orange{border-left:5px solid #ff6a00}
-.v400-intel-card.purple{border-left:5px solid #7c3aed}
-.v400-output{
-  border:1px solid #dbe5f1;
-  background:linear-gradient(180deg,#fff,#f8fbff);
-  border-radius:18px;
-  padding:16px;
-  margin-top:14px;
-  box-shadow:0 14px 34px rgba(7,18,38,.055);
-}
-.v400-output-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.v400-output-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:14px;
-  padding:13px;
-}
-.v400-output-item small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:6px;
-}
-.v400-output-item p{
-  margin:0;
-  color:#071226;
-  font-size:13px;
-  line-height:1.45;
-}
-@media(max-width:1280px){.v400-intel-strip{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.v400-intel-strip,.v400-output-grid{grid-template-columns:1fr}}
-
-
-/* V500 Product Candidate */
-.v500-cockpit{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin:0 0 14px}
-.v500-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
-.v500-card h3{margin:0 0 8px;color:#071226;font-size:18px;letter-spacing:-.02em}
-.v500-card p{margin:0;color:#64748b;font-size:13px;line-height:1.45}
-.v500-workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.v500-step{border:1px solid #dbe5f1;background:#f8fbff;border-radius:13px;padding:10px;font-size:11px;font-weight:850;color:#334155;text-align:center}
-.v500-step.active{background:#071226;color:#fff;border-color:#071226}
-.v500-notifications{display:grid;gap:8px;margin-top:10px}
-.v500-note{border:1px solid #dbe5f1;background:#fff;border-radius:13px;padding:10px;display:flex;gap:9px;align-items:flex-start}
-.v500-dot{width:9px;height:9px;border-radius:50%;background:#0f63ff;flex:0 0 9px;margin-top:5px}
-.v500-note.high .v500-dot{background:#ff6a00}.v500-note.medium .v500-dot{background:#7c3aed}.v500-note.low .v500-dot{background:#10b981}
-.v500-note b{display:block;font-size:12px;color:#071226}.v500-note span{display:block;font-size:11px;color:#64748b;margin-top:2px;line-height:1.35}
-.v500-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 14px}
-.v500-mini{background:#fff;border:1px solid #dbe5f1;border-left:5px solid #0f63ff;border-radius:16px;padding:13px;box-shadow:0 12px 28px rgba(7,18,38,.055);min-height:94px}
-.v500-mini.orange{border-left-color:#ff6a00}.v500-mini.green{border-left-color:#10b981}.v500-mini.purple{border-left-color:#7c3aed}
-.v500-mini small{display:block;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:900;font-size:10px;margin-bottom:6px}
-.v500-mini strong{color:#071226;font-size:13px;line-height:1.3}
-.v500-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.v500-actions button{height:34px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:11px;padding:0 12px;font-weight:800;font-size:12px}
-.v500-actions button.primary{background:#ff6a00;color:#fff;border-color:#ff6a00}
-@media(max-width:1280px){.v500-cockpit,.v500-mini-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:760px){.v500-cockpit,.v500-mini-grid,.v500-workflow{grid-template-columns:1fr}}
-
-
-/* V550 Integration Prep Center */
-.v550-prep-center{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v550-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v550-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v550-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v550-status-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v550-status{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v550-status small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  font-size:10px;
-  letter-spacing:.08em;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v550-status strong{
-  font-size:12px;
-  color:#071226;
-}
-.v550-textarea{
-  width:100%;
-  min-height:92px;
-  resize:vertical;
-  border:1px solid #cbd5e1;
-  border-radius:14px;
-  padding:12px;
-  font-size:13px;
-  line-height:1.45;
-  color:#071226;
-  outline:none;
-}
-.v550-textarea:focus{
-  border-color:#0f63ff;
-  box-shadow:0 0 0 4px rgba(15,99,255,.12);
-}
-.v550-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v550-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v550-actions button.primary{
-  background:#ff6a00;
-  color:#fff;
-  border-color:#ff6a00;
-}
-.v550-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-.v550-preview{
-  background:#071226;
-  color:#dbeafe;
-  border-radius:14px;
-  padding:12px;
-  font-size:12px;
-  line-height:1.45;
-  white-space:pre-wrap;
-  max-height:220px;
-  overflow:auto;
-}
-.v550-safety-list{
-  display:grid;
-  gap:7px;
-  margin-top:10px;
-}
-.v550-safety-item{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  color:#334155;
-  font-size:12px;
-  font-weight:750;
-}
-.v550-dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#10b981;
-  flex:0 0 9px;
-}
-@media(max-width:1180px){.v550-prep-center{grid-template-columns:1fr}}
-
-
-/* V600 Calendar Intelligence */
-.v600-calendar{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v600-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v600-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v600-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v600-stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v600-stat{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v600-stat small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:4px;
-}
-.v600-stat strong{
-  color:#071226;
-  font-size:13px;
-}
-.v600-alerts{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v600-alert{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:10px;
-}
-.v600-alert.medium{border-left-color:#ff6a00}
-.v600-alert.low{border-left-color:#10b981}
-.v600-alert b{
-  display:block;
-  color:#071226;
-  font-size:12px;
-  margin-bottom:3px;
-}
-.v600-alert span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v600-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v600-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v600-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-@media(max-width:1180px){.v600-calendar{grid-template-columns:1fr}.v600-stats{grid-template-columns:repeat(2,1fr)}}
-
-
-/* V650 Files Intelligence + Notification Upgrade */
-.v650-files{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v650-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v650-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v650-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v650-stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v650-stat{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v650-stat small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-weight:900;
-  font-size:10px;
-  margin-bottom:4px;
-}
-.v650-stat strong{
-  color:#071226;
-  font-size:13px;
-}
-.v650-alerts{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v650-alert{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:10px;
-}
-.v650-alert.high{border-left-color:#ff6a00}
-.v650-alert.medium{border-left-color:#7c3aed}
-.v650-alert.low{border-left-color:#10b981}
-.v650-alert b{
-  display:block;
-  color:#071226;
-  font-size:12px;
-  margin-bottom:3px;
-}
-.v650-alert span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v650-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v650-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v650-actions button.primary{
-  background:#ff6a00;
-  color:#fff;
-  border-color:#ff6a00;
-}
-.v650-preview{
-  background:#071226;
-  color:#dbeafe;
-  border-radius:14px;
-  padding:12px;
-  font-size:12px;
-  line-height:1.45;
-  white-space:pre-wrap;
-  max-height:180px;
-  overflow:auto;
-}
-@media(max-width:1180px){.v650-files{grid-template-columns:1fr}.v650-stats{grid-template-columns:repeat(2,1fr)}}
-
-
-/* V700 OAuth Readiness + Connector Activation Candidate */
-.v700-oauth{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v700-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v700-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v700-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v700-matrix{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v700-connector{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v700-connector.medium{border-left-color:#ff6a00}
-.v700-connector.low{border-left-color:#10b981}
-.v700-connector b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v700-connector span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v700-gates{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v700-gate{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-radius:12px;
-  padding:10px;
-}
-.v700-gate small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v700-gate strong{
-  color:#071226;
-  font-size:12px;
-}
-.v700-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v700-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v700-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v700-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-@media(max-width:1180px){.v700-oauth{grid-template-columns:1fr}.v700-gates{grid-template-columns:1fr}}
-
-
-/* V750 Connector Command Center */
-.v750-center{
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v750-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v750-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v750-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v750-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v750-item{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v750-item.high,.v750-item.critical{border-left-color:#ff6a00}
-.v750-item.medium{border-left-color:#7c3aed}
-.v750-item.low{border-left-color:#10b981}
-.v750-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v750-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v750-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v750-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v750-actions button.primary{
-  background:#071226;
-  color:#fff;
-  border-color:#071226;
-}
-.v750-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-.v750-policy{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v750-policy div{
-  border:1px solid #dbe5f1;
-  border-radius:12px;
-  padding:10px;
-  background:#fff;
-}
-.v750-policy small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v750-policy strong{
-  color:#071226;
-  font-size:12px;
-}
-@media(max-width:1180px){.v750-center{grid-template-columns:1fr}.v750-policy{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.v750-policy{grid-template-columns:1fr}}
-
-
-/* V800 OAuth Activation Prep */
-.v800-prep{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v800-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v800-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v800-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v800-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v800-cell{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v800-cell small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v800-cell strong{
-  color:#071226;
-  font-size:12px;
-}
-.v800-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v800-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v800-item.required,.v800-item.blocked{border-left-color:#ff6a00}
-.v800-item.safe{border-left-color:#10b981}
-.v800-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v800-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v800-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v800-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v800-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v800-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-@media(max-width:1180px){.v800-prep{grid-template-columns:1fr}.v800-grid{grid-template-columns:1fr}}
-
-
-/* V850 Google Connector Blueprint */
-.v850-blueprint{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v850-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v850-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v850-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v850-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v850-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v850-item.next{border-left-color:#ff6a00}
-.v850-item.safe{border-left-color:#10b981}
-.v850-item.medium{border-left-color:#7c3aed}
-.v850-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v850-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v850-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v850-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v850-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v850-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-@media(max-width:1180px){.v850-blueprint{grid-template-columns:1fr}}
-
-
-/* V900 Calendar OAuth Candidate */
-.v900-candidate{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v900-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v900-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v900-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v900-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v900-cell{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v900-cell small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v900-cell strong{
-  color:#071226;
-  font-size:12px;
-}
-.v900-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v900-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v900-item.blocked{border-left-color:#ff6a00}
-.v900-item.safe{border-left-color:#10b981}
-.v900-item.plan{border-left-color:#7c3aed}
-.v900-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v900-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v900-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v900-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v900-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v900-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-.v900-url{
-  background:#071226;
-  color:#dbeafe;
-  border-radius:12px;
-  padding:10px;
-  font-size:11px;
-  line-height:1.4;
-  word-break:break-all;
-  max-height:120px;
-  overflow:auto;
-  margin-top:10px;
-}
-@media(max-width:1180px){.v900-candidate{grid-template-columns:1fr}.v900-grid{grid-template-columns:1fr}}
-
-
-/* V950 Token Storage + Disconnect Flow Candidate */
-.v950-token{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v950-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v950-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v950-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v950-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v950-cell{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v950-cell small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v950-cell strong{
-  color:#071226;
-  font-size:12px;
-}
-.v950-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v950-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v950-item.blocked{border-left-color:#ff6a00}
-.v950-item.safe{border-left-color:#10b981}
-.v950-item.plan{border-left-color:#7c3aed}
-.v950-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v950-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-.v950-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v950-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v950-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v950-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-@media(max-width:1180px){.v950-token{grid-template-columns:1fr}.v950-grid{grid-template-columns:1fr}}
-
-
-/* V1000 Calendar OAuth Candidate */
-.v1000-calendar{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-  margin:0 0 14px;
-}
-.v1000-card{
-  background:#fff;
-  border:1px solid #dbe5f1;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 14px 34px rgba(7,18,38,.06);
-}
-.v1000-card h3{
-  margin:0 0 8px;
-  color:#071226;
-  font-size:18px;
-  letter-spacing:-.02em;
-}
-.v1000-card p{
-  margin:0 0 10px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.45;
-}
-.v1000-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-.v1000-cell{
-  border:1px solid #dbe5f1;
-  background:#f8fbff;
-  border-radius:12px;
-  padding:10px;
-}
-.v1000-cell small{
-  display:block;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.v1000-cell strong{
-  color:#071226;
-  font-size:12px;
-}
-.v1000-url{
-  background:#071226;
-  color:#dbeafe;
-  border-radius:12px;
-  padding:10px;
-  font-size:11px;
-  line-height:1.4;
-  word-break:break-all;
-  max-height:120px;
-  overflow:auto;
-  margin-top:10px;
-}
-.v1000-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.v1000-actions button{
-  height:32px;
-  border:1px solid #dbe5f1;
-  background:#fff;
-  color:#334155;
-  border-radius:10px;
-  padding:0 10px;
-  font-weight:850;
-  font-size:12px;
-}
-.v1000-actions button.primary{
-  background:#0f63ff;
-  color:#fff;
-  border-color:#0f63ff;
-}
-.v1000-actions button.safe{
-  background:#ecfdf5;
-  color:#047857;
-  border-color:#bbf7d0;
-}
-.v1000-list{
-  display:grid;
-  gap:8px;
-  margin-top:10px;
-}
-.v1000-item{
-  border:1px solid #dbe5f1;
-  background:#fff;
-  border-left:5px solid #0f63ff;
-  border-radius:13px;
-  padding:11px;
-}
-.v1000-item.blocked{border-left-color:#ff6a00}
-.v1000-item.safe{border-left-color:#10b981}
-.v1000-item.plan{border-left-color:#7c3aed}
-.v1000-item b{
-  display:block;
-  color:#071226;
-  font-size:13px;
-  margin-bottom:3px;
-}
-.v1000-item span{
-  display:block;
-  color:#64748b;
-  font-size:11px;
-  line-height:1.35;
-}
-@media(max-width:1180px){.v1000-calendar{grid-template-columns:1fr}.v1000-grid{grid-template-columns:1fr}}
-
-
-/* V1050 Token Exchange Candidate */
-.v1050-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
-.v1050-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
-.v1050-card h3{margin:0 0 8px;color:#071226;font-size:18px}
-.v1050-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
-.v1050-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.v1050-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
-.v1050-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
-.v1050-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
-@media(max-width:1180px){.v1050-panel{grid-template-columns:1fr}}
-
-/* V1100 Calendar Events Fetch */
-.v1100-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
-.v1100-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
-.v1100-card h3{margin:0 0 8px;color:#071226;font-size:18px}
-.v1100-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
-.v1100-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.v1100-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
-.v1100-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
-.v1100-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
-@media(max-width:1180px){.v1100-panel{grid-template-columns:1fr}}
-
-/* V1150 Calendar Intelligence Bridge */
-.v1150-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
-.v1150-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
-.v1150-card h3{margin:0 0 8px;color:#071226;font-size:18px}
-.v1150-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
-.v1150-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.v1150-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
-.v1150-actions button.primary{background:#0f63ff;color:#fff;border-color:#0f63ff}
-.v1150-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
-@media(max-width:1180px){.v1150-panel{grid-template-columns:1fr}}
-
-/* V1200 Executive OS Beta */
-.v1200-beta{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
-.v1200-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
-.v1200-card h3{margin:0 0 8px;color:#071226;font-size:18px}
-.v1200-card p{margin:0 0 10px;color:#64748b;font-size:13px;line-height:1.45}
-.v1200-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.v1200-actions button{height:32px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:10px;padding:0 10px;font-weight:850;font-size:12px}
-.v1200-actions button.primary{background:#071226;color:#fff;border-color:#071226}
-.v1200-box{background:#071226;color:#dbeafe;border-radius:12px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;max-height:160px;overflow:auto}
-@media(max-width:1180px){.v1200-beta{grid-template-columns:1fr}}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Executive Engine OS — V1202</title>
+  <style>
+    :root{
+      --bg:#f8fbff;
+      --panel:#ffffff;
+      --ink:#071226;
+      --muted:#64748b;
+      --line:#dbe5f1;
+      --blue:#0f63ff;
+      --orange:#ff6a00;
+      --green:#10b981;
+      --nav:#071226;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-weight:500;
+    }
+    .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+    .sidebar{
+      background:var(--nav);
+      color:#fff;
+      padding:20px 16px;
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+    }
+    .brand{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:22px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .mark{
+      width:38px;height:38px;border-radius:12px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,#0f63ff,#ff6a00);
+      font-weight:900;
+      letter-spacing:-.08em;
+    }
+    .brand h1{font-size:15px;line-height:1.05;margin:0;font-weight:850}
+    .brand span{display:block;color:#94a3b8;font-size:11px;margin-top:3px;font-weight:650}
+    .nav-title{
+      color:#94a3b8;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      margin:18px 0 8px;
+    }
+    .nav-btn{
+      width:100%;
+      border:0;
+      background:transparent;
+      color:#cbd5e1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 10px;
+      border-radius:11px;
+      cursor:pointer;
+      font-weight:750;
+      text-align:left;
+      margin:2px 0;
+    }
+    .nav-btn:hover,.nav-btn.active{background:#0f1b31;color:#fff}
+    .badge{
+      font-size:10px;
+      color:#93c5fd;
+      background:#11284a;
+      border:1px solid #1d4ed8;
+      padding:2px 6px;
+      border-radius:999px;
+    }
+    .main{min-width:0;display:flex;flex-direction:column}
+    .topbar{
+      height:64px;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 24px;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .topbar strong{font-size:14px}
+    .version{
+      font-size:12px;
+      font-weight:850;
+      color:#0f63ff;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      padding:7px 10px;
+      border-radius:999px;
+    }
+    .content{padding:20px;max-width:1320px;width:100%;margin:0 auto}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 14px 34px rgba(7,18,38,.06);
+    }
+    .card h2,.card h3{margin:0 0 8px;letter-spacing:-.02em}
+    .card h2{font-size:24px}
+    .card h3{font-size:18px}
+    .card p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .metric{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#f8fbff;
+      padding:12px;
+      min-height:80px;
+    }
+    .metric small{
+      display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:900;font-size:10px;margin-bottom:6px;
+    }
+    .metric strong{font-size:15px;line-height:1.25;display:block}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    button,.button{
+      border:1px solid var(--line);
+      background:#fff;
+      color:#334155;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:850;
+      font-size:13px;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:hover,.button:hover{border-color:#93c5fd;background:#eff6ff}
+    button.primary,.button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    button.orange{background:var(--orange);border-color:var(--orange);color:#fff}
+    textarea{
+      width:100%;
+      min-height:160px;
+      resize:vertical;
+      border:1px solid #cbd5e1;
+      border-radius:16px;
+      padding:14px;
+      outline:none;
+      color:var(--ink);
+      font-size:14px;
+      line-height:1.5;
+    }
+    textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
+    .output{
+      background:#071226;
+      color:#dbeafe;
+      border-radius:16px;
+      padding:14px;
+      font-size:12px;
+      line-height:1.5;
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:360px;
+    }
+    .links{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+    .links a{
+      text-decoration:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px;
+      color:#0f63ff;
+      font-weight:850;
+      font-size:12px;
+    }
+    .links a:hover{background:#eff6ff;border-color:#93c5fd}
+    .page{display:none}
+    .page.active{display:block}
+    .notice{
+      border:1px solid #bbf7d0;
+      background:#ecfdf5;
+      color:#047857;
+      border-radius:16px;
+      padding:12px;
+      font-weight:750;
+      font-size:13px;
+      margin-bottom:14px;
+    }
+    @media(max-width:980px){
+      .app{grid-template-columns:1fr}
+      .sidebar{position:relative;height:auto}
+      .grid,.metric-grid,.links{grid-template-columns:1fr}
+      .topbar{position:relative}
+    }
+  </style>
 </head>
 <body>
 <div class="app">
-<header class="top">
-  <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
-  <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V1200 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
-</header>
+  <aside class="sidebar">
+    <div class="brand" onclick="showPage('command')">
+      <div class="mark">ƎE</div>
+      <div>
+        <h1>Executive<br>Engine OS</h1>
+        <span>Productivity OS</span>
+      </div>
+    </div>
 
-<aside class="sidebar">
-  <div class="lock">▣ V1200 Executive OS Beta</div>
-  <div class="group">Command</div>
-  <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
-  <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
-  <div class="group">Intelligence</div>
-  <button class="nav" data-page="decisions" data-mode="decision"><span class="nav-main"><span class="ico">◎</span>Decisions</span></button>
-  <button class="nav" data-page="meeting" data-mode="meeting"><span class="nav-main"><span class="ico">◫</span>Meeting Prep</span></button>
-  <button class="nav" data-page="strategy" data-mode="strategy"><span class="nav-main"><span class="ico">↗</span>Strategy Board</span></button>
-  <button class="nav" data-page="risk" data-mode="risk"><span class="nav-main"><span class="ico">△</span>Risk Monitor</span><span class="count orange">3</span></button>
-  <div class="group">Execution</div>
-  <button class="nav" data-page="actions" data-mode="actions"><span class="nav-main"><span class="ico">☷</span>Action Queue</span><span class="count" id="actionCountSide">0</span></button>
-  <button class="nav" data-page="analytics" data-mode="analytics"><span class="nav-main"><span class="ico">▥</span>Analytics</span></button>
-  <div class="group">Knowledge</div>
-  <button class="nav" data-page="memory" data-mode="memory"><span class="nav-main"><span class="ico">◌</span>Memory</span></button>
-  <div class="group">System</div>
-  <button class="nav" data-page="profile" data-mode="profile"><span class="nav-main"><span class="ico">◍</span>Profile</span></button>
-  <button class="nav" data-page="settings" data-mode="settings"><span class="nav-main"><span class="ico">⚙</span>Settings</span></button>
-  <div class="system-box"><h4>System Status <span class="live-tag">Live</span></h4><div class="sysline">Backend <b id="backendSmall">Live</b></div><div class="sysline">Database <b id="dbSmall">Live</b></div><div class="sysline">API <b id="apiSmall">Healthy</b></div><div class="sysline">System Health <b>99%</b></div><div class="bar"><span></span></div></div>
-</aside>
+    <div class="nav-title">Command</div>
+    <button class="nav-btn active" data-page="command" onclick="showPage('command')">Command Center <span class="badge">Live</span></button>
+    <button class="nav-btn" data-page="daily" onclick="showPage('daily')">Daily Brief</button>
+    <button class="nav-btn" data-page="calendar" onclick="showPage('calendar')">Calendar OAuth</button>
+    <button class="nav-btn" data-page="connectors" onclick="showPage('connectors')">Connectors</button>
 
-<main class="main">
-<div class="shell">
-  <div class="hero"><div><div class="eyebrow" id="pageEyebrow">Executive Command System</div><h1 id="pageTitle">Today's Command Center</h1><p class="sub" id="pageSubtitle">Run decisions, actions, and execution from one high-signal input.</p></div><button class="custom" onclick="showPage('settings')">⚙ Customize View</button></div>
-  <section class="snapshot">
-    <article class="metric"><div class="label">◎ Today's Focus</div><strong id="snapFocus">Ready</strong><span id="snapFocusSub">Run one executive command</span></article>
-    <article class="metric green"><div class="label">↗ Open Actions</div><strong id="snapActions">—</strong><span id="snapActionsSub">Loading queue</span><a onclick="showPage('actions')">View all actions →</a></article>
-    <article class="metric purple"><div class="label">▣ Latest Decision</div><strong id="snapDecision">—</strong><span id="snapDecisionSub">Awaiting memory</span><a onclick="showPage('decisions')">View decision →</a></article>
-    <article class="metric orange"><div class="label">⚡ Priority Signal</div><strong id="snapPriority">Medium</strong><span>Risk and urgency monitor</span><a id="auditText" onclick="showPage('analytics')">10/10 stability audit</a></article>
-  </section>
-  <div id="commandPage">
-    <section class="command">
-      <div class="command-head"><strong>COMMAND INPUT</strong><div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div><span class="mode-label">Context: <b>V128 Operator</b>⌄</span></div>
-<div class="v301-command-toolbar">
-  <div class="v301-mode-block">
-    <span>Executive Mode</span>
-    <button class="v300-mode active" data-exec-mode="CEO" onclick="setExecutiveMode('CEO')">CEO</button>
-    <button class="v300-mode" data-exec-mode="COO" onclick="setExecutiveMode('COO')">COO</button>
-    <button class="v300-mode" data-exec-mode="CMO" onclick="setExecutiveMode('CMO')">CMO</button>
-    <button class="v300-mode" data-exec-mode="CTO" onclick="setExecutiveMode('CTO')">CTO</button>
-    <button class="v300-mode" data-exec-mode="CFO" onclick="setExecutiveMode('CFO')">CFO</button>
-  </div>
-  <button class="v301-template-toggle" onclick="toggleTemplates()">Command Templates</button>
-</div>
-<div class="v301-template-drawer" id="v301TemplateDrawer">
-  <div id="v300CommandModules"></div>
-</div>
-<div class="command-body"><textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea><div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div><div class="context">✓ Using latest intelligence, risk models, and company context</div><div class="status" id="status"></div></div>
+    <div class="nav-title">System</div>
+    <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Links <span class="badge">Fix</span></button>
+    <button class="nav-btn" data-page="beta" onclick="showPage('beta')">Beta Status</button>
+    <button class="nav-btn" data-page="settings" onclick="showPage('settings')">Settings</button>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <strong>Executive Engine OS</strong>
+      <div class="version">V1202 Frontend Click Fix · V1202 Backend</div>
+    </div>
+
+    <section class="content">
+      <div class="notice">V1202 replaces the broken frontend click layer with a clean stable shell. Backend routes are preserved.</div>
+
+      <div id="page-command" class="page active">
+        <div class="grid">
+          <div class="card">
+            <h2>Command Center</h2>
+            <p>Run the executive engine. Manual execution only. Auto-loop off.</p>
+            <textarea id="input" placeholder="Enter a command...">Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.</textarea>
+            <div class="actions">
+              <button class="primary" onclick="runEngine()">Run Engine</button>
+              <button onclick="loadTemplate('daily')">Daily Brief</button>
+              <button onclick="loadTemplate('calendar')">Calendar Review</button>
+              <button onclick="loadTemplate('beta')">Beta Review</button>
+              <button onclick="clearOutput()">Clear</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Executive Cockpit</h3>
+            <p>Stable V1202 shell. If links failed before, use the Test Links page.</p>
+            <div class="metric-grid">
+              <div class="metric"><small>Status</small><strong>Frontend Fixed</strong></div>
+              <div class="metric"><small>Manual</small><strong>On</strong></div>
+              <div class="metric"><small>Auto-loop</small><strong>Off</strong></div>
+              <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
+            </div>
+            <div class="actions">
+              <button onclick="showPage('tests')">Open Test Links</button>
+              <button onclick="openBackend('/system-test')">System Test</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <h3>Output</h3>
+          <div class="output" id="output">Ready.</div>
+        </div>
+      </div>
+
+      <div id="page-daily" class="page">
+        <div class="card">
+          <h2>Daily Brief</h2>
+          <p>Load a daily operating command into the Command Center.</p>
+          <div class="actions">
+            <button class="primary" onclick="loadTemplate('daily');showPage('command')">Load Daily Brief Command</button>
+            <button onclick="openBackend('/beta/operating-brief')">Open Backend Operating Brief</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-calendar" class="page">
+        <div class="card">
+          <h2>Calendar OAuth Candidate</h2>
+          <p>Read-only calendar candidate. No calendar writes. Token exchange/storage remain guarded.</p>
+          <div class="actions">
+            <button class="primary" onclick="openBackend('/calendar/connect-status')">Connect Status</button>
+            <button onclick="openBackend('/calendar/auth-url')">Auth URL</button>
+            <button onclick="openBackend('/calendar/status-live-candidate')">Live Candidate Status</button>
+            <button onclick="openBackend('/calendar/oauth-test-page')">OAuth Test Page</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-connectors" class="page">
+        <div class="card">
+          <h2>Connectors</h2>
+          <p>Connector gates, approval queue, and security policy.</p>
+          <div class="actions">
+            <button class="primary" onclick="openBackend('/connector-command-center')">Connector Command Center</button>
+            <button onclick="openBackend('/approval-queue')">Approval Queue</button>
+            <button onclick="openBackend('/security-gates')">Security Gates</button>
+            <button onclick="openBackend('/google/connector-blueprint')">Google Blueprint</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-tests" class="page">
+        <div class="card">
+          <h2>Backend Test Links</h2>
+          <p>These are direct backend GET routes. They open in a new tab.</p>
+          <div class="links" id="testLinks"></div>
+        </div>
+      </div>
+
+      <div id="page-beta" class="page">
+        <div class="card">
+          <h2>Beta Status</h2>
+          <p>V1202 keeps the V1200 beta routes and adds frontend click stability.</p>
+          <div class="actions">
+            <button class="primary" onclick="openBackend('/beta/system-score')">Beta System Score</button>
+            <button onclick="openBackend('/beta/operating-brief')">Operating Brief</button>
+            <button onclick="openBackend('/beta/launch-checklist')">Launch Checklist</button>
+            <button onclick="openBackend('/v1202-milestone')">V1202 Milestone</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-settings" class="page">
+        <div class="card">
+          <h2>Settings</h2>
+          <p>Deployment and diagnostics.</p>
+          <div class="actions">
+            <button class="primary" onclick="openBackend('/health')">Health</button>
+            <button onclick="openBackend('/diagnostic')">Diagnostic</button>
+            <button onclick="openBackend('/system-test')">System Test</button>
+            <button onclick="openBackend('/v1201-test-links')">V1201 Test Links</button>
+          </div>
+        </div>
+      </div>
     </section>
-    <section class="feed">
-      <div class="feed-head"><div><h3>EXECUTIVE FEED</h3><span>Real-time intelligence and execution readiness.</span></div><button class="custom">Show: All Signals⌄</button></div>
-      <div id="outputHost" class="feed-grid"></div>
-    </section>
-  </div>
-  <div id="pageHost" class="hidden"></div>
+  </main>
 </div>
-</main>
-
-<aside class="right">
-  <section class="rsection"><h3 class="rtitle">Executive Output Preview <span class="tag green">Live</span></h3><div id="previewList"></div></section>
-  <section class="rsection"><h3 class="rtitle">Action Queue <span class="tag green" id="actionCount">0</span></h3><div id="actionsList"><div class="r-card">No actions yet.</div></div></section>
-  <section class="rsection"><h3 class="rtitle">Recent Decisions</h3><div id="decisionsList"><div class="r-card">No decisions yet.</div></div></section>
-  <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
-</aside>
-</div>
-<div class="version">V1200 Executive OS Beta · V1200 Backend</div><div class="toast" id="toast"></div>
 
 <script>
-const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
-const inputEl=()=>document.getElementById("input"),statusBox=()=>document.getElementById("status");
-const pages={
- command:{title:"Today's Command Center",sub:"Run decisions, actions, and execution from one high-signal input.",eyebrow:"Executive Command System"},
- daily_brief:{title:"Daily Brief",sub:"Create the operating plan for today.",eyebrow:"Command"},
- decisions:{title:"Decisions",sub:"Review saved executive decisions and tradeoffs.",eyebrow:"Intelligence"},
- meeting:{title:"Meeting Prep",sub:"Prepare objectives, agenda, questions, and follow-up.",eyebrow:"Intelligence"},
- strategy:{title:"Strategy Board",sub:"Turn strategic direction into execution tracks.",eyebrow:"Intelligence"},
- risk:{title:"Risk Monitor",sub:"Track constraints, risks, and exposure.",eyebrow:"Intelligence"},
- actions:{title:"Action Queue",sub:"Review open execution items.",eyebrow:"Execution"},
- analytics:{title:"Analytics",sub:"Execution metrics and workflow health.",eyebrow:"Execution"},
- memory:{title:"Memory",sub:"Review patterns, risks, constraints, and signals.",eyebrow:"Knowledge"},
- profile:{title:"Profile",sub:"Executive context, preferences, and operator profile.",eyebrow:"System"},
- settings:{title:"Settings",sub:"Controls and configuration.",eyebrow:"System"}
-};
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}function short(v,n=44){v=String(v||"");return v.length>n?v.slice(0,n-1)+"…":v}function status(m,t=""){const s=statusBox();if(!s)return;s.textContent=m;s.className="status show "+t}function toast(m,t=""){const x=document.querySelector(".toast");x.textContent=m;x.className="toast show "+t;setTimeout(()=>x.className="toast",2400)}function priorityTag(p){p=String(p||"medium").toLowerCase();return p==="high"?"orange":p==="critical"?"red":p==="low"?"green":""}
-async function api(p,o={}){const r=await fetch(API+p,o),txt=await r.text();let d;try{d=txt?JSON.parse(txt):{}}catch(e){d={raw:txt}}if(!r.ok)throw new Error(d.error||d.detail||txt||`HTTP ${r.status}`);return d}
-function setDefaultFeed(){document.getElementById("outputHost").innerHTML=`<article class="feed-card purple"><h4>Decision</h4><strong>Awaiting command</strong><p>Run the engine to generate a recommended decision.</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>Awaiting command</strong><p>The system will prioritize the next move.</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong id="feedActions">${appState.actions.length||"—"} Total</strong><p>Saved action queue will appear here.</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>Medium Risk</strong><p>Risk monitor activates after run.</p><a>View Risk Monitor →</a></article><article class="feed-card"><h4>Insights</h4><strong>System Ready</strong><p>Memory signals will update from saved runs.</p><a>View Analytics →</a></article>`}
-function defaultPreview(){document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol><li>Run one command to generate output.</li><li>Save action and decision.</li><li>Verify persistence.</li></ol></div>`}
+const API = "https://executive-engine-os.onrender.com";
 
-function v160PagePolish(page){
-  document.querySelectorAll(".quick-nav button").forEach(btn=>{
-    const text=(btn.textContent||"").toLowerCase();
-    const active =
-      (page==="command" && text.includes("dashboard")) ||
-      (page==="daily_brief" && text.includes("brief")) ||
-      (page==="actions" && text.includes("actions")) ||
-      (page==="memory" && text.includes("memory"));
-    btn.style.background = active ? "#fff" : "transparent";
-    btn.style.color = active ? "#0f63ff" : "#334155";
-    btn.style.boxShadow = active ? "0 6px 16px rgba(7,18,38,.06)" : "none";
-  });
-}
-
-function showPage(page){activePage=page;v160PagePolish(page);const meta=pages[page]||pages.command;document.getElementById("pageTitle").textContent=meta.title;document.getElementById("pageSubtitle").textContent=meta.sub;document.getElementById("pageEyebrow").textContent=meta.eyebrow;document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===page));if(page==="command"){document.getElementById("commandPage").classList.remove("hidden");document.getElementById("pageHost").classList.add("hidden");return}document.getElementById("commandPage").classList.add("hidden");document.getElementById("pageHost").classList.remove("hidden");renderPage(page)}
-function renderPage(page){
- const host=document.getElementById("pageHost");
- const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];
- if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>{loadTeamPulse();loadRevenueIntelligence();loadConnectorPrep();loadEmailDraftMode();runSystemTest();loadExecutiveBrief();loadAutomationReadiness();loadIntegrationStatus();loadSupervisedAutomation();loadCopilotState();loadConnectorPlan();loadBetaCandidate();loadProductReadiness();loadProductMilestone();},50); if(page==='actions') setTimeout(()=>loadWorkflowControl(),50);
- const actionRows=(actions.length?actions.slice(0,8):[
-  {text:"Review Q2 financial statements with CFO",priority:"critical",status:"open"},
-  {text:"Schedule CFO 1:1 for Thursday",priority:"high",status:"open"},
-  {text:"Approve marketing budget increase",priority:"medium",status:"open"}
- ]);
- const decisionRows=(decisions.length?decisions.slice(0,6):[
-  {decision:"Approved hiring 3 senior engineers for platform team",priority:"High",created_at:"2h ago"},
-  {decision:"Delayed product launch from Q2 to Q3 for additional testing",priority:"Critical",created_at:"5h ago"},
-  {decision:"Increased marketing budget by 15% for Q2 campaign",priority:"Medium",created_at:"1d ago"}
- ]);
- const memoryRows=(mem.length?mem.slice(0,6):[
-  {type:"decision_pattern",content:"Budget decisions spike on Mondays"},
-  {type:"recurring_risk",content:"Product decisions delay when engineering capacity is overloaded"},
-  {type:"constraint",content:"Limited resources restrict simultaneous initiatives"}
- ]);
-
- if(page==="daily_brief"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Daily Brief</div><h2>Saturday, May 2, 2026</h2><p class="sub">Your executive brief for today's critical initiatives.</p></div><button class="page-action orange" onclick="runPagePrompt('daily_brief')">Generate Brief</button></div>
-  <div class="exec-banner" id="executiveBriefBox"><div><h2>Executive Layer Active</h2><p>Daily Brief now pulls operating focus, priorities, risks, and decision context.</p></div><button class="page-action orange" onclick="loadDailyBrief()">Load Live Brief</button></div>
-  <section class="section-card"><div class="section-head orange">Live Daily Brief</div><div class="section-body" id="dailyBriefLive"><div class="list-row"><div>Loading daily brief...</div></div></div></section>
-  <section class="section-card"><div class="section-head orange">Priority Initiatives Today</div><div class="section-body">
-    ${["Board presentation prep|3:00 PM|Critical|In Progress","Review enterprise pipeline|5:00 PM|High|Not Started","Q2 budget finalization|EOD|High|In Progress"].map(x=>{const a=x.split("|");return `<div class="list-row"><div><div class="maintext">${a[0]}</div><div class="meta">◷ ${a[1]} · <span class="status-pill ${a[2]==='Critical'?'orange':''}">${a[2]}</span></div></div><span class="status-pill">${a[3]}</span></div>`}).join("")}
-  </div></section>
-  <div class="stats-row"><div class="stat-card"><small>Initiatives Active</small><strong>12</strong><span>+2 this week</span></div><div class="stat-card orange"><small>Critical Actions</small><strong>${actions.length||8}</strong><span>3 overdue</span></div><div class="stat-card green"><small>Decisions Made</small><strong>${decisions.length||24}</strong><span>This month</span></div><div class="stat-card teal"><small>Team Capacity</small><strong>87%</strong><span>Healthy</span></div></div>
-  <section class="section-card"><div class="section-head dark">Recent Activity</div><div class="section-body">${decisionRows.slice(0,4).map(d=>`<div class="list-row"><div><div class="maintext">${esc(short(d.decision,90))}</div><div class="meta">${esc(d.created_at||"recent")}</div></div><span class="status-pill green">Done</span></div>`).join("")}</div></section>`;
-  return;
- }
- if(page==="decisions"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Decision Log</div><h2>Decisions</h2><p class="sub">Track and review all executive decisions.</p></div><button class="page-action" onclick="runPagePrompt('decisions')">Filter</button></div>
-  <div class="stats-row"><div class="stat-card"><small>Total Decisions</small><strong>${decisions.length||147}</strong></div><div class="stat-card teal"><small>This Month</small><strong>24</strong></div><div class="stat-card orange"><small>High Impact</small><strong>12</strong></div><div class="stat-card green"><small>Avg. Time To Decide</small><strong>2.3h</strong></div></div>
-  <section class="section-card"><div class="section-head dark">Recent Decisions</div><div class="section-body">${decisionRows.map(d=>`<div class="list-row"><div><div class="maintext">${esc(short(d.decision,110))}</div><div class="meta">◷ ${esc(d.created_at||"recent")}</div></div><span class="status-pill ${priorityTag(d.priority)}">${esc(d.priority||"Medium")}</span></div>`).join("")}</div></section>`;
-  return;
- }
- if(page==="meeting"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Meeting Intelligence</div><h2>Meeting Prep</h2><p class="sub">Prepare for high-impact meetings with context and insights.</p></div><button class="page-action" onclick="runPagePrompt('meeting')">Sync Calendar</button></div>
-  <section class="section-card"><div class="section-head">Today's Meetings</div><div class="section-body">
-  ${["Board Presentation|3:00 PM - 4:30 PM|8 attendees|Critical|Q2 financial review, Product roadmap update, Hiring plan approval","Enterprise Pipeline Review|5:00 PM - 5:45 PM|5 attendees|High|Top 10 deals status, Blockers and risks, Revenue forecast"].map(x=>{const a=x.split("|");return `<div class="meeting-card"><div class="list-row" style="border:0;padding:0"><div><div class="maintext">${a[0]}</div><div class="meta">◷ ${a[1]} · ${a[2]}</div></div><span class="status-pill ${a[3]==='Critical'?'orange':''}">${a[3]}</span></div><div class="agenda-box"><b>Agenda</b><br>${a[4].split(", ").map(i=>"• "+i).join("<br>")}</div><div class="tools"><button class="run" style="height:34px;min-width:160px" onclick="runPagePrompt('meeting')">View Full Prep</button><button class="tool">Add Notes</button></div></div>`}).join("")}
-  </div></section>
-  <div class="triple-grid"><div class="page-card"><h3>Recent Decisions</h3><p>Hiring, launch timing, budget context.</p></div><div class="page-card"><h3>Key Metrics</h3><p>MRR $2.4M · Pipeline $8.7M · Team 47</p></div><div class="page-card"><h3>Talking Points</h3><p>Q2 ahead of plan · Enterprise deals closing · Engineering capacity strong</p></div></div>`;
-  return;
- }
- if(page==="strategy"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Strategic Planning</div><h2>Strategy Board</h2><p class="sub">Track initiatives, OKRs, and strategic priorities.</p></div><button class="page-action" onclick="runPagePrompt('strategy')">New Initiative</button></div>
-  <div id="boardBriefLive"></div>
-  <section class="section-card"><div class="section-head">Q2 2026 Objectives</div><div class="section-body">
-  ${[
-   ["Scale Revenue to $3M MRR","CEO","78",["Close 5 enterprise deals|60","Achieve 95% retention rate|92|green","Expand to 3 new verticals|67"]],
-   ["Build World-Class Product Team","CTO","65",["Hire 10 senior engineers|70","Ship 3 major features|67","Reduce bug rate by 40%|55|orange"]],
-   ["Establish Market Leadership","CMO","82",["Generate 500 qualified leads|88","Launch brand campaign|100|green","Achieve 30% brand awareness|60"]]
-  ].map(obj=>`<div class="objective"><div class="objective-sub"><h3>${obj[0]}</h3><span>Owner: ${obj[1]} &nbsp; <b>${obj[2]}%</b></span></div><div class="progress-line"><span style="width:${obj[2]}%"></span></div>${obj[3].map((it,i)=>{const p=it.split("|");return `<div class="numbered-item"><span class="num">${i+1}</span><div><div>${p[0]}</div><div class="progress-line ${p[2]||''}"><span style="width:${p[1]}%"></span></div></div><b>${p[1]}%</b></div>`}).join("")}</div>`).join("")}
-  </div></section>
-  <div class="triple-grid"><div class="stat-card green"><small>Revenue</small><strong>$2.4M MRR</strong><span>+12% MoM</span></div><div class="stat-card"><small>Team Growth</small><strong>47 people</strong><span>+3 this month</span></div><div class="stat-card teal"><small>Pipeline</small><strong>$8.7M</strong><span>+28% vs last Q</span></div></div>`;
-  return;
- }
- if(page==="risk"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#ea580c">Risk Management</div><h2>Risk Monitor</h2><p class="sub">Track and mitigate risks across all initiatives.</p></div><button class="page-action orange" onclick="runPagePrompt('risk')">3 Active Risks</button></div>
-  <div class="stats-row"><div class="stat-card orange"><small>Critical Risks</small><strong>3</strong></div><div class="stat-card"><small>High Risks</small><strong>7</strong></div><div class="stat-card green"><small>Mitigated</small><strong>12</strong></div><div class="stat-card teal"><small>Avg. Resolution</small><strong>4.2d</strong></div></div>
-  <section class="section-card"><div class="section-head orange">Critical & High Risks</div><div class="section-body">
-  ${["Enterprise deal at risk due to competitor undercutting pricing by 30%|$450K ARR|VP Sales|Schedule CEO call with prospect, prepare value justification deck","Product launch delayed 3 weeks due to critical bug in authentication|Q2 OKR at risk|CTO|Allocate 2 senior engineers full time, daily standup with CTO","Key engineer considering competing offer, may leave in 30 days|Platform roadmap delay|CEO|Retention package prepared, 1:1 scheduled with CEO"].map(x=>{const a=x.split("|");return `<div class="meeting-card"><div class="maintext">${a[0]}</div><div class="split-grid" style="margin:12px 0"><div class="agenda-box"><b>Impact</b><br>${a[1]}</div><div class="agenda-box"><b>Owner</b><br>${a[2]}</div></div><div class="agenda-box" style="background:#eff6ff"><b>Mitigation Plan</b><br>${a[3]}</div></div>`}).join("")}
-  </div></section>`;
-  return;
- }
- if(page==="actions"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Execution Tracker</div><h2>Action Queue</h2><p class="sub">Track and execute all action items.</p></div><button class="page-action" onclick="runPagePrompt('actions')">New Action</button></div>
-  <div class="workflow-control-card" id="workflowControlBox"><h3>Workflow Control Active</h3><p>Loading next action and execution rule...</p></div>
-  <div class="workflow-rule-grid"><div class="workflow-rule"><b>Focus Rule</b><span>Complete one saved action before creating new work.</span></div><div class="workflow-rule"><b>Decision Rule</b><span>Every command should create one decision or one action.</span></div><div class="workflow-rule"><b>Safety Rule</b><span>Manual execution remains locked. Auto-loop stays off.</span></div></div>
-  <div class="stats-row"><div class="stat-card"><small>Total Actions</small><strong>${actions.length||24}</strong></div><div class="stat-card"><small>In Progress</small><strong>8</strong></div><div class="stat-card orange"><small>Overdue</small><strong>3</strong></div><div class="stat-card green"><small>Completion Rate</small><strong>87%</strong></div></div>
-  <div class="action-lane"><div class="action-lane-head critical">Critical Actions</div>${actionRows.slice(0,3).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"high")} · ${esc(a.status||"open")}</div></div>${a.id?`<button class="complete-btn" onclick="completeAction('${a.id}')">Complete</button>`:`<span class="status-pill orange">Critical</span>`}</div>`).join("")}</div>
-  <div class="action-lane"><div class="action-lane-head progress">In Progress</div>${actionRows.slice(3,8).map(a=>`<div class="action-item"><span class="square"></span><div><b>${esc(short(a.text,100))}</b><div class="meta">${esc(a.priority||"medium")} · open</div></div>${a.id?`<button class="complete-btn" onclick="completeAction('${a.id}')">Complete</button>`:`<span class="status-pill">Run</span>`}</div>`).join("")}</div>
-  <div class="action-lane"><div class="action-lane-head done">Completed Today</div>${["Approved hiring 3 senior engineers","Reviewed weekly revenue report","Met with product team on roadmap","Signed partnership agreement"].map(x=>`<div class="action-item"><span class="square"></span><div><b>${x}</b><div class="meta">completed</div></div><span class="status-pill green">Done</span></div>`).join("")}</div>`;
-  return;
- }
- if(page==="analytics"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Executive Analytics</div><h2>Analytics</h2><p class="sub">Track performance across all key metrics.</p></div><button class="custom">Last 30 Days</button></div>
-  <div class="stats-row"><div class="stat-card green"><small>MRR</small><strong>$2.4M</strong><span>+12% vs last month</span></div><div class="stat-card"><small>Team Size</small><strong>47</strong><span>+3 vs last month</span></div><div class="stat-card teal"><small>Pipeline</small><strong>$8.7M</strong><span>+28% vs last month</span></div><div class="stat-card purple"><small>Revenue Growth</small><strong>24%</strong><span>+4pp vs last month</span></div></div>
-  <section class="section-card"><div class="section-head green">Revenue Trend (Last 6 Months)</div><div class="section-body" style="height:210px;display:flex;align-items:end;justify-content:space-around">${["$1.8M","$1.9M","$2.0M","$2.1M","$2.2M","$2.4M"].map((x,i)=>`<div style="text-align:center;color:#047857;font-weight:650"><div style="height:${50+i*18}px;width:46px;background:#dcfce7;border-radius:8px 8px 0 0;margin-bottom:8px"></div>${x}</div>`).join("")}</div></section>
-  <div class="split-grid"><section class="section-card"><div class="section-head">Sales Performance</div><div class="section-body"><div class="progress-label"><span>Deals Closed</span><b>12/10</b></div><div class="progress-line"><span style="width:100%"></span></div><br><div class="progress-label"><span>Pipeline Value</span><b>$8.7M/$7M</b></div><div class="progress-line"><span style="width:100%"></span></div></div></section><section class="section-card"><div class="section-head purple">Team Growth</div><div class="section-body"><div class="progress-label"><span>Engineering</span><b>23/20</b></div><div class="progress-line"><span style="width:100%"></span></div><br><div class="progress-label"><span>Sales & Marketing</span><b>15/14</b></div><div class="progress-line"><span style="width:100%"></span></div></div></section></div>`;
-  return;
- }
- if(page==="memory"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#a855f7">Organizational Memory</div><h2>Memory Intelligence</h2><p class="sub">Patterns, constraints, decision history, and context signals from your execution loop.</p></div><button class="page-action purple" onclick="loadMemoryIntelligence()">Refresh Intelligence</button></div>
-  <div class="stats-row"><div class="stat-card purple"><small>Memory Items</small><strong>${mem.length||20}</strong><span>Stored signals</span></div><div class="stat-card"><small>Patterns Detected</small><strong id="patternCount">—</strong><span>Live intelligence</span></div><div class="stat-card orange"><small>Active Constraints</small><strong id="constraintCount">—</strong><span>Execution blockers</span></div><div class="stat-card green"><small>Context Quality</small><strong>98%</strong><span>Ready</span></div></div>
-  <div class="memory-command-row">
-    <div class="intel-card"><h4>Decision Pattern</h4><p id="topPattern">Loading memory pattern...</p><div class="pattern-score"><span style="width:88%"></span></div></div>
-    <div class="intel-card memory-alert"><h4>Active Constraint</h4><p id="topConstraint">Loading constraint...</p><div class="pattern-score"><span style="width:66%;background:#ff6a00"></span></div></div>
-    <div class="intel-card"><h4>Next Memory Move</h4><p id="nextMemoryMove">Loading next move...</p><div class="pattern-score"><span style="width:78%;background:#10b981"></span></div></div>
-  </div>
-  <section class="section-card"><div class="section-head purple">Detected Patterns</div><div class="section-body" id="detectedPatterns">${memoryRows.map(m=>`<div class="memory-pattern"><b>${esc(m.type||"Pattern")}</b><p>${esc(m.content||"")}</p><span class="status-pill green">High Confidence</span></div>`).join("")}</div></section>
-  <div class="split-grid"><section class="section-card"><div class="section-head dark">Active Context</div><div class="section-body" id="activeConstraints">${["Q2 Planning Focus","Enterprise Pipeline Review","Engineering Hiring Sprint"].map(x=>`<div class="list-row"><div>${x}</div><span class="status-pill">Active</span></div>`).join("")}</div></section><section class="section-card"><div class="section-head green">Decision Patterns</div><div class="section-body" id="decisionPatterns">${decisionRows.slice(0,3).map(d=>`<div class="list-row"><div>${esc(short(d.decision,70))}</div></div>`).join("")}</div></section></div>`;
-  loadMemoryIntelligence();
-  return;
- }
- 
- if(page==="profile"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">User Profile</div><h2>Profile</h2><p class="sub">Manage your account and preferences.</p></div><button class="page-action">Edit Profile</button></div>
-  <div class="profile-hero"><div class="profile-gradient"></div><div class="profile-content"><div class="profile-avatar">JD</div><div><h2>John Doe</h2><p>Chief Executive Officer</p></div></div></div>
-  <div class="stats-row"><div class="stat-card"><small>Decisions Made</small><strong>${decisions.length||147}</strong></div><div class="stat-card purple"><small>Member Since</small><strong>Jan 2025</strong></div><div class="stat-card green"><small>Account Type</small><strong>Executive</strong></div><div class="stat-card teal"><small>Team Members</small><strong>47</strong></div></div>
-  <section class="section-card"><div class="section-head dark">Executive Modes</div><div class="section-body"><div class="exec-mode-grid"><div class="exec-mode"><b>CEO</b><span>Direction, tradeoffs, board decisions</span></div><div class="exec-mode"><b>COO</b><span>Execution, accountability, process</span></div><div class="exec-mode"><b>CMO</b><span>Growth, pipeline, brand</span></div><div class="exec-mode"><b>CTO</b><span>Product, architecture, risk</span></div><div class="exec-mode"><b>CFO</b><span>Capital, margin, forecasting</span></div></div></div></section>
-  <section class="section-card"><div class="section-head dark">Preferences</div><div class="section-body">${["Email Notifications","Daily Brief","Meeting Reminders","Risk Alerts","Weekly Reports"].map((x,i)=>`<div class="list-row"><div><div class="maintext">${x}</div><div class="meta">Executive operating preference</div></div><span class="toggle ${i===4?'off':''}"></span></div>`).join("")}</div></section>`;
-  return;
- }
- if(page==="settings"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#334155">System Configuration</div><h2>Settings</h2><p class="sub">Configure your Executive Engine OS.</p></div></div>
-  <section class="section-card"><div class="section-head dark">Executive Layer Status</div><div class="section-body"><div class="split-grid"><div class="stat-card"><small>Readiness</small><strong id="execReadinessScore">Loading</strong><span>Executive operating layer</span></div><div class="stat-card orange"><small>Next Move</small><strong style="font-size:16px" id="execNextMove">Loading</strong><span>Recommended executive move</span></div></div></div></section>
-  <section class="section-card"><div class="section-head dark">General</div><div class="section-body">${["Command Mode|Execute","Auto-save Decisions|Enabled","Time Zone|Eastern Time"].map(x=>{const a=x.split("|");return `<div class="list-row"><div><div class="maintext">${a[0]}</div><div class="meta">${a[1]}</div></div></div>`}).join("")}</div></section>
-  <section class="section-card"><div class="section-head">Notifications</div><div class="section-body">${["Email Notifications","Desktop Notifications","Risk Alerts","Daily Digest","Meeting Reminders"].map((x,i)=>`<div class="list-row"><div>${x}</div><span class="toggle ${i===4?'off':''}"></span></div>`).join("")}</div></section>
-  <section class="section-card"><div class="section-head purple">Appearance</div><div class="section-body"><div class="triple-grid"><button class="tool">Light</button><button class="tool">Dark</button><button class="tool">Auto</button></div></div></section>
-  <section class="section-card"><div class="section-head green">Integrations</div><div class="section-body">${["Google Calendar","Slack","Salesforce","Linear"].map((x,i)=>`<div class="list-row"><div>${x}</div><span class="status-pill ${i===0?'green':''}">${i===0?'Connected':'Connect'}</span></div>`).join("")}</div></section>`;
-  return;
- }
-}
-function runPagePrompt(page){showPage("command");const promptMap={daily_brief:"Create today’s daily brief and execution sequence.",meeting:"Prepare this meeting: objective, agenda, questions, risks, follow-up.",strategy:"Build a strategy board for Executive Engine OS: current objective, execution tracks, risks, next moves.",risk:"Review current Executive Engine OS risks and mitigation steps.",actions:"Prioritize my action queue and identify what should be completed first.",analytics:"Audit Executive Engine OS workflow health and identify bottlenecks.",memory:"Summarize the strongest memory patterns and constraints.",profile:"Summarize my executive operator profile and how the system should adapt.",settings:"Show current system settings and what should stay locked."};inputEl().value=promptMap[page]||"Run an executive command.";activeMode=document.querySelector(`[data-page="${page}"]`)?.dataset.mode||"execution";runEngine()}
-function newRun(){showPage("command");inputEl().value="";lastOutput=null;lastCommand="";inputEl().focus()}
-document.querySelectorAll(".mode,.nav").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.mode)activeMode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x.dataset.mode===activeMode));if(b.dataset.page)showPage(b.dataset.page);}));
-
-let activeExecutiveMode = "CEO";
-
-const V300_TEMPLATES = [
-  {id:"daily_brief", title:"Daily Brief", mode:"CEO", prompt:"Create my executive daily brief. Tell me what to focus on, what to ignore, top risks, and the first action to take today."},
-  {id:"meeting_prep", title:"Meeting Prep", mode:"COO", prompt:"Prepare me for this meeting. Give me the objective, agenda, hard questions, talking points, decision needed, and follow-up actions."},
-  {id:"strategy_decision", title:"Strategy Decision", mode:"CEO", prompt:"Help me make a strategy decision. Clarify the tradeoff, recommend the decision, identify risk, and give me the next 3 execution steps."},
-  {id:"risk_review", title:"Risk Review", mode:"COO", prompt:"Review the current risk. Identify what can break, the likely cause, severity, mitigation, owner, and what I should do today."},
-  {id:"revenue_review", title:"Revenue Review", mode:"CFO", prompt:"Review revenue and pipeline priorities. Identify the highest value opportunity, financial risk, next sales action, and what to cut or accelerate."},
-  {id:"hiring_decision", title:"Hiring Decision", mode:"CEO", prompt:"Help me make a hiring decision. Identify the role impact, urgency, cost/risk, hiring criteria, and next step."},
-  {id:"board_prep", title:"Board Prep", mode:"CEO", prompt:"Prepare a board-level update. Give me wins, risks, metrics, decisions needed, and the narrative I should use."},
-  {id:"execution_reset", title:"Execution Reset", mode:"COO", prompt:"Reset my execution plan. Identify what matters, what to stop, what to finish first, and the next command I should run."}
+const TEST_ROUTES = [
+  "/health",
+  "/diagnostic",
+  "/system-test",
+  "/v1202-milestone",
+  "/v1201-test-links",
+  "/v1201-test-links-json",
+  "/beta/system-score",
+  "/beta/operating-brief",
+  "/beta/launch-checklist",
+  "/v1200-milestone",
+  "/calendar/connect-status",
+  "/calendar/auth-url",
+  "/calendar/status-live-candidate",
+  "/calendar/events/today-live-candidate",
+  "/calendar/oauth-test-page",
+  "/calendar/intelligence-summary",
+  "/calendar/events/fetch-candidate",
+  "/oauth/live-gates",
+  "/tokens/storage-health",
+  "/calendar/secure-connection-state",
+  "/google/connector-blueprint",
+  "/connector-command-center",
+  "/files/status",
+  "/integrations/status",
+  "/executive-cockpit",
+  "/notifications",
+  "/daily-workflow",
+  "/end-day-summary"
 ];
 
-function setExecutiveMode(mode){
-  activeExecutiveMode = mode || "CEO";
-  document.querySelectorAll(".v300-mode").forEach(b=>b.classList.toggle("active", b.dataset.execMode===activeExecutiveMode));
-  const label=document.getElementById("v300ModeLabel");
-  if(label) label.textContent=activeExecutiveMode;
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const target = document.getElementById("page-" + page);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  const btn = document.querySelector('.nav-btn[data-page="'+page+'"]');
+  if(btn) btn.classList.add("active");
 }
 
-function useCommandTemplate(id){
-  const t=V300_TEMPLATES.find(x=>x.id===id);
-  if(!t) return;
-  setExecutiveMode(t.mode);
-  activeMode = t.id==="meeting_prep" ? "meeting" : (t.id==="strategy_decision" ? "strategy" : "execution");
-  const input=inputEl();
-  input.value=t.prompt;
-  input.focus();
-  toast(t.title+" loaded","success");
+function openBackend(route){
+  window.open(API + route, "_blank", "noopener,noreferrer");
 }
 
-function toggleTemplates(){const d=document.getElementById('v301TemplateDrawer'); if(d) d.classList.toggle('open');}
-
-
-
-
-const V550_KEY="EXEC_ENGINE_V550_INTEGRATION_PREP";
-let v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
-
-
-async 
-function v650ManualFilesContext(){
-  const el=document.getElementById("v550FilesContext");
-  return el && el.value.trim() ? el.value.trim() : "No manual file/project context saved yet.";
+function renderTestLinks(){
+  const box = document.getElementById("testLinks");
+  if(!box) return;
+  box.innerHTML = TEST_ROUTES.map(r => `<a href="${API}${r}" target="_blank" rel="noopener noreferrer">${r}</a>`).join("");
 }
 
-function v650LocalFilesSummary(){
-  const text=v650ManualFilesContext();
-  const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);
-  const decisions=lines.filter(x=>/decision|approve|choose|confirm|decide/i.test(x));
-  const actions=lines.filter(x=>/action|todo|next|send|review|assign|complete|ship|test/i.test(x));
-  const risks=lines.filter(x=>/risk|blocker|issue|constraint|problem/i.test(x));
-  return {
-    files: text==="No manual file/project context saved yet." ? 0 : Math.max(1, lines.length),
-    decisions: decisions.length || (text==="No manual file/project context saved yet." ? 0 : 1),
-    actions: actions.length || (text==="No manual file/project context saved yet." ? 0 : 1),
-    risks: risks.length,
-    text
+function loadTemplate(type){
+  const input = document.getElementById("input");
+  const templates = {
+    daily: "Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.",
+    calendar: "Review Calendar OAuth candidate status, connector readiness, manual execution policy, and next safest build. Keep writes blocked.",
+    beta: "Review V1202 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
   };
+  input.value = templates[type] || templates.daily;
 }
 
-async 
-async 
-async 
-async 
-async 
-async 
-async 
-async function v1000RefreshCandidate(){
+function clearOutput(){
+  document.getElementById("output").textContent = "Ready.";
+}
+
+async function runEngine(){
+  const output = document.getElementById("output");
+  const input = document.getElementById("input").value.trim();
+  if(!input){
+    output.textContent = "Enter a command first.";
+    return;
+  }
+  output.textContent = "Running...";
   try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const status=await fetch(base+"/calendar/connect-status").then(r=>r.json());
-    const live=await fetch(base+"/calendar/status-live-candidate").then(r=>r.json());
-
-    const grid=document.getElementById("v1000StatusGrid");
-    if(grid){
-      const env=status.env||{};
-      grid.innerHTML=`
-        <div class="v1000-cell"><small>Client ID</small><strong>${env.GOOGLE_CLIENT_ID_SET ? "Set" : "Missing"}</strong></div>
-        <div class="v1000-cell"><small>Redirect URI</small><strong>${env.GOOGLE_REDIRECT_URI_SET ? "Set" : "Missing"}</strong></div>
-        <div class="v1000-cell"><small>Token Storage</small><strong>${live.token_storage_active ? "On" : "Off"}</strong></div>
-        <div class="v1000-cell"><small>Connection</small><strong>${live.connected ? "Connected" : "Not Connected"}</strong></div>`;
-    }
-    if(typeof toast==="function") toast("V1000 Calendar OAuth candidate refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("V1000 Calendar OAuth unavailable","error");
+    const res = await fetch(API + "/run", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ input, mode: "execution" })
+    });
+    const data = await res.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  }catch(err){
+    output.textContent = "Run failed. Open /diagnostic and /system-test from Test Links. Error: " + err.message;
   }
 }
 
-async function v1000LoadAuthUrl(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/calendar/auth-url").then(r=>r.json());
-    const box=document.getElementById("v1000AuthUrl");
-    if(box) box.textContent=res.auth_url || res.message || "Auth URL unavailable.";
-    if(typeof toast==="function") toast("Calendar auth URL generated","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Calendar auth URL unavailable","error");
-  }
-}
-
-function v1000LoadReviewCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review Executive Engine OS V1000 Live Calendar Read-Only OAuth Candidate. Check env readiness, auth URL route, callback route, context approval, token exchange still disabled, token storage still disabled, calendar writes blocked, and the next safest build. Recommend whether V1050 should implement real token exchange and encrypted storage.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("V1000 review command loaded","success");
-}
-
-function v950RefreshCandidate(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const plan=await fetch(base+"/tokens/storage-plan").then(r=>r.json());
-    const enc=await fetch(base+"/tokens/encryption-check").then(r=>r.json());
-    const flow=await fetch(base+"/calendar/disconnect-flow").then(r=>r.json());
-    const policy=await fetch(base+"/calendar/refresh-policy").then(r=>r.json());
-
-    const grid=document.getElementById("v950TokenGrid");
-    if(grid){
-      grid.innerHTML=`
-        <div class="v950-cell"><small>Storage</small><strong>${plan.plan?.storage_status || "candidate_only"}</strong></div>
-        <div class="v950-cell"><small>Encryption Key</small><strong>${enc.encryption_key_present ? "Present" : "Missing"}</strong></div>
-        <div class="v950-cell"><small>Schema Changed</small><strong>${plan.plan?.schema_changed_in_v950 ? "Yes" : "No"}</strong></div>
-        <div class="v950-cell"><small>Frontend Tokens</small><strong>Never</strong></div>`;
-    }
-
-    const list=document.getElementById("v950FlowList");
-    if(list){
-      list.innerHTML=`
-        <div class="v950-item plan"><b>Disconnect Flow</b><span>${(flow.flow?.steps || []).slice(0,4).join(" → ")}</span></div>
-        <div class="v950-item safe"><b>Refresh Policy</b><span>${(policy.policy?.policy || []).slice(0,3).join(" · ")}</span></div>
-        <div class="v950-item blocked"><b>Background Refresh</b><span>${policy.policy?.background_refresh_enabled ? "Enabled" : "Blocked"}</span></div>`;
-    }
-    if(typeof toast==="function") toast("Token storage candidate refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Token storage candidate unavailable","error");
-  }
-}
-
-async function v950SimulateDisconnect(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/calendar/disconnect-simulate",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({provider:"google_calendar",connected:false,has_token_record:false})
-    }).then(r=>r.json());
-    if(typeof toast==="function") toast(res.message || "Disconnect simulated","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Disconnect simulation unavailable","error");
-  }
-}
-
-function v950LoadReviewCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review Executive Engine OS V950 Token Storage + Disconnect Flow Candidate. Assess token storage plan, encryption readiness, disconnect/revoke flow, refresh policy, Supabase schema implications, and next safest build. Do not enable live OAuth. Keep calendar writes blocked and manual execution only.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("V950 review command loaded","success");
-}
-
-function v900RefreshCandidate(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const status=await fetch(base+"/calendar/oauth-candidate/status").then(r=>r.json());
-    const plan=await fetch(base+"/calendar/token-storage-plan").then(r=>r.json());
-    const env=document.getElementById("v900EnvGrid");
-    if(env){
-      const e=status.status?.env||{};
-      env.innerHTML=Object.entries(e).map(([k,v])=>`<div class="v900-cell"><small>${k.replaceAll("_"," ")}</small><strong>${v?"Set":"Missing"}</strong></div>`).join("")+
-      `<div class="v900-cell"><small>Live OAuth</small><strong>Disabled</strong></div><div class="v900-cell"><small>Writes</small><strong>Blocked</strong></div>`;
-    }
-    const list=document.getElementById("v900PlanList");
-    if(list){
-      const fields=plan.plan?.fields_needed_future||[];
-      list.innerHTML=`<div class="v900-item plan"><b>Future token fields</b><span>${fields.slice(0,6).join(" · ")}</span></div>
-      <div class="v900-item blocked"><b>Schema changed in V900?</b><span>${plan.plan?.v900_schema_changed?"Yes":"No"}</span></div>
-      <div class="v900-item safe"><b>Disconnect required</b><span>${plan.plan?.disconnect_required?"Yes":"No"} · Revoke required: ${plan.plan?.revoke_required?"Yes":"No"}</span></div>`;
-    }
-    if(typeof toast==="function") toast("Calendar OAuth candidate refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Calendar OAuth candidate unavailable","error");
-  }
-}
-
-async function v900LoadAuthUrl(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/calendar/auth-url-candidate").then(r=>r.json());
-    const box=document.getElementById("v900AuthUrl");
-    if(box) box.textContent=res.auth_url || "Auth URL candidate unavailable.";
-    if(typeof toast==="function") toast("Auth URL candidate generated","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Auth URL candidate unavailable","error");
-  }
-}
-
-function v900LoadReviewCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review Executive Engine OS V900 Calendar OAuth Candidate. Check environment readiness, read-only scope, token storage plan, disconnect/revoke requirements, risks, and next safest build. Do not enable live OAuth. Keep calendar writes blocked and manual execution only.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Calendar OAuth review command loaded","success");
-}
-
-function v850RefreshBlueprint(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const blueprint=await fetch(base+"/google/connector-blueprint").then(r=>r.json());
-    const plan=await fetch(base+"/google/activation-plan").then(r=>r.json());
-    const list=document.getElementById("v850BlueprintList");
-    if(list){
-      const bp=blueprint.blueprint||{};
-      list.innerHTML=Object.values(bp).map(c=>`<div class="v850-item ${c.status==="blueprint_ready"?"next":"safe"}"><b>${c.name}</b><span>${c.status} · Live ${c.live_enabled?"on":"off"}<br>Scope: ${c.scope}</span></div>`).join("");
-    }
-    const planBox=document.getElementById("v850ActivationPlan");
-    if(planBox){
-      planBox.innerHTML=(plan.plan||[]).map(p=>`<div class="v850-item ${p.status==="next_best_candidate"?"next":"medium"}"><b>${p.phase}: ${p.title}</b><span>${p.status}<br>${(p.steps||[]).slice(0,3).join(" · ")}</span></div>`).join("");
-    }
-    if(typeof toast==="function") toast("Google connector blueprint refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Google connector blueprint unavailable","error");
-  }
-}
-
-function v850LoadReviewCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review the V850 Google Connector Blueprint. Decide whether the next safest milestone should be V900 Calendar OAuth Candidate or another prep layer. Keep live OAuth off, token storage disabled, external writes blocked, and manual execution only.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Blueprint review command loaded","success");
-}
-
-function v850LoadNextBuildCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="BUILD V900 — CALENDAR OAUTH CANDIDATE. Start from V850. Keep diagnostic routes. Do not touch Supabase schema unless explicitly required. Add real Google Calendar read-only OAuth candidate only if token storage, redirect URI, disconnect flow, and safety checks are implemented. No calendar writes. No background sync. Manual execution only. Include all files in ZIP.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof toast==="function")toast("V900 command loaded","success");
-}
-
-function v800RefreshPrep(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const prep=await fetch(base+"/oauth/activation-prep").then(r=>r.json());
-    const gates=await fetch(base+"/security-gates").then(r=>r.json());
-    const env=document.getElementById("v800EnvGrid");
-    if(env){
-      const r=prep.env_readiness||{};
-      const present=r.config_present||{};
-      env.innerHTML=Object.entries(present).map(([k,v])=>`<div class="v800-cell"><small>${k.replaceAll("_"," ")}</small><strong>${v?"Set":"Missing"}</strong></div>`).join("")+
-      `<div class="v800-cell"><small>OAuth Enabled</small><strong>No</strong></div><div class="v800-cell"><small>External Writes</small><strong>Blocked</strong></div>`;
-    }
-    const gateBox=document.getElementById("v800SecurityGates");
-    if(gateBox){
-      gateBox.innerHTML=(gates.gates||[]).map(g=>`<div class="v800-item ${String(g.status||"required").toLowerCase()}"><b>${g.title}</b><span>${g.status} · ${g.blocks}</span></div>`).join("");
-    }
-    const checklist=document.getElementById("v800Checklist");
-    if(checklist){
-      checklist.innerHTML=(prep.activation_checklist||[]).map(i=>`<div class="v800-item ${String(i.status||"required").toLowerCase()}"><b>${i.step}</b><span>${i.status}</span></div>`).join("");
-    }
-    if(typeof toast==="function") toast("OAuth activation prep refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("OAuth activation prep unavailable","error");
-  }
-}
-
-async function v800SimulateActivation(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/oauth/activation-simulate",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        connector:"calendar",
-        requested_scope:"https://www.googleapis.com/auth/calendar.events.readonly",
-        enable_oauth:true,
-        token_storage_ready:false,
-        external_write_requested:false,
-        auto_loop_requested:false
-      })
-    }).then(r=>r.json());
-    if(typeof toast==="function") toast(res.simulation_result==="not_ready"?"Activation not ready — safe":"Activation simulation complete","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Activation simulation unavailable","error");
-  }
-}
-
-function v800LoadCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review Executive Engine OS V800 OAuth activation prep. Assess environment readiness, read-only scopes, token storage requirements, security gates, and the next safest build step. Do not enable live OAuth. Keep external writes blocked and manual execution only.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("OAuth review command loaded","success");
-}
-
-function v750RefreshCenter(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const center=await fetch(base+"/connector-command-center").then(r=>r.json());
-    const list=document.getElementById("v750ConnectorList");
-    if(list){
-      list.innerHTML=(center.connectors||[]).map(c=>`<div class="v750-item ${String(c.risk||"low").toLowerCase()}"><b>${c.name}</b><span>${c.status} · ${c.mode} · Writes ${c.writes_blocked?"blocked":"open"}<br>${c.next_safe_step}</span></div>`).join("");
-    }
-    const queue=document.getElementById("v750ApprovalQueue");
-    if(queue){
-      queue.innerHTML=(center.approval_queue||[]).map(a=>`<div class="v750-item ${String(a.priority||"medium").toLowerCase()}"><b>${a.title}</b><span>${a.status} · ${a.blocked_action}<br>${a.safe_next_step}</span></div>`).join("");
-    }
-    if(typeof toast==="function") toast("Connector Command Center refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Connector Command Center unavailable","error");
-  }
-}
-
-async function v750SimulateApproval(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/approval/simulate",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action_type:"calendar_oauth_review",external_write:false,oauth_activation:true,auto_loop:false})
-    }).then(r=>r.json());
-    if(typeof toast==="function") toast(res.decision==="review_required"?"Review required — safe":"Approval simulation complete","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Approval simulation unavailable","error");
-  }
-}
-
-function v750LoadCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review the Executive Engine OS connector command center. Prioritize the next safest connector step across Calendar, Files, Email Drafts, and CRM. Keep OAuth disabled, external writes blocked, manual execution only, and recommend the next build milestone.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Connector command loaded","success");
-}
-
-function v700RefreshConnectors(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const status=await fetch(base+"/connectors/status").then(r=>r.json());
-    const gates=await fetch(base+"/approval-gates").then(r=>r.json());
-    const matrix=document.getElementById("v700ConnectorMatrix");
-    if(matrix){
-      matrix.innerHTML=(status.connectors||[]).map(c=>`<div class="v700-connector ${(c.risk||"low").toLowerCase()}"><b>${c.name}</b><span>${c.phase} · OAuth ${c.oauth_enabled?"on":"off"} · Write ${c.write_access?"on":"off"}<br>${c.next_step}</span></div>`).join("");
-    }
-    const gateBox=document.getElementById("v700ApprovalGates");
-    if(gateBox){
-      gateBox.innerHTML=(gates.gates||[]).map(g=>`<div class="v700-gate"><small>${g.id.replaceAll("_"," ")}</small><strong>${g.status}</strong></div>`).join("");
-    }
-    if(typeof toast==="function") toast("Connector readiness refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Connector readiness unavailable","error");
-  }
-}
-
-async function v700RunSafetyReview(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const res=await fetch(base+"/oauth/safety-review",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        requested_write_access:false,
-        background_sync:false,
-        token_storage_enabled:false,
-        auto_send_enabled:false,
-        calendar_scope:"https://www.googleapis.com/auth/calendar.events.readonly",
-        drive_scope:"https://www.googleapis.com/auth/drive.readonly"
-      })
-    }).then(r=>r.json());
-    if(typeof toast==="function") toast(res.passed?"OAuth safety review passed":"OAuth safety review blocked",res.passed?"success":"error");
-  }catch(e){
-    if(typeof toast==="function") toast("OAuth safety review unavailable","error");
-  }
-}
-
-function v700LoadConnectorCommand(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const prompt="Review Executive Engine OS connector readiness. Assess Calendar, Files, Gmail, OAuth safety, approval gates, and the next safest integration step. Do not enable live OAuth. Keep manual execution only.";
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Connector review command loaded","success");
-}
-
-function v650RefreshFiles(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const status=await fetch(base+"/files/status").then(r=>r.json());
-    const alerts=await fetch(base+"/notification-upgrade").then(r=>r.json());
-    const local=v650LocalFilesSummary();
-
-    const s=document.getElementById("v650FilesStatus");
-    const c=document.getElementById("v650FilesCount");
-    const d=document.getElementById("v650DecisionsNeeded");
-    const p=document.getElementById("v650FilesPreview");
-
-    if(s) s.textContent=status.connected?"Connected":"Prep Mode";
-    if(c) c.textContent=String(local.files);
-    if(d) d.textContent=String(local.decisions);
-    if(p) p.textContent=`FILES INTELLIGENCE PREP SUMMARY\nNo live Google Drive access. OAuth disabled.\n\nFiles/context items: ${local.files}\nDecisions needed: ${local.decisions}\nActions needed: ${local.actions}\nRisks detected: ${local.risks}\n\nContext:\n${local.text}`;
-
-    const box=document.getElementById("v650Notifications");
-    if(box){
-      box.innerHTML=(alerts.notifications||[]).map(a=>`<div class="v650-alert ${(a.priority||"low").toLowerCase()}"><b>${a.title}</b><span>${a.priority} · ${a.message}</span></div>`).join("");
-    }
-    if(typeof toast==="function") toast("Files Intelligence refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Files Intelligence unavailable","error");
-  }
-}
-
-function v650SendFilesCommand(destination){
-  if(typeof v550SaveFiles==="function") v550SaveFiles();
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const local=v650LocalFilesSummary();
-  let prompt="";
-  if(destination==="daily_brief"){
-    prompt=`Use this manual read-only Files Intelligence context for today's Daily Brief. Do not assume live Google Drive access. Identify decisions needed, actions needed, risks, priority, and recommended command.\n\nFiles Context:\n${local.text}`;
-  }else if(destination==="end_day_summary"){
-    prompt=`Use this manual read-only Files Intelligence context for End Day Summary. Identify what is still open, decisions needed, actions needed, risks, and tomorrow's recommended command.\n\nFiles Context:\n${local.text}`;
-  }else{
-    prompt=`Use this manual read-only Files Intelligence context. Identify highest leverage decision, next move, execution actions, risks, and priority. Do not assume live Google Drive access.\n\nFiles Context:\n${local.text}`;
-  }
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Files context loaded into command","success");
-}
-
-function v600RefreshCalendar(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const status=await fetch(base+"/calendar/status").then(r=>r.json());
-    const today=await fetch(base+"/calendar/events/today?timezone=America/Toronto&calendar_id=primary").then(r=>r.json());
-    const alerts=await fetch(base+"/calendar/alerts").then(r=>r.json());
-    const s=document.getElementById("v600CalStatus");
-    const m=document.getElementById("v600CalMeetings");
-    const d=document.getElementById("v600CalDensity");
-    if(s) s.textContent=status.connected?"Connected":"Prep Mode";
-    if(m) m.textContent=String(today.summary?.totalEvents || 0);
-    if(d) d.textContent=(today.summary?.meetingDensity || "light").replace(/^./,c=>c.toUpperCase());
-    const box=document.getElementById("v600CalendarAlerts");
-    if(box){
-      box.innerHTML=(alerts.alerts||[]).map(a=>`<div class="v600-alert ${(a.priority||"low").toLowerCase()}"><b>${a.title}</b><span>${a.priority} · ${a.message}</span></div>`).join("");
-    }
-    if(typeof toast==="function") toast("Calendar status refreshed","success");
-  }catch(e){
-    if(typeof toast==="function") toast("Calendar status unavailable","error");
-  }
-}
-
-function v600ManualCalendarContext(){
-  const el=document.getElementById("v550CalendarContext");
-  return el && el.value.trim() ? el.value.trim() : "No manual calendar context saved yet.";
-}
-
-function v600SendCalendarBrief(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const context=v600ManualCalendarContext();
-  const prompt=`Use this manual read-only Calendar Intelligence context for today's Daily Brief. Do not assume live Google access. Identify today's focus, meeting prep needed, decision, actions, risk, priority, and recommended command.\n\nCalendar Context:\n${context}`;
-  if(input){input.value=prompt;input.focus();}
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Calendar context loaded into command","success");
-}
-
-function v600LoadMeetingPrep(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const context=v600ManualCalendarContext();
-  const prompt=`Create meeting prep using this manual read-only calendar context. Provide objective, agenda, hard questions, decision needed, risks, talking points, and follow-up actions. Do not assume live Google access.\n\nCalendar Context:\n${context}`;
-  if(input){input.value=prompt;input.focus();}
-  if(typeof toast==="function")toast("Meeting prep command loaded","success");
-}
-
-function v550Load(){
-  try{const s=localStorage.getItem(V550_KEY); if(s) v550State=JSON.parse(s);}catch(e){}
-  const cal=document.getElementById("v550CalendarContext");
-  const files=document.getElementById("v550FilesContext");
-  if(cal) cal.value=v550State.calendar.context||"";
-  if(files) files.value=v550State.files.context||"";
-  v550BuildPreview();
-}
-function v550Save(){localStorage.setItem(V550_KEY,JSON.stringify(v550State));v550BuildPreview();}
-function v550SaveCalendar(){const el=document.getElementById("v550CalendarContext");v550State.calendar.context=el?el.value.trim():"";v550State.calendar.lastUpdatedAt=new Date().toISOString();v550Save();if(typeof toast==="function")toast("Calendar prep saved","success");}
-function v550SaveFiles(){const el=document.getElementById("v550FilesContext");v550State.files.context=el?el.value.trim():"";v550State.files.lastUpdatedAt=new Date().toISOString();v550Save();if(typeof toast==="function")toast("Files prep saved","success");}
-function v550ClearCalendar(){v550State.calendar.context="";const el=document.getElementById("v550CalendarContext");if(el)el.value="";v550Save();}
-function v550ClearFiles(){v550State.files.context="";const el=document.getElementById("v550FilesContext");if(el)el.value="";v550Save();}
-function v550ContextText(){
-  return `READ-ONLY INTEGRATION PREP CONTEXT
-No live Google access. OAuth disabled. Manual context only.
-
-Calendar Prep:
-${v550State.calendar.context||"No calendar context saved."}
-
-Files Prep:
-${v550State.files.context||"No files context saved."}
-
-Safety:
-- Calendar OAuth disabled
-- Files OAuth disabled
-- Write access disabled
-- Auto-loop off
-- Manual execution only`;
-}
-function v550BuildPreview(){
-  const preview=document.getElementById("v550Preview");
-  if(preview) preview.textContent=v550ContextText();
-}
-function v550SendToCommand(destination){
-  v550SaveCalendar();v550SaveFiles();
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const context=v550ContextText();
-  let prompt="";
-  if(destination==="daily_brief"){
-    prompt=`Use this manual Calendar + Files prep context for today's Daily Brief. Return decision, next_move, actions, risk, priority, recommended_command.\n\n${context}`;
-  }else if(destination==="meeting_prep"){
-    prompt=`Use this manual Calendar prep context to create meeting prep. Identify objective, decision needed, risks, talking points, and follow-up actions.\n\n${context}`;
-  }else if(destination==="end_day_summary"){
-    prompt=`Use this manual Calendar + Files prep context for End Day Summary. Identify what happened, what remains open, risk, and tomorrow's recommended command.\n\n${context}`;
-  }else{
-    prompt=`Use this manual Calendar + Files prep context. Identify highest leverage decision, next move, execution actions, risks, and priority.\n\n${context}`;
-  }
-  if(input){input.value=prompt;input.focus();}
-  v550State.lastSent={destination,payload:context,sentAt:new Date().toISOString()};
-  v550Save();
-  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
-  if(typeof updateV400Intel==="function")updateV400Intel();
-  if(typeof toast==="function")toast("Integration context loaded","success");
-}
-async function v550SafetyCheck(){
-  try{
-    const res=await fetch((typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com")+"/integrations/safety-check",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({calendar_oauth_enabled:false,files_oauth_enabled:false,write_access_requested:false,auto_loop_enabled:false})});
-    const data=await res.json();
-    v550State.safety={passed:!!data.passed,lastSafetyCheckAt:new Date().toISOString(),result:data};
-    v550Save();
-    if(typeof toast==="function")toast(data.passed?"Safety check passed":"Safety review required",data.passed?"success":"error");
-  }catch(e){
-    if(typeof toast==="function")toast("Safety check unavailable","error");
-  }
-}
-async function v550CopyContext(){
-  try{await navigator.clipboard.writeText(v550ContextText());if(typeof toast==="function")toast("Context copied","success");}catch(e){}
-}
-function v550ResetPrep(){
-  v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
-  localStorage.removeItem(V550_KEY);
-  v550Load();v600RefreshCalendar();v650RefreshFiles();v700RefreshConnectors();v750RefreshCenter();v800RefreshPrep();v850RefreshBlueprint();v900RefreshCandidate();v950RefreshCandidate();v1000RefreshCandidate();
-}
-
-function v500LocalState(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const text=(input && input.value ? input.value : "").toLowerCase();
-  let focus="Execution clarity", constraint="Too many possible priorities", load="Controlled", risk="Weak signal quality", command="Create my executive daily brief using memory, open actions, risks, and current priorities.";
-  if(text.includes("revenue")||text.includes("sales")||text.includes("pipeline")){focus="Revenue execution";constraint="Pipeline clarity and owner accountability";risk="Revenue action without owner";command="Review my revenue pipeline and tell me the one action most likely to create cash impact this week.";}
-  else if(text.includes("risk")||text.includes("blocker")||text.includes("broken")){focus="Risk removal";constraint="Execution blocker";load="Medium";risk="Recurring execution blocker";command="Turn my biggest recurring risk into a mitigation plan with owner, timing, and first action.";}
-  else if(text.includes("meeting")||text.includes("board")){focus="Meeting readiness";constraint="Unclear meeting decision";risk="Meeting without clear outcome";command="Prepare my meeting brief with objective, decision needed, risks, and follow-up actions.";}
-  else if(text.includes("action")||text.includes("tasks")||text.includes("queue")){focus="Action queue control";constraint="Open action load";load="High";risk="Action overload";command="Reduce my action queue. Tell me what to complete, cut, or defer today.";}
-  return {focus,constraint,load,risk,command};
-}
-function updateV500Cockpit(){
-  const s=v500LocalState();
-  const map={v500TodayFocus:s.focus,v500Constraint:s.constraint,v500ActionLoad:s.load,v500RecurringRisk:s.risk,v500CockpitSummary:`Focus: ${s.focus}. Constraint: ${s.constraint}. Recommended command: ${s.command}`};
-  Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id); if(el) el.textContent=val;});
-  const notes=document.getElementById("v500Notifications");
-  if(notes){
-    const list=[{p:"High",t:"Daily brief recommended",m:"Start with today’s operating focus."},{p:s.load==="High"?"High":"Medium",t:"Action load",m:s.load==="High"?"Reduce open actions before adding more.":"Action load controlled."},{p:"Medium",t:"Risk review",m:s.risk},{p:"Low",t:"System test",m:"Run diagnostic/system-test after deploys."}];
-    notes.innerHTML=list.map(n=>`<div class="v500-note ${n.p.toLowerCase()}"><span class="v500-dot"></span><div><b>${n.t}</b><span>${n.p} · ${n.m}</span></div></div>`).join("");
-  }
-}
-function v500LoadRecommendedCommand(){const s=v500LocalState();const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value=s.command;input.focus();updateV500Cockpit();if(typeof updateV350Workflow==="function")updateV350Workflow();if(typeof updateV400Intel==="function")updateV400Intel();}}
-function v500StartDay(){const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value="Create my executive daily brief using memory, open actions, risks, and current priorities. Tell me what to focus on, what to ignore, what decision to make, and what action to take first.";input.focus();}updateV500Cockpit();}
-function v500LoadDailyBrief(){v500StartDay();}
-function v500EndDay(){const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value="Create my end day summary. Review what was decided, what actions remain open, what risks need attention, and what command I should run tomorrow.";input.focus();}updateV500Cockpit();}
-
-function v400LocalIntel(text){
-  const s=(text||"").toLowerCase();
-  let memory="Building";
-  let pattern="Execution clarity pattern";
-  let risk="Action overload if too many tasks are created";
-  let load="Controlled";
-
-  if(s.includes("deploy")||s.includes("render")||s.includes("backend")||s.includes("system-test")){
-    pattern="Deployment stability pattern";
-    risk="Reliability regression";
-  }
-  if(s.includes("ui")||s.includes("layout")||s.includes("design")||s.includes("command center")){
-    pattern="Workflow clarity pattern";
-    risk="Confusing UX lowers executive trust";
-  }
-  if(s.includes("revenue")||s.includes("sales")||s.includes("pipeline")){
-    pattern="Revenue prioritization pattern";
-    risk="Pipeline action without owner";
-  }
-  if(s.includes("risk")||s.includes("blocker")||s.includes("broken")){
-    pattern="Blocker-removal pattern";
-    risk="Recurring execution blocker";
-  }
-  if(s.length>120){memory="Useful signal";load="Medium";}
-  return [memory,pattern,risk,load];
-}
-
-function updateV400Intel(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const vals=v400LocalIntel(input ? input.value : "");
-  const ids=["v400MemoryQuality","v400DecisionPattern","v400RecurringRisk","v400ActionLoad"];
-  ids.forEach((id,i)=>{const el=document.getElementById(id); if(el) el.textContent=vals[i];});
-}
-
-function v350LocalWorkflow(text){
-  const s=(text||"").toLowerCase();
-  if(s.includes("revenue")||s.includes("sales")||s.includes("pipeline")||s.includes("deal")){
-    return ["Revenue execution","Which revenue action has the highest cash impact?","Pipeline clarity and owner accountability","Review highest-value opportunity","Review my revenue pipeline and tell me the one action most likely to create cash impact this week."];
-  }
-  if(s.includes("meeting")||s.includes("board")||s.includes("presentation")){
-    return ["Meeting readiness","What decision must this meeting produce?","Unclear meeting outcome","Define the decision needed","Prepare my meeting brief with objective, decision needed, risks, and follow-up actions."];
-  }
-  if(s.includes("risk")||s.includes("blocker")||s.includes("issue")){
-    return ["Risk removal","Which blocker must be removed first?","Unresolved dependency","Name owner and mitigation","Turn this risk into a mitigation plan with owner, deadline, and first action."];
-  }
-  if(s.includes("hire")||s.includes("hiring")||s.includes("team")){
-    return ["Team capacity","Is this hire essential to the next 90 days?","Capacity, cost, or role clarity","Define required business outcome","Help me make this hiring decision with role impact, cost, risk, and next step."];
-  }
-  return ["Execution clarity","What decision unlocks the next move?","Too many possible priorities","Pick one high-impact action","Give me the next executive decision I should make and the first action to execute today."];
-}
-
-function updateV350Workflow(){
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  const vals=v350LocalWorkflow(input ? input.value : "");
-  const ids=["v350TodayFocus","v350NextDecision","v350Constraint","v350ActionPriority","v350RecommendedCommand"];
-  ids.forEach((id,i)=>{const el=document.getElementById(id); if(el) el.textContent=vals[i];});
-}
-
-function loadV350RecommendedCommand(){
-  const el=document.getElementById("v350RecommendedCommand");
-  const input=inputEl ? inputEl() : document.getElementById("input");
-  if(el && input){ input.value=el.textContent; input.focus(); updateV350Workflow(); }
-}
-
-function renderV300CommandModules(){
-  const host=document.getElementById("v300CommandModules");
-  if(!host) return;
-  host.innerHTML = `
-    <div class="v300-template-grid">
-      ${V300_TEMPLATES.map(t=>`<button class="v300-template" onclick="useCommandTemplate('${t.id}')"><b>${t.title}</b><span>${t.mode} · ${t.prompt.slice(0,72)}...</span></button>`).join("")}
-    </div>
-  `;
-}
-
-async function runEngine(){const input=inputEl(),command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,executive_mode:activeExecutiveMode,depth:"standard",user_id:USER_ID,session_id:"v300_command_center",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
-function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>${d.next_recommended_command?`<div class="v300-next-command"><b>Next Recommended Command</b><code>${esc(d.next_recommended_command)}</code><button class="tool" style="margin-top:10px" onclick="inputEl().value=d.next_recommended_command">Load Next Command</button></div>`:""}`;document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
-function extractQuotedAfter(label,s){s=String(s||"");for(const p of [new RegExp(label+'\\s+called\\s+"([^"]+)"','i'),new RegExp(label+"\\s+called\\s+'([^']+)'",'i')]){const m=s.match(p);if(m&&m[1])return m[1].trim()}return""}function explicitActionText(){return extractQuotedAfter("one action",lastCommand)||extractQuotedAfter("action",lastCommand)}function explicitDecisionText(){return extractQuotedAfter("one decision",lastCommand)||extractQuotedAfter("decision",lastCommand)}
-async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"v130_navigation",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
-async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"v130_navigation",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
-async function saveFlowStatus(){const d=await api("/save-flow-status?user_id="+encodeURIComponent(USER_ID));status(`Save Flow: ${d.latest?.action_text||"no latest action"} · ${d.latest?.decision_text||"no latest decision"}`,"success");return d}
-async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=document.getElementById("verifySaveBtn");if(btn){btn.textContent="Verified";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Save verified","success");return d}catch(e){status("Verify Save failed: "+e.message,"error")}}
-async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}
-async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
-function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
-
-
-
-
-
-
-
-
-
-
-
-async function loadTeamPulse(){
- try{
-  const d=await api("/team-pulse?user_id="+encodeURIComponent(USER_ID));
-  const p=d.team_pulse||{};
-  const box=document.getElementById("teamPulseBox");
-  if(box){
-    const draft=p.draft_team_message||{};
-    box.innerHTML=`<h3>Team Pulse</h3><p><b>Mode:</b> ${esc(p.chat_mode||"draft_only")}</p><p><b>Post Enabled:</b> ${p.post_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(p.next_move||"Draft only.")}</p><div class="message-preview">${esc(draft.message||"Draft not available.")}</div>`;
-  }
-  const grid=document.getElementById("teamPulseGrid");
-  if(grid){
-    const signals=(p.team_signals||[]).map(s=>`<div class="team-card"><b>${esc(s.name)}</b><p>${esc(s.interpretation)}</p><span class="status-pill ${s.status==="High"?"orange":"green"}">${esc(s.status)} · ${esc(s.value)}</span></div>`).join("");
-    const blockers=(p.blockers||[]).map(b=>`<div class="team-card"><b>${esc(b.source)}</b><p>${esc(b.signal)}</p><span class="status-pill orange">${esc(b.priority||"medium")}</span></div>`).join("");
-    grid.innerHTML=signals+blockers;
-  }
- }catch(e){toast("Team pulse unavailable","error")}
-}
-async function loadRevenueIntelligence(){
- try{
-  const d=await api("/crm-intelligence?user_id="+encodeURIComponent(USER_ID));
-  const c=d.crm||{};
-  const box=document.getElementById("revenueIntelBox");
-  if(box){
-    const brief=c.sample_revenue_brief||{};
-    box.innerHTML=`<h3>Revenue Intelligence</h3><p><b>Status:</b> ${esc(c.crm_mode||"readiness_only")}</p><p><b>External Write Enabled:</b> ${c.external_write_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(c.next_move||"Keep CRM read-only first.")}</p><p><b>Brief:</b> ${esc(brief.priority||"Review revenue actions.")}</p>`;
-  }
-  const grid=document.getElementById("revenueIntelGrid");
-  if(grid){
-    const signals=(c.revenue_signals||[]).map(s=>`<div class="revenue-card"><b>${esc(s.name)}</b><p>${esc(s.signal)}</p><span class="status-pill ${s.risk==="Medium"?"orange":"green"}">${esc(s.status)} · ${esc(s.risk)} Risk</span></div>`).join("");
-    const caps=(c.crm_capabilities||[]).slice(0,4).map(x=>`<div class="revenue-card"><b>${esc(x)}</b><p>Read-only CRM intelligence capability.</p><span class="status-pill green">Planned</span></div>`).join("");
-    grid.innerHTML=signals+caps;
-  }
- }catch(e){toast("Revenue intelligence unavailable","error")}
-}
-
-async function loadConnectorPrep(){
- try{
-  const d=await api("/connector-prep?user_id="+encodeURIComponent(USER_ID));
-  const p=d.connector_prep||{};
-  const grid=document.getElementById("connectorPrepGrid");
-  if(grid){
-    grid.innerHTML=(p.connectors||[]).map(c=>`<div class="connector-prep-card"><b>${esc(c.name)}</b><p>${esc(c.first_use)}</p><p>${esc((c.allowed||[]).join(", ")||"Read-only context")}</p><span class="status-pill ${c.risk==="Low"?"green":"orange"}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
-  }
-  const move=document.getElementById("connectorPrepMove");
-  if(move) move.textContent=p.next_move||"Prepare read-only connectors first.";
- }catch(e){toast("Connector prep unavailable","error")}
-}
-async function loadEmailDraftMode(){
- try{
-  const d=await api("/email-draft-mode?user_id="+encodeURIComponent(USER_ID));
-  const e=d.email||{};
-  const box=document.getElementById("emailDraftModeBox");
-  if(box){
-    const draft=e.sample_draft||{};
-    box.innerHTML=`<h3>Email Draft Mode</h3><p><b>Mode:</b> ${esc(e.email_mode||"draft_only")}</p><p><b>Send Enabled:</b> ${e.send_enabled?"Yes":"No"}</p><p><b>Next Move:</b> ${esc(e.next_move||"Draft only. Review required.")}</p><div class="draft-preview"><b>${esc(draft.subject||"Follow-up")}</b>\n\n${esc(draft.body||"Draft not available.")}</div>`;
-  }
-  const grid=document.getElementById("emailDraftGrid");
-  if(grid){
-    grid.innerHTML=(e.draft_capabilities||[]).map(x=>`<div class="email-draft-card"><b>${esc(x)}</b><p>Draft-only. User review required before external communication.</p><span class="status-pill green">Draft Only</span></div>`).join("");
-  }
- }catch(e){toast("Email draft mode unavailable","error")}
-}
-
-async function runSystemTest(){
- try{
-  const d=await api("/system-test?user_id="+encodeURIComponent(USER_ID));
-  const panel=document.getElementById("systemTestPanel");
-  const tests=document.getElementById("systemTestResults");
-  const scoreText=String(d.score||"0/8");
-  const parts=scoreText.split("/");
-  const passed=parseInt(parts[0]||"0",10);
-  const total=parseInt(parts[1]||"8",10);
-  const percent=total?Math.round((passed/total)*100):0;
-  const deg=Math.round(percent*3.6);
-
-  if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V1200 Executive OS Beta · V1200 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
-  }
-  if(tests){
-    tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
-  }
-  toast("System test complete","success");
- }catch(e){
-  toast("System test failed","error");
-  const panel=document.getElementById("systemTestPanel");
-  if(panel) panel.innerHTML=`<h3>System Test Failed</h3><p>${esc(e.message||e)}</p>`;
- }
-}
-
-async function loadConnectorPlan(){
- try{
-  const d=await api("/connector-plan");
-  const plan=d.plan||{};
-  const grid=document.getElementById("connectorPlanGrid");
-  if(grid){
-    grid.innerHTML=(plan.connectors||[]).map(c=>`<div class="connector-card"><b>${esc(c.name)}</b><p>${esc(c.purpose||"")}</p><p><b>Phase:</b> ${esc(c.phase)} · <b>Priority:</b> ${esc(c.priority)}</p><span class="status-pill ${c.risk==="Low"?"green":c.risk==="Medium"?"orange":""}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
-  }
-  const next=document.getElementById("connectorNextMove");
-  if(next) next.textContent=plan.next_connector_move||"Build Calendar and Files first.";
- }catch(e){toast("Connector plan unavailable","error")}
-}
-async function loadBetaCandidate(){
- try{
-  const d=await api("/beta-candidate?user_id="+encodeURIComponent(USER_ID));
-  const c=d.candidate||{};
-  const hero=document.getElementById("betaCandidateBox");
-  if(hero){
-    const score=Math.min(100,Math.max(0,c.beta_score||0));
-    const deg=Math.round(score*3.6);
-    hero.innerHTML=`<div class="beta-score"><div class="beta-ring" style="background:conic-gradient(#059669 0deg,#059669 ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${score}%</span></div><div><h3>V200 Beta Candidate</h3><p><b>Status:</b> ${esc(c.status||"Pre-beta")}</p><p><b>Decision:</b> ${esc(c.decision||"Continue testing.")}</p><p><b>Next Move:</b> ${esc(c.next_move||"Run beta protocol.")}</p></div></div>`;
-  }
-  const ready=document.getElementById("whatIsReady");
-  if(ready) ready.innerHTML=(c.what_is_ready||[]).map(x=>`<div class="beta-card"><b>${esc(x)}</b><p>Ready for internal beta validation.</p><span class="status-pill green">Ready</span></div>`).join("");
-  const blockers=document.getElementById("betaBlockers");
-  if(blockers) blockers.innerHTML=(c.beta_blockers||[]).map(x=>`<li>${esc(x)}</li>`).join("");
-  const protocol=document.getElementById("betaProtocol");
-  if(protocol) protocol.innerHTML=(c.beta_test_protocol||[]).map(x=>`<li>${esc(x)}</li>`).join("");
- }catch(e){toast("Beta candidate unavailable","error")}
-}
-
-async function loadProductReadiness(){
- try{
-  const d=await api("/product-readiness?user_id="+encodeURIComponent(USER_ID));
-  const r=d.readiness||{};
-  const box=document.getElementById("productReadinessBox");
-  if(box){
-    box.innerHTML=`<h3>Product Readiness</h3><p><b>Score:</b> ${esc(r.score||0)}%</p><p><b>Status:</b> ${esc(r.status||"Building")}</p><p><b>Recommended Move:</b> ${esc(r.recommended_move||"Continue testing.")}</p>`;
-  }
-  const modules=document.getElementById("productModules");
-  if(modules){
-    modules.innerHTML=(r.core_modules||[]).map(m=>`<div class="product-module"><b>${esc(m.name)}</b><p>${esc(m.status)}</p><span class="status-pill ${m.risk==="High"?"orange":m.risk==="Low"?"green":""}">${esc(m.risk)} Risk</span></div>`).join("");
-  }
-  const gaps=document.getElementById("productGaps");
-  if(gaps){
-    gaps.innerHTML=(r.missing_before_beta||[]).map(x=>`<li>${esc(x)}</li>`).join("");
-  }
- }catch(e){
-  toast("Product readiness unavailable","error");
- }
-}
-async function loadProductMilestone(){
- try{
-  const d=await api("/product-milestone?user_id="+encodeURIComponent(USER_ID));
-  const p=(d.product||{});
-  const el=document.getElementById("productMilestoneBox");
-  if(el){
-    el.innerHTML=`<h3>${esc(p.release||"V190 Product Milestone")}</h3><p><b>State:</b> ${esc(p.product_state||"Working prototype")}</p><p><b>Baseline:</b> ${esc(p.baseline||"Stable testing baseline")}</p>`;
-  }
-  const path=document.getElementById("nextBuildPath");
-  if(path){
-    path.innerHTML=(p.next_build_path||[]).map(x=>`<li>${esc(x)}</li>`).join("");
-  }
- }catch(e){}
-}
-
-async function loadCopilotState(){
- try{
-  const d=await api("/copilot-state?user_id="+encodeURIComponent(USER_ID));
-  const c=d.copilot||{};
-  const box=document.getElementById("copilotStateBox");
-  if(box){
-    box.innerHTML=`<h3>AI Copilot Active</h3><p><b>Status:</b> ${esc(c.copilot_status||"Supervised")}</p><p><b>Focus:</b> ${esc(c.recommended_focus||"Run one command.")}</p><p><b>Next Move:</b> ${esc(c.next_move||"Generate a supervised brief.")}</p>`;
-  }
-  const grid=document.getElementById("copilotActionsGrid");
-  if(grid){
-    grid.innerHTML=(c.copilot_actions||[]).map(a=>`<div class="copilot-action ${a.locked?"copilot-safe":""}"><b>${esc(a.title)}</b><p>${esc(a.type)} · ${esc(a.risk)} Risk</p><span class="status-pill ${a.locked?"orange":a.risk==="Low"?"green":""}">${a.locked?"Locked":"Approval Required"}</span></div>`).join("");
-  }
- }catch(e){
-  toast("Copilot state unavailable","error");
- }
-}
-
-async function loadIntegrationStatus(){
- try{
-  const d=await api("/integration-status?user_id="+encodeURIComponent(USER_ID));
-  const s=d.status||{};
-  const grid=document.getElementById("integrationGrid");
-  if(grid){
-    grid.innerHTML=(s.integrations||[]).map(i=>`<div class="integration-card"><b>${esc(i.name)}</b><p>${esc(i.purpose)}</p><span class="status-pill ${i.risk==="Low"?"green":i.risk==="Medium"?"orange":""}">${esc(i.status)} · ${esc(i.risk)} Risk</span></div>`).join("");
-  }
-  const move=document.getElementById("integrationNextMove");
-  if(move) move.textContent=s.next_move||"Connect Calendar first.";
- }catch(e){toast("Integration status unavailable","error")}
-}
-async function loadSupervisedAutomation(){
- try{
-  const d=await api("/supervised-automation?user_id="+encodeURIComponent(USER_ID));
-  const panels=document.getElementById("supervisedAutomationPanels");
-  if(panels){
-    panels.innerHTML=(d.panels||[]).map(p=>`<div class="integration-card"><b>${esc(p.name)}</b><p>${esc(p.status)}</p><div class="allowed-blocked"><div><span class="status-pill green">Allowed</span><ul>${(p.allowed||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><span class="status-pill orange">Blocked</span><ul>${(p.blocked||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div>`).join("");
-  }
-  const rules=document.getElementById("supervisedRules");
-  if(rules){
-    rules.innerHTML=(d.rules||[]).map(x=>`<li>${esc(x)}</li>`).join("");
-  }
- }catch(e){toast("Supervised automation unavailable","error")}
-}
-
-async function loadAutomationReadiness(){
- try{
-  const d=await api("/automation-readiness?user_id="+encodeURIComponent(USER_ID));
-  const r=d.readiness||{};
-  const box=document.getElementById("automationReadinessBox");
-  if(box){
-    const score=Math.min(100,Math.max(0,r.score||0));
-    const deg=Math.round(score*3.6);
-    box.innerHTML=`<div class="automation-score"><div class="score-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${score}%</span></div><div><h3>Automation Readiness</h3><p><b>Status:</b> ${esc(r.status||"Manual mode recommended")}</p><p><b>Next Move:</b> ${esc(r.next_move||"Continue manual workflow testing.")}</p></div></div>`;
-  }
-  const candidates=document.getElementById("automationCandidates");
-  if(candidates){
-    candidates.innerHTML=(r.automation_candidates||[]).map(c=>`<div class="auto-candidate"><b>${esc(c.name)}</b><p>${esc(c.description)}</p><span class="status-pill ${c.risk==="High"?"orange":c.risk==="Low"?"green":""}">${esc(c.status)} · ${esc(c.risk)} Risk</span></div>`).join("");
-  }
-  const rules=document.getElementById("automationRules");
-  if(rules){
-    rules.innerHTML=(r.automation_rules||[]).map(x=>`<li>${esc(x)}</li>`).join("");
-  }
- }catch(e){
-  toast("Automation readiness unavailable","error");
- }
-}
-
-async function loadWorkflowControl(){
- try{
-  const d=await api("/workflow-control?user_id="+encodeURIComponent(USER_ID));
-  const c=d.control||{};
-  const box=document.getElementById("workflowControlBox");
-  if(box){
-    const next=c.next_action||{};
-    box.innerHTML=`<h3>Workflow Control Active</h3><p><b>Next Action:</b> ${esc(next.text||"Run one executive command.")}</p><p><b>Rule:</b> ${esc(c.focus_rule||"Complete one action before creating new work.")}</p>`;
-  }
- }catch(e){}
-}
-async function completeAction(actionId){
- if(!actionId){toast("No action ID available","error");return}
- try{
-  await api("/complete-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,action_id:actionId,result:"Completed from V165 frontend",next_note:"Refresh workflow control"})});
-  toast("Action completed","success");
-  await refreshState();
-  if(activePage==="actions") renderPage("actions");
- }catch(e){
-  toast("Complete action failed","error");
- }
-}
-
-async function loadExecutiveBrief(){
- try{
-  const d=await api("/executive-brief?user_id="+encodeURIComponent(USER_ID));
-  const b=d.brief||{};
-  const el=document.getElementById("executiveBriefBox");
-  if(el) el.innerHTML=`<h2>${esc(b.headline||"Executive brief ready")}</h2><p>${esc(b.decision||"")}</p><button class="page-action orange" onclick="runPagePrompt('daily_brief')">Run Executive Brief</button>`;
-  const m=b.metrics||{};
-  const score=document.getElementById("execReadinessScore"); if(score) score.textContent=m.executive_readiness||"Ready";
-  const move=document.getElementById("execNextMove"); if(move) move.textContent=m.recommended_executive_move||b.next_move||"Run the daily brief.";
- }catch(e){}
-}
-async function loadDailyBrief(){
- try{
-  const d=await api("/daily-brief?user_id="+encodeURIComponent(USER_ID));
-  const b=d.daily_brief||{};
-  const el=document.getElementById("dailyBriefLive");
-  if(el) el.innerHTML=`<div class="list-row"><div><div class="maintext">${esc(b.today_focus||"No focus")}</div><div class="meta">Today’s Focus</div></div><span class="status-pill orange">Focus</span></div>`+(b.top_3_priorities||[]).map(x=>`<div class="list-row"><div>${esc(x)}</div><span class="status-pill">Priority</span></div>`).join("");
- }catch(e){}
-}
-async function loadBoardBrief(){
- try{
-  const d=await api("/board-brief?user_id="+encodeURIComponent(USER_ID));
-  const b=d.board_brief||{};
-  const el=document.getElementById("boardBriefLive");
-  if(el) el.innerHTML=`<div class="section-card"><div class="section-head dark">Board-Level Summary</div><div class="section-body"><h3>${esc(b.headline||"Board brief")}</h3><p>${esc(b.recommended_decision||"")}</p><div class="split-grid"><div><b>Wins</b><ul class="board-list">${(b.wins||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b>Risks</b><ul class="board-list">${(b.risks||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div></div>`;
- }catch(e){}
-}
-
-async function loadMemoryIntelligence(){
- try{
-  const d=await api("/memory-intelligence?user_id="+encodeURIComponent(USER_ID));
-  const intel=d.intelligence||{};
-  const patterns=intel.patterns||[];
-  const constraints=intel.active_constraints||[];
-  const decisions=intel.decision_patterns||[];
-  const pc=document.getElementById("patternCount"); if(pc) pc.textContent=patterns.length||0;
-  const cc=document.getElementById("constraintCount"); if(cc) cc.textContent=constraints.length||0;
-  const tp=document.getElementById("topPattern"); if(tp) tp.textContent=(intel.top_pattern&&intel.top_pattern.signal)||"No repeated pattern yet.";
-  const tc=document.getElementById("topConstraint"); if(tc) tc.textContent=constraints[0]||"No active constraint detected.";
-  const nm=document.getElementById("nextMemoryMove"); if(nm) nm.textContent=intel.next_memory_move||"Save more decisions and actions.";
-  const dp=document.getElementById("detectedPatterns");
-  if(dp) dp.innerHTML=(patterns.length?patterns:[{type:"baseline_pattern",signal:"Run more commands to improve memory intelligence.",confidence:"Low"}]).map(p=>`<div class="memory-pattern"><b>${esc(p.type||"Pattern")}</b><p>${esc(p.signal||"")}</p><span class="status-pill ${p.confidence==="High"?"green":""}">${esc(p.confidence||"Medium")} Confidence</span></div>`).join("");
-  const ac=document.getElementById("activeConstraints");
-  if(ac) ac.innerHTML=(constraints.length?constraints:["No active constraints detected yet."]).map(c=>`<div class="list-row"><div>${esc(c)}</div><span class="status-pill orange">Constraint</span></div>`).join("");
-  const dps=document.getElementById("decisionPatterns");
-  if(dps) dps.innerHTML=(decisions.length?decisions:[]).map(x=>`<div class="list-row"><div><div class="maintext">${esc(short(x.decision||"Decision",80))}</div><div class="meta">${esc(x.priority||"medium")} priority</div></div></div>`).join("") || '<div class="list-row"><div>No decision patterns yet.</div></div>';
- }catch(e){toast("Memory intelligence unavailable","error")}
-}
-
-async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};appState={actions,decisions,memory:mem,focus};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";const fa=document.getElementById("feedActions");if(fa)fa.textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory");if(activePage!=="command")renderPage(activePage)}catch(e){if(statusBox())status("Backend status issue: "+e.message,"error")}}
-async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
-setDefaultFeed();defaultPreview();renderV300CommandModules();refreshState();stabilityAudit();
-
-async function v1050Refresh(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const gates=await fetch(base+"/oauth/live-gates").then(r=>r.json());
-    const state=await fetch(base+"/calendar/secure-connection-state").then(r=>r.json());
-    const b=document.getElementById("v1050Box"); if(b)b.textContent=JSON.stringify(gates,null,2);
-    const s=document.getElementById("v1050State"); if(s)s.textContent=JSON.stringify(state,null,2);
-    if(typeof toast==="function")toast("V1050 gates refreshed","success");
-  }catch(e){if(typeof toast==="function")toast("V1050 unavailable","error");}
-}
-function v1050LoadCommand(){
-  const input=inputEl?inputEl():document.getElementById("input");
-  if(input){input.value="Review V1050 Token Exchange Candidate. Check live OAuth gates, token storage health, secure connection state, risks, and the next safest build. Keep calendar writes blocked and manual execution only.";input.focus();}
-}
-
-setTimeout(v1050Refresh,650);
-
-async function v1100Refresh(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const fetcher=await fetch(base+"/calendar/events/fetch-candidate").then(r=>r.json());
-    const prep=await fetch(base+"/calendar/meeting-prep-candidate").then(r=>r.json());
-    const b=document.getElementById("v1100Box"); if(b)b.textContent=JSON.stringify(fetcher,null,2);
-    const p=document.getElementById("v1100Prep"); if(p)p.textContent=JSON.stringify(prep,null,2);
-    if(typeof toast==="function")toast("V1100 calendar fetch refreshed","success");
-  }catch(e){if(typeof toast==="function")toast("V1100 unavailable","error");}
-}
-function v1100LoadCommand(){
-  const input=inputEl?inputEl():document.getElementById("input");
-  if(input){input.value="Review V1100 Calendar Events Fetch Candidate. Check event normalization, private event handling, meeting prep candidate, provider fetch gates, and next safest build.";input.focus();}
-}
-
-setTimeout(v1100Refresh,700);
-
-async function v1150Refresh(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const s=await fetch(base+"/calendar/intelligence-summary").then(r=>r.json());
-    const n=await fetch(base+"/calendar/notification-bridge").then(r=>r.json());
-    const b=document.getElementById("v1150Box"); if(b)b.textContent=JSON.stringify(s,null,2);
-    const x=document.getElementById("v1150Notes"); if(x)x.textContent=JSON.stringify(n,null,2);
-    if(typeof toast==="function")toast("V1150 bridge refreshed","success");
-  }catch(e){if(typeof toast==="function")toast("V1150 unavailable","error");}
-}
-function v1150LoadCommand(){
-  const input=inputEl?inputEl():document.getElementById("input");
-  if(input){input.value="Use Calendar Intelligence Bridge context to create a Daily Brief, meeting prep priority, notification risk, and end-day action. Manual execution only.";input.focus();}
-}
-
-setTimeout(v1150Refresh,750);
-
-async function v1200Refresh(){
-  try{
-    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
-    const score=await fetch(base+"/beta/system-score").then(r=>r.json());
-    const brief=await fetch(base+"/beta/operating-brief").then(r=>r.json());
-    const s=document.getElementById("v1200Score"); if(s)s.textContent=JSON.stringify(score,null,2);
-    const b=document.getElementById("v1200Brief"); if(b)b.textContent=JSON.stringify(brief,null,2);
-    if(typeof toast==="function")toast("V1200 beta refreshed","success");
-  }catch(e){if(typeof toast==="function")toast("V1200 unavailable","error");}
-}
-function v1200LoadCommand(){
-  const input=inputEl?inputEl():document.getElementById("input");
-  if(input){input.value="Review V1200 Executive OS Beta. Assess stability, cockpit usefulness, calendar/files connector readiness, manual execution policy, and recommend whether next milestone should be V1250 UX polish or V1300 real Calendar activation.";input.focus();}
-}
-
-setTimeout(v1200Refresh,800);
+renderTestLinks();
 </script>
 </body>
 </html>

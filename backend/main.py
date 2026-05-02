@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1200: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1202: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1200"
-SERVICE_NAME = "Executive Engine OS V1200"
+VERSION = "V1202"
+SERVICE_NAME = "Executive Engine OS V1202"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1200.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1202.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1200, an elite COO/operator system.
+You are Executive Engine OS V1202, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1200",
+        "backend_must_show": "Executive Engine OS V1202",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1200",
+        "service": "Executive Engine OS V1202",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7851,4 +7851,153 @@ async def v1200_milestone():
         "checks": checks,
         "test_order": ["/diagnostic","/system-test","/beta/system-score","/beta/operating-brief","/beta/launch-checklist","/v1200-milestone","/health"],
         "recommended_next_build": "V1250 Product Polish + UX Stabilization OR V1300 Real Calendar Activation"
+    }
+
+
+
+
+# =========================
+# V1201 TEST LINKS FIX
+# =========================
+
+V1201_TEST_ROUTES = [
+    "/health",
+    "/diagnostic",
+    "/system-test",
+    "/beta/system-score",
+    "/beta/operating-brief",
+    "/beta/launch-checklist",
+    "/v1200-milestone",
+    "/v1201-milestone",
+    "/calendar/connect-status",
+    "/calendar/auth-url",
+    "/calendar/status-live-candidate",
+    "/calendar/events/today-live-candidate",
+    "/calendar/oauth-test-page",
+    "/calendar/intelligence-summary",
+    "/calendar/notification-bridge",
+    "/calendar/events/fetch-candidate",
+    "/calendar/meeting-prep-candidate",
+    "/oauth/live-gates",
+    "/tokens/storage-health",
+    "/calendar/secure-connection-state",
+    "/tokens/storage-plan",
+    "/tokens/encryption-check",
+    "/calendar/disconnect-flow",
+    "/calendar/refresh-policy",
+    "/calendar/connection-state-candidate",
+    "/google/connector-blueprint",
+    "/google/activation-plan",
+    "/oauth/activation-prep",
+    "/security-gates",
+    "/connector-command-center",
+    "/approval-queue",
+    "/supervised-actions",
+    "/connectors/status",
+    "/files/status",
+    "/calendar/status",
+    "/integrations/status",
+    "/executive-cockpit",
+    "/notifications",
+    "/daily-workflow",
+    "/end-day-summary"
+]
+
+@app.get("/v1201-test-links-json")
+async def v1201_test_links_json():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Links Fix",
+        "base_url": "https://executive-engine-os.onrender.com",
+        "routes": V1201_TEST_ROUTES,
+        "note": "Open these backend routes directly. POST routes are intentionally excluded from this click-test list."
+    }
+
+
+@app.get("/v1201-test-links")
+async def v1201_test_links():
+    base = "https://executive-engine-os.onrender.com"
+    links = "\n".join([f'<li><a href="{base}{r}" target="_blank">{r}</a></li>' for r in V1201_TEST_ROUTES])
+    return HTMLResponse(f"""
+    <!doctype html>
+    <html>
+    <head>
+      <title>Executive Engine OS V1202 Test Links</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <style>
+        body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
+        .wrap { max-width:900px; margin:auto; background:#fff; border:1px solid #dbe5f1; border-radius:18px; padding:22px; box-shadow:0 16px 40px rgba(7,18,38,.08); }
+        h1 { margin:0 0 8px; }
+        p { color:#64748b; }
+        li { margin:8px 0; }
+        a { color:#0f63ff; font-weight:700; text-decoration:none; }
+        code { background:#071226; color:#dbeafe; padding:4px 7px; border-radius:8px; }
+      </style>
+    </head>
+    <body>
+      <div class="wrap">
+        <h1>Executive Engine OS V1202 Test Links</h1>
+        <p>Use this page after backend deploy. These are backend GET routes only.</p>
+        <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
+        <ol>{links}</ol>
+      </div>
+    </body>
+    </html>
+    """)
+
+
+@app.get("/v1201-milestone")
+async def v1201_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Links Fix",
+        "ready": True,
+        "frontend_must_show": "V1201 Test Links Fix · V1201 Backend",
+        "fixed": [
+            "Adds /v1201-test-links clickable backend page",
+            "Adds /v1201-test-links-json",
+            "Keeps V1200 beta routes",
+            "Clarifies that older internal labels do not need to all say V1201"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/v1201-test-links",
+            "/v1201-test-links-json",
+            "/v1201-milestone",
+            "/health"
+        ]
+    }
+
+
+
+# =========================
+# V1202 FRONTEND CLICK FIX
+# =========================
+
+@app.get("/v1202-milestone")
+async def v1202_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Frontend Click Fix",
+        "ready": True,
+        "frontend_must_show": "V1202 Frontend Click Fix · V1202 Backend",
+        "fixes": [
+            "Replaces frontend with a clean stable clickable shell",
+            "Removes dependency on broken old click handlers",
+            "Adds direct backend test links",
+            "Keeps backend routes preserved",
+            "Keeps manual execution only",
+            "Keeps auto-loop off"
+        ],
+        "test_order": [
+            "/health",
+            "/diagnostic",
+            "/system-test",
+            "/v1202-milestone",
+            "/v1201-test-links"
+        ]
     }
