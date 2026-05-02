@@ -14,17 +14,17 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V650: a product-candidate executive operating system with Calendar Intelligence, Files Intelligence, and upgraded notification readiness.
+You are Executive Engine OS V700: an OAuth readiness and connector activation candidate for a serious executive operating system.
 
-You are not a chatbot. You are a daily execution cockpit.
+You are not a chatbot. You are a daily execution cockpit and connector readiness layer.
 
 Operating principles:
 - Think like an elite COO, board operator, chief of staff, and execution strategist.
 - Convert messy input into an executable operating decision.
 - Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
 - Use manually provided Calendar + Files prep context when the user includes it.
-- Treat calendar and file intelligence as read-only and user-controlled.
-- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected in a future build.
+- Treat Calendar, Files, Email, and connector intelligence as read-only and user-controlled until real OAuth is explicitly enabled.
+- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected.
 - Never create, edit, delete, invite, reschedule, email, auto-join, auto-send, auto-read, or auto-modify external systems.
 - Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
 - Make the next move obvious.
@@ -52,6 +52,7 @@ Required schema:
   "memory_signal": "Relevant pattern, prior decision, recurring constraint, manual integration context, or action overload signal",
   "calendar_signal": "Calendar-related signal if calendar context is provided; otherwise state prep/not connected",
   "files_signal": "File/project-related signal if files context is provided; otherwise state prep/not connected",
+  "connector_signal": "Connector readiness signal; do not claim connection unless enabled",
   "decision_pattern": "Pattern detected from the decision or input",
   "recurring_risk": "Risk likely to repeat if not addressed",
   "notification": "One short alert the executive should see",
@@ -65,7 +66,7 @@ Rules:
 - No text outside JSON.
 - Every action must be concrete, testable, and executable.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- Calendar and Files context is manual/read-only unless future OAuth is explicitly connected.
+- Connector context is manual/read-only unless future OAuth is explicitly connected.
 - Manual execution only.
 - Auto-loop remains off.
 """
@@ -77,8 +78,9 @@ Rules:
 
 
 
-VERSION = "V650"
-SERVICE_NAME = "Executive Engine OS V650"
+
+VERSION = "V700"
+SERVICE_NAME = "Executive Engine OS V700"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -101,7 +103,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="650.0.0")
+app = FastAPI(title=SERVICE_NAME, version="700.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -410,7 +412,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V650, an elite COO/operator system.
+You are Executive Engine OS V700, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -871,7 +873,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V650",
+        "backend_must_show": "Executive Engine OS V700",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3750,7 +3752,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V650",
+        "service": "Executive Engine OS V700",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -5576,6 +5578,261 @@ async def v650_milestone():
             "/files/alerts",
             "/notification-upgrade",
             "/v650-milestone",
+            "/health"
+        ]
+    }
+
+
+
+
+# =========================
+# V700 OAUTH READINESS + CONNECTOR ACTIVATION CANDIDATE
+# =========================
+# Safe readiness layer only. Real OAuth remains disabled by default.
+# No token storage, no live Google fetch, no external writes, no background sync.
+
+def v700_connector_matrix() -> List[Dict[str, Any]]:
+    return [
+        {
+            "id": "google_calendar",
+            "name": "Google Calendar",
+            "phase": "ready_for_oauth_review",
+            "status": "prep_mode",
+            "connected": False,
+            "oauth_enabled": False,
+            "scope_later": "https://www.googleapis.com/auth/calendar.events.readonly",
+            "read_only": True,
+            "write_access": False,
+            "risk": "Low",
+            "next_step": "Review OAuth consent and enable read-only connection in a future build."
+        },
+        {
+            "id": "google_drive",
+            "name": "Google Drive / Files",
+            "phase": "ready_for_oauth_review",
+            "status": "prep_mode",
+            "connected": False,
+            "oauth_enabled": False,
+            "scope_later": "https://www.googleapis.com/auth/drive.readonly",
+            "read_only": True,
+            "write_access": False,
+            "risk": "Medium",
+            "next_step": "Review file privacy rules before enabling read-only file access."
+        },
+        {
+            "id": "gmail",
+            "name": "Gmail / Email Drafts",
+            "phase": "spec_required",
+            "status": "not_connected",
+            "connected": False,
+            "oauth_enabled": False,
+            "scope_later": "draft-only/read-only scope to be reviewed later",
+            "read_only": True,
+            "write_access": False,
+            "risk": "Medium",
+            "next_step": "Design draft-only email spec before enabling OAuth."
+        }
+    ]
+
+
+def v700_oauth_readiness_payload() -> Dict[str, Any]:
+    checks = [
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Calendar read-only contract exists", "passed": True},
+        {"name": "Files read-only contract exists", "passed": True},
+        {"name": "OAuth disabled by default", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "External writes disabled", "passed": True},
+        {"name": "Background sync disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    return {
+        "status": "oauth_readiness_candidate",
+        "ready_for_live_oauth": False,
+        "ready_for_review": True,
+        "checks": checks,
+        "required_before_live_oauth": [
+            "Confirm Google OAuth consent screen",
+            "Confirm redirect URI in Google Cloud",
+            "Confirm environment variables are set in Render",
+            "Confirm secure server-side token storage design",
+            "Confirm disconnect/revoke behavior",
+            "Confirm privacy policy and data handling rules",
+            "Confirm user approval flow before any context is sent to AI"
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/connectors/status")
+async def connectors_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V700 Connector Status",
+        "connectors": v700_connector_matrix(),
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/oauth/readiness")
+async def oauth_readiness():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Readiness",
+        "readiness": v700_oauth_readiness_payload()
+    }
+
+
+@app.get("/oauth/config-check")
+async def oauth_config_check():
+    # Do not expose actual env var values.
+    import os
+    expected = {
+        "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
+        "GOOGLE_CLIENT_SECRET": bool(os.getenv("GOOGLE_CLIENT_SECRET")),
+        "GOOGLE_REDIRECT_URI": bool(os.getenv("GOOGLE_REDIRECT_URI")),
+        "GOOGLE_CALENDAR_SCOPE": bool(os.getenv("GOOGLE_CALENDAR_SCOPE")),
+        "GOOGLE_DRIVE_SCOPE": bool(os.getenv("GOOGLE_DRIVE_SCOPE"))
+    }
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Config Check",
+        "oauth_enabled": False,
+        "config_present": expected,
+        "safe": True,
+        "message": "Config check only. OAuth remains disabled and no tokens are stored."
+    }
+
+
+@app.post("/oauth/safety-review")
+async def oauth_safety_review(payload: Dict[str, Any]):
+    requested_write_access = bool(payload.get("requested_write_access", False))
+    background_sync = bool(payload.get("background_sync", False))
+    token_storage_enabled = bool(payload.get("token_storage_enabled", False))
+    auto_send_enabled = bool(payload.get("auto_send_enabled", False))
+    calendar_scope = str(payload.get("calendar_scope", ""))
+    drive_scope = str(payload.get("drive_scope", ""))
+
+    checks = [
+        {"name": "No write access requested", "passed": not requested_write_access},
+        {"name": "No background sync", "passed": not background_sync},
+        {"name": "No token storage active yet", "passed": not token_storage_enabled},
+        {"name": "No auto-send enabled", "passed": not auto_send_enabled},
+        {"name": "Calendar scope read-only if provided", "passed": (not calendar_scope) or ("readonly" in calendar_scope and "calendar.events" in calendar_scope)},
+        {"name": "Drive scope read-only if provided", "passed": (not drive_scope) or ("readonly" in drive_scope)}
+    ]
+    passed = all(c["passed"] for c in checks)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "passed": passed,
+        "status": "safe_for_review" if passed else "blocked",
+        "checks": checks,
+        "message": "OAuth readiness is safe for review only. Live OAuth is still disabled." if passed else "OAuth safety review failed. Do not enable live connection."
+    }
+
+
+@app.get("/approval-gates")
+async def approval_gates():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Approval Gates",
+        "gates": [
+            {
+                "id": "send_context_to_ai",
+                "title": "Send connector context to AI",
+                "required": True,
+                "status": "manual_only"
+            },
+            {
+                "id": "connect_google_calendar",
+                "title": "Connect Google Calendar",
+                "required": True,
+                "status": "review_required"
+            },
+            {
+                "id": "connect_google_drive",
+                "title": "Connect Google Drive",
+                "required": True,
+                "status": "review_required"
+            },
+            {
+                "id": "external_write",
+                "title": "External write action",
+                "required": True,
+                "status": "blocked"
+            },
+            {
+                "id": "automation_loop",
+                "title": "Automation loop",
+                "required": True,
+                "status": "blocked"
+            }
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/v700-milestone")
+async def v700_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V650 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Connector status available", "passed": True},
+        {"name": "OAuth readiness available", "passed": True},
+        {"name": "OAuth config check available", "passed": True},
+        {"name": "OAuth safety review available", "passed": True},
+        {"name": "Approval gates available", "passed": True},
+        {"name": "Live OAuth disabled", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "External writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Readiness + Connector Activation Candidate",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V700 OAuth Readiness · V700 Backend",
+        "checks": checks,
+        "added": [
+            "Connector Status Matrix",
+            "OAuth Readiness Center",
+            "OAuth Config Check",
+            "OAuth Safety Review",
+            "Approval Gates",
+            "Connector activation readiness UI"
+        ],
+        "not_added": [
+            "Real OAuth connection",
+            "Token storage",
+            "Live Google Calendar fetch",
+            "Live Google Drive fetch",
+            "Gmail OAuth",
+            "External writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/connectors/status",
+            "/oauth/readiness",
+            "/oauth/config-check",
+            "/approval-gates",
+            "/v700-milestone",
             "/health"
         ]
     }

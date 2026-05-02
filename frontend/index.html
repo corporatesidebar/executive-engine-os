@@ -1550,6 +1550,112 @@ textarea#input{
 }
 @media(max-width:1180px){.v650-files{grid-template-columns:1fr}.v650-stats{grid-template-columns:repeat(2,1fr)}}
 
+
+/* V700 OAuth Readiness + Connector Activation Candidate */
+.v700-oauth{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v700-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v700-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v700-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v700-matrix{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v700-connector{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v700-connector.medium{border-left-color:#ff6a00}
+.v700-connector.low{border-left-color:#10b981}
+.v700-connector b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v700-connector span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v700-gates{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v700-gate{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+}
+.v700-gate small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v700-gate strong{
+  color:#071226;
+  font-size:12px;
+}
+.v700-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v700-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v700-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v700-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+@media(max-width:1180px){.v700-oauth{grid-template-columns:1fr}.v700-gates{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1557,11 +1663,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V650 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V700 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V650 Files Intelligence</div>
+  <div class="lock">▣ V700 OAuth Readiness</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1625,7 +1731,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V650 Files Intelligence · V650 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V700 OAuth Readiness · V700 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1843,7 +1949,57 @@ function v650LocalFilesSummary(){
   };
 }
 
-async function v650RefreshFiles(){
+async 
+async function v700RefreshConnectors(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const status=await fetch(base+"/connectors/status").then(r=>r.json());
+    const gates=await fetch(base+"/approval-gates").then(r=>r.json());
+    const matrix=document.getElementById("v700ConnectorMatrix");
+    if(matrix){
+      matrix.innerHTML=(status.connectors||[]).map(c=>`<div class="v700-connector ${(c.risk||"low").toLowerCase()}"><b>${c.name}</b><span>${c.phase} · OAuth ${c.oauth_enabled?"on":"off"} · Write ${c.write_access?"on":"off"}<br>${c.next_step}</span></div>`).join("");
+    }
+    const gateBox=document.getElementById("v700ApprovalGates");
+    if(gateBox){
+      gateBox.innerHTML=(gates.gates||[]).map(g=>`<div class="v700-gate"><small>${g.id.replaceAll("_"," ")}</small><strong>${g.status}</strong></div>`).join("");
+    }
+    if(typeof toast==="function") toast("Connector readiness refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Connector readiness unavailable","error");
+  }
+}
+
+async function v700RunSafetyReview(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/oauth/safety-review",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        requested_write_access:false,
+        background_sync:false,
+        token_storage_enabled:false,
+        auto_send_enabled:false,
+        calendar_scope:"https://www.googleapis.com/auth/calendar.events.readonly",
+        drive_scope:"https://www.googleapis.com/auth/drive.readonly"
+      })
+    }).then(r=>r.json());
+    if(typeof toast==="function") toast(res.passed?"OAuth safety review passed":"OAuth safety review blocked",res.passed?"success":"error");
+  }catch(e){
+    if(typeof toast==="function") toast("OAuth safety review unavailable","error");
+  }
+}
+
+function v700LoadConnectorCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review Executive Engine OS connector readiness. Assess Calendar, Files, Gmail, OAuth safety, approval gates, and the next safest integration step. Do not enable live OAuth. Keep manual execution only.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Connector review command loaded","success");
+}
+
+function v650RefreshFiles(){
   try{
     const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
     const status=await fetch(base+"/files/status").then(r=>r.json());
@@ -2005,7 +2161,7 @@ async function v550CopyContext(){
 function v550ResetPrep(){
   v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
   localStorage.removeItem(V550_KEY);
-  v550Load();v600RefreshCalendar();v650RefreshFiles();
+  v550Load();v600RefreshCalendar();v650RefreshFiles();v700RefreshConnectors();
 }
 
 function v500LocalState(){
@@ -2204,7 +2360,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V650 Files Intelligence · V650 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V700 OAuth Readiness · V700 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
