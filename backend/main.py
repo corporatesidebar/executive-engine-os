@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1202: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1203: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1202"
-SERVICE_NAME = "Executive Engine OS V1202"
+VERSION = "V1203"
+SERVICE_NAME = "Executive Engine OS V1203"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1202.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1203.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1202, an elite COO/operator system.
+You are Executive Engine OS V1203, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1202",
+        "backend_must_show": "Executive Engine OS V1203",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1202",
+        "service": "Executive Engine OS V1203",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7923,7 +7923,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1202 Test Links</title>
+      <title>Executive Engine OS V1203 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7937,7 +7937,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1202 Test Links</h1>
+        <h1>Executive Engine OS V1203 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -7999,5 +7999,203 @@ async def v1202_milestone():
             "/system-test",
             "/v1202-milestone",
             "/v1201-test-links"
+        ]
+    }
+
+
+
+
+# =========================
+# V1203 PERMANENT TEST LINKS PAGE
+# =========================
+
+V1203_TEST_LINKS = {
+    "Core": [
+        "/health",
+        "/diagnostic",
+        "/system-test",
+        "/v1203-milestone",
+        "/test-links",
+        "/test-links-json",
+        "/v1202-milestone",
+        "/v1201-test-links"
+    ],
+    "Beta": [
+        "/beta/system-score",
+        "/beta/operating-brief",
+        "/beta/launch-checklist",
+        "/v1200-milestone"
+    ],
+    "Calendar": [
+        "/calendar/connect-status",
+        "/calendar/auth-url",
+        "/calendar/oauth/callback",
+        "/calendar/status-live-candidate",
+        "/calendar/events/today-live-candidate",
+        "/calendar/oauth-test-page",
+        "/calendar/intelligence-summary",
+        "/calendar/notification-bridge",
+        "/calendar/events/fetch-candidate",
+        "/calendar/meeting-prep-candidate",
+        "/calendar/status",
+        "/calendar/events/today",
+        "/calendar/events/upcoming",
+        "/calendar/day-load",
+        "/calendar/alerts",
+        "/calendar/readiness-report"
+    ],
+    "OAuth": [
+        "/oauth/live-gates",
+        "/oauth/readiness",
+        "/oauth/config-check",
+        "/oauth/activation-prep",
+        "/oauth/scope-policy",
+        "/oauth/env-readiness",
+        "/oauth/activation-checklist",
+        "/security-gates",
+        "/approval-gates"
+    ],
+    "Tokens": [
+        "/tokens/storage-health",
+        "/tokens/storage-plan",
+        "/tokens/encryption-check",
+        "/calendar/token-storage-plan",
+        "/calendar/disconnect-flow",
+        "/calendar/refresh-policy",
+        "/calendar/connection-state-candidate",
+        "/calendar/secure-connection-state"
+    ],
+    "Connectors": [
+        "/connector-command-center",
+        "/connector-notifications",
+        "/connectors/status",
+        "/approval-queue",
+        "/supervised-actions",
+        "/google/connector-blueprint",
+        "/google/activation-plan",
+        "/google/provider-requirements",
+        "/google/privacy-rules"
+    ],
+    "Files": [
+        "/files/status",
+        "/files/prep-summary",
+        "/files/alerts",
+        "/notification-upgrade"
+    ],
+    "Integrations": [
+        "/integrations/status"
+    ],
+    "Executive OS": [
+        "/executive-cockpit",
+        "/notifications",
+        "/daily-workflow",
+        "/end-day-summary",
+        "/memory-quality",
+        "/decision-patterns-v400",
+        "/recurring-risks",
+        "/action-overload",
+        "/executive-signal-summary",
+        "/daily-brief-intelligence",
+        "/workflow-layer",
+        "/command-center-3",
+        "/command-templates",
+        "/next-command"
+    ]
+}
+
+@app.get("/test-links-json")
+async def test_links_json():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Permanent Test Links Page",
+        "base_url": "https://executive-engine-os.onrender.com",
+        "categories": V1203_TEST_LINKS,
+        "note": "GET routes only. POST routes are excluded because they need JSON bodies."
+    }
+
+
+@app.get("/test-links")
+async def test_links():
+    base = "https://executive-engine-os.onrender.com"
+    sections = []
+    for category, routes in V1203_TEST_LINKS.items():
+        items = "".join(['<a href="' + base + route + '" target="_blank" rel="noopener noreferrer">' + route + '</a>' for route in routes])
+        sections.append('<section><h2>' + category + '</h2><div class="links">' + items + '</div></section>')
+    body = "".join(sections)
+
+    html_content = """
+    <!doctype html>
+    <html>
+    <head>
+      <title>Executive Engine OS V1203 Test Links</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <style>
+        body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
+        .wrap{max-width:1180px;margin:auto}
+        .hero{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:22px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:16px}
+        h1{margin:0 0 8px;font-size:28px}
+        p{color:#64748b;line-height:1.5}
+        code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}
+        section{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 12px 28px rgba(7,18,38,.05)}
+        h2{margin:0 0 12px;font-size:18px}
+        .links{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+        a{display:block;text-decoration:none;border:1px solid #dbe5f1;border-radius:12px;padding:10px;color:#0f63ff;font-weight:800;font-size:13px;background:#fff}
+        a:hover{background:#eff6ff;border-color:#93c5fd}
+        .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+        .actions a{display:inline-block;width:auto;background:#0f63ff;color:#fff;border-color:#0f63ff}
+        @media(max-width:900px){.links{grid-template-columns:1fr} body{padding:16px}}
+      </style>
+    </head>
+    <body>
+      <div class="wrap">
+        <div class="hero">
+          <h1>Executive Engine OS V1203 Test Links</h1>
+          <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
+          <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
+          <div class="actions">
+            <a href="__BASE__/health" target="_blank">Health</a>
+            <a href="__BASE__/diagnostic" target="_blank">Diagnostic</a>
+            <a href="__BASE__/system-test" target="_blank">System Test</a>
+            <a href="__BASE__/test-links-json" target="_blank">JSON List</a>
+          </div>
+        </div>
+        __BODY__
+      </div>
+    </body>
+    </html>
+    """.replace("__BASE__", base).replace("__BODY__", body)
+    return HTMLResponse(html_content)
+
+
+@app.get("/v1203-milestone")
+async def v1203_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Permanent Test Links Page",
+        "ready": True,
+        "frontend_must_show": "V1203 Test Links Page · V1203 Backend",
+        "added": [
+            "GET /test-links",
+            "GET /test-links-json",
+            "Grouped clickable route page",
+            "Frontend Test Links button points to /test-links"
+        ],
+        "preserved": [
+            "/health",
+            "/diagnostic",
+            "/system-test",
+            "V1202 clean clickable frontend",
+            "V1200 beta routes",
+            "Calendar/OAuth/Connector routes"
+        ],
+        "test_order": [
+            "/health",
+            "/diagnostic",
+            "/system-test",
+            "/test-links",
+            "/test-links-json",
+            "/v1203-milestone"
         ]
     }

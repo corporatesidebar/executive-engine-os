@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Executive Engine OS — V1202</title>
+  <title>Executive Engine OS — V1203</title>
   <style>
     :root{
       --bg:#f8fbff;
@@ -231,11 +231,11 @@
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version">V1202 Frontend Click Fix · V1202 Backend</div>
+      <div class="version">V1203 Test Links Page · V1203 Backend</div>
     </div>
 
     <section class="content">
-      <div class="notice">V1202 replaces the broken frontend click layer with a clean stable shell. Backend routes are preserved.</div>
+      <div class="notice">V1203 adds one permanent grouped test-links page. Use /test-links after every deploy. <button onclick="openBackend(\'/test-links\')" style="margin-left:8px">Open Permanent Backend Test Page</button></div>
 
       <div id="page-command" class="page active">
         <div class="grid">
@@ -254,7 +254,7 @@
 
           <div class="card">
             <h3>Executive Cockpit</h3>
-            <p>Stable V1202 shell. If links failed before, use the Test Links page.</p>
+            <p>Stable V1203 shell. If links failed before, use the Test Links page.</p>
             <div class="metric-grid">
               <div class="metric"><small>Status</small><strong>Frontend Fixed</strong></div>
               <div class="metric"><small>Manual</small><strong>On</strong></div>
@@ -322,12 +322,12 @@
       <div id="page-beta" class="page">
         <div class="card">
           <h2>Beta Status</h2>
-          <p>V1202 keeps the V1200 beta routes and adds frontend click stability.</p>
+          <p>V1203 keeps the V1200 beta routes and adds frontend click stability.</p>
           <div class="actions">
             <button class="primary" onclick="openBackend('/beta/system-score')">Beta System Score</button>
             <button onclick="openBackend('/beta/operating-brief')">Operating Brief</button>
             <button onclick="openBackend('/beta/launch-checklist')">Launch Checklist</button>
-            <button onclick="openBackend('/v1202-milestone')">V1202 Milestone</button>
+            <button onclick="openBackend('/v1203-milestone')">V1203 Milestone</button>
           </div>
         </div>
       </div>
@@ -340,7 +340,7 @@
             <button class="primary" onclick="openBackend('/health')">Health</button>
             <button onclick="openBackend('/diagnostic')">Diagnostic</button>
             <button onclick="openBackend('/system-test')">System Test</button>
-            <button onclick="openBackend('/v1201-test-links')">V1201 Test Links</button>
+            <button onclick="openBackend('/test-links')">V1201 Test Links</button>
           </div>
         </div>
       </div>
@@ -355,31 +355,76 @@ const TEST_ROUTES = [
   "/health",
   "/diagnostic",
   "/system-test",
+  "/v1203-milestone",
+  "/test-links",
+  "/test-links-json",
   "/v1202-milestone",
   "/v1201-test-links",
-  "/v1201-test-links-json",
   "/beta/system-score",
   "/beta/operating-brief",
   "/beta/launch-checklist",
   "/v1200-milestone",
   "/calendar/connect-status",
   "/calendar/auth-url",
+  "/calendar/oauth/callback",
   "/calendar/status-live-candidate",
   "/calendar/events/today-live-candidate",
   "/calendar/oauth-test-page",
   "/calendar/intelligence-summary",
+  "/calendar/notification-bridge",
   "/calendar/events/fetch-candidate",
+  "/calendar/meeting-prep-candidate",
+  "/calendar/status",
+  "/calendar/events/today",
+  "/calendar/events/upcoming",
+  "/calendar/day-load",
+  "/calendar/alerts",
+  "/calendar/readiness-report",
   "/oauth/live-gates",
+  "/oauth/readiness",
+  "/oauth/config-check",
+  "/oauth/activation-prep",
+  "/oauth/scope-policy",
+  "/oauth/env-readiness",
+  "/oauth/activation-checklist",
+  "/security-gates",
+  "/approval-gates",
   "/tokens/storage-health",
+  "/tokens/storage-plan",
+  "/tokens/encryption-check",
+  "/calendar/token-storage-plan",
+  "/calendar/disconnect-flow",
+  "/calendar/refresh-policy",
+  "/calendar/connection-state-candidate",
   "/calendar/secure-connection-state",
-  "/google/connector-blueprint",
   "/connector-command-center",
+  "/connector-notifications",
+  "/connectors/status",
+  "/approval-queue",
+  "/supervised-actions",
+  "/google/connector-blueprint",
+  "/google/activation-plan",
+  "/google/provider-requirements",
+  "/google/privacy-rules",
   "/files/status",
+  "/files/prep-summary",
+  "/files/alerts",
+  "/notification-upgrade",
   "/integrations/status",
   "/executive-cockpit",
   "/notifications",
   "/daily-workflow",
-  "/end-day-summary"
+  "/end-day-summary",
+  "/memory-quality",
+  "/decision-patterns-v400",
+  "/recurring-risks",
+  "/action-overload",
+  "/executive-signal-summary",
+  "/daily-brief-intelligence",
+  "/workflow-layer",
+  "/command-center-3",
+  "/command-templates",
+  "/next-command"
 ];
 
 function showPage(page){
@@ -406,7 +451,7 @@ function loadTemplate(type){
   const templates = {
     daily: "Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.",
     calendar: "Review Calendar OAuth candidate status, connector readiness, manual execution policy, and next safest build. Keep writes blocked.",
-    beta: "Review V1202 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
+    beta: "Review V1203 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
   };
   input.value = templates[type] || templates.daily;
 }
