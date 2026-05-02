@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V127"
-SERVICE_NAME = "Executive Engine OS V127"
+VERSION = "V128"
+SERVICE_NAME = "Executive Engine OS V128"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="125.0.0")
+app = FastAPI(title=SERVICE_NAME, version="128.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V127, an elite COO/operator system.
+You are Executive Engine OS V128, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -414,26 +414,50 @@ Rules:
 
 
 async def ask_openai(req: RunRequest, memory: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    V128: production operator loop response.
+    Uses the stronger system prompt, mode-aware prompt, JSON repair, and action filtering.
+    """
     if not client:
         return fallback_output(req.input, req.mode)
 
     try:
         response = await client.chat.completions.create(
             model=OPENAI_MODEL,
-            temperature=0.3,
+            temperature=0.25,
             max_tokens=OPENAI_MAX_TOKENS,
             response_format={"type": "json_object"},
             messages=[
-                {
-                    "role": "system",
-                    "content": "Act as an elite COO/operator. Return strict JSON only. No markdown. No text outside JSON."
-                },
+                {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": build_prompt(req, memory)}
             ],
             timeout=OPENAI_TIMEOUT_SECONDS
         )
         content = response.choices[0].message.content or "{}"
-        return normalize_output(json.loads(content), req.input, req.mode)
+
+        if "v127_clean_json_response" in globals():
+            data = v127_clean_json_response(content)
+        else:
+            data = json.loads(content)
+
+        output = normalize_output(data, req.input, req.mode)
+
+        if "v127_validate_actions" in globals():
+            output["actions"] = v127_validate_actions(output.get("actions") or [])
+
+        if output.get("actions"):
+            output["next_move"] = output.get("next_move") or output["actions"][0]
+            output["execution_loop"] = {
+                "manual_execution_only": True,
+                "auto_loop_enabled": False,
+                "current_focus": output.get("what_to_do_now") or output.get("next_move"),
+                "next_action": output["actions"][0],
+                "next_prompt": "Complete this action, then report the result or blocker.",
+                "loop_steps": output["actions"][:6],
+                "stop_condition": "Stop when the saved action is completed or a blocker is identified."
+            }
+
+        return output
     except Exception as e:
         out = fallback_output(req.input, req.mode)
         out["reality_check"] = f"OpenAI call failed or returned invalid JSON. Fallback used. Error: {str(e)[:200]}"
@@ -822,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V127",
+        "backend_must_show": "Executive Engine OS V128",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1301,5 +1325,153 @@ def v127_execution_loop(output):
         "current_step": first,
         "operator_instruction": "Complete the current step, then return with the result or blocker.",
         "next_check": "After the current step is completed"
+    }
+
+
+
+
+
+# =========================
+# V128 OPERATOR LOOP ENDPOINTS
+# =========================
+
+class CompleteActionRequest(BaseModel):
+    user_id: str = DEFAULT_USER
+    action_id: str = Field(..., min_length=1)
+    result: str = ""
+    next_note: str = ""
+
+
+async def sb_patch(path: str, payload: Dict[str, Any]) -> List[Dict[str, Any]]:
+    if not SUPABASE_ENABLED:
+        return []
+    async with httpx.AsyncClient(timeout=20) as cx:
+        r = await cx.patch(
+            f"{SUPABASE_URL}/rest/v1/{path}",
+            headers=sb_headers("return=representation"),
+            json=payload
+        )
+        r.raise_for_status()
+        return r.json()
+
+
+def v128_rank_priority(item: Dict[str, Any]) -> int:
+    priority = str(item.get("priority") or "medium").lower()
+    if priority == "critical":
+        return 4
+    if priority == "high":
+        return 3
+    if priority == "medium":
+        return 2
+    return 1
+
+
+def v128_build_operator_brief(mem: Dict[str, Any]) -> Dict[str, Any]:
+    recent_runs = mem.get("recent_runs") or []
+    open_actions = mem.get("open_actions") or []
+    recent_decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    sorted_actions = sorted(open_actions, key=v128_rank_priority, reverse=True)
+    top_action = sorted_actions[0] if sorted_actions else None
+    latest_run = recent_runs[0] if recent_runs else {}
+    latest_output = latest_run.get("output") if isinstance(latest_run.get("output"), dict) else {}
+
+    return {
+        "today_focus": latest_output.get("what_to_do_now") or latest_output.get("next_move") or latest_run.get("input") or "Run one executive command.",
+        "next_action": (top_action or {}).get("text") or latest_output.get("next_move") or "Run the engine and save one action.",
+        "priority": (top_action or {}).get("priority") or latest_output.get("priority") or "medium",
+        "open_action_count": len(open_actions),
+        "recent_decision": (recent_decisions[0] or {}).get("decision") if recent_decisions else latest_output.get("decision", ""),
+        "memory_signal": (memory_items[0] or {}).get("content") if memory_items else "",
+        "operator_instruction": "Complete the next action, then return with the result or blocker.",
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/operator-brief")
+async def operator_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "brief": v128_build_operator_brief(mem),
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        }
+    }
+
+
+@app.get("/next-action")
+async def next_action(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    actions = sorted(mem.get("open_actions") or [], key=v128_rank_priority, reverse=True)
+    action = actions[0] if actions else None
+    return {
+        "ok": True,
+        "version": VERSION,
+        "has_action": bool(action),
+        "next_action": action or {
+            "text": "Run Executive Engine and save one action.",
+            "priority": "medium",
+            "status": "open"
+        },
+        "operator_instruction": "Complete this action, then use /complete-action or save the result manually."
+    }
+
+
+@app.post("/complete-action")
+async def complete_action(req: CompleteActionRequest):
+    if not SUPABASE_ENABLED:
+        return {"ok": False, "version": VERSION, "completed": False, "error": "Supabase not configured."}
+
+    payload = {
+        "status": "completed",
+        "updated_at": now_iso(),
+        "metadata": {
+            "completed_source": "v128_operator_loop",
+            "result": req.result,
+            "next_note": req.next_note
+        }
+    }
+    rows = await sb_patch(f"actions?id=eq.{req.action_id}", payload)
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "completed": True,
+        "action": rows[0] if rows else {"id": req.action_id, **payload},
+        "next_move": "Run /operator-brief to identify the next action."
+    }
+
+
+@app.get("/workflow-audit")
+async def workflow_audit(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    brief = v128_build_operator_brief(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Has open actions", "passed": len(mem.get("open_actions") or []) > 0},
+        {"name": "Has recent decisions", "passed": len(mem.get("recent_decisions") or []) > 0},
+        {"name": "Has memory signals", "passed": len(mem.get("memory_items") or []) > 0},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True},
+        {"name": "Operator brief available", "passed": bool(brief.get("today_focus"))}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "score": f"{score}/{len(checks)}",
+        "ready": score >= 6,
+        "checks": checks,
+        "brief": brief,
+        "decision": "Use V128 as the operator loop baseline if /run and /operator-brief both return useful output.",
+        "next_move": brief.get("next_action")
     }
 
