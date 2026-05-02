@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-<title>Executive Engine OS — V150 Executive Layer</title>
+<title>Executive Engine OS — V160 Polish</title>
 <style>
 :root{
   --nav:#061120;--ink:#071226;--muted:#5d6f89;--line:#dbe5f1;--bg:#f6f9fd;--blue:#0f63ff;--blue2:#0047d7;--orange:#ff6a00;--green:#09a66d;--purple:#7c3aed;--red:#ef4444;--shadow:0 18px 50px rgba(10,25,52,.10)
@@ -108,7 +108,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 @media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
 
 
-/* V150 Executive Layer */
+/* V160 Product Layer */
 .exec-banner{border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
 .exec-banner h2{margin:0 0 5px;font-size:22px}.exec-banner p{margin:0;color:#52637a}
 .exec-mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
@@ -119,18 +119,142 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 .exec-score{font-size:34px;font-weight:700;color:#0f63ff}
 @media(max-width:1100px){.exec-mode-grid,.board-grid{grid-template-columns:1fr}.exec-banner{display:block}.exec-banner button{margin-top:12px}}
 
+
+/* V160 — header/nav polish + subpage UX refinement */
+.top{
+  box-shadow:0 8px 28px rgba(7,18,38,.045);
+}
+.brand{
+  transition:.16s ease;
+}
+.brand:hover{
+  background:linear-gradient(180deg,#0a1830,#050b14);
+}
+.brand-link{
+  width:100%;
+}
+.quick-nav{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:4px;
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:13px;
+}
+.quick-nav button{
+  height:32px;
+  border:0;
+  background:transparent;
+  color:#334155;
+  border-radius:9px;
+  padding:0 10px;
+  font-size:12px;
+  font-weight:650;
+}
+.quick-nav button:hover{
+  background:#fff;
+  color:#0f63ff;
+  box-shadow:0 6px 16px rgba(7,18,38,.06);
+}
+.sidebar{
+  padding-bottom:30px;
+}
+.nav{
+  transition:.14s ease;
+}
+.nav.active{
+  transform:translateX(2px);
+}
+.hero{
+  padding:2px 0 4px;
+}
+.hero h1{
+  max-width:760px;
+}
+.page-topbar{
+  border:1px solid #dbe5f1;
+  background:linear-gradient(180deg,#fff,#f8fbff);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 12px 30px rgba(7,18,38,.055);
+}
+.page-topbar h2{
+  margin:4px 0 5px;
+  letter-spacing:-.035em;
+}
+.section-card{
+  border-color:#d7e3f1!important;
+}
+.section-card + .section-card{
+  margin-top:14px;
+}
+.section-head{
+  min-height:50px;
+  letter-spacing:.01em;
+}
+.section-body{
+  background:#fff;
+}
+.stat-card{
+  min-height:112px;
+}
+.list-row{
+  transition:.14s ease;
+}
+.list-row:hover{
+  border-color:#b9cff0;
+  box-shadow:0 8px 22px rgba(7,18,38,.045);
+}
+.page-card{
+  min-height:128px;
+  box-shadow:0 10px 26px rgba(7,18,38,.045);
+}
+.page-card h3{
+  letter-spacing:-.02em;
+}
+.meeting-card,
+.objective,
+.action-lane{
+  box-shadow:0 10px 26px rgba(7,18,38,.045);
+}
+.exec-banner{
+  box-shadow:0 14px 36px rgba(15,99,255,.09);
+}
+.memory-pattern{
+  box-shadow:0 8px 20px rgba(79,70,229,.05);
+}
+.version{
+  background:#eff6ff!important;
+  color:#1d4ed8!important;
+  border-color:#bfdbfe!important;
+}
+.v160-page-note{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#9a3412;
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:550;
+  margin-bottom:14px;
+}
+@media(max-width:1280px){
+  .quick-nav{display:none}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 14H12v36h16"/><path d="M26 32H12"/><path d="M36 14h16"/><path d="M36 14v36"/><path d="M36 32h14"/><path d="M36 50h16"/></g></svg></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
-  <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V150 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V160 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V150 Executive Layer</div>
+  <div class="lock">▣ V160 Product Layer</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -180,7 +304,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V150 Executive Layer · V150 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V160 Polish · V160 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -202,7 +326,22 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 async function api(p,o={}){const r=await fetch(API+p,o),txt=await r.text();let d;try{d=txt?JSON.parse(txt):{}}catch(e){d={raw:txt}}if(!r.ok)throw new Error(d.error||d.detail||txt||`HTTP ${r.status}`);return d}
 function setDefaultFeed(){document.getElementById("outputHost").innerHTML=`<article class="feed-card purple"><h4>Decision</h4><strong>Awaiting command</strong><p>Run the engine to generate a recommended decision.</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>Awaiting command</strong><p>The system will prioritize the next move.</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong id="feedActions">${appState.actions.length||"—"} Total</strong><p>Saved action queue will appear here.</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>Medium Risk</strong><p>Risk monitor activates after run.</p><a>View Risk Monitor →</a></article><article class="feed-card"><h4>Insights</h4><strong>System Ready</strong><p>Memory signals will update from saved runs.</p><a>View Analytics →</a></article>`}
 function defaultPreview(){document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol><li>Run one command to generate output.</li><li>Save action and decision.</li><li>Verify persistence.</li></ol></div>`}
-function showPage(page){activePage=page;const meta=pages[page]||pages.command;document.getElementById("pageTitle").textContent=meta.title;document.getElementById("pageSubtitle").textContent=meta.sub;document.getElementById("pageEyebrow").textContent=meta.eyebrow;document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===page));if(page==="command"){document.getElementById("commandPage").classList.remove("hidden");document.getElementById("pageHost").classList.add("hidden");return}document.getElementById("commandPage").classList.add("hidden");document.getElementById("pageHost").classList.remove("hidden");renderPage(page)}
+
+function v160PagePolish(page){
+  document.querySelectorAll(".quick-nav button").forEach(btn=>{
+    const text=(btn.textContent||"").toLowerCase();
+    const active =
+      (page==="command" && text.includes("dashboard")) ||
+      (page==="daily_brief" && text.includes("brief")) ||
+      (page==="actions" && text.includes("actions")) ||
+      (page==="memory" && text.includes("memory"));
+    btn.style.background = active ? "#fff" : "transparent";
+    btn.style.color = active ? "#0f63ff" : "#334155";
+    btn.style.boxShadow = active ? "0 6px 16px rgba(7,18,38,.06)" : "none";
+  });
+}
+
+function showPage(page){activePage=page;v160PagePolish(page);const meta=pages[page]||pages.command;document.getElementById("pageTitle").textContent=meta.title;document.getElementById("pageSubtitle").textContent=meta.sub;document.getElementById("pageEyebrow").textContent=meta.eyebrow;document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===page));if(page==="command"){document.getElementById("commandPage").classList.remove("hidden");document.getElementById("pageHost").classList.add("hidden");return}document.getElementById("commandPage").classList.add("hidden");document.getElementById("pageHost").classList.remove("hidden");renderPage(page)}
 function renderPage(page){
  const host=document.getElementById("pageHost");
  const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];

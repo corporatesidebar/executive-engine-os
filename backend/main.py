@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V150"
-SERVICE_NAME = "Executive Engine OS V150"
+VERSION = "V160"
+SERVICE_NAME = "Executive Engine OS V160"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="145.0.0")
+app = FastAPI(title=SERVICE_NAME, version="160.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V150, an elite COO/operator system.
+You are Executive Engine OS V160, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V150",
+        "backend_must_show": "Executive Engine OS V160",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -2005,5 +2005,56 @@ async def v145_milestone(user_id: str = Query(DEFAULT_USER)):
             "Check /meeting-prep-brief",
             "Check /board-brief",
             "Run a real command and save the decision"
+        ]
+    }
+
+
+
+
+# =========================
+# V160 POLISH + SUBPAGE UX REFINEMENT
+# =========================
+
+@app.get("/v160-milestone")
+async def v160_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Header/Nav Polish + Subpage UX Refinement",
+        "ready": True,
+        "frontend_must_show": "V160 Polish · V160 Backend",
+        "keeps": [
+            "Locked command center",
+            "V145 executive layer",
+            "V140 memory intelligence",
+            "V135 unique subpages",
+            "V128 operator loop"
+        ],
+        "refinements": [
+            "Clickable top-left brand returns to Command Center",
+            "Header quick navigation",
+            "Cleaner subpage hierarchy",
+            "Stronger section separation",
+            "Better page badges and cards",
+            "Subpage call-to-action consistency"
+        ],
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        },
+        "test_checklist": [
+            "Click top-left brand",
+            "Confirm Command Center opens",
+            "Click header quick nav",
+            "Click every sidebar page",
+            "Confirm pages are more readable",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Open Memory page",
+            "Open Strategy Board"
         ]
     }
