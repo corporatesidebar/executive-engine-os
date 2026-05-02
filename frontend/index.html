@@ -105,6 +105,18 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 .memory-alert{border-left:5px solid #ff6a00;background:#fff7ed;border-color:#fed7aa}
 @media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
 
+
+/* V145 Executive Layer */
+.exec-banner{border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.exec-banner h2{margin:0 0 5px;font-size:22px}.exec-banner p{margin:0;color:#52637a}
+.exec-mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.exec-mode{border:1px solid #dbe5f1;background:#fff;border-radius:14px;padding:13px;box-shadow:0 10px 24px rgba(7,18,38,.05)}
+.exec-mode b{display:block;color:#071226;margin-bottom:6px}.exec-mode span{font-size:12px;color:#64748b;line-height:1.35}
+.board-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.board-list{margin:0;padding-left:18px}.board-list li{margin:8px 0;color:#334155}
+.exec-score{font-size:34px;font-weight:700;color:#0f63ff}
+@media(max-width:1100px){.exec-mode-grid,.board-grid{grid-template-columns:1fr}.exec-banner{display:block}.exec-banner button{margin-top:12px}}
+
 </style>
 </head>
 <body>
@@ -112,11 +124,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 14H13v36h17"/><path d="M30 32H15"/><path d="M34 14h17v36H34"/><path d="M34 32h15"/></g></svg></div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V140 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V145 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V140 Memory Intelligence</div>
+  <div class="lock">▣ V145 Executive Layer</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -166,7 +178,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V140 Memory Intelligence · V140 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V145 Executive Layer · V145 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -192,6 +204,7 @@ function showPage(page){activePage=page;const meta=pages[page]||pages.command;do
 function renderPage(page){
  const host=document.getElementById("pageHost");
  const actions=appState.actions||[], decisions=appState.decisions||[], mem=appState.memory||[];
+ if(page==='daily_brief') setTimeout(()=>{loadExecutiveBrief();loadDailyBrief();},50); if(page==='strategy') setTimeout(()=>loadBoardBrief(),50); if(page==='settings') setTimeout(()=>loadExecutiveBrief(),50);
  const actionRows=(actions.length?actions.slice(0,8):[
   {text:"Review Q2 financial statements with CFO",priority:"critical",status:"open"},
   {text:"Schedule CFO 1:1 for Thursday",priority:"high",status:"open"},
@@ -210,6 +223,8 @@ function renderPage(page){
 
  if(page==="daily_brief"){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Daily Brief</div><h2>Saturday, May 2, 2026</h2><p class="sub">Your executive brief for today's critical initiatives.</p></div><button class="page-action orange" onclick="runPagePrompt('daily_brief')">Generate Brief</button></div>
+  <div class="exec-banner" id="executiveBriefBox"><div><h2>Executive Layer Active</h2><p>Daily Brief now pulls operating focus, priorities, risks, and decision context.</p></div><button class="page-action orange" onclick="loadDailyBrief()">Load Live Brief</button></div>
+  <section class="section-card"><div class="section-head orange">Live Daily Brief</div><div class="section-body" id="dailyBriefLive"><div class="list-row"><div>Loading daily brief...</div></div></div></section>
   <section class="section-card"><div class="section-head orange">Priority Initiatives Today</div><div class="section-body">
     ${["Board presentation prep|3:00 PM|Critical|In Progress","Review enterprise pipeline|5:00 PM|High|Not Started","Q2 budget finalization|EOD|High|In Progress"].map(x=>{const a=x.split("|");return `<div class="list-row"><div><div class="maintext">${a[0]}</div><div class="meta">◷ ${a[1]} · <span class="status-pill ${a[2]==='Critical'?'orange':''}">${a[2]}</span></div></div><span class="status-pill">${a[3]}</span></div>`}).join("")}
   </div></section>
@@ -233,6 +248,7 @@ function renderPage(page){
  }
  if(page==="strategy"){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">Strategic Planning</div><h2>Strategy Board</h2><p class="sub">Track initiatives, OKRs, and strategic priorities.</p></div><button class="page-action" onclick="runPagePrompt('strategy')">New Initiative</button></div>
+  <div id="boardBriefLive"></div>
   <section class="section-card"><div class="section-head">Q2 2026 Objectives</div><div class="section-body">
   ${[
    ["Scale Revenue to $3M MRR","CEO","78",["Close 5 enterprise deals|60","Achieve 95% retention rate|92|green","Expand to 3 new verticals|67"]],
@@ -284,11 +300,13 @@ function renderPage(page){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">User Profile</div><h2>Profile</h2><p class="sub">Manage your account and preferences.</p></div><button class="page-action">Edit Profile</button></div>
   <div class="profile-hero"><div class="profile-gradient"></div><div class="profile-content"><div class="profile-avatar">JD</div><div><h2>John Doe</h2><p>Chief Executive Officer</p></div></div></div>
   <div class="stats-row"><div class="stat-card"><small>Decisions Made</small><strong>${decisions.length||147}</strong></div><div class="stat-card purple"><small>Member Since</small><strong>Jan 2025</strong></div><div class="stat-card green"><small>Account Type</small><strong>Executive</strong></div><div class="stat-card teal"><small>Team Members</small><strong>47</strong></div></div>
+  <section class="section-card"><div class="section-head dark">Executive Modes</div><div class="section-body"><div class="exec-mode-grid"><div class="exec-mode"><b>CEO</b><span>Direction, tradeoffs, board decisions</span></div><div class="exec-mode"><b>COO</b><span>Execution, accountability, process</span></div><div class="exec-mode"><b>CMO</b><span>Growth, pipeline, brand</span></div><div class="exec-mode"><b>CTO</b><span>Product, architecture, risk</span></div><div class="exec-mode"><b>CFO</b><span>Capital, margin, forecasting</span></div></div></div></section>
   <section class="section-card"><div class="section-head dark">Preferences</div><div class="section-body">${["Email Notifications","Daily Brief","Meeting Reminders","Risk Alerts","Weekly Reports"].map((x,i)=>`<div class="list-row"><div><div class="maintext">${x}</div><div class="meta">Executive operating preference</div></div><span class="toggle ${i===4?'off':''}"></span></div>`).join("")}</div></section>`;
   return;
  }
  if(page==="settings"){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#334155">System Configuration</div><h2>Settings</h2><p class="sub">Configure your Executive Engine OS.</p></div></div>
+  <section class="section-card"><div class="section-head dark">Executive Layer Status</div><div class="section-body"><div class="split-grid"><div class="stat-card"><small>Readiness</small><strong id="execReadinessScore">Loading</strong><span>Executive operating layer</span></div><div class="stat-card orange"><small>Next Move</small><strong style="font-size:16px" id="execNextMove">Loading</strong><span>Recommended executive move</span></div></div></div></section>
   <section class="section-card"><div class="section-head dark">General</div><div class="section-body">${["Command Mode|Execute","Auto-save Decisions|Enabled","Time Zone|Eastern Time"].map(x=>{const a=x.split("|");return `<div class="list-row"><div><div class="maintext">${a[0]}</div><div class="meta">${a[1]}</div></div></div>`}).join("")}</div></section>
   <section class="section-card"><div class="section-head">Notifications</div><div class="section-body">${["Email Notifications","Desktop Notifications","Risk Alerts","Daily Digest","Meeting Reminders"].map((x,i)=>`<div class="list-row"><div>${x}</div><span class="toggle ${i===4?'off':''}"></span></div>`).join("")}</div></section>
   <section class="section-card"><div class="section-head purple">Appearance</div><div class="section-body"><div class="triple-grid"><button class="tool">Light</button><button class="tool">Dark</button><button class="tool">Auto</button></div></div></section>
@@ -309,6 +327,35 @@ async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=d
 async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}
 async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
 function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
+
+
+async function loadExecutiveBrief(){
+ try{
+  const d=await api("/executive-brief?user_id="+encodeURIComponent(USER_ID));
+  const b=d.brief||{};
+  const el=document.getElementById("executiveBriefBox");
+  if(el) el.innerHTML=`<h2>${esc(b.headline||"Executive brief ready")}</h2><p>${esc(b.decision||"")}</p><button class="page-action orange" onclick="runPagePrompt('daily_brief')">Run Executive Brief</button>`;
+  const m=b.metrics||{};
+  const score=document.getElementById("execReadinessScore"); if(score) score.textContent=m.executive_readiness||"Ready";
+  const move=document.getElementById("execNextMove"); if(move) move.textContent=m.recommended_executive_move||b.next_move||"Run the daily brief.";
+ }catch(e){}
+}
+async function loadDailyBrief(){
+ try{
+  const d=await api("/daily-brief?user_id="+encodeURIComponent(USER_ID));
+  const b=d.daily_brief||{};
+  const el=document.getElementById("dailyBriefLive");
+  if(el) el.innerHTML=`<div class="list-row"><div><div class="maintext">${esc(b.today_focus||"No focus")}</div><div class="meta">Today’s Focus</div></div><span class="status-pill orange">Focus</span></div>`+(b.top_3_priorities||[]).map(x=>`<div class="list-row"><div>${esc(x)}</div><span class="status-pill">Priority</span></div>`).join("");
+ }catch(e){}
+}
+async function loadBoardBrief(){
+ try{
+  const d=await api("/board-brief?user_id="+encodeURIComponent(USER_ID));
+  const b=d.board_brief||{};
+  const el=document.getElementById("boardBriefLive");
+  if(el) el.innerHTML=`<div class="section-card"><div class="section-head dark">Board-Level Summary</div><div class="section-body"><h3>${esc(b.headline||"Board brief")}</h3><p>${esc(b.recommended_decision||"")}</p><div class="split-grid"><div><b>Wins</b><ul class="board-list">${(b.wins||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b>Risks</b><ul class="board-list">${(b.risks||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div></div>`;
+ }catch(e){}
+}
 
 async function loadMemoryIntelligence(){
  try{

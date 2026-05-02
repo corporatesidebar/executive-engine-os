@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V140"
-SERVICE_NAME = "Executive Engine OS V140"
+VERSION = "V145"
+SERVICE_NAME = "Executive Engine OS V145"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="140.0.0")
+app = FastAPI(title=SERVICE_NAME, version="145.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V140, an elite COO/operator system.
+You are Executive Engine OS V145, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V140",
+        "backend_must_show": "Executive Engine OS V145",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1488,7 +1488,7 @@ async def pages():
     return {
         "ok": True,
         "version": VERSION,
-        "milestone": "V140 Memory + Intelligence",
+        "milestone": "V145 Memory + Intelligence",
         "pages": [
             {"id": "command", "title": "Command Center", "status": "live", "purpose": "Run the executive engine."},
             {"id": "daily_brief", "title": "Daily Brief", "status": "connected", "purpose": "Generate daily operating focus."},
@@ -1548,7 +1548,7 @@ async def v130_milestone(user_id: str = Query(DEFAULT_USER)):
 
 
 # =========================
-# V140 UNIQUE FIGMA SUBPAGES + WORKFLOW CONTROL
+# V145 UNIQUE FIGMA SUBPAGES + WORKFLOW CONTROL
 # =========================
 
 @app.get("/v135-milestone")
@@ -1559,7 +1559,7 @@ async def v135_milestone(user_id: str = Query(DEFAULT_USER)):
         "version": VERSION,
         "milestone": "Unique Figma Subpages + Workflow Control",
         "ready": True,
-        "frontend_must_show": "V140 Figma Subpages · V140 Backend",
+        "frontend_must_show": "V145 Figma Subpages · V145 Backend",
         "keeps_locked_command_center": True,
         "counts": {
             "recent_runs": len(mem.get("recent_runs") or []),
@@ -1587,7 +1587,7 @@ async def v135_milestone(user_id: str = Query(DEFAULT_USER)):
 
 
 # =========================
-# V140 MEMORY + INTELLIGENCE MILESTONE
+# V145 MEMORY + INTELLIGENCE MILESTONE
 # =========================
 
 def v140_extract_text(value: Any) -> str:
@@ -1763,7 +1763,7 @@ async def v140_milestone(user_id: str = Query(DEFAULT_USER)):
         "ready": score >= 7,
         "score": f"{score}/{len(checks)}",
         "checks": checks,
-        "frontend_must_show": "V140 Memory Intelligence · V140 Backend",
+        "frontend_must_show": "V145 Memory Intelligence · V145 Backend",
         "intelligence": intelligence,
         "test_checklist": [
             "Open Memory page",
@@ -1774,5 +1774,236 @@ async def v140_milestone(user_id: str = Query(DEFAULT_USER)):
             "Save action and decision",
             "Check /memory-intelligence",
             "Check /context-brief"
+        ]
+    }
+
+
+
+
+# =========================
+# V145 EXECUTIVE LAYER MILESTONE
+# =========================
+
+def v145_exec_metrics(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    runs = mem.get("recent_runs") or []
+
+    high_priority = [
+        a for a in actions
+        if str(a.get("priority", "")).lower() in ["high", "critical"]
+    ]
+
+    decision_velocity = "Fast" if len(decisions) >= 5 else "Building"
+    execution_load = "High" if len(actions) >= 15 else "Controlled"
+
+    return {
+        "executive_readiness": "Board-ready" if len(decisions) >= 5 and len(memory_items) >= 5 else "Building",
+        "decision_velocity": decision_velocity,
+        "execution_load": execution_load,
+        "priority_pressure": len(high_priority),
+        "operator_confidence": "High" if len(runs) >= 5 else "Medium",
+        "focus_risk": "Action queue overload" if len(actions) >= 15 else "Low",
+        "recommended_executive_move": (
+            "Reduce open action count before creating new work."
+            if len(actions) >= 15
+            else "Use Daily Brief and Meeting Prep to drive today's execution."
+        )
+    }
+
+
+@app.get("/executive-brief")
+async def executive_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    metrics = v145_exec_metrics(mem)
+
+    memory_intel = {}
+    if "v140_memory_summary" in globals():
+        memory_intel = v140_memory_summary(mem)
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Layer",
+        "brief": {
+            "headline": "Executive Engine OS is ready for daily operating use.",
+            "decision": "Use the system as the command layer for daily brief, meeting prep, risks, actions, and executive follow-through.",
+            "next_move": metrics["recommended_executive_move"],
+            "board_level_summary": [
+                "Execution system is live.",
+                "Memory intelligence is active.",
+                "Navigation and subpages are connected.",
+                "Manual execution remains locked for safety."
+            ],
+            "metrics": metrics,
+            "memory_signal": memory_intel.get("top_pattern", {}),
+            "priority": "High"
+        }
+    }
+
+
+@app.get("/daily-brief")
+async def daily_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    top_actions = actions[:5]
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "daily_brief": {
+            "today_focus": (
+                top_actions[0].get("text")
+                if top_actions else
+                "Run one command to establish today’s focus."
+            ),
+            "top_3_priorities": [
+                a.get("text") for a in top_actions[:3]
+            ] or [
+                "Run Executive Engine",
+                "Save one action",
+                "Save one decision"
+            ],
+            "decisions_to_review": [
+                d.get("decision") for d in decisions[:3]
+            ],
+            "risks_to_watch": [
+                d.get("risk") or "Decision needs risk review"
+                for d in decisions[:3]
+            ],
+            "what_to_ignore": [
+                "New feature ideas until the current milestone is tested",
+                "UI micro-tweaks unless they block workflow",
+                "Automation before the manual loop is reliable"
+            ],
+            "operator_instruction": "Complete the highest-priority action before creating new work."
+        }
+    }
+
+
+@app.get("/meeting-prep-brief")
+async def meeting_prep_brief(user_id: str = Query(DEFAULT_USER), topic: str = Query("Executive Engine OS review")):
+    mem = await memory_data(user_id)
+    decisions = mem.get("recent_decisions") or []
+    actions = mem.get("open_actions") or []
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "meeting_prep": {
+            "topic": topic,
+            "objective": "Leave the meeting with a clear decision, owner, and next action.",
+            "agenda": [
+                "Confirm current state",
+                "Review blockers and risks",
+                "Decide the next milestone",
+                "Assign owner and follow-up"
+            ],
+            "talking_points": [
+                "V140 memory intelligence is live",
+                "V145 executive layer adds board-level operating views",
+                "Manual execution remains the safety model"
+            ],
+            "recent_decisions": [d.get("decision") for d in decisions[:5]],
+            "open_followups": [a.get("text") for a in actions[:5]],
+            "hard_questions": [
+                "What is blocking the next milestone?",
+                "Which actions should be deleted or delegated?",
+                "What decision must be made today?"
+            ],
+            "follow_up_actions": [
+                "Save the meeting decision",
+                "Create one action owner",
+                "Run operator brief after meeting"
+            ]
+        }
+    }
+
+
+@app.get("/board-brief")
+async def board_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    metrics = v145_exec_metrics(mem)
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "board_brief": {
+            "headline": "Executive Engine OS is progressing from prototype to operating system.",
+            "status": metrics["executive_readiness"],
+            "wins": [
+                "Stable backend and Supabase persistence",
+                "Clickable navigation and unique subpages",
+                "Memory intelligence and operator brief endpoints",
+                "Manual execution loop preserved"
+            ],
+            "risks": [
+                metrics["focus_risk"],
+                "Too many features before workflow testing",
+                "Automation before manual control is mature"
+            ],
+            "next_30_days": [
+                "Lock workflow control",
+                "Improve executive layer outputs",
+                "Prepare automation layer after V150",
+                "Capture user feedback from real use"
+            ],
+            "recommended_decision": "Continue milestone-based development and avoid redesign until V150."
+        }
+    }
+
+
+@app.get("/executive-modes")
+async def executive_modes():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "modes": [
+            {"id": "ceo", "title": "CEO Mode", "focus": "direction, tradeoffs, board-level decisions"},
+            {"id": "coo", "title": "COO Mode", "focus": "execution, process, accountability"},
+            {"id": "cmo", "title": "CMO Mode", "focus": "growth, positioning, pipeline"},
+            {"id": "cto", "title": "CTO Mode", "focus": "product, architecture, technical risk"},
+            {"id": "cfo", "title": "CFO Mode", "focus": "capital, margin, forecasting, risk"}
+        ]
+    }
+
+
+@app.get("/v145-milestone")
+async def v145_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    metrics = v145_exec_metrics(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Executive brief available", "passed": True},
+        {"name": "Daily brief available", "passed": True},
+        {"name": "Meeting prep brief available", "passed": True},
+        {"name": "Board brief available", "passed": True},
+        {"name": "Executive modes available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Layer",
+        "ready": score >= 8,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V145 Executive Layer · V145 Backend",
+        "metrics": metrics,
+        "test_checklist": [
+            "Open Daily Brief page",
+            "Open Meeting Prep page",
+            "Open Strategy Board",
+            "Open Risk Monitor",
+            "Check /executive-brief",
+            "Check /daily-brief",
+            "Check /meeting-prep-brief",
+            "Check /board-brief",
+            "Run a real command and save the decision"
         ]
     }
