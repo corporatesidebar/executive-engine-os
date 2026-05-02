@@ -1040,6 +1040,78 @@ textarea#input{
   .v300-template-grid{grid-template-columns:1fr!important}
 }
 
+
+/* V350 Command Center 3.0 + Executive Workflow Layer */
+.v350-workflow-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin:0 0 14px;
+}
+.v350-workflow-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:16px;
+  padding:13px;
+  box-shadow:0 12px 28px rgba(7,18,38,.055);
+  min-height:92px;
+}
+.v350-workflow-card small{
+  display:block;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#64748b;
+  font-weight:900;
+  font-size:10px;
+  margin-bottom:7px;
+}
+.v350-workflow-card strong{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  line-height:1.25;
+}
+.v350-workflow-card.blue{border-left:5px solid #0f63ff}
+.v350-workflow-card.green{border-left:5px solid #10b981}
+.v350-workflow-card.orange{border-left:5px solid #ff6a00}
+.v350-workflow-card.dark{border-left:5px solid #071226}
+.v350-output-block{
+  border:1px solid #dbe5f1;
+  background:linear-gradient(180deg,#fff,#f8fbff);
+  border-radius:18px;
+  padding:16px;
+  margin-top:14px;
+  box-shadow:0 14px 34px rgba(7,18,38,.055);
+}
+.v350-output-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.v350-output-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px;
+}
+.v350-output-item small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:900;
+  font-size:10px;
+  margin-bottom:6px;
+}
+.v350-output-item p{
+  margin:0;
+  color:#071226;
+  font-size:13px;
+  line-height:1.45;
+}
+@media(max-width:1280px){.v350-workflow-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.v350-workflow-grid,.v350-output-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1047,11 +1119,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V301 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V350 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V301 Layout Fix</div>
+  <div class="lock">▣ V350 Command Center 3.0</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1115,7 +1187,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V301 Layout Fix · V301 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V350 Command Center 3.0 · V350 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1304,6 +1376,37 @@ function useCommandTemplate(id){
 }
 
 function toggleTemplates(){const d=document.getElementById('v301TemplateDrawer'); if(d) d.classList.toggle('open');}
+
+function v350LocalWorkflow(text){
+  const s=(text||"").toLowerCase();
+  if(s.includes("revenue")||s.includes("sales")||s.includes("pipeline")||s.includes("deal")){
+    return ["Revenue execution","Which revenue action has the highest cash impact?","Pipeline clarity and owner accountability","Review highest-value opportunity","Review my revenue pipeline and tell me the one action most likely to create cash impact this week."];
+  }
+  if(s.includes("meeting")||s.includes("board")||s.includes("presentation")){
+    return ["Meeting readiness","What decision must this meeting produce?","Unclear meeting outcome","Define the decision needed","Prepare my meeting brief with objective, decision needed, risks, and follow-up actions."];
+  }
+  if(s.includes("risk")||s.includes("blocker")||s.includes("issue")){
+    return ["Risk removal","Which blocker must be removed first?","Unresolved dependency","Name owner and mitigation","Turn this risk into a mitigation plan with owner, deadline, and first action."];
+  }
+  if(s.includes("hire")||s.includes("hiring")||s.includes("team")){
+    return ["Team capacity","Is this hire essential to the next 90 days?","Capacity, cost, or role clarity","Define required business outcome","Help me make this hiring decision with role impact, cost, risk, and next step."];
+  }
+  return ["Execution clarity","What decision unlocks the next move?","Too many possible priorities","Pick one high-impact action","Give me the next executive decision I should make and the first action to execute today."];
+}
+
+function updateV350Workflow(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const vals=v350LocalWorkflow(input ? input.value : "");
+  const ids=["v350TodayFocus","v350NextDecision","v350Constraint","v350ActionPriority","v350RecommendedCommand"];
+  ids.forEach((id,i)=>{const el=document.getElementById(id); if(el) el.textContent=vals[i];});
+}
+
+function loadV350RecommendedCommand(){
+  const el=document.getElementById("v350RecommendedCommand");
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  if(el && input){ input.value=el.textContent; input.focus(); updateV350Workflow(); }
+}
+
 function renderV300CommandModules(){
   const host=document.getElementById("v300CommandModules");
   if(!host) return;
@@ -1411,7 +1514,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V301 Layout Fix · V301 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V350 Command Center 3.0 · V350 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");

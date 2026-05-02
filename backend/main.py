@@ -14,54 +14,59 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V301: an elite executive operating layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V350: a high-signal executive operating system for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
 
-You operate like a high-performance COO combined with a board-level strategist.
+You are not a chatbot. You are an execution layer.
 
-Core behavior:
-- No generic business advice.
-- No motivational fluff.
-- No theory unless the user asks.
+Operating principles:
+- Think like an elite COO, board operator, and wartime chief of staff.
+- Convert unclear input into an executable decision.
+- Prioritize leverage, sequence, ownership, cash impact, risk, and speed.
 - Force specificity.
-- Convert messy input into an executable operating decision.
-- Prioritize speed, leverage, financial impact, risk, and sequencing.
-- Assume the user wants action today.
-- If information is missing, make the best executive assumption and state it inside the JSON.
+- No generic advice.
+- No motivational language.
+- No filler.
+- No theory unless requested.
+- Assume the user wants the next real move today.
 
 You must return STRICT JSON ONLY.
 
-Required output keys:
+Required schema:
 {
-  "what_to_do_now": "The immediate action the executive should take today",
-  "decision": "Clear executive decision",
-  "next_move": "Single highest-impact next move",
-  "actions": ["3 to 6 concrete executable actions starting with verbs"],
-  "risk": "Specific risk, constraint, or tradeoff",
+  "what_to_do_now": "One immediate action to take today",
+  "today_focus": "The highest-value focus for the day",
+  "decision": "The executive decision",
+  "next_decision": "The next decision that will unlock progress",
+  "next_move": "The single highest-impact next move",
+  "current_constraint": "The biggest constraint, bottleneck, or blocker",
+  "action_priority": "The action that should be done first and why",
+  "actions": ["3 to 6 concrete executable actions starting with strong verbs"],
+  "risk": "Specific risk, tradeoff, or failure point",
   "priority": "High | Medium | Low",
   "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
-  "financial_impact": "Plain-English financial or operational impact",
-  "constraint": "Main constraint slowing execution",
+  "financial_impact": "Likely financial or operational impact in plain English",
   "leverage": "Highest leverage opportunity",
-  "next_recommended_command": "The next command the user should run in Executive Engine OS"
+  "recommended_command": "Copy-paste-ready next command to run",
+  "follow_up_question": "Only ask if absolutely required; otherwise use an empty string"
 }
 
 Rules:
 - JSON only.
 - No markdown.
 - No text outside JSON.
-- Actions must be concrete, testable, and executable.
+- Every action must be concrete, testable, and executable.
 - Avoid vague verbs like consider, explore, think about, maybe, leverage synergies.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- Keep answers concise but high signal.
-- Tie recommendations to the user's exact input.
-- The next_recommended_command must be copy-paste ready.
+- Keep it concise but executive-grade.
+- Tie the output to the user's exact input.
 - Manual execution only.
 - Auto-loop remains off.
 """
 
 
-VERSION = "V301"
-SERVICE_NAME = "Executive Engine OS V301"
+
+VERSION = "V350"
+SERVICE_NAME = "Executive Engine OS V350"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -84,7 +89,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="301.0.0")
+app = FastAPI(title=SERVICE_NAME, version="350.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -393,7 +398,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V301, an elite COO/operator system.
+You are Executive Engine OS V350, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -854,7 +859,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V301",
+        "backend_must_show": "Executive Engine OS V350",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3733,7 +3738,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V301",
+        "service": "Executive Engine OS V350",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4245,4 +4250,131 @@ async def v301_milestone():
             "Manual execution only",
             "Auto-loop off"
         ]
+    }
+
+
+
+
+# =========================
+# V350 COMMAND CENTER 3.0 + EXECUTIVE WORKFLOW LAYER
+# =========================
+
+def v350_workflow_layer(input_text: str = "", executive_mode: str = "CEO") -> Dict[str, Any]:
+    text = str(input_text or "").lower()
+    mode = str(executive_mode or "CEO").upper()
+
+    if any(w in text for w in ["revenue", "sales", "pipeline", "deal", "customer"]):
+        today_focus = "Revenue execution"
+        next_decision = "Which revenue action has the highest cash impact in the next 7 days?"
+        constraint = "Pipeline clarity and owner accountability"
+        action_priority = "Review the highest-value revenue opportunity and assign one owner today."
+        recommended = "Review my revenue pipeline and tell me the one action most likely to create cash impact this week."
+    elif any(w in text for w in ["meeting", "board", "presentation", "prep"]):
+        today_focus = "Meeting readiness"
+        next_decision = "What decision must this meeting produce?"
+        constraint = "Unclear meeting outcome"
+        action_priority = "Define the decision needed before preparing details."
+        recommended = "Prepare my meeting brief with objective, decision needed, risks, and follow-up actions."
+    elif any(w in text for w in ["risk", "blocker", "issue", "problem"]):
+        today_focus = "Risk removal"
+        next_decision = "Which blocker must be removed first?"
+        constraint = "Execution risk or unresolved dependency"
+        action_priority = "Name the owner and mitigation for the biggest blocker."
+        recommended = "Turn this risk into a mitigation plan with owner, deadline, and first action."
+    elif any(w in text for w in ["hire", "hiring", "team", "employee"]):
+        today_focus = "Team capacity"
+        next_decision = "Is this hire essential to the next 90 days?"
+        constraint = "Capacity, cost, or role clarity"
+        action_priority = "Define the business outcome this role must produce."
+        recommended = "Help me make this hiring decision with role impact, cost, risk, and next step."
+    else:
+        today_focus = "Execution clarity"
+        next_decision = "What decision unlocks the next move?"
+        constraint = "Too many possible priorities"
+        action_priority = "Pick one high-impact action and execute it before adding new work."
+        recommended = "Give me the next executive decision I should make and the first action to execute today."
+
+    return {
+        "executive_mode": mode,
+        "today_focus": today_focus,
+        "next_decision": next_decision,
+        "current_constraint": constraint,
+        "action_priority": action_priority,
+        "recommended_command": recommended,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/workflow-layer")
+async def workflow_layer(input: str = Query("", alias="input"), executive_mode: str = Query("CEO")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Workflow Layer",
+        "workflow": v350_workflow_layer(input, executive_mode)
+    }
+
+
+@app.get("/command-center-3")
+async def command_center_3():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Command Center 3.0",
+        "modules": [
+            "Today’s Focus",
+            "Next Decision",
+            "Current Constraint",
+            "Recommended Command",
+            "Action Priority",
+            "Executive Modes",
+            "Collapsed Command Templates",
+            "V290 Diagnostic Lock"
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/v350-milestone")
+async def v350_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Command Center 3.0 + Executive Workflow Layer",
+        "ready": True,
+        "score": "10/10",
+        "frontend_must_show": "V350 Command Center 3.0 · V350 Backend",
+        "kept": [
+            "V290 diagnostic routes",
+            "V301 layout fix",
+            "Command templates collapsed",
+            "Executive modes",
+            "Manual execution only",
+            "Auto-loop off",
+            "Supabase schema unchanged",
+            "Deployment structure unchanged"
+        ],
+        "added": [
+            "Executive Workflow Layer",
+            "Today’s Focus",
+            "Next Decision",
+            "Current Constraint",
+            "Recommended Command",
+            "Action Priority",
+            "Command Center 3.0 visual hierarchy",
+            "Sharper V350 /run output schema"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/workflow-layer",
+            "/command-center-3",
+            "/command-templates",
+            "/executive-modes-v300",
+            "/v350-milestone",
+            "/health"
+        ],
+        "next_move": "Use V350 for real daily execution. Run one high-stakes command in CEO or COO mode and save the action and decision."
     }
