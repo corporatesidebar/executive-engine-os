@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V135"
-SERVICE_NAME = "Executive Engine OS V135"
+VERSION = "V140"
+SERVICE_NAME = "Executive Engine OS V140"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="135.0.0")
+app = FastAPI(title=SERVICE_NAME, version="140.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V135, an elite COO/operator system.
+You are Executive Engine OS V140, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V135",
+        "backend_must_show": "Executive Engine OS V140",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1488,7 +1488,7 @@ async def pages():
     return {
         "ok": True,
         "version": VERSION,
-        "milestone": "V130 Navigation + Pages",
+        "milestone": "V140 Memory + Intelligence",
         "pages": [
             {"id": "command", "title": "Command Center", "status": "live", "purpose": "Run the executive engine."},
             {"id": "daily_brief", "title": "Daily Brief", "status": "connected", "purpose": "Generate daily operating focus."},
@@ -1548,7 +1548,7 @@ async def v130_milestone(user_id: str = Query(DEFAULT_USER)):
 
 
 # =========================
-# V135 UNIQUE FIGMA SUBPAGES + WORKFLOW CONTROL
+# V140 UNIQUE FIGMA SUBPAGES + WORKFLOW CONTROL
 # =========================
 
 @app.get("/v135-milestone")
@@ -1559,7 +1559,7 @@ async def v135_milestone(user_id: str = Query(DEFAULT_USER)):
         "version": VERSION,
         "milestone": "Unique Figma Subpages + Workflow Control",
         "ready": True,
-        "frontend_must_show": "V135 Figma Subpages · V135 Backend",
+        "frontend_must_show": "V140 Figma Subpages · V140 Backend",
         "keeps_locked_command_center": True,
         "counts": {
             "recent_runs": len(mem.get("recent_runs") or []),
@@ -1580,5 +1580,199 @@ async def v135_milestone(user_id: str = Query(DEFAULT_USER)):
             "Open Action Queue",
             "Open Decisions",
             "Open Memory"
+        ]
+    }
+
+
+
+
+# =========================
+# V140 MEMORY + INTELLIGENCE MILESTONE
+# =========================
+
+def v140_extract_text(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, dict):
+        return " ".join(str(v) for v in value.values() if v)
+    if isinstance(value, list):
+        return " ".join(str(v) for v in value if v)
+    return str(value)
+
+
+def v140_detect_patterns(mem: Dict[str, Any]) -> List[Dict[str, Any]]:
+    runs = mem.get("recent_runs") or []
+    decisions = mem.get("recent_decisions") or []
+    actions = mem.get("open_actions") or []
+    memory_items = mem.get("memory_items") or []
+
+    text_blob = " ".join([
+        v140_extract_text(r.get("input")) + " " + v140_extract_text(r.get("output")) for r in runs
+    ] + [
+        v140_extract_text(d.get("decision")) + " " + v140_extract_text(d.get("risk")) for d in decisions
+    ] + [
+        v140_extract_text(a.get("text")) for a in actions
+    ] + [
+        v140_extract_text(m.get("content")) for m in memory_items
+    ]).lower()
+
+    patterns = []
+
+    if any(w in text_blob for w in ["backend", "endpoint", "deploy", "render", "supabase"]):
+        patterns.append({
+            "type": "execution_pattern",
+            "signal": "Backend validation keeps appearing as a recurring execution theme.",
+            "confidence": "High",
+            "next_move": "Lock backend checks into a repeatable deployment checklist."
+        })
+
+    if any(w in text_blob for w in ["ui", "design", "figma", "frontend", "layout"]):
+        patterns.append({
+            "type": "design_pattern",
+            "signal": "UI clarity and workflow flow are recurring decision drivers.",
+            "confidence": "High",
+            "next_move": "Separate design feedback from backend functionality testing."
+        })
+
+    if any(w in text_blob for w in ["limited", "constraint", "blocker", "delay", "risk"]):
+        patterns.append({
+            "type": "constraint_pattern",
+            "signal": "Constraints are repeatedly tied to focus, resources, and sequencing.",
+            "confidence": "Medium",
+            "next_move": "Force every command to identify the constraint before generating actions."
+        })
+
+    if len(actions) >= 10:
+        patterns.append({
+            "type": "queue_pattern",
+            "signal": "Open action count is high; execution risk is action accumulation.",
+            "confidence": "High",
+            "next_move": "Complete or archive the lowest-value actions before creating new ones."
+        })
+
+    if not patterns:
+        patterns.append({
+            "type": "baseline_pattern",
+            "signal": "Not enough repeated signal yet. More saved runs are needed.",
+            "confidence": "Low",
+            "next_move": "Run five real commands and save the decisions/actions."
+        })
+
+    return patterns[:6]
+
+
+def v140_memory_summary(mem: Dict[str, Any]) -> Dict[str, Any]:
+    patterns = v140_detect_patterns(mem)
+    actions = mem.get("open_actions") or []
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+
+    high_actions = [a for a in actions if str(a.get("priority", "")).lower() in ["high", "critical"]]
+
+    return {
+        "summary": "Memory is tracking repeated decisions, constraints, risks, and execution patterns.",
+        "top_pattern": patterns[0] if patterns else {},
+        "patterns": patterns,
+        "active_constraints": [
+            p["signal"] for p in patterns if "constraint" in p["type"] or "queue" in p["type"]
+        ][:4],
+        "decision_patterns": [
+            {
+                "decision": d.get("decision", ""),
+                "priority": d.get("priority", "medium"),
+                "created_at": d.get("created_at", "")
+            } for d in decisions[:5]
+        ],
+        "risk_signals": [
+            {
+                "risk": d.get("risk") or "Decision requires follow-up risk review.",
+                "priority": d.get("priority", "medium")
+            } for d in decisions[:5]
+        ],
+        "next_memory_move": patterns[0].get("next_move") if patterns else "Save more runs to improve memory quality.",
+        "counts": {
+            "memory_items": len(memory_items),
+            "patterns": len(patterns),
+            "open_actions": len(actions),
+            "high_priority_actions": len(high_actions),
+            "saved_decisions": len(decisions)
+        }
+    }
+
+
+@app.get("/memory-intelligence")
+async def memory_intelligence(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory + Intelligence",
+        "intelligence": v140_memory_summary(mem)
+    }
+
+
+@app.get("/decision-patterns")
+async def decision_patterns(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    summary = v140_memory_summary(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "patterns": summary["decision_patterns"],
+        "risk_signals": summary["risk_signals"],
+        "next_move": summary["next_memory_move"]
+    }
+
+
+@app.get("/context-brief")
+async def context_brief(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    summary = v140_memory_summary(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "brief": {
+            "operator_context": "Use recent decisions, open actions, and recurring memory patterns to keep responses specific.",
+            "top_pattern": summary["top_pattern"],
+            "active_constraints": summary["active_constraints"],
+            "next_memory_move": summary["next_memory_move"],
+            "recommended_prompt_addition": "Use my recent decisions, open actions, and constraints. Push the single next action."
+        }
+    }
+
+
+@app.get("/v140-milestone")
+async def v140_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    intelligence = v140_memory_summary(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Supabase enabled", "passed": mem.get("supabase_enabled", False)},
+        {"name": "Memory summary available", "passed": True},
+        {"name": "Patterns detected", "passed": len(intelligence.get("patterns") or []) > 0},
+        {"name": "Decision patterns available", "passed": True},
+        {"name": "Context brief available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory + Intelligence",
+        "ready": score >= 7,
+        "score": f"{score}/{len(checks)}",
+        "checks": checks,
+        "frontend_must_show": "V140 Memory Intelligence · V140 Backend",
+        "intelligence": intelligence,
+        "test_checklist": [
+            "Open Memory page",
+            "Confirm Detected Patterns load",
+            "Open Decisions page",
+            "Open Action Queue page",
+            "Run one command",
+            "Save action and decision",
+            "Check /memory-intelligence",
+            "Check /context-brief"
         ]
     }

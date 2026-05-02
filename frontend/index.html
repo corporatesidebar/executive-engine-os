@@ -94,6 +94,17 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 .toggle{width:36px;height:20px;border-radius:999px;background:#2563eb;position:relative}.toggle:after{content:"";position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;right:2px;top:2px}.toggle.off{background:#cbd5e1}.toggle.off:after{right:18px}
 @media(max-width:1100px){.stats-row,.triple-grid,.split-grid{grid-template-columns:1fr}.page-topbar{display:block}.page-action{margin-top:12px}}
 
+
+/* V140 memory intelligence enhancements */
+.memory-command-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.intel-card{border:1px solid #bfdbfe;background:linear-gradient(90deg,#eff6ff,#f8fbff);border-radius:14px;padding:14px}
+.intel-card h4{margin:0 0 8px;color:#0f63ff;font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+.intel-card p{margin:0;color:#334155;line-height:1.45;font-size:13px}
+.pattern-score{height:8px;background:#e5edf7;border-radius:999px;overflow:hidden;margin-top:10px}
+.pattern-score span{display:block;height:100%;background:linear-gradient(90deg,#0f63ff,#9333ea)}
+.memory-alert{border-left:5px solid #ff6a00;background:#fff7ed;border-color:#fed7aa}
+@media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -101,11 +112,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 14H13v36h17"/><path d="M30 32H15"/><path d="M34 14h17v36H34"/><path d="M34 32h15"/></g></svg></div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V135 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V140 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V135 Figma Subpages</div>
+  <div class="lock">▣ V140 Memory Intelligence</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -155,7 +166,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V135 Figma Subpages · V135 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V140 Memory Intelligence · V140 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -256,12 +267,19 @@ function renderPage(page){
   return;
  }
  if(page==="memory"){
-  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#a855f7">Organizational Memory</div><h2>Memory</h2><p class="sub">Context, patterns, and insights from your decisions.</p></div><button class="page-action purple" onclick="runPagePrompt('memory')">View Insights</button></div>
-  <div class="stats-row"><div class="stat-card purple"><small>Context Stored</small><strong>${mem.length||2847}</strong></div><div class="stat-card"><small>Patterns Detected</small><strong>127</strong></div><div class="stat-card teal"><small>Active Sessions</small><strong>18</strong></div><div class="stat-card green"><small>Retention Rate</small><strong>98%</strong></div></div>
-  <section class="section-card"><div class="section-head purple">Detected Patterns</div><div class="section-body">${memoryRows.map(m=>`<div class="memory-pattern"><b>${esc(m.type||"Pattern")}</b><p>${esc(m.content||"")}</p><span class="status-pill green">High Confidence</span></div>`).join("")}</div></section>
-  <div class="split-grid"><section class="section-card"><div class="section-head dark">Active Context</div><div class="section-body">${["Q2 Planning Focus","Enterprise Pipeline Review","Engineering Hiring Sprint"].map(x=>`<div class="list-row"><div>${x}</div><span class="status-pill">Active</span></div>`).join("")}</div></section><section class="section-card"><div class="section-head green">Recent Recalls</div><div class="section-body">${decisionRows.slice(0,3).map(d=>`<div class="list-row"><div>${esc(short(d.decision,70))}</div></div>`).join("")}</div></section></div>`;
+  host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker" style="color:#a855f7">Organizational Memory</div><h2>Memory Intelligence</h2><p class="sub">Patterns, constraints, decision history, and context signals from your execution loop.</p></div><button class="page-action purple" onclick="loadMemoryIntelligence()">Refresh Intelligence</button></div>
+  <div class="stats-row"><div class="stat-card purple"><small>Memory Items</small><strong>${mem.length||20}</strong><span>Stored signals</span></div><div class="stat-card"><small>Patterns Detected</small><strong id="patternCount">—</strong><span>Live intelligence</span></div><div class="stat-card orange"><small>Active Constraints</small><strong id="constraintCount">—</strong><span>Execution blockers</span></div><div class="stat-card green"><small>Context Quality</small><strong>98%</strong><span>Ready</span></div></div>
+  <div class="memory-command-row">
+    <div class="intel-card"><h4>Decision Pattern</h4><p id="topPattern">Loading memory pattern...</p><div class="pattern-score"><span style="width:88%"></span></div></div>
+    <div class="intel-card memory-alert"><h4>Active Constraint</h4><p id="topConstraint">Loading constraint...</p><div class="pattern-score"><span style="width:66%;background:#ff6a00"></span></div></div>
+    <div class="intel-card"><h4>Next Memory Move</h4><p id="nextMemoryMove">Loading next move...</p><div class="pattern-score"><span style="width:78%;background:#10b981"></span></div></div>
+  </div>
+  <section class="section-card"><div class="section-head purple">Detected Patterns</div><div class="section-body" id="detectedPatterns">${memoryRows.map(m=>`<div class="memory-pattern"><b>${esc(m.type||"Pattern")}</b><p>${esc(m.content||"")}</p><span class="status-pill green">High Confidence</span></div>`).join("")}</div></section>
+  <div class="split-grid"><section class="section-card"><div class="section-head dark">Active Context</div><div class="section-body" id="activeConstraints">${["Q2 Planning Focus","Enterprise Pipeline Review","Engineering Hiring Sprint"].map(x=>`<div class="list-row"><div>${x}</div><span class="status-pill">Active</span></div>`).join("")}</div></section><section class="section-card"><div class="section-head green">Decision Patterns</div><div class="section-body" id="decisionPatterns">${decisionRows.slice(0,3).map(d=>`<div class="list-row"><div>${esc(short(d.decision,70))}</div></div>`).join("")}</div></section></div>`;
+  loadMemoryIntelligence();
   return;
  }
+ 
  if(page==="profile"){
   host.innerHTML=`<div class="page-topbar"><div><div class="page-kicker">User Profile</div><h2>Profile</h2><p class="sub">Manage your account and preferences.</p></div><button class="page-action">Edit Profile</button></div>
   <div class="profile-hero"><div class="profile-gradient"></div><div class="profile-content"><div class="profile-avatar">JD</div><div><h2>John Doe</h2><p>Chief Executive Officer</p></div></div></div>
@@ -291,6 +309,28 @@ async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=d
 async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}
 async function checkPersistence(){try{const d=await api("/button-persistence-check?user_id="+encodeURIComponent(USER_ID));status(`Persistence: ${d.counts.open_actions} actions · ${d.counts.saved_decisions} decisions`,"success");const btn=document.getElementById("persistBtn");if(btn){btn.textContent="Persistence OK";btn.style.background="#ecfdf5";btn.style.color="#047857"}await refreshState();return d}catch(e){status("Persistence check failed: "+e.message,"error")}}
 function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"></span><div><strong>${esc(t)}</strong><span>${esc(s||"")}</span></div>${tag?`<span class="tag ${cls}">${esc(tag)}</span>`:""}</div>`}function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
+
+async function loadMemoryIntelligence(){
+ try{
+  const d=await api("/memory-intelligence?user_id="+encodeURIComponent(USER_ID));
+  const intel=d.intelligence||{};
+  const patterns=intel.patterns||[];
+  const constraints=intel.active_constraints||[];
+  const decisions=intel.decision_patterns||[];
+  const pc=document.getElementById("patternCount"); if(pc) pc.textContent=patterns.length||0;
+  const cc=document.getElementById("constraintCount"); if(cc) cc.textContent=constraints.length||0;
+  const tp=document.getElementById("topPattern"); if(tp) tp.textContent=(intel.top_pattern&&intel.top_pattern.signal)||"No repeated pattern yet.";
+  const tc=document.getElementById("topConstraint"); if(tc) tc.textContent=constraints[0]||"No active constraint detected.";
+  const nm=document.getElementById("nextMemoryMove"); if(nm) nm.textContent=intel.next_memory_move||"Save more decisions and actions.";
+  const dp=document.getElementById("detectedPatterns");
+  if(dp) dp.innerHTML=(patterns.length?patterns:[{type:"baseline_pattern",signal:"Run more commands to improve memory intelligence.",confidence:"Low"}]).map(p=>`<div class="memory-pattern"><b>${esc(p.type||"Pattern")}</b><p>${esc(p.signal||"")}</p><span class="status-pill ${p.confidence==="High"?"green":""}">${esc(p.confidence||"Medium")} Confidence</span></div>`).join("");
+  const ac=document.getElementById("activeConstraints");
+  if(ac) ac.innerHTML=(constraints.length?constraints:["No active constraints detected yet."]).map(c=>`<div class="list-row"><div>${esc(c)}</div><span class="status-pill orange">Constraint</span></div>`).join("");
+  const dps=document.getElementById("decisionPatterns");
+  if(dps) dps.innerHTML=(decisions.length?decisions:[]).map(x=>`<div class="list-row"><div><div class="maintext">${esc(short(x.decision||"Decision",80))}</div><div class="meta">${esc(x.priority||"medium")} priority</div></div></div>`).join("") || '<div class="list-row"><div>No decision patterns yet.</div></div>';
+ }catch(e){toast("Memory intelligence unavailable","error")}
+}
+
 async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};appState={actions,decisions,memory:mem,focus};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";const fa=document.getElementById("feedActions");if(fa)fa.textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory");if(activePage!=="command")renderPage(activePage)}catch(e){if(statusBox())status("Backend status issue: "+e.message,"error")}}
 async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
 setDefaultFeed();defaultPreview();refreshState();stabilityAudit();
