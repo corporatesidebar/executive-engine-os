@@ -1656,6 +1656,647 @@ textarea#input{
 }
 @media(max-width:1180px){.v700-oauth{grid-template-columns:1fr}.v700-gates{grid-template-columns:1fr}}
 
+
+/* V750 Connector Command Center */
+.v750-center{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v750-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v750-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v750-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v750-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v750-item{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v750-item.high,.v750-item.critical{border-left-color:#ff6a00}
+.v750-item.medium{border-left-color:#7c3aed}
+.v750-item.low{border-left-color:#10b981}
+.v750-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v750-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v750-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v750-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v750-actions button.primary{
+  background:#071226;
+  color:#fff;
+  border-color:#071226;
+}
+.v750-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+.v750-policy{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v750-policy div{
+  border:1px solid #dbe5f1;
+  border-radius:12px;
+  padding:10px;
+  background:#fff;
+}
+.v750-policy small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v750-policy strong{
+  color:#071226;
+  font-size:12px;
+}
+@media(max-width:1180px){.v750-center{grid-template-columns:1fr}.v750-policy{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.v750-policy{grid-template-columns:1fr}}
+
+
+/* V800 OAuth Activation Prep */
+.v800-prep{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v800-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v800-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v800-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v800-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v800-cell{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v800-cell small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v800-cell strong{
+  color:#071226;
+  font-size:12px;
+}
+.v800-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v800-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v800-item.required,.v800-item.blocked{border-left-color:#ff6a00}
+.v800-item.safe{border-left-color:#10b981}
+.v800-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v800-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v800-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v800-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v800-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v800-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+@media(max-width:1180px){.v800-prep{grid-template-columns:1fr}.v800-grid{grid-template-columns:1fr}}
+
+
+/* V850 Google Connector Blueprint */
+.v850-blueprint{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v850-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v850-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v850-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v850-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v850-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v850-item.next{border-left-color:#ff6a00}
+.v850-item.safe{border-left-color:#10b981}
+.v850-item.medium{border-left-color:#7c3aed}
+.v850-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v850-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v850-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v850-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v850-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v850-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+@media(max-width:1180px){.v850-blueprint{grid-template-columns:1fr}}
+
+
+/* V900 Calendar OAuth Candidate */
+.v900-candidate{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v900-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v900-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v900-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v900-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v900-cell{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v900-cell small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v900-cell strong{
+  color:#071226;
+  font-size:12px;
+}
+.v900-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v900-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v900-item.blocked{border-left-color:#ff6a00}
+.v900-item.safe{border-left-color:#10b981}
+.v900-item.plan{border-left-color:#7c3aed}
+.v900-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v900-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v900-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v900-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v900-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v900-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+.v900-url{
+  background:#071226;
+  color:#dbeafe;
+  border-radius:12px;
+  padding:10px;
+  font-size:11px;
+  line-height:1.4;
+  word-break:break-all;
+  max-height:120px;
+  overflow:auto;
+  margin-top:10px;
+}
+@media(max-width:1180px){.v900-candidate{grid-template-columns:1fr}.v900-grid{grid-template-columns:1fr}}
+
+
+/* V950 Token Storage + Disconnect Flow Candidate */
+.v950-token{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v950-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v950-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v950-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v950-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v950-cell{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v950-cell small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v950-cell strong{
+  color:#071226;
+  font-size:12px;
+}
+.v950-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v950-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v950-item.blocked{border-left-color:#ff6a00}
+.v950-item.safe{border-left-color:#10b981}
+.v950-item.plan{border-left-color:#7c3aed}
+.v950-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v950-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v950-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v950-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v950-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v950-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+@media(max-width:1180px){.v950-token{grid-template-columns:1fr}.v950-grid{grid-template-columns:1fr}}
+
+
+/* V1000 Calendar OAuth Candidate */
+.v1000-calendar{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v1000-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v1000-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v1000-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v1000-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v1000-cell{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v1000-cell small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v1000-cell strong{
+  color:#071226;
+  font-size:12px;
+}
+.v1000-url{
+  background:#071226;
+  color:#dbeafe;
+  border-radius:12px;
+  padding:10px;
+  font-size:11px;
+  line-height:1.4;
+  word-break:break-all;
+  max-height:120px;
+  overflow:auto;
+  margin-top:10px;
+}
+.v1000-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v1000-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v1000-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+.v1000-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+.v1000-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v1000-item{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:11px;
+}
+.v1000-item.blocked{border-left-color:#ff6a00}
+.v1000-item.safe{border-left-color:#10b981}
+.v1000-item.plan{border-left-color:#7c3aed}
+.v1000-item b{
+  display:block;
+  color:#071226;
+  font-size:13px;
+  margin-bottom:3px;
+}
+.v1000-item span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+@media(max-width:1180px){.v1000-calendar{grid-template-columns:1fr}.v1000-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1663,11 +2304,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V700 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V1000 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V700 OAuth Readiness</div>
+  <div class="lock">▣ V1000 Calendar OAuth</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1731,7 +2372,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V700 OAuth Readiness · V700 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V1000 Calendar OAuth · V1000 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1950,7 +2591,286 @@ function v650LocalFilesSummary(){
 }
 
 async 
-async function v700RefreshConnectors(){
+async 
+async 
+async 
+async 
+async 
+async 
+async function v1000RefreshCandidate(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const status=await fetch(base+"/calendar/connect-status").then(r=>r.json());
+    const live=await fetch(base+"/calendar/status-live-candidate").then(r=>r.json());
+
+    const grid=document.getElementById("v1000StatusGrid");
+    if(grid){
+      const env=status.env||{};
+      grid.innerHTML=`
+        <div class="v1000-cell"><small>Client ID</small><strong>${env.GOOGLE_CLIENT_ID_SET ? "Set" : "Missing"}</strong></div>
+        <div class="v1000-cell"><small>Redirect URI</small><strong>${env.GOOGLE_REDIRECT_URI_SET ? "Set" : "Missing"}</strong></div>
+        <div class="v1000-cell"><small>Token Storage</small><strong>${live.token_storage_active ? "On" : "Off"}</strong></div>
+        <div class="v1000-cell"><small>Connection</small><strong>${live.connected ? "Connected" : "Not Connected"}</strong></div>`;
+    }
+    if(typeof toast==="function") toast("V1000 Calendar OAuth candidate refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("V1000 Calendar OAuth unavailable","error");
+  }
+}
+
+async function v1000LoadAuthUrl(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/calendar/auth-url").then(r=>r.json());
+    const box=document.getElementById("v1000AuthUrl");
+    if(box) box.textContent=res.auth_url || res.message || "Auth URL unavailable.";
+    if(typeof toast==="function") toast("Calendar auth URL generated","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Calendar auth URL unavailable","error");
+  }
+}
+
+function v1000LoadReviewCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review Executive Engine OS V1000 Live Calendar Read-Only OAuth Candidate. Check env readiness, auth URL route, callback route, context approval, token exchange still disabled, token storage still disabled, calendar writes blocked, and the next safest build. Recommend whether V1050 should implement real token exchange and encrypted storage.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("V1000 review command loaded","success");
+}
+
+function v950RefreshCandidate(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const plan=await fetch(base+"/tokens/storage-plan").then(r=>r.json());
+    const enc=await fetch(base+"/tokens/encryption-check").then(r=>r.json());
+    const flow=await fetch(base+"/calendar/disconnect-flow").then(r=>r.json());
+    const policy=await fetch(base+"/calendar/refresh-policy").then(r=>r.json());
+
+    const grid=document.getElementById("v950TokenGrid");
+    if(grid){
+      grid.innerHTML=`
+        <div class="v950-cell"><small>Storage</small><strong>${plan.plan?.storage_status || "candidate_only"}</strong></div>
+        <div class="v950-cell"><small>Encryption Key</small><strong>${enc.encryption_key_present ? "Present" : "Missing"}</strong></div>
+        <div class="v950-cell"><small>Schema Changed</small><strong>${plan.plan?.schema_changed_in_v950 ? "Yes" : "No"}</strong></div>
+        <div class="v950-cell"><small>Frontend Tokens</small><strong>Never</strong></div>`;
+    }
+
+    const list=document.getElementById("v950FlowList");
+    if(list){
+      list.innerHTML=`
+        <div class="v950-item plan"><b>Disconnect Flow</b><span>${(flow.flow?.steps || []).slice(0,4).join(" → ")}</span></div>
+        <div class="v950-item safe"><b>Refresh Policy</b><span>${(policy.policy?.policy || []).slice(0,3).join(" · ")}</span></div>
+        <div class="v950-item blocked"><b>Background Refresh</b><span>${policy.policy?.background_refresh_enabled ? "Enabled" : "Blocked"}</span></div>`;
+    }
+    if(typeof toast==="function") toast("Token storage candidate refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Token storage candidate unavailable","error");
+  }
+}
+
+async function v950SimulateDisconnect(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/calendar/disconnect-simulate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({provider:"google_calendar",connected:false,has_token_record:false})
+    }).then(r=>r.json());
+    if(typeof toast==="function") toast(res.message || "Disconnect simulated","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Disconnect simulation unavailable","error");
+  }
+}
+
+function v950LoadReviewCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review Executive Engine OS V950 Token Storage + Disconnect Flow Candidate. Assess token storage plan, encryption readiness, disconnect/revoke flow, refresh policy, Supabase schema implications, and next safest build. Do not enable live OAuth. Keep calendar writes blocked and manual execution only.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("V950 review command loaded","success");
+}
+
+function v900RefreshCandidate(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const status=await fetch(base+"/calendar/oauth-candidate/status").then(r=>r.json());
+    const plan=await fetch(base+"/calendar/token-storage-plan").then(r=>r.json());
+    const env=document.getElementById("v900EnvGrid");
+    if(env){
+      const e=status.status?.env||{};
+      env.innerHTML=Object.entries(e).map(([k,v])=>`<div class="v900-cell"><small>${k.replaceAll("_"," ")}</small><strong>${v?"Set":"Missing"}</strong></div>`).join("")+
+      `<div class="v900-cell"><small>Live OAuth</small><strong>Disabled</strong></div><div class="v900-cell"><small>Writes</small><strong>Blocked</strong></div>`;
+    }
+    const list=document.getElementById("v900PlanList");
+    if(list){
+      const fields=plan.plan?.fields_needed_future||[];
+      list.innerHTML=`<div class="v900-item plan"><b>Future token fields</b><span>${fields.slice(0,6).join(" · ")}</span></div>
+      <div class="v900-item blocked"><b>Schema changed in V900?</b><span>${plan.plan?.v900_schema_changed?"Yes":"No"}</span></div>
+      <div class="v900-item safe"><b>Disconnect required</b><span>${plan.plan?.disconnect_required?"Yes":"No"} · Revoke required: ${plan.plan?.revoke_required?"Yes":"No"}</span></div>`;
+    }
+    if(typeof toast==="function") toast("Calendar OAuth candidate refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Calendar OAuth candidate unavailable","error");
+  }
+}
+
+async function v900LoadAuthUrl(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/calendar/auth-url-candidate").then(r=>r.json());
+    const box=document.getElementById("v900AuthUrl");
+    if(box) box.textContent=res.auth_url || "Auth URL candidate unavailable.";
+    if(typeof toast==="function") toast("Auth URL candidate generated","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Auth URL candidate unavailable","error");
+  }
+}
+
+function v900LoadReviewCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review Executive Engine OS V900 Calendar OAuth Candidate. Check environment readiness, read-only scope, token storage plan, disconnect/revoke requirements, risks, and next safest build. Do not enable live OAuth. Keep calendar writes blocked and manual execution only.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Calendar OAuth review command loaded","success");
+}
+
+function v850RefreshBlueprint(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const blueprint=await fetch(base+"/google/connector-blueprint").then(r=>r.json());
+    const plan=await fetch(base+"/google/activation-plan").then(r=>r.json());
+    const list=document.getElementById("v850BlueprintList");
+    if(list){
+      const bp=blueprint.blueprint||{};
+      list.innerHTML=Object.values(bp).map(c=>`<div class="v850-item ${c.status==="blueprint_ready"?"next":"safe"}"><b>${c.name}</b><span>${c.status} · Live ${c.live_enabled?"on":"off"}<br>Scope: ${c.scope}</span></div>`).join("");
+    }
+    const planBox=document.getElementById("v850ActivationPlan");
+    if(planBox){
+      planBox.innerHTML=(plan.plan||[]).map(p=>`<div class="v850-item ${p.status==="next_best_candidate"?"next":"medium"}"><b>${p.phase}: ${p.title}</b><span>${p.status}<br>${(p.steps||[]).slice(0,3).join(" · ")}</span></div>`).join("");
+    }
+    if(typeof toast==="function") toast("Google connector blueprint refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Google connector blueprint unavailable","error");
+  }
+}
+
+function v850LoadReviewCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review the V850 Google Connector Blueprint. Decide whether the next safest milestone should be V900 Calendar OAuth Candidate or another prep layer. Keep live OAuth off, token storage disabled, external writes blocked, and manual execution only.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Blueprint review command loaded","success");
+}
+
+function v850LoadNextBuildCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="BUILD V900 — CALENDAR OAUTH CANDIDATE. Start from V850. Keep diagnostic routes. Do not touch Supabase schema unless explicitly required. Add real Google Calendar read-only OAuth candidate only if token storage, redirect URI, disconnect flow, and safety checks are implemented. No calendar writes. No background sync. Manual execution only. Include all files in ZIP.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof toast==="function")toast("V900 command loaded","success");
+}
+
+function v800RefreshPrep(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const prep=await fetch(base+"/oauth/activation-prep").then(r=>r.json());
+    const gates=await fetch(base+"/security-gates").then(r=>r.json());
+    const env=document.getElementById("v800EnvGrid");
+    if(env){
+      const r=prep.env_readiness||{};
+      const present=r.config_present||{};
+      env.innerHTML=Object.entries(present).map(([k,v])=>`<div class="v800-cell"><small>${k.replaceAll("_"," ")}</small><strong>${v?"Set":"Missing"}</strong></div>`).join("")+
+      `<div class="v800-cell"><small>OAuth Enabled</small><strong>No</strong></div><div class="v800-cell"><small>External Writes</small><strong>Blocked</strong></div>`;
+    }
+    const gateBox=document.getElementById("v800SecurityGates");
+    if(gateBox){
+      gateBox.innerHTML=(gates.gates||[]).map(g=>`<div class="v800-item ${String(g.status||"required").toLowerCase()}"><b>${g.title}</b><span>${g.status} · ${g.blocks}</span></div>`).join("");
+    }
+    const checklist=document.getElementById("v800Checklist");
+    if(checklist){
+      checklist.innerHTML=(prep.activation_checklist||[]).map(i=>`<div class="v800-item ${String(i.status||"required").toLowerCase()}"><b>${i.step}</b><span>${i.status}</span></div>`).join("");
+    }
+    if(typeof toast==="function") toast("OAuth activation prep refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("OAuth activation prep unavailable","error");
+  }
+}
+
+async function v800SimulateActivation(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/oauth/activation-simulate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        connector:"calendar",
+        requested_scope:"https://www.googleapis.com/auth/calendar.events.readonly",
+        enable_oauth:true,
+        token_storage_ready:false,
+        external_write_requested:false,
+        auto_loop_requested:false
+      })
+    }).then(r=>r.json());
+    if(typeof toast==="function") toast(res.simulation_result==="not_ready"?"Activation not ready — safe":"Activation simulation complete","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Activation simulation unavailable","error");
+  }
+}
+
+function v800LoadCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review Executive Engine OS V800 OAuth activation prep. Assess environment readiness, read-only scopes, token storage requirements, security gates, and the next safest build step. Do not enable live OAuth. Keep external writes blocked and manual execution only.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("OAuth review command loaded","success");
+}
+
+function v750RefreshCenter(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const center=await fetch(base+"/connector-command-center").then(r=>r.json());
+    const list=document.getElementById("v750ConnectorList");
+    if(list){
+      list.innerHTML=(center.connectors||[]).map(c=>`<div class="v750-item ${String(c.risk||"low").toLowerCase()}"><b>${c.name}</b><span>${c.status} · ${c.mode} · Writes ${c.writes_blocked?"blocked":"open"}<br>${c.next_safe_step}</span></div>`).join("");
+    }
+    const queue=document.getElementById("v750ApprovalQueue");
+    if(queue){
+      queue.innerHTML=(center.approval_queue||[]).map(a=>`<div class="v750-item ${String(a.priority||"medium").toLowerCase()}"><b>${a.title}</b><span>${a.status} · ${a.blocked_action}<br>${a.safe_next_step}</span></div>`).join("");
+    }
+    if(typeof toast==="function") toast("Connector Command Center refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Connector Command Center unavailable","error");
+  }
+}
+
+async function v750SimulateApproval(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const res=await fetch(base+"/approval/simulate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action_type:"calendar_oauth_review",external_write:false,oauth_activation:true,auto_loop:false})
+    }).then(r=>r.json());
+    if(typeof toast==="function") toast(res.decision==="review_required"?"Review required — safe":"Approval simulation complete","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Approval simulation unavailable","error");
+  }
+}
+
+function v750LoadCommand(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const prompt="Review the Executive Engine OS connector command center. Prioritize the next safest connector step across Calendar, Files, Email Drafts, and CRM. Keep OAuth disabled, external writes blocked, manual execution only, and recommend the next build milestone.";
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Connector command loaded","success");
+}
+
+function v700RefreshConnectors(){
   try{
     const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
     const status=await fetch(base+"/connectors/status").then(r=>r.json());
@@ -2161,7 +3081,7 @@ async function v550CopyContext(){
 function v550ResetPrep(){
   v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
   localStorage.removeItem(V550_KEY);
-  v550Load();v600RefreshCalendar();v650RefreshFiles();v700RefreshConnectors();
+  v550Load();v600RefreshCalendar();v650RefreshFiles();v700RefreshConnectors();v750RefreshCenter();v800RefreshPrep();v850RefreshBlueprint();v900RefreshCandidate();v950RefreshCandidate();v1000RefreshCandidate();
 }
 
 function v500LocalState(){
@@ -2360,7 +3280,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V700 OAuth Readiness · V700 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V1000 Calendar OAuth · V1000 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");

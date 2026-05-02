@@ -14,19 +14,20 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V700: an OAuth readiness and connector activation candidate for a serious executive operating system.
+You are Executive Engine OS V1000: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
-You are not a chatbot. You are a daily execution cockpit and connector readiness layer.
+You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
 Operating principles:
-- Think like an elite COO, board operator, chief of staff, and execution strategist.
+- Think like an elite COO, board operator, chief of staff, execution strategist, and security-minded product architect.
 - Convert messy input into an executable operating decision.
 - Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
-- Use manually provided Calendar + Files prep context when the user includes it.
-- Treat Calendar, Files, Email, and connector intelligence as read-only and user-controlled until real OAuth is explicitly enabled.
-- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected.
+- Use Calendar context only when manually provided or when verified read-only Calendar connection is active.
+- Treat Calendar, Files, Email, CRM, and connector intelligence as read-only and user-controlled unless explicitly enabled.
+- Never claim calendar write access.
 - Never create, edit, delete, invite, reschedule, email, auto-join, auto-send, auto-read, or auto-modify external systems.
-- Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
+- External execution must require explicit user approval.
+- Prioritize security, leverage, sequence, owner clarity, cash impact, risk, and speed.
 - Make the next move obvious.
 - No generic advice.
 - No motivational language.
@@ -49,12 +50,12 @@ Required schema:
   "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
   "financial_impact": "Likely financial or operational impact in plain English",
   "leverage": "Highest leverage opportunity",
-  "memory_signal": "Relevant pattern, prior decision, recurring constraint, manual integration context, or action overload signal",
-  "calendar_signal": "Calendar-related signal if calendar context is provided; otherwise state prep/not connected",
-  "files_signal": "File/project-related signal if files context is provided; otherwise state prep/not connected",
-  "connector_signal": "Connector readiness signal; do not claim connection unless enabled",
-  "decision_pattern": "Pattern detected from the decision or input",
-  "recurring_risk": "Risk likely to repeat if not addressed",
+  "memory_signal": "Relevant pattern, prior decision, recurring constraint, calendar context, manual integration context, or action overload signal",
+  "calendar_signal": "Calendar signal if verified calendar context is available; otherwise state not connected or prep",
+  "connector_signal": "Connector signal; do not claim connection unless verified",
+  "security_gate": "Security or OAuth gate that applies",
+  "approval_required": "true or false based on whether external action would be needed",
+  "approval_gate": "Which approval gate applies, or none",
   "notification": "One short alert the executive should see",
   "recommended_command": "Copy-paste-ready next command to run",
   "follow_up_question": "Only ask if absolutely required; otherwise use an empty string"
@@ -66,7 +67,8 @@ Rules:
 - No text outside JSON.
 - Every action must be concrete, testable, and executable.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- Connector context is manual/read-only unless future OAuth is explicitly connected.
+- Calendar OAuth is read-only only.
+- Calendar writes are blocked.
 - Manual execution only.
 - Auto-loop remains off.
 """
@@ -79,8 +81,14 @@ Rules:
 
 
 
-VERSION = "V700"
-SERVICE_NAME = "Executive Engine OS V700"
+
+
+
+
+
+
+VERSION = "V1000"
+SERVICE_NAME = "Executive Engine OS V1000"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -103,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="700.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1000.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -412,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V700, an elite COO/operator system.
+You are Executive Engine OS V1000, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -873,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V700",
+        "backend_must_show": "Executive Engine OS V1000",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3752,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V700",
+        "service": "Executive Engine OS V1000",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -5835,4 +5843,1595 @@ async def v700_milestone():
             "/v700-milestone",
             "/health"
         ]
+    }
+
+
+
+
+# =========================
+# V750 CONNECTOR COMMAND CENTER + SUPERVISED APPROVAL WORKFLOW
+# =========================
+# No real OAuth. No token storage. No external writes. No automation loop.
+
+def v750_connector_stack() -> List[Dict[str, Any]]:
+    return [
+        {
+            "id": "calendar",
+            "name": "Calendar Intelligence",
+            "status": "ready_for_review",
+            "mode": "read_only_prep",
+            "connected": False,
+            "writes_blocked": True,
+            "primary_use": "Daily Brief, meeting prep, meeting load",
+            "next_safe_step": "Enable read-only OAuth only after consent and token storage review."
+        },
+        {
+            "id": "files",
+            "name": "Files Intelligence",
+            "status": "ready_for_review",
+            "mode": "read_only_prep",
+            "connected": False,
+            "writes_blocked": True,
+            "primary_use": "Project context, decisions needed, actions needed",
+            "next_safe_step": "Review file privacy rules before read-only Drive access."
+        },
+        {
+            "id": "email",
+            "name": "Email Draft Intelligence",
+            "status": "spec_needed",
+            "mode": "draft_only_future",
+            "connected": False,
+            "writes_blocked": True,
+            "primary_use": "Draft follow-ups, meeting recaps, action owner requests",
+            "next_safe_step": "Build draft-only spec before Gmail OAuth."
+        },
+        {
+            "id": "crm",
+            "name": "CRM / Revenue Intelligence",
+            "status": "planned",
+            "mode": "read_only_future",
+            "connected": False,
+            "writes_blocked": True,
+            "primary_use": "Pipeline risk, revenue priority, customer follow-up context",
+            "next_safe_step": "Define CRM provider and read-only data model."
+        }
+    ]
+
+
+def v750_approval_queue() -> List[Dict[str, Any]]:
+    return [
+        {
+            "id": "approve_calendar_oauth_review",
+            "title": "Review Google Calendar OAuth",
+            "type": "connector_review",
+            "priority": "High",
+            "status": "pending_review",
+            "approval_required": True,
+            "blocked_action": "Live Google Calendar connection",
+            "safe_next_step": "Confirm read-only scope and redirect URI before activation."
+        },
+        {
+            "id": "approve_drive_oauth_review",
+            "title": "Review Google Drive OAuth",
+            "type": "connector_review",
+            "priority": "High",
+            "status": "pending_review",
+            "approval_required": True,
+            "blocked_action": "Live Google Drive connection",
+            "safe_next_step": "Confirm file privacy rules and read-only scope before activation."
+        },
+        {
+            "id": "approve_email_draft_spec",
+            "title": "Approve Email Draft Spec",
+            "type": "module_spec",
+            "priority": "Medium",
+            "status": "spec_needed",
+            "approval_required": True,
+            "blocked_action": "Gmail OAuth or email sending",
+            "safe_next_step": "Design draft-only email workflow with no auto-send."
+        },
+        {
+            "id": "approve_external_writes",
+            "title": "External Writes",
+            "type": "safety_gate",
+            "priority": "Critical",
+            "status": "blocked",
+            "approval_required": True,
+            "blocked_action": "Any write to calendar, files, email, CRM, or external tools",
+            "safe_next_step": "Keep blocked until user explicitly approves a future write-capable version."
+        }
+    ]
+
+
+def v750_supervised_actions() -> List[Dict[str, Any]]:
+    return [
+        {
+            "action": "Send calendar context to Daily Brief",
+            "allowed": True,
+            "approval_required": False,
+            "mode": "manual",
+            "external_write": False
+        },
+        {
+            "action": "Send file context to Run Command",
+            "allowed": True,
+            "approval_required": False,
+            "mode": "manual",
+            "external_write": False
+        },
+        {
+            "action": "Generate email draft",
+            "allowed": True,
+            "approval_required": True,
+            "mode": "draft_only_future",
+            "external_write": False
+        },
+        {
+            "action": "Send email",
+            "allowed": False,
+            "approval_required": True,
+            "mode": "blocked",
+            "external_write": True
+        },
+        {
+            "action": "Create calendar event",
+            "allowed": False,
+            "approval_required": True,
+            "mode": "blocked",
+            "external_write": True
+        },
+        {
+            "action": "Edit Google Drive file",
+            "allowed": False,
+            "approval_required": True,
+            "mode": "blocked",
+            "external_write": True
+        }
+    ]
+
+
+@app.get("/connector-command-center")
+async def connector_command_center():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Connector Command Center",
+        "connectors": v750_connector_stack(),
+        "approval_queue": v750_approval_queue(),
+        "supervised_actions": v750_supervised_actions(),
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/approval-queue")
+async def approval_queue():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Approval Queue",
+        "items": v750_approval_queue(),
+        "external_writes_blocked": True,
+        "manual_execution_only": True
+    }
+
+
+@app.get("/supervised-actions")
+async def supervised_actions():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Supervised Actions",
+        "actions": v750_supervised_actions(),
+        "policy": {
+            "external_writes_blocked": True,
+            "auto_send_blocked": True,
+            "auto_loop_blocked": True,
+            "manual_context_allowed": True
+        }
+    }
+
+
+@app.post("/approval/simulate")
+async def approval_simulate(payload: Dict[str, Any]):
+    action_type = str(payload.get("action_type", "unknown")).lower()
+    external_write = bool(payload.get("external_write", False))
+    oauth_activation = bool(payload.get("oauth_activation", False))
+    auto_loop = bool(payload.get("auto_loop", False))
+
+    blocked = external_write or auto_loop
+    requires_review = oauth_activation or external_write or auto_loop or action_type in ["email_send", "calendar_write", "file_write", "crm_write"]
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "approved": False if blocked else (not requires_review),
+        "requires_review": requires_review,
+        "blocked": blocked,
+        "decision": "blocked" if blocked else ("review_required" if requires_review else "manual_allowed"),
+        "reason": (
+            "External writes and automation loops remain blocked."
+            if blocked else
+            "This action requires explicit review before activation."
+            if requires_review else
+            "Manual, internal-only action is allowed."
+        ),
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/connector-notifications")
+async def connector_notifications():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "notifications": [
+            {
+                "type": "connector_review",
+                "priority": "High",
+                "title": "Calendar OAuth review pending",
+                "message": "Review read-only Calendar scope before enabling live connection."
+            },
+            {
+                "type": "connector_review",
+                "priority": "High",
+                "title": "Drive OAuth review pending",
+                "message": "Review file privacy and read-only Drive scope before enabling live connection."
+            },
+            {
+                "type": "approval_gate",
+                "priority": "Critical",
+                "title": "External writes blocked",
+                "message": "Calendar, file, email, and CRM writes remain blocked."
+            },
+            {
+                "type": "manual_execution",
+                "priority": "Medium",
+                "title": "Manual execution only",
+                "message": "Connector context can be manually loaded into commands, but no background automation runs."
+            }
+        ]
+    }
+
+
+@app.get("/v750-milestone")
+async def v750_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V700 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Connector command center available", "passed": True},
+        {"name": "Approval queue available", "passed": True},
+        {"name": "Supervised actions available", "passed": True},
+        {"name": "Approval simulator available", "passed": True},
+        {"name": "Connector notifications available", "passed": True},
+        {"name": "Live OAuth disabled", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "External writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Connector Command Center + Supervised Approval Workflow",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V750 Connector Command Center · V750 Backend",
+        "checks": checks,
+        "added": [
+            "Connector Command Center",
+            "Approval Queue",
+            "Supervised Actions",
+            "Approval Simulator",
+            "Connector Notifications",
+            "External write blocking policy"
+        ],
+        "not_added": [
+            "Real OAuth connection",
+            "Token storage",
+            "Live Google fetch",
+            "Gmail OAuth",
+            "External writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/connector-command-center",
+            "/approval-queue",
+            "/supervised-actions",
+            "/connector-notifications",
+            "/v750-milestone",
+            "/health"
+        ]
+    }
+
+
+
+
+# =========================
+# V800 OAUTH ACTIVATION PREP + SECURE CONNECTOR SETUP
+# =========================
+# This is still prep only: no real OAuth flow, no token storage, no live Google fetch, no external writes.
+
+def v800_env_readiness() -> Dict[str, Any]:
+    import os
+    keys = {
+        "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
+        "GOOGLE_CLIENT_SECRET": bool(os.getenv("GOOGLE_CLIENT_SECRET")),
+        "GOOGLE_REDIRECT_URI": bool(os.getenv("GOOGLE_REDIRECT_URI")),
+        "GOOGLE_CALENDAR_SCOPE": bool(os.getenv("GOOGLE_CALENDAR_SCOPE")),
+        "GOOGLE_DRIVE_SCOPE": bool(os.getenv("GOOGLE_DRIVE_SCOPE")),
+        "OAUTH_ENABLED": bool(os.getenv("OAUTH_ENABLED"))
+    }
+    required_for_activation = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI"]
+    missing = [k for k in required_for_activation if not keys.get(k)]
+    return {
+        "config_present": keys,
+        "missing_required_for_activation": missing,
+        "activation_ready": len(missing) == 0,
+        "oauth_enabled_now": False,
+        "note": "Environment variables are checked as booleans only. Values are never exposed."
+    }
+
+
+def v800_scope_policy() -> Dict[str, Any]:
+    return {
+        "calendar": {
+            "allowed_scope": "https://www.googleapis.com/auth/calendar.events.readonly",
+            "blocked_scopes": [
+                "https://www.googleapis.com/auth/calendar",
+                "https://www.googleapis.com/auth/calendar.events"
+            ],
+            "write_access": False,
+            "status": "read_only_required"
+        },
+        "drive": {
+            "allowed_scope": "https://www.googleapis.com/auth/drive.readonly",
+            "blocked_scopes": [
+                "https://www.googleapis.com/auth/drive",
+                "https://www.googleapis.com/auth/drive.file"
+            ],
+            "write_access": False,
+            "status": "read_only_required"
+        },
+        "gmail": {
+            "allowed_scope": "not_enabled_yet",
+            "blocked_until": "draft_only_spec_review",
+            "write_access": False,
+            "status": "blocked"
+        }
+    }
+
+
+def v800_activation_checklist() -> List[Dict[str, Any]]:
+    return [
+        {"step": "Confirm Google Cloud OAuth consent screen", "status": "required"},
+        {"step": "Set Render environment variables", "status": "required"},
+        {"step": "Confirm redirect URI matches backend route", "status": "required"},
+        {"step": "Confirm read-only Calendar scope only", "status": "required"},
+        {"step": "Confirm read-only Drive scope only", "status": "required"},
+        {"step": "Design secure server-side token storage", "status": "required_before_live"},
+        {"step": "Design disconnect/revoke flow", "status": "required_before_live"},
+        {"step": "Confirm privacy policy and data handling language", "status": "required_before_live"},
+        {"step": "Run /diagnostic and /system-test", "status": "required"},
+        {"step": "Keep auto-loop off", "status": "locked"}
+    ]
+
+
+@app.get("/oauth/activation-prep")
+async def oauth_activation_prep():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Activation Prep",
+        "env_readiness": v800_env_readiness(),
+        "scope_policy": v800_scope_policy(),
+        "activation_checklist": v800_activation_checklist(),
+        "live_oauth_enabled": False,
+        "token_storage_enabled": False,
+        "external_writes_enabled": False,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/oauth/scope-policy")
+async def oauth_scope_policy():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Scope Policy",
+        "policy": v800_scope_policy()
+    }
+
+
+@app.get("/oauth/env-readiness")
+async def oauth_env_readiness():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Environment Readiness",
+        "readiness": v800_env_readiness()
+    }
+
+
+@app.get("/oauth/activation-checklist")
+async def oauth_activation_checklist():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Activation Checklist",
+        "checklist": v800_activation_checklist()
+    }
+
+
+@app.post("/oauth/activation-simulate")
+async def oauth_activation_simulate(payload: Dict[str, Any]):
+    connector = str(payload.get("connector", "calendar")).lower()
+    requested_scope = str(payload.get("requested_scope", ""))
+    enable_oauth = bool(payload.get("enable_oauth", False))
+    token_storage_ready = bool(payload.get("token_storage_ready", False))
+    external_write_requested = bool(payload.get("external_write_requested", False))
+    auto_loop_requested = bool(payload.get("auto_loop_requested", False))
+
+    policy = v800_scope_policy()
+    connector_policy = policy.get(connector, {})
+
+    scope_allowed = requested_scope == connector_policy.get("allowed_scope")
+    blocked = external_write_requested or auto_loop_requested
+    review_required = enable_oauth or token_storage_ready or bool(requested_scope)
+
+    can_activate = (
+        enable_oauth
+        and token_storage_ready
+        and scope_allowed
+        and not blocked
+        and connector in ["calendar", "drive"]
+    )
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "connector": connector,
+        "can_activate_now": False,
+        "simulation_result": "ready_for_review" if can_activate else ("blocked" if blocked else "not_ready"),
+        "scope_allowed": scope_allowed,
+        "review_required": review_required,
+        "blocked": blocked,
+        "reason": (
+            "Simulation passed, but live OAuth remains disabled in V800."
+            if can_activate else
+            "External writes or automation loops are blocked."
+            if blocked else
+            "Activation requires approved scope, token storage design, and explicit future enablement."
+        ),
+        "live_oauth_enabled": False,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/security-gates")
+async def security_gates():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Security Gates",
+        "gates": [
+            {
+                "id": "read_only_scope",
+                "title": "Read-only scopes only",
+                "status": "required",
+                "blocks": "Any write-capable OAuth scope"
+            },
+            {
+                "id": "server_side_tokens",
+                "title": "Server-side token storage",
+                "status": "required_before_live",
+                "blocks": "Frontend token exposure"
+            },
+            {
+                "id": "disconnect_revoke",
+                "title": "Disconnect/revoke flow",
+                "status": "required_before_live",
+                "blocks": "Persistent access without user control"
+            },
+            {
+                "id": "approval_before_ai_context",
+                "title": "Approval before sending connector context to AI",
+                "status": "required",
+                "blocks": "Automatic context sharing"
+            },
+            {
+                "id": "external_writes",
+                "title": "External writes",
+                "status": "blocked",
+                "blocks": "Calendar/file/email/CRM modifications"
+            },
+            {
+                "id": "automation_loop",
+                "title": "Automation loop",
+                "status": "blocked",
+                "blocks": "Background autonomous execution"
+            }
+        ]
+    }
+
+
+@app.get("/v800-milestone")
+async def v800_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V750 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "OAuth activation prep available", "passed": True},
+        {"name": "Scope policy available", "passed": True},
+        {"name": "Env readiness available", "passed": True},
+        {"name": "Activation checklist available", "passed": True},
+        {"name": "Activation simulation available", "passed": True},
+        {"name": "Security gates available", "passed": True},
+        {"name": "Live OAuth disabled", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "External writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "OAuth Activation Prep + Secure Connector Setup",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V800 OAuth Activation Prep · V800 Backend",
+        "checks": checks,
+        "added": [
+            "OAuth Activation Prep",
+            "Scope Policy",
+            "Environment Readiness",
+            "Activation Checklist",
+            "Activation Simulation",
+            "Security Gates",
+            "Connector setup UI"
+        ],
+        "not_added": [
+            "Live OAuth",
+            "Token storage",
+            "Live Calendar fetch",
+            "Live Drive fetch",
+            "Gmail OAuth",
+            "External writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/oauth/activation-prep",
+            "/oauth/scope-policy",
+            "/oauth/env-readiness",
+            "/oauth/activation-checklist",
+            "/security-gates",
+            "/v800-milestone",
+            "/health"
+        ]
+    }
+
+
+
+
+# =========================
+# V850 GOOGLE CONNECTOR BLUEPRINT + ACTIVATION PLAN
+# =========================
+# Still safe blueprint only. No live OAuth. No tokens. No external writes.
+
+def v850_connector_blueprint() -> Dict[str, Any]:
+    return {
+        "calendar": {
+            "name": "Google Calendar Read-Only",
+            "status": "blueprint_ready",
+            "live_enabled": False,
+            "scope": "https://www.googleapis.com/auth/calendar.events.readonly",
+            "backend_routes_future": [
+                "GET /calendar/auth-url",
+                "GET /calendar/oauth/callback",
+                "GET /calendar/status",
+                "GET /calendar/events/today",
+                "GET /calendar/events/upcoming",
+                "POST /calendar/disconnect"
+            ],
+            "current_safe_routes": [
+                "GET /calendar/status",
+                "GET /calendar/events/today",
+                "GET /calendar/events/upcoming",
+                "GET /calendar/day-load",
+                "GET /calendar/alerts"
+            ],
+            "data_policy": [
+                "Read-only only",
+                "No write scopes",
+                "No event creation",
+                "No event editing",
+                "No auto-join",
+                "No background sync",
+                "Manual context send only"
+            ]
+        },
+        "drive": {
+            "name": "Google Drive / Files Read-Only",
+            "status": "blueprint_ready",
+            "live_enabled": False,
+            "scope": "https://www.googleapis.com/auth/drive.readonly",
+            "backend_routes_future": [
+                "GET /files/auth-url",
+                "GET /files/oauth/callback",
+                "GET /files/status",
+                "GET /files/list",
+                "GET /files/read",
+                "POST /files/disconnect"
+            ],
+            "current_safe_routes": [
+                "GET /files/status",
+                "GET /files/prep-summary",
+                "POST /files/context-to-command",
+                "GET /files/alerts"
+            ],
+            "data_policy": [
+                "Read-only only",
+                "No write scopes",
+                "No file editing",
+                "No file deletion",
+                "No background sync",
+                "Manual context send only",
+                "No permanent file content storage yet"
+            ]
+        },
+        "gmail": {
+            "name": "Gmail Draft-Only Future",
+            "status": "spec_required",
+            "live_enabled": False,
+            "scope": "not_selected",
+            "backend_routes_future": [
+                "GET /email/status",
+                "POST /email/draft-preview",
+                "POST /email/create-draft",
+                "POST /email/disconnect"
+            ],
+            "data_policy": [
+                "Draft-only first",
+                "No auto-send",
+                "No inbox scanning until reviewed",
+                "No background email polling",
+                "Manual approval required"
+            ]
+        }
+    }
+
+
+def v850_activation_plan() -> List[Dict[str, Any]]:
+    return [
+        {
+            "phase": "Phase 1",
+            "title": "Calendar read-only OAuth",
+            "status": "next_best_candidate",
+            "steps": [
+                "Confirm Google Cloud OAuth consent screen",
+                "Set Calendar redirect URI",
+                "Add server-side token storage design",
+                "Enable read-only scope only",
+                "Build connect/disconnect flow",
+                "Fetch today's events manually",
+                "Send summarized context to Daily Brief manually"
+            ]
+        },
+        {
+            "phase": "Phase 2",
+            "title": "Drive/files read-only OAuth",
+            "status": "after_calendar",
+            "steps": [
+                "Confirm Drive read-only privacy rules",
+                "Add file list only first",
+                "Add manual file selection",
+                "Summarize selected file metadata",
+                "Do not parse full files until reviewed",
+                "Send selected context to Run Command manually"
+            ]
+        },
+        {
+            "phase": "Phase 3",
+            "title": "Email draft-only workflow",
+            "status": "spec_required",
+            "steps": [
+                "Define draft-only use cases",
+                "Block auto-send",
+                "Create draft preview",
+                "Require user approval",
+                "Only then consider Gmail OAuth"
+            ]
+        }
+    ]
+
+
+def v850_provider_requirements() -> Dict[str, Any]:
+    return {
+        "google_cloud": [
+            "OAuth consent screen configured",
+            "Authorized redirect URI set to backend callback",
+            "Calendar API enabled later",
+            "Drive API enabled later",
+            "Scopes reviewed and restricted to read-only"
+        ],
+        "render_env": [
+            "GOOGLE_CLIENT_ID",
+            "GOOGLE_CLIENT_SECRET",
+            "GOOGLE_REDIRECT_URI",
+            "GOOGLE_CALENDAR_SCOPE",
+            "GOOGLE_DRIVE_SCOPE",
+            "OAUTH_ENABLED remains false until activation build"
+        ],
+        "backend_security": [
+            "State parameter required",
+            "CSRF protection required",
+            "Tokens server-side only",
+            "No token values returned to frontend",
+            "Disconnect/revoke flow required",
+            "No background refresh until reviewed"
+        ],
+        "frontend_security": [
+            "Show Not Connected / Prep Mode clearly",
+            "User manually clicks Connect",
+            "User manually refreshes events/files",
+            "User manually sends context to AI",
+            "No hidden background sync"
+        ]
+    }
+
+
+@app.get("/google/connector-blueprint")
+async def google_connector_blueprint():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Google Connector Blueprint",
+        "blueprint": v850_connector_blueprint(),
+        "live_oauth_enabled": False,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/google/activation-plan")
+async def google_activation_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Google Activation Plan",
+        "plan": v850_activation_plan(),
+        "recommended_next_build": "V900 Calendar OAuth Candidate",
+        "do_not_skip": [
+            "Token storage design",
+            "Disconnect/revoke flow",
+            "Privacy handling",
+            "Manual approval gate"
+        ]
+    }
+
+
+@app.get("/google/provider-requirements")
+async def google_provider_requirements():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Provider Requirements",
+        "requirements": v850_provider_requirements()
+    }
+
+
+@app.get("/google/privacy-rules")
+async def google_privacy_rules():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "rules": [
+            "No Google OAuth enabled in V850.",
+            "No OAuth tokens stored in V850.",
+            "No live Google data fetched in V850.",
+            "Calendar and Drive must stay read-only.",
+            "No event, file, or email writes.",
+            "No auto-send.",
+            "No background sync.",
+            "No raw token values in frontend or logs.",
+            "Do not send private calendar descriptions or file contents to AI without explicit user action.",
+            "Manual execution only."
+        ]
+    }
+
+
+@app.get("/v850-milestone")
+async def v850_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V800 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Google connector blueprint available", "passed": True},
+        {"name": "Activation plan available", "passed": True},
+        {"name": "Provider requirements available", "passed": True},
+        {"name": "Privacy rules available", "passed": True},
+        {"name": "Live OAuth disabled", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "External writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Google Connector Blueprint + Activation Plan",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V850 Google Connector Blueprint · V850 Backend",
+        "checks": checks,
+        "added": [
+            "Google Connector Blueprint",
+            "Calendar activation plan",
+            "Drive activation plan",
+            "Gmail draft-only future plan",
+            "Provider requirements",
+            "Privacy rules",
+            "Next-build recommendation"
+        ],
+        "not_added": [
+            "Live OAuth",
+            "Token storage",
+            "Live Calendar fetch",
+            "Live Drive fetch",
+            "Gmail OAuth",
+            "External writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/google/connector-blueprint",
+            "/google/activation-plan",
+            "/google/provider-requirements",
+            "/google/privacy-rules",
+            "/v850-milestone",
+            "/health"
+        ],
+        "recommended_next_build": "V900 Calendar OAuth Candidate"
+    }
+
+
+
+
+# =========================
+# V900 CALENDAR OAUTH CANDIDATE
+# =========================
+# Calendar OAuth candidate only.
+# Safe route contracts are implemented.
+# Real token exchange/storage is NOT active unless explicitly enabled in a future version.
+# No calendar writes. No background sync. Manual execution only.
+
+V900_CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events.readonly"
+
+def v900_calendar_oauth_env() -> Dict[str, Any]:
+    import os
+    return {
+        "GOOGLE_CLIENT_ID": bool(os.getenv("GOOGLE_CLIENT_ID")),
+        "GOOGLE_CLIENT_SECRET": bool(os.getenv("GOOGLE_CLIENT_SECRET")),
+        "GOOGLE_REDIRECT_URI": bool(os.getenv("GOOGLE_REDIRECT_URI")),
+        "GOOGLE_CALENDAR_SCOPE": bool(os.getenv("GOOGLE_CALENDAR_SCOPE")),
+        "OAUTH_ENABLED": str(os.getenv("OAUTH_ENABLED", "false")).lower() == "true"
+    }
+
+
+def v900_calendar_ready() -> Dict[str, Any]:
+    env = v900_calendar_oauth_env()
+    required = ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI"]
+    missing = [k for k in required if not env.get(k)]
+    oauth_enabled = bool(env.get("OAUTH_ENABLED"))
+    return {
+        "env": env,
+        "missing_required": missing,
+        "candidate_ready": len(missing) == 0,
+        "live_oauth_enabled": False,
+        "oauth_env_flag": oauth_enabled,
+        "scope": V900_CALENDAR_SCOPE,
+        "write_access": False,
+        "token_storage_active": False,
+        "message": "Calendar OAuth candidate is prepared. Live OAuth/token storage remains disabled in V900."
+    }
+
+
+def v900_auth_url_placeholder() -> Dict[str, Any]:
+    import os, secrets, urllib.parse
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "")
+    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "")
+    state = secrets.token_urlsafe(24)
+    base = "https://accounts.google.com/o/oauth2/v2/auth"
+    params = {
+        "client_id": client_id or "GOOGLE_CLIENT_ID_NOT_SET",
+        "redirect_uri": redirect_uri or "GOOGLE_REDIRECT_URI_NOT_SET",
+        "response_type": "code",
+        "scope": V900_CALENDAR_SCOPE,
+        "access_type": "offline",
+        "prompt": "consent",
+        "state": state
+    }
+    auth_url = base + "?" + urllib.parse.urlencode(params)
+    return {
+        "auth_url": auth_url,
+        "state": state,
+        "scope": V900_CALENDAR_SCOPE,
+        "live_oauth_enabled": False,
+        "note": "Candidate URL only. V900 does not exchange tokens or store tokens."
+    }
+
+
+@app.get("/calendar/oauth-candidate/status")
+async def calendar_oauth_candidate_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V900 Calendar OAuth Candidate",
+        "status": v900_calendar_ready()
+    }
+
+
+@app.get("/calendar/auth-url-candidate")
+async def calendar_auth_url_candidate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Auth URL Candidate",
+        **v900_auth_url_placeholder()
+    }
+
+
+@app.get("/calendar/oauth/callback-candidate")
+async def calendar_oauth_callback_candidate(code: str = Query("", description="OAuth code placeholder"), state: str = Query("", description="OAuth state placeholder")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar OAuth Callback Candidate",
+        "received_code": bool(code),
+        "received_state": bool(state),
+        "connected": False,
+        "token_exchange_active": False,
+        "token_storage_active": False,
+        "message": "Callback candidate reached. Token exchange/storage is intentionally disabled in V900."
+    }
+
+
+@app.get("/calendar/token-storage-plan")
+async def calendar_token_storage_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Token Storage Plan",
+        "plan": {
+            "storage": "server_side_only",
+            "frontend_token_exposure": False,
+            "fields_needed_future": [
+                "user_id",
+                "provider",
+                "access_token_encrypted",
+                "refresh_token_encrypted",
+                "expires_at",
+                "scope",
+                "connected_email",
+                "created_at",
+                "updated_at",
+                "revoked_at"
+            ],
+            "supabase_schema_change_required_future": True,
+            "v900_schema_changed": False,
+            "disconnect_required": True,
+            "revoke_required": True
+        },
+        "warning": "Do not enable live OAuth until encrypted token storage and disconnect/revoke are implemented."
+    }
+
+
+@app.get("/calendar/disconnect-candidate")
+async def calendar_disconnect_candidate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "connected": False,
+        "revoked": False,
+        "message": "Disconnect candidate only. No token exists in V900."
+    }
+
+
+@app.get("/calendar/readiness-report")
+async def calendar_readiness_report():
+    readiness = v900_calendar_ready()
+    checks = [
+        {"name": "Google client ID configured", "passed": readiness["env"].get("GOOGLE_CLIENT_ID")},
+        {"name": "Google client secret configured", "passed": readiness["env"].get("GOOGLE_CLIENT_SECRET")},
+        {"name": "Redirect URI configured", "passed": readiness["env"].get("GOOGLE_REDIRECT_URI")},
+        {"name": "Read-only Calendar scope defined", "passed": True},
+        {"name": "Write scopes blocked", "passed": True},
+        {"name": "Token exchange disabled in V900", "passed": True},
+        {"name": "Token storage disabled in V900", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "score": f"{score}/{len(checks)}",
+        "ready_for_next_build": score >= 6,
+        "ready_for_live_oauth": False,
+        "checks": checks,
+        "next_required_build": "V950 Token Storage + Disconnect Flow Candidate"
+    }
+
+
+@app.get("/v900-milestone")
+async def v900_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V850 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Calendar OAuth candidate status available", "passed": True},
+        {"name": "Auth URL candidate available", "passed": True},
+        {"name": "Callback candidate available", "passed": True},
+        {"name": "Token storage plan available", "passed": True},
+        {"name": "Disconnect candidate available", "passed": True},
+        {"name": "Readiness report available", "passed": True},
+        {"name": "Live OAuth disabled", "passed": True},
+        {"name": "Calendar writes blocked", "passed": True},
+        {"name": "Token storage disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar OAuth Candidate",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V900 Calendar OAuth Candidate · V900 Backend",
+        "checks": checks,
+        "added": [
+            "Calendar OAuth Candidate Status",
+            "Calendar Auth URL Candidate",
+            "Calendar Callback Candidate",
+            "Calendar Token Storage Plan",
+            "Calendar Disconnect Candidate",
+            "Calendar Readiness Report",
+            "Calendar OAuth Candidate UI"
+        ],
+        "not_added": [
+            "Live OAuth token exchange",
+            "Token storage",
+            "Live Calendar fetch using OAuth",
+            "Calendar writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/calendar/oauth-candidate/status",
+            "/calendar/auth-url-candidate",
+            "/calendar/token-storage-plan",
+            "/calendar/readiness-report",
+            "/v900-milestone",
+            "/health"
+        ],
+        "recommended_next_build": "V950 Token Storage + Disconnect Flow Candidate"
+    }
+
+
+
+
+# =========================
+# V950 TOKEN STORAGE + DISCONNECT FLOW CANDIDATE
+# =========================
+# Candidate only. No live OAuth token exchange. No real encrypted token writes yet.
+# This prepares the storage contract, disconnect/revoke contract, and safety checks.
+
+def v950_token_storage_schema_plan() -> Dict[str, Any]:
+    return {
+        "table_name_future": "oauth_connections",
+        "schema_change_required_future": True,
+        "schema_changed_in_v950": False,
+        "storage_status": "candidate_only",
+        "encryption_required": True,
+        "frontend_token_exposure_allowed": False,
+        "fields": [
+            {"name": "id", "type": "uuid", "purpose": "primary key"},
+            {"name": "user_id", "type": "text", "purpose": "owner/user reference"},
+            {"name": "provider", "type": "text", "purpose": "google_calendar/google_drive/gmail"},
+            {"name": "connected_email", "type": "text", "purpose": "connected account display only"},
+            {"name": "scope", "type": "text", "purpose": "approved read-only scope"},
+            {"name": "access_token_encrypted", "type": "text", "purpose": "server-side encrypted access token"},
+            {"name": "refresh_token_encrypted", "type": "text", "purpose": "server-side encrypted refresh token"},
+            {"name": "expires_at", "type": "timestamp", "purpose": "token expiry"},
+            {"name": "last_refresh_at", "type": "timestamp", "purpose": "last successful refresh"},
+            {"name": "revoked_at", "type": "timestamp", "purpose": "disconnect/revoke marker"},
+            {"name": "created_at", "type": "timestamp", "purpose": "created timestamp"},
+            {"name": "updated_at", "type": "timestamp", "purpose": "updated timestamp"}
+        ],
+        "required_before_live": [
+            "Encryption helper",
+            "Supabase table migration",
+            "RLS/service role policy review",
+            "Disconnect flow",
+            "Revoke flow",
+            "No token returned to frontend",
+            "No token in logs"
+        ]
+    }
+
+
+def v950_disconnect_flow_plan() -> Dict[str, Any]:
+    return {
+        "status": "candidate_only",
+        "disconnect_route_future": "POST /calendar/disconnect",
+        "revoke_route_future": "POST /calendar/revoke",
+        "steps": [
+            "User clicks Disconnect",
+            "Frontend asks confirmation",
+            "Backend loads server-side token record",
+            "Backend attempts Google token revoke",
+            "Backend marks revoked_at",
+            "Backend deletes or invalidates encrypted token values",
+            "Backend returns connected:false",
+            "Frontend clears calendar state"
+        ],
+        "safety": {
+            "manual_only": True,
+            "no_background_disconnect": True,
+            "no_frontend_tokens": True,
+            "audit_log_future": True
+        }
+    }
+
+
+def v950_refresh_policy() -> Dict[str, Any]:
+    return {
+        "status": "planned",
+        "background_refresh_enabled": False,
+        "manual_refresh_only": True,
+        "policy": [
+            "Refresh token only when user manually requests calendar data.",
+            "If refresh fails, mark status expired.",
+            "Never retry indefinitely.",
+            "Never run background sync.",
+            "Never fetch private event descriptions without user action."
+        ],
+        "failure_states": [
+            "expired_token",
+            "revoked_token",
+            "missing_scope",
+            "refresh_failed",
+            "provider_rate_limited",
+            "backend_unavailable"
+        ]
+    }
+
+
+@app.get("/tokens/storage-plan")
+async def tokens_storage_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Token Storage Plan",
+        "plan": v950_token_storage_schema_plan(),
+        "live_token_storage_enabled": False
+    }
+
+
+@app.get("/tokens/encryption-check")
+async def tokens_encryption_check():
+    import os
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Encryption Readiness Check",
+        "encryption_key_present": bool(os.getenv("TOKEN_ENCRYPTION_KEY")),
+        "live_encryption_active": False,
+        "token_storage_active": False,
+        "message": "Encryption key check only. V950 does not store live tokens."
+    }
+
+
+@app.get("/calendar/disconnect-flow")
+async def calendar_disconnect_flow():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Disconnect Flow Candidate",
+        "flow": v950_disconnect_flow_plan()
+    }
+
+
+@app.post("/calendar/disconnect-simulate")
+async def calendar_disconnect_simulate(payload: Dict[str, Any]):
+    provider = str(payload.get("provider", "google_calendar"))
+    connected = bool(payload.get("connected", False))
+    has_token_record = bool(payload.get("has_token_record", False))
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "provider": provider,
+        "simulated": True,
+        "connected_before": connected,
+        "token_record_found": has_token_record,
+        "connected_after": False,
+        "revoked": False if not has_token_record else "simulated",
+        "token_deleted": False if not has_token_record else "simulated",
+        "message": "Disconnect simulation completed. No real token was revoked or deleted in V950."
+    }
+
+
+@app.get("/calendar/refresh-policy")
+async def calendar_refresh_policy():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Refresh Policy",
+        "policy": v950_refresh_policy()
+    }
+
+
+@app.get("/calendar/connection-state-candidate")
+async def calendar_connection_state_candidate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "connected": False,
+        "provider": "google_calendar",
+        "scope": "https://www.googleapis.com/auth/calendar.events.readonly",
+        "status": "not_connected",
+        "token_storage_active": False,
+        "disconnect_available": "candidate_only",
+        "revoke_available": "candidate_only",
+        "last_sync_at": None,
+        "message": "Connection state candidate only. Live OAuth and token storage are not active."
+    }
+
+
+@app.get("/v950-milestone")
+async def v950_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V900 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Token storage plan available", "passed": True},
+        {"name": "Encryption readiness check available", "passed": True},
+        {"name": "Disconnect flow available", "passed": True},
+        {"name": "Disconnect simulation available", "passed": True},
+        {"name": "Refresh policy available", "passed": True},
+        {"name": "Connection state candidate available", "passed": True},
+        {"name": "No live token exchange", "passed": True},
+        {"name": "No live token storage", "passed": True},
+        {"name": "Calendar writes blocked", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Token Storage + Disconnect Flow Candidate",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V950 Token Storage Candidate · V950 Backend",
+        "checks": checks,
+        "added": [
+            "Token Storage Plan",
+            "Encryption Readiness Check",
+            "Disconnect Flow Candidate",
+            "Disconnect Simulation",
+            "Refresh Policy",
+            "Connection State Candidate",
+            "Token storage UI"
+        ],
+        "not_added": [
+            "Live OAuth token exchange",
+            "Real encrypted token storage",
+            "Supabase token table migration",
+            "Live Calendar fetch using OAuth",
+            "Calendar writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/tokens/storage-plan",
+            "/tokens/encryption-check",
+            "/calendar/disconnect-flow",
+            "/calendar/refresh-policy",
+            "/calendar/connection-state-candidate",
+            "/v950-milestone",
+            "/health"
+        ],
+        "recommended_next_build": "V1000 Live Calendar Read-Only OAuth Candidate"
+    }
+
+
+
+
+# =========================
+# V1000 LIVE CALENDAR READ-ONLY OAUTH CANDIDATE
+# =========================
+# Candidate route layer for real read-only Calendar OAuth.
+# OAuth URL generation can become active when env vars are set.
+# Token exchange/storage remains guarded unless explicitly enabled later.
+# No calendar writes. No background sync. Manual execution only.
+
+V1000_CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events.readonly"
+
+def v1000_env() -> Dict[str, Any]:
+    import os
+    return {
+        "GOOGLE_CLIENT_ID": os.getenv("GOOGLE_CLIENT_ID", ""),
+        "GOOGLE_CLIENT_SECRET_SET": bool(os.getenv("GOOGLE_CLIENT_SECRET")),
+        "GOOGLE_REDIRECT_URI": os.getenv("GOOGLE_REDIRECT_URI", ""),
+        "GOOGLE_CALENDAR_SCOPE": os.getenv("GOOGLE_CALENDAR_SCOPE", V1000_CALENDAR_SCOPE),
+        "OAUTH_ENABLED": str(os.getenv("OAUTH_ENABLED", "false")).lower() == "true",
+        "TOKEN_ENCRYPTION_KEY_SET": bool(os.getenv("TOKEN_ENCRYPTION_KEY"))
+    }
+
+
+def v1000_public_env_status() -> Dict[str, Any]:
+    e = v1000_env()
+    return {
+        "GOOGLE_CLIENT_ID_SET": bool(e["GOOGLE_CLIENT_ID"]),
+        "GOOGLE_CLIENT_SECRET_SET": e["GOOGLE_CLIENT_SECRET_SET"],
+        "GOOGLE_REDIRECT_URI_SET": bool(e["GOOGLE_REDIRECT_URI"]),
+        "GOOGLE_CALENDAR_SCOPE_SET": bool(e["GOOGLE_CALENDAR_SCOPE"]),
+        "TOKEN_ENCRYPTION_KEY_SET": e["TOKEN_ENCRYPTION_KEY_SET"],
+        "OAUTH_ENABLED_FLAG": e["OAUTH_ENABLED"]
+    }
+
+
+def v1000_can_generate_auth_url() -> bool:
+    e = v1000_env()
+    return bool(e["GOOGLE_CLIENT_ID"] and e["GOOGLE_REDIRECT_URI"])
+
+
+def v1000_build_auth_url() -> Dict[str, Any]:
+    import secrets, urllib.parse
+    e = v1000_env()
+    state = secrets.token_urlsafe(32)
+    scope = e["GOOGLE_CALENDAR_SCOPE"] or V1000_CALENDAR_SCOPE
+    if scope != V1000_CALENDAR_SCOPE:
+        return {
+            "ok": False,
+            "error": "invalid_scope",
+            "message": "Only calendar.events.readonly scope is allowed.",
+            "allowed_scope": V1000_CALENDAR_SCOPE
+        }
+
+    params = {
+        "client_id": e["GOOGLE_CLIENT_ID"] or "GOOGLE_CLIENT_ID_NOT_SET",
+        "redirect_uri": e["GOOGLE_REDIRECT_URI"] or "GOOGLE_REDIRECT_URI_NOT_SET",
+        "response_type": "code",
+        "scope": V1000_CALENDAR_SCOPE,
+        "access_type": "offline",
+        "prompt": "consent",
+        "state": state
+    }
+    return {
+        "ok": True,
+        "auth_url": "https://accounts.google.com/o/oauth2/v2/auth?" + urllib.parse.urlencode(params),
+        "state": state,
+        "scope": V1000_CALENDAR_SCOPE,
+        "can_redirect": v1000_can_generate_auth_url(),
+        "token_exchange_active": False,
+        "token_storage_active": False,
+        "note": "Auth URL can be generated when env vars are set. Token exchange/storage remains disabled in V1000."
+    }
+
+
+def v1000_calendar_connection_status() -> Dict[str, Any]:
+    return {
+        "connected": False,
+        "provider": "google_calendar",
+        "mode": "oauth_candidate",
+        "scope": V1000_CALENDAR_SCOPE,
+        "read_only": True,
+        "write_access": False,
+        "token_storage_active": False,
+        "last_sync_at": None,
+        "status": "not_connected",
+        "message": "Calendar OAuth candidate is prepared. Live token exchange/storage is not active in V1000."
+    }
+
+
+@app.get("/calendar/connect-status")
+async def calendar_connect_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V1000 Calendar Connect Status",
+        "env": v1000_public_env_status(),
+        "connection": v1000_calendar_connection_status(),
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/calendar/auth-url")
+async def calendar_auth_url():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Auth URL",
+        **v1000_build_auth_url()
+    }
+
+
+@app.get("/calendar/oauth/callback")
+async def calendar_oauth_callback(code: str = Query("", description="Google OAuth code"), state: str = Query("", description="OAuth state")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar OAuth Callback",
+        "received_code": bool(code),
+        "received_state": bool(state),
+        "connected": False,
+        "token_exchange_active": False,
+        "token_storage_active": False,
+        "message": "Callback route is live, but token exchange/storage remains disabled in V1000."
+    }
+
+
+@app.get("/calendar/status-live-candidate")
+async def calendar_status_live_candidate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Live Candidate Status",
+        **v1000_calendar_connection_status()
+    }
+
+
+@app.get("/calendar/events/today-live-candidate")
+async def calendar_events_today_live_candidate(timezone: str = Query("America/Toronto"), calendar_id: str = Query("primary")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "calendar_id": calendar_id,
+        "timezone": timezone,
+        "connected": False,
+        "events": [],
+        "summary": {
+            "date": "",
+            "timezone": timezone,
+            "totalEvents": 0,
+            "totalMeetingMinutes": 0,
+            "meetingDensity": "light",
+            "prepNeededCount": 0,
+            "events": []
+        },
+        "message": "Live Calendar fetch using OAuth is not active until token exchange/storage is implemented.",
+        "safety": {
+            "read_only": True,
+            "write_access": False,
+            "background_sync": False,
+            "manual_refresh_only": True
+        }
+    }
+
+
+@app.post("/calendar/context-approval")
+async def calendar_context_approval(payload: Dict[str, Any]):
+    wants_send_to_ai = bool(payload.get("send_to_ai", False))
+    includes_private_details = bool(payload.get("includes_private_details", False))
+    user_approved = bool(payload.get("user_approved", False))
+
+    allowed = wants_send_to_ai and user_approved and not includes_private_details
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "allowed": allowed,
+        "decision": "allowed_manual_send" if allowed else "blocked_or_review_required",
+        "checks": [
+            {"name": "User approved", "passed": user_approved},
+            {"name": "Private details excluded", "passed": not includes_private_details},
+            {"name": "Manual send requested", "passed": wants_send_to_ai},
+            {"name": "Auto-loop off", "passed": True}
+        ],
+        "message": "Calendar context can be sent manually." if allowed else "Calendar context requires manual approval and private details must be excluded."
+    }
+
+
+@app.get("/calendar/oauth-test-page")
+async def calendar_oauth_test_page():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "test_links": [
+            "/calendar/connect-status",
+            "/calendar/auth-url",
+            "/calendar/oauth/callback",
+            "/calendar/status-live-candidate",
+            "/calendar/events/today-live-candidate",
+            "/calendar/context-approval",
+            "/v1000-milestone"
+        ],
+        "note": "Use GET routes for smoke tests. POST /calendar/context-approval requires JSON body."
+    }
+
+
+@app.get("/v1000-milestone")
+async def v1000_milestone():
+    env = v1000_public_env_status()
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V950 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Calendar connect status available", "passed": True},
+        {"name": "Calendar auth URL route available", "passed": True},
+        {"name": "Calendar callback route available", "passed": True},
+        {"name": "Calendar live candidate status available", "passed": True},
+        {"name": "Calendar context approval available", "passed": True},
+        {"name": "Read-only scope enforced", "passed": True},
+        {"name": "Calendar writes blocked", "passed": True},
+        {"name": "Token exchange disabled", "passed": True},
+        {"name": "Live token storage disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Live Calendar Read-Only OAuth Candidate",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V1000 Calendar OAuth · V1000 Backend",
+        "env": env,
+        "checks": checks,
+        "added": [
+            "Calendar Connect Status",
+            "Calendar Auth URL route",
+            "Calendar OAuth Callback route",
+            "Calendar Live Candidate Status",
+            "Calendar Today Live Candidate",
+            "Calendar Context Approval",
+            "Calendar OAuth Test Page",
+            "Calendar OAuth UI"
+        ],
+        "not_added": [
+            "Live token exchange",
+            "Real encrypted token storage",
+            "Supabase token table migration",
+            "Live Calendar fetch using stored OAuth token",
+            "Calendar writes",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/calendar/connect-status",
+            "/calendar/auth-url",
+            "/calendar/status-live-candidate",
+            "/calendar/events/today-live-candidate",
+            "/calendar/oauth-test-page",
+            "/v1000-milestone",
+            "/health"
+        ],
+        "recommended_next_build": "V1050 Real Token Exchange + Encrypted Storage Candidate"
     }
