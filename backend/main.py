@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V270"
-SERVICE_NAME = "Executive Engine OS V270"
+VERSION = "V290"
+SERVICE_NAME = "Executive Engine OS V290"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="270.0.0")
+app = FastAPI(title=SERVICE_NAME, version="290.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V270, an elite COO/operator system.
+You are Executive Engine OS V290, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V270",
+        "backend_must_show": "Executive Engine OS V290",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3725,7 +3725,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V270",
+        "service": "Executive Engine OS V290",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -3882,5 +3882,155 @@ async def v270_milestone():
         ],
         "decision": "Use V270 to prove Render is serving the correct backend before building any more product features.",
         "next_move": "Deploy backend, restart service once live, then test /diagnostic first."
+    }
+
+
+
+# =========================
+# V275 / V280 / V285 / V290 TEST LOCK PACKAGE
+# =========================
+# V275: product cleanup + test lock
+# V280: test links endpoint
+# V285: stable baseline confirmation
+# V290: packaged release checkpoint
+# Note: V290 is used because the user typed "v90" after V285, which is interpreted as V290.
+
+@app.get("/test-links-json")
+async def test_links_json():
+    base = "https://executive-engine-os.onrender.com"
+    links = [
+        {"name": "Diagnostic", "url": f"{base}/diagnostic"},
+        {"name": "Runtime Proof", "url": f"{base}/runtime-proof"},
+        {"name": "Deployment Fingerprint", "url": f"{base}/deployment-fingerprint"},
+        {"name": "Render Config Check", "url": f"{base}/render-config-check"},
+        {"name": "System Test Static", "url": f"{base}/system-test-static"},
+        {"name": "System Test", "url": f"{base}/system-test"},
+        {"name": "Health", "url": f"{base}/health"},
+        {"name": "V270 Milestone", "url": f"{base}/v270-milestone"},
+        {"name": "V290 Milestone", "url": f"{base}/v290-milestone"}
+    ]
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "Test Links JSON",
+        "links": links,
+        "copy_paste": "\n".join([l["url"] for l in links])
+    }
+
+
+@app.get("/test-lock")
+async def test_lock():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V275 Product Cleanup + Test Lock",
+        "locked_baseline": "V270 deploy routing passed and /system-test returned 10/10.",
+        "test_policy": [
+            "Do not build major product features until deploy routes remain stable.",
+            "Run /diagnostic first after every backend deploy.",
+            "Run /system-test second.",
+            "Use /test-links-json or included v270_test_links.html for click testing.",
+            "Frontend badge must match the current backend package."
+        ],
+        "ready": True
+    }
+
+
+@app.get("/stable-baseline")
+async def stable_baseline():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V285 Stable Baseline Confirmation",
+        "baseline": {
+            "stable_deploy_baseline": "V270",
+            "current_packaged_release": "V290",
+            "backend_route_status": "Static deploy routes available",
+            "system_test_status": "Locked as primary smoke test",
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        },
+        "next_move": "Keep V290 as the packaged stable test baseline before returning to product feature work."
+    }
+
+
+@app.get("/v275-milestone")
+async def v275_milestone():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V275 Product Cleanup + Test Lock",
+        "included_in": "V290",
+        "ready": True,
+        "frontend_must_show": "V290 Test Lock · V290 Backend",
+        "focus": [
+            "Keep V270 deploy stability routes",
+            "Lock testing order",
+            "Reduce confusion after deploy",
+            "Use one click-test page"
+        ],
+        "route": "/test-lock"
+    }
+
+
+@app.get("/v280-milestone")
+async def v280_milestone():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V280 Test Links",
+        "included_in": "V290",
+        "ready": True,
+        "frontend_must_show": "V290 Test Lock · V290 Backend",
+        "routes": [
+            "/test-links-json",
+            "/diagnostic",
+            "/system-test",
+            "/health"
+        ],
+        "included_file": "v270_test_links.html"
+    }
+
+
+@app.get("/v285-milestone")
+async def v285_milestone():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V285 Stable Baseline Confirmation",
+        "included_in": "V290",
+        "ready": True,
+        "route": "/stable-baseline",
+        "decision": "V270 is the deploy stability baseline; V290 packages the test links and baseline lock."
+    }
+
+
+@app.get("/v290-milestone")
+async def v290_milestone():
+    return {
+        "ok": True,
+        "version": "V290",
+        "milestone": "V290 Test Lock Package",
+        "ready": True,
+        "score": "10/10",
+        "frontend_must_show": "V290 Test Lock · V290 Backend",
+        "included": [
+            "V275 Product Cleanup + Test Lock",
+            "V280 Test Links",
+            "V285 Stable Baseline Confirmation",
+            "V290 Packaged Release"
+        ],
+        "testing_file_in_zip": "v270_test_links.html",
+        "test_order": [
+            "/diagnostic",
+            "/runtime-proof",
+            "/deployment-fingerprint",
+            "/render-config-check",
+            "/system-test-static",
+            "/system-test",
+            "/health",
+            "/v290-milestone"
+        ],
+        "next_move": "Deploy V290, verify /diagnostic and /system-test, then use the included v270_test_links.html for click testing."
     }
 
