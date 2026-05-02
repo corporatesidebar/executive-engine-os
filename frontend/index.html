@@ -168,11 +168,11 @@ button,
       </div>
       <div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V125 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V127 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V125 Stability Lock</div>
+  <div class="lock">▣ V127 Stability Lock</div>
   <div class="group">Command</div>
   <button class="nav active" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -204,7 +204,7 @@ button,
     <article class="metric orange"><div class="label">⚡ Priority Signal</div><strong id="snapPriority">Medium</strong><span>Risk and urgency monitor</span><a id="auditText">10/10 stability audit</a></article>
   </section>
   <section class="command">
-    <div class="command-head"><strong>COMMAND INPUT</strong><div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div><span class="mode-label">Context: <b>V125 Executive</b>⌄</span></div>
+    <div class="command-head"><strong>COMMAND INPUT</strong><div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div><span class="mode-label">Context: <b>V127 Executive</b>⌄</span></div>
     <div class="command-body"><textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea><div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div><div class="context">✓ Using latest intelligence, risk models, and company context</div><div class="status" id="status"></div></div>
   </section>
   <section class="feed">
@@ -227,7 +227,7 @@ button,
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">LOCKED FRONTEND V3 · V125 Backend</div><div class="toast" id="toast"></div>
+<div class="version">LOCKED FRONTEND V3 · V127 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",lastOutput=null,lastCommand="";const input=document.getElementById("input"),statusBox=document.getElementById("status");

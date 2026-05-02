@@ -12,8 +12,48 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-VERSION = "V125"
-SERVICE_NAME = "Executive Engine OS V125"
+
+SYSTEM_PROMPT = """
+You are Executive Engine OS: an elite COO, operator, and execution intelligence system for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+
+You do not give generic advice.
+You do not explain theory.
+You do not produce vague strategy.
+You force execution clarity.
+
+Every response must be specific to the user's exact input and useful today.
+
+Your output must be strict JSON only with these keys:
+{
+  "what_to_do_now": "The immediate executive action to take today",
+  "decision": "Clear executive decision",
+  "next_move": "Single highest-impact next move",
+  "actions": ["3 to 6 concrete executable actions"],
+  "risk": "Specific risk or tradeoff",
+  "priority": "High | Medium | Low",
+  "reality_check": "Blunt operator truth",
+  "leverage": "Highest leverage opportunity",
+  "constraint": "Main constraint blocking speed",
+  "financial_impact": "Plain-English financial impact",
+  "why_this_matters": "Why this matters now",
+  "timeline": "Suggested execution timing"
+}
+
+Rules:
+- Return JSON only.
+- No markdown.
+- No text outside JSON.
+- No filler.
+- No generic business advice.
+- Actions must be concrete and testable.
+- Start actions with verbs.
+- Avoid: consider, maybe, think about, explore, leverage synergies.
+- If input is vague, still make a useful executive assumption and move forward.
+- Priority must be High, Medium, or Low.
+"""
+
+VERSION = "V127"
+SERVICE_NAME = "Executive Engine OS V127"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -132,7 +172,7 @@ def fallback_output(text: str, mode: str = "execution") -> Dict[str, Any]:
         "priority": "high",
         "risk": "Continuing to build versions without confirming persistence creates confusion and rework.",
         "opportunity": "A clean stable loop becomes the foundation for automation, better UI, and future agent workflows.",
-        "what_to_ignore": "Do not add bots, external automation, or new dashboards until the V125 loop passes.",
+        "what_to_ignore": "Do not add bots, external automation, or new dashboards until the V127 loop passes.",
         "questions_to_answer": ["Did the run save?", "Did the actions save?", "Did the decision save?", "Did the right rail refresh?"],
         "delegation": "Keep manual execution. Do not delegate to bots yet.",
         "timeline": "Today: validate loop. Next 2-3 days: run real use cases. Next 2-3 weeks: polish and expand.",
@@ -140,9 +180,9 @@ def fallback_output(text: str, mode: str = "execution") -> Dict[str, Any]:
         "strategic_read": "Stability is the strategy right now.",
         "follow_up_prompt": "What is the single highest-leverage improvement after this run?",
         "execution_loop": {
-            "current_focus": "V125 clean reset validation",
+            "current_focus": "V127 clean reset validation",
             "next_action": "Run one command and persist the result.",
-            "next_prompt": "What is the next move after validating V125?",
+            "next_prompt": "What is the next move after validating V127?",
             "loop_steps": ["run", "review", "save action", "save decision", "check persistence"],
             "stop_condition": "Stop when run, save, validate, and right rail refresh all work."
         },
@@ -345,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V125, an elite COO/operator system.
+You are Executive Engine OS V127, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -658,13 +698,13 @@ async def v120_smoke(user_id: str = Query(DEFAULT_USER)):
             "memory_items": len(mem.get("memory_items") or [])
         },
         "frontend_expected": {
-            "badge": "V125 · Ship Lock",
-            "output_badge": "V125 · Locked",
-            "status": "DB memory live · V125"
+            "badge": "V127 · Ship Lock",
+            "output_badge": "V127 · Locked",
+            "status": "DB memory live · V127"
         },
         "test": [
             "Hard refresh frontend.",
-            "Confirm V125 · Ship Lock appears.",
+            "Confirm V127 · Ship Lock appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
@@ -717,7 +757,7 @@ async def stability_audit(user_id: str = Query(DEFAULT_USER)):
             "saved_decisions": len(decisions),
             "memory_items": len(memory_items)
         },
-        "decision": "Use V125 as the stable baseline if the frontend smoke test passes.",
+        "decision": "Use V127 as the stable baseline if the frontend smoke test passes.",
         "next_move": "Run 10 real commands before adding automation or new UI features."
     }
 
@@ -763,10 +803,10 @@ async def v125_smoke(user_id: str = Query(DEFAULT_USER)):
     return {
         "ok": True,
         "version": VERSION,
-        "fix": "Stability audit lock. V125 keeps the V123 save-flow fix and adds final run/save audit endpoints.",
+        "fix": "Stability audit lock. V127 keeps the V123 save-flow fix and adds final run/save audit endpoints.",
         "supabase_enabled": mem.get("supabase_enabled", False),
-        "required_frontend_badge": "V125 · Stability Lock",
-        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
+        "required_frontend_badge": "V127 · Stability Lock",
+        "test_prompt": "V127 final test — create one action called \"Review V127 system tomorrow\" and one decision called \"Lock V127 as stable baseline.\"",
         "counts": {
             "recent_runs": len(mem.get("recent_runs") or []),
             "open_actions": len(mem.get("open_actions") or []),
@@ -781,9 +821,9 @@ async def version_lock():
     return {
         "ok": True,
         "version": VERSION,
-        "frontend_must_show": "V125 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V125",
-        "do_not_build_next": "Do not build V126 until V125 passes 10 real commands.",
+        "frontend_must_show": "V127 · Stability Lock",
+        "backend_must_show": "Executive Engine OS V127",
+        "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
             "save_action": "POST /save-action",
@@ -841,8 +881,8 @@ async def v123_smoke(user_id: str = Query(DEFAULT_USER)):
         "version": VERSION,
         "fix": "Save flow lock. Save buttons now call one verification path after save. Verify Save and Check Persistence are separated clearly.",
         "supabase_enabled": mem.get("supabase_enabled", False),
-        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
-        "required_frontend_badge": "V125 · Save Flow Lock",
+        "test_prompt": "V127 final test — create one action called \"Review V127 system tomorrow\" and one decision called \"Lock V127 as stable baseline.\"",
+        "required_frontend_badge": "V127 · Save Flow Lock",
         "counts": {
             "recent_runs": len(mem.get("recent_runs") or []),
             "open_actions": len(mem.get("open_actions") or []),
@@ -887,7 +927,7 @@ async def v122_smoke(user_id: str = Query(DEFAULT_USER)):
         "version": VERSION,
         "fix": "Verify Latest Save button now uses a unique button id/function and calls /verify-latest-save directly. It no longer conflicts with Check Persistence.",
         "supabase_enabled": mem.get("supabase_enabled", False),
-        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\"",
+        "test_prompt": "V127 final test — create one action called \"Review V127 system tomorrow\" and one decision called \"Lock V127 as stable baseline.\"",
         "counts": {
             "recent_runs": len(mem.get("recent_runs") or []),
             "open_actions": len(mem.get("open_actions") or []),
@@ -935,7 +975,7 @@ async def v121_smoke(user_id: str = Query(DEFAULT_USER)):
             "saved_decisions": len(mem.get("recent_decisions") or []),
             "memory_items": len(mem.get("memory_items") or [])
         },
-        "test_prompt": "V125 final test — create one action called \"Review V125 system tomorrow\" and one decision called \"Lock V125 as stable baseline.\""
+        "test_prompt": "V127 final test — create one action called \"Review V127 system tomorrow\" and one decision called \"Lock V127 as stable baseline.\""
     }
 
 @app.get("/ship-lock")
@@ -957,7 +997,7 @@ async def ship_lock(user_id: str = Query(DEFAULT_USER)):
         "score": f"{passed}/{len(checks)}",
         "ready": passed >= 5,
         "checks": checks,
-        "decision": "Ship V125 as the stable baseline if the frontend smoke test passes.",
+        "decision": "Ship V127 as the stable baseline if the frontend smoke test passes.",
         "next_move": "Use the system for 10 real runs before adding new features."
     }
 
@@ -967,11 +1007,11 @@ async def frontend_version_check():
     return {
         "ok": True,
         "version": VERSION,
-        "expected_frontend": "V125",
+        "expected_frontend": "V127",
         "cache_rule": "If frontend still shows an older version, Render is serving old index.html or browser cache is stale.",
         "required_strings": [
-            "V125 · Ship Lock",
-            "V125 · Locked",
+            "V127 · Ship Lock",
+            "V127 · Locked",
             "frontend_v125",
             "runEngine",
             "saveActions",
@@ -1006,7 +1046,7 @@ async def next_phase():
         "ok": True,
         "version": VERSION,
         "phase": "post_v120_usage_validation",
-        "rule": "Do not build V125 until V125 passes 10 real runs.",
+        "rule": "Do not build V127 until V127 passes 10 real runs.",
         "real_run_checklist": [
             "Use execution mode for one business blocker.",
             "Use decision mode for one real decision.",
@@ -1017,9 +1057,9 @@ async def next_phase():
             "Check persistence after saves.",
             "Review right panel after each run.",
             "Capture one screenshot.",
-            "Only then decide V125 scope."
+            "Only then decide V127 scope."
         ],
-        "recommended_v121": "Profile editor + action completion, only after V125 is proven stable."
+        "recommended_v121": "Profile editor + action completion, only after V127 is proven stable."
     }
 
 @app.get("/v119-smoke")
@@ -1037,13 +1077,13 @@ async def v119_smoke(user_id: str = Query(DEFAULT_USER)):
             "memory_items": len(mem.get("memory_items") or [])
         },
         "frontend_expected": {
-            "badge": "V125 · Clean Hardened",
-            "output_badge": "V125 · Clean",
-            "status": "DB memory live · V125"
+            "badge": "V127 · Clean Hardened",
+            "output_badge": "V127 · Clean",
+            "status": "DB memory live · V127"
         },
         "test": [
             "Hard refresh frontend.",
-            "Confirm V125 · Clean Hardened appears.",
+            "Confirm V127 · Clean Hardened appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
@@ -1058,11 +1098,11 @@ async def frontend_version_check():
     return {
         "ok": True,
         "version": VERSION,
-        "expected_frontend": "V125",
+        "expected_frontend": "V127",
         "cache_rule": "If frontend still shows an older version, Render is serving old index.html or browser cache is stale.",
         "required_strings": [
-            "V125 · Clean Hardened",
-            "V125 · Clean",
+            "V127 · Clean Hardened",
+            "V127 · Clean",
             "frontend_v125",
             "runEngine",
             "saveActions",
@@ -1108,7 +1148,7 @@ async def v118_smoke(user_id: str = Query(DEFAULT_USER)):
             "Deploy backend.",
             "Deploy frontend.",
             "Hard refresh.",
-            "Confirm V125 Clean Reset appears.",
+            "Confirm V127 Clean Reset appears.",
             "Run Engine.",
             "Add to Action Queue.",
             "Save Decision.",
@@ -1121,3 +1161,145 @@ async def v118_smoke(user_id: str = Query(DEFAULT_USER)):
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots():
     return "User-agent: *\nDisallow: /\n"
+
+
+
+# =========================
+# V127 WORKFLOW OPTIMIZATION HELPERS
+# =========================
+
+def v127_clean_json_response(raw_text):
+    """
+    Converts model text into a safe Executive Engine JSON object.
+    Keeps backend stable even if the AI returns markdown or malformed JSON.
+    """
+    import json, re
+    if isinstance(raw_text, dict):
+        data = raw_text
+    else:
+        text = str(raw_text or "").strip()
+        text = re.sub(r"^```json\s*|\s*```$", "", text, flags=re.IGNORECASE | re.MULTILINE).strip()
+        match = re.search(r"\{[\s\S]*\}", text)
+        if match:
+            text = match.group(0)
+        try:
+            data = json.loads(text)
+        except Exception:
+            data = {
+                "what_to_do_now": "Re-run the command with one clear business outcome and one constraint.",
+                "decision": "Do not proceed on unclear output; force a clean execution decision.",
+                "next_move": "Rewrite the command in one sentence and run Executive Engine again.",
+                "actions": [
+                    "Rewrite the command with the business goal",
+                    "Add the current constraint or blocker",
+                    "Run the engine again",
+                    "Save the resulting decision and action"
+                ],
+                "risk": "Malformed AI output can create unclear execution.",
+                "priority": "High",
+                "reality_check": "Bad structure creates bad execution.",
+                "leverage": "A cleaner command produces a cleaner operating decision.",
+                "constraint": "The previous response was not valid JSON.",
+                "financial_impact": "Unclear output wastes execution time.",
+                "why_this_matters": "The operator needs clean output before acting.",
+                "timeline": "Immediate"
+            }
+
+    defaults = {
+        "what_to_do_now": "Take the highest-impact action now.",
+        "decision": "Move forward with the clearest executable path.",
+        "next_move": "Complete the first action in the execution queue.",
+        "actions": ["Define the outcome", "Complete the first action", "Verify progress"],
+        "risk": "Execution slows if ownership and timing are unclear.",
+        "priority": "Medium",
+        "reality_check": "Clarity beats complexity.",
+        "leverage": "Focus on the action that unlocks the next step.",
+        "constraint": "Time and attention are the main constraints.",
+        "financial_impact": "Better execution reduces opportunity cost.",
+        "why_this_matters": "Momentum compounds when the next action is obvious.",
+        "timeline": "Today"
+    }
+
+    for key, value in defaults.items():
+        if key not in data or data[key] in [None, "", []]:
+            data[key] = value
+
+    if not isinstance(data.get("actions"), list):
+        data["actions"] = [str(data.get("actions"))]
+
+    data["actions"] = v127_validate_actions(data["actions"])
+
+    if not data["actions"]:
+        data["actions"] = defaults["actions"]
+
+    data["next_move"] = str(data.get("next_move") or data["actions"][0]).strip()
+    if data["next_move"] == defaults["next_move"] and data["actions"]:
+        data["next_move"] = data["actions"][0]
+
+    priority = str(data.get("priority", "Medium")).strip().title()
+    if priority not in ["High", "Medium", "Low"]:
+        priority = "Medium"
+    data["priority"] = priority
+
+    return data
+
+
+def v127_validate_actions(actions):
+    """
+    Filters weak/non-executable actions and keeps 3-6 concrete actions.
+    """
+    weak_terms = ["consider", "maybe", "think about", "explore", "look into", "try to", "possibly"]
+    clean = []
+    for item in actions or []:
+        action = str(item).strip()
+        if len(action) < 8:
+            continue
+        lower = action.lower()
+        if any(term in lower for term in weak_terms):
+            action = action.replace("Consider ", "").replace("consider ", "")
+            action = action.replace("Explore ", "Define ").replace("explore ", "define ")
+            action = action.replace("Look into ", "Review ").replace("look into ", "review ")
+        if action and action not in clean:
+            clean.append(action)
+    return clean[:6]
+
+
+def v127_mode_instruction(mode):
+    mode = str(mode or "execution").lower()
+    instructions = {
+        "execution": "Execute today. Prioritize immediate next actions, speed, and accountability.",
+        "decision": "Make a clear executive decision. State the tradeoff and the immediate move.",
+        "strategy": "Create a short execution strategy. No theory. Convert strategy into actions.",
+        "meeting": "Prepare for a high-level meeting. Identify agenda, decision points, and follow-up actions.",
+        "daily_brief": "Create a daily operating brief. Focus on what matters today.",
+        "content": "Create high-signal executive content direction with concrete production actions."
+    }
+    return instructions.get(mode, instructions["execution"])
+
+
+def v127_build_user_prompt(user_input, mode="execution"):
+    return f"""
+Mode: {mode}
+Mode instruction: {v127_mode_instruction(mode)}
+
+User input:
+{user_input}
+
+Return strict JSON only. Make it specific, executive-level, and executable today.
+"""
+
+
+def v127_execution_loop(output):
+    """
+    Adds a simple manual execution loop without auto-running actions.
+    """
+    actions = output.get("actions") or []
+    first = actions[0] if actions else output.get("next_move", "Run the first action.")
+    return {
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "current_step": first,
+        "operator_instruction": "Complete the current step, then return with the result or blocker.",
+        "next_check": "After the current step is completed"
+    }
+
