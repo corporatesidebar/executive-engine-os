@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V97"
+APP_NAME = "Executive Engine OS V108"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="97.0.0")
+app = FastAPI(title=APP_NAME, version="108.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +41,7 @@ Executive Engine OS real project context:
 - Product: AI executive command center for CEOs/COOs/founders.
 - Backend live on Render: https://executive-engine-os.onrender.com
 - Frontend live on Render: https://executive-engine-frontend.onrender.com
-- Current backend: V97 quality fix.
+- Current backend: V108 quality fix.
 - Previous confirmed backend: V96.2 technical loop working.
 - OpenAI connected.
 - Supabase connected.
@@ -62,7 +62,7 @@ Executive Engine OS real project context:
 - Frontend renders structured output and right sidebar memory/status.
 - UI is usable but not final.
 - Figma redesign comes later, after backend/output quality is stable.
-- Current priority: response quality, frontend DB validation, right-panel persistence, and manual execution loop.
+- Current priority: V108 release candidate stability, learning dashboard, profile-aware output, response quality, frontend DB validation, right-panel persistence, and manual execution loop.
 - Architecture: Frontend -> Render Backend -> OpenAI + Supabase.
 - Operating loop: Memory -> Decision -> Action -> Memory -> Repeat.
 
@@ -89,7 +89,7 @@ Forbidden generic advice:
 
 When asked "What should I focus on today to move Executive Engine OS forward?":
 The correct answer must be about:
-- confirming V97 backend response quality
+- confirming V108 backend response quality
 - testing /run from frontend
 - checking /memory for a new recent_run
 - using Save Action and Save Decision buttons
@@ -222,7 +222,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
             "Open /memory and confirm a new recent_run appears at the top.",
             "Click Save Action in the frontend and confirm /actions returns it.",
             "Click Save Decision in the frontend and confirm /decisions returns it.",
-            "Document pass/fail before building V97."
+            "Document pass/fail before building V108."
         ],
         "priority": "high",
         "risk": "The main risk is staying stuck because the input, backend, or decision context is incomplete.",
@@ -257,7 +257,7 @@ def fallback_response(reason: str = "Backend fallback") -> Dict[str, Any]:
         "constraint": reason,
         "financial_impact": "Slow execution creates opportunity cost; the immediate goal is to reduce that drag.",
         "manual_execution_only": True,
-        "version": "V97",
+        "version": "V108",
         "project_context_applied": True
     }
 
@@ -344,7 +344,7 @@ def normalize_output(data: Any, reason: str = "") -> Dict[str, Any]:
 
     base["execution_loop"] = build_execution_loop(base)
     base["manual_execution_only"] = True
-    base["version"] = "V97"
+    base["version"] = "V108"
     base["project_context_applied"] = True
     return base
 
@@ -378,9 +378,35 @@ PROJECT-SPECIFIC DIRECTIVE:
 The user is asking what to do next for Executive Engine OS.
 Do not answer with generic product/customer/market advice.
 Answer with backend/frontend/Supabase execution validation steps.
-Focus on V97 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
+Focus on V108 quality validation, /run, /memory, /save-action, /save-decision, /actions, /decisions, frontend right panel, and manual execution.
 """
     return ""
+
+
+DEFAULT_PROFILE_CONTEXT = {
+    "role": "Founder / operator building Executive Engine OS",
+    "goals": "Build a stable, high-end executive command center that saves runs, actions, decisions, and memory before adding automation or bots.",
+    "experience": "Senior operator / executive profile focused on growth, operations, systems, marketing, technology, and business execution.",
+    "constraints": "Needs simple deployment flow, stable backend, clean UI, no wasted features, no confusing instructions, and no generic answers.",
+    "preferences": {
+        "style": "direct, executive, specific, no filler",
+        "output": "Decision, next move, actions, risk, priority, execution loop",
+        "phase": "backend stability and memory before Figma redesign or automation"
+    }
+}
+
+def merged_profile(memory: Dict[str, Any]) -> Dict[str, Any]:
+    profile = memory.get("profile") or {}
+    merged = dict(DEFAULT_PROFILE_CONTEXT)
+    if isinstance(profile, dict):
+        for key in ["role", "goals", "experience", "constraints", "resume_context"]:
+            if profile.get(key):
+                merged[key] = profile.get(key)
+        if isinstance(profile.get("preferences"), dict):
+            prefs = dict(DEFAULT_PROFILE_CONTEXT["preferences"])
+            prefs.update(profile.get("preferences") or {})
+            merged["preferences"] = prefs
+    return merged
 
 def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
     if not memory or not memory.get("supabase_enabled"):
@@ -395,14 +421,7 @@ def summarize_memory_for_prompt(memory: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "project_context": PROJECT_CONTEXT,
         "status": "db_memory_live",
-        "profile": {
-            "role": profile.get("role"),
-            "goals": profile.get("goals"),
-            "experience": profile.get("experience"),
-            "constraints": profile.get("constraints"),
-            "preferences": profile.get("preferences"),
-            "resume_context_available": bool(profile.get("resume_context"))
-        },
+        "profile": merged_profile(memory),
         "recent_context": [
             {
                 "mode": r.get("mode"),
@@ -445,7 +464,7 @@ def derive_memory_items(output: Dict[str, Any], mode: str) -> List[Dict[str, Any
 
 def build_system_prompt(mode: str, depth: str, loop_mode: bool = False) -> str:
     return f"""
-You are Executive Engine OS V97.
+You are Executive Engine OS V108.
 
 PROJECT CONTEXT:
 {PROJECT_CONTEXT}
@@ -463,6 +482,10 @@ Use this exact schema:
 
 QUALITY:
 - Make answers specific to Executive Engine OS, Render backend, Supabase memory, frontend behavior, and manual execution.
+- Use the user profile context when available. If profile is missing, use DEFAULT_PROFILE_CONTEXT.
+- Adapt recommendations to a founder/operator building this system directly, not a large company with a team.
+- Do not invent team members. If delegation is needed, frame it as outsource/defer/automate later/personally handle.
+- Speak to the user like a senior operator who wants exact actions and working systems.
 - Treat old generic memory as contamination if it talks about market trends, user feedback, product roadmap, feature requests, marketing team, retention, churn, or customers.
 - If the input asks what to focus on today for Executive Engine OS, the answer must be a validation plan for the live system, not business/product strategy.
 - Use exact endpoint names and exact checks.
@@ -656,7 +679,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V97"}
+    return {"ok": True, "service": APP_NAME, "version": "V108"}
 
 
 @app.get("/health")
@@ -664,7 +687,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V97",
+        "version": "V108",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -679,11 +702,11 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V108",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
             "/engine-state", "/project-context", "/quality-test", "/memory", "/memory-summary", "/stability-check",
-            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/profile", "/robots.txt"
+            "/recent-runs", "/actions", "/save-action", "/decisions", "/save-decision", "/frontend-stability", "/navigation-map", "/frontend-diagnostics", "/v108-check", "/frontend-config", "/cleanup-check", "/visual-brief", "/layout-brief", "/figma-brief", "/ux-flow", "/ux-brief", "/next-build", "/system-status", "/go-live-check", "/learning", "/learning-events", "/operator-brief", "/profile-status", "/profile", "/robots.txt"
         ],
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
@@ -697,7 +720,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V108",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -708,7 +731,7 @@ async def schema():
 async def project_context():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V108",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
@@ -764,9 +787,9 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V97", "output": normalize_output(output)}
+        return {"ok": True, "version": "V108", "output": normalize_output(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V97", "output": normalize_output(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V108", "output": normalize_output(fallback_response(str(exc)))}
 
 
 
@@ -790,7 +813,7 @@ async def quality_test():
         generic_hits = [term for term in GENERIC_MEMORY_BLOCKLIST if term in text]
         return {
             "ok": True,
-            "version": "V97",
+            "version": "V108",
             "generic_hits": generic_hits,
             "passed_quality_gate": len(generic_hits) == 0,
             "output": normalized
@@ -798,7 +821,7 @@ async def quality_test():
     except Exception as exc:
         return {
             "ok": False,
-            "version": "V97",
+            "version": "V108",
             "error": str(exc),
             "output": normalize_output(fallback_response(str(exc)))
         }
@@ -831,7 +854,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V97", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
+    return {"ok": True, "version": "V108", "auto_enabled": False, "message": "Manual execution loop only.", "final": output}
 
 
 @app.get("/memory")
@@ -842,7 +865,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory_data = await load_memory(user_id)
-    return {"ok": True, "version": "V97", "summary": summarize_memory_for_prompt(memory_data)}
+    return {"ok": True, "version": "V108", "summary": summarize_memory_for_prompt(memory_data)}
 
 
 @app.post("/stability-check")
@@ -861,7 +884,7 @@ async def stability_check():
         "memory_injection": "last_3_items",
         "project_context_applied": True
     }
-    return {"ok": True, "version": "V97", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V108", "health": health_data, "checks": checks}
 
 
 
@@ -879,7 +902,7 @@ async def engine_state(user_id: str = Query("local_user")):
 
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V108",
         "supabase_enabled": memory_data.get("supabase_enabled", False),
         "today_focus": {
             "title": latest_output.get("what_to_do_now") if isinstance(latest_output, dict) else "No focus yet",
@@ -962,7 +985,7 @@ async def actions(user_id: str = Query("local_user"), status: str = Query("open"
         return {"ok": True, "supabase_enabled": False, "actions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("actions", f"?user_id=eq.{user['id']}&status=eq.{status}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V97", "actions": dedupe_rows(rows, "text")}
+    return {"ok": True, "version": "V108", "actions": dedupe_rows(rows, "text")}
 
 @app.post("/save-action")
 async def save_action(req: SaveActionRequest):
@@ -972,7 +995,7 @@ async def save_action(req: SaveActionRequest):
 
     duplicate = await existing_action(user["id"], req.text)
     if duplicate:
-        return {"ok": True, "version": "V97", "duplicate": True, "action": duplicate}
+        return {"ok": True, "version": "V108", "duplicate": True, "action": duplicate}
 
     row = await sb_insert("actions", {
         "user_id": user["id"],
@@ -984,7 +1007,7 @@ async def save_action(req: SaveActionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "action_saved", None, {"action_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V97", "duplicate": False, "action": row}
+    return {"ok": True, "version": "V108", "duplicate": False, "action": row}
 
 @app.get("/decisions")
 async def decisions(user_id: str = Query("local_user")):
@@ -992,7 +1015,7 @@ async def decisions(user_id: str = Query("local_user")):
         return {"ok": True, "supabase_enabled": False, "decisions": []}
     user = await get_or_create_user(user_id)
     rows = await sb_get("decisions", f"?user_id=eq.{user['id']}&order=created_at.desc&limit=50")
-    return {"ok": True, "version": "V97", "decisions": dedupe_rows(rows, "decision")}
+    return {"ok": True, "version": "V108", "decisions": dedupe_rows(rows, "decision")}
 
 @app.post("/save-decision")
 async def save_decision(req: SaveDecisionRequest):
@@ -1002,7 +1025,7 @@ async def save_decision(req: SaveDecisionRequest):
 
     duplicate = await existing_decision(user["id"], req.decision)
     if duplicate:
-        return {"ok": True, "version": "V97", "duplicate": True, "decision": duplicate}
+        return {"ok": True, "version": "V108", "duplicate": True, "decision": duplicate}
 
     row = await sb_insert("decisions", {
         "user_id": user["id"],
@@ -1015,7 +1038,607 @@ async def save_decision(req: SaveDecisionRequest):
         "metadata": req.metadata or {}
     })
     await save_learning_event(req.user_id or "local_user", "decision_saved", None, {"decision_id": row.get("id") if isinstance(row, dict) else None})
-    return {"ok": True, "version": "V97", "duplicate": False, "decision": row}
+    return {"ok": True, "version": "V108", "duplicate": False, "decision": row}
+
+
+
+def count_by_key(rows: List[Dict[str, Any]], key: str) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for row in rows or []:
+        value = str(row.get(key) or "unknown")
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+
+
+def top_items_from_memory(memory_items: List[Dict[str, Any]], mem_type: str, limit: int = 5) -> List[Dict[str, Any]]:
+    items = [m for m in memory_items or [] if m.get("type") == mem_type]
+    return [
+        {
+            "content": m.get("content"),
+            "importance": m.get("importance"),
+            "created_at": m.get("created_at")
+        }
+        for m in items[:limit]
+    ]
+
+
+def build_learning_summary(memory_data: Dict[str, Any]) -> Dict[str, Any]:
+    recent_runs = memory_data.get("recent_runs") or []
+    open_actions = memory_data.get("open_actions") or []
+    recent_decisions = memory_data.get("recent_decisions") or []
+    memory_items = memory_data.get("memory_items") or []
+
+    modes = count_by_key(recent_runs, "mode")
+    high_priority_actions = [a for a in open_actions if str(a.get("priority") or "").lower() in ["high", "critical"]]
+
+    repeated_constraints = top_items_from_memory(memory_items, "constraint", 5)
+    repeated_risks = top_items_from_memory(memory_items, "recurring_risk", 5)
+    decision_patterns = top_items_from_memory(memory_items, "decision_pattern", 5)
+    focus_filters = top_items_from_memory(memory_items, "focus_filter", 5)
+
+    recommended_next = "Run 3 more real workflows, save one action and one decision each time, then review this learning page again."
+    if len(recent_runs) >= 5 and len(open_actions) >= 3:
+        recommended_next = "Start tightening workflow quality: reduce duplicate actions, complete stale open actions, and improve profile context."
+    if not memory_data.get("profile"):
+        recommended_next = "Complete Your Profile first so the system can personalize decisions and actions."
+
+    return {
+        "total_runs": len(recent_runs),
+        "open_actions": len(open_actions),
+        "saved_decisions": len(recent_decisions),
+        "memory_items": len(memory_items),
+        "mode_usage": modes,
+        "high_priority_actions": len(high_priority_actions),
+        "repeated_constraints": repeated_constraints,
+        "repeated_risks": repeated_risks,
+        "decision_patterns": decision_patterns,
+        "focus_filters": focus_filters,
+        "product_read": {
+            "status": "learning_active" if recent_runs else "not_enough_data",
+            "read": "The system is now collecting runs, actions, decisions, and memory items. Use this to identify repeated blockers, decision patterns, and execution gaps.",
+            "recommended_next": recommended_next
+        },
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+
+
+
+
+
+
+
+
+@app.get("/frontend-stability")
+async def frontend_stability(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "stability_status": "frontend_stability_polish",
+        "checks": {
+            "backend_live": True,
+            "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "frontend_focus": [
+            "Command box visible",
+            "Run Engine button stable",
+            "Right panel readable",
+            "Save buttons do not duplicate",
+            "Mobile layout does not break",
+            "No hidden input box",
+            "No broken navigation links"
+        ],
+        "next_move": "Deploy V108 frontend and confirm the home screen, right sidebar, Learning page, and Profile page all render without layout breaks."
+    }
+
+
+@app.get("/navigation-map")
+async def navigation_map():
+    return {
+        "ok": True,
+        "version": "V108",
+        "routes": {
+            "Command": "Home command center",
+            "Plan Today": "daily_brief workflow",
+            "Decision": "decision workflow",
+            "Meeting": "meeting workflow",
+            "Content": "content workflow",
+            "Learning": "/learning frontend page backed by /learning",
+            "Profile": "/profile frontend page backed by /profile and /profile-status"
+        },
+        "rule": "Every visible navigation item must either load a page or set a workflow."
+    }
+
+@app.get("/frontend-diagnostics")
+async def frontend_diagnostics(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "frontend_expected": {
+            "api_base": "https://executive-engine-os.onrender.com",
+            "frontend_base": "https://executive-engine-frontend.onrender.com",
+            "home": "Command-first Today’s Command Center",
+            "right_panel": "Current Focus, Open Actions, Saved Decisions, Learning/Profile/Status boxes",
+            "buttons": {
+                "run_engine": "POST /run",
+                "add_to_action_queue": "POST /save-action",
+                "save_decision": "POST /save-decision",
+                "refresh_memory": "GET /engine-state"
+            }
+        },
+        "backend_state": {
+            "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "diagnostic_decision": "If frontend looks broken after deploy, hard refresh first, then confirm index.html was uploaded to /frontend and Render frontend deployed the latest commit.",
+        "next_test": "Run one prompt, save one action, save one decision, then confirm /engine-state updates."
+    }
+
+
+@app.get("/v107-check")
+async def v107_check(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    checks = [
+        {"name": "Backend V108 live", "passed": True},
+        {"name": "OpenAI configured", "passed": bool(os.getenv("OPENAI_API_KEY"))},
+        {"name": "Supabase enabled", "passed": bool(memory_data.get("supabase_enabled"))},
+        {"name": "Recent runs available", "passed": len(memory_data.get("recent_runs") or []) >= 1},
+        {"name": "Actions endpoint data available", "passed": len(memory_data.get("open_actions") or []) >= 1},
+        {"name": "Decisions endpoint data available", "passed": len(memory_data.get("recent_decisions") or []) >= 1},
+    ]
+    return {
+        "ok": True,
+        "version": "V108",
+        "checks": checks,
+        "passed": sum(1 for c in checks if c["passed"]),
+        "total": len(checks),
+        "next_move": "Deploy V108 frontend, hard refresh, and verify the command box plus right panel load cleanly."
+    }
+
+@app.get("/frontend-config")
+async def frontend_config():
+    return {
+        "ok": True,
+        "version": "V108",
+        "api_base": "https://executive-engine-os.onrender.com",
+        "frontend_base": "https://executive-engine-frontend.onrender.com",
+        "required_frontend_behaviors": [
+            "Command box visible on page load",
+            "Run Engine calls /run",
+            "Right rail loads /engine-state",
+            "Save Action calls /save-action",
+            "Save Decision calls /save-decision",
+            "Learning page calls /learning",
+            "Profile page calls /profile and /profile-status"
+        ],
+        "status": "cleanup_bugfix"
+    }
+
+
+@app.get("/cleanup-check")
+async def cleanup_check(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "checks": {
+            "backend_live": True,
+            "supabase_enabled": bool(memory_data.get("supabase_enabled")),
+            "recent_runs_count": len(memory_data.get("recent_runs") or []),
+            "open_actions_count": len(memory_data.get("open_actions") or []),
+            "saved_decisions_count": len(memory_data.get("recent_decisions") or []),
+            "memory_items_count": len(memory_data.get("memory_items") or []),
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        },
+        "decision": "Frontend cleanup can proceed if command input, right rail, save buttons, learning page, and profile page all load without console errors.",
+        "next_move": "Deploy V108 frontend, hard refresh, run one prompt, save one action, save one decision, and confirm right rail updates."
+    }
+
+@app.get("/visual-brief")
+async def visual_brief():
+    return {
+        "ok": True,
+        "version": "V108",
+        "visual_decision": "Polish the existing V103 command-first layout without changing backend logic.",
+        "style_direction": {
+            "tone": "high-end executive SaaS",
+            "inspiration": "Apple / Stripe / Linear",
+            "colors": {
+                "navy": "#0B1220",
+                "white": "#FFFFFF",
+                "surface": "#F8FAFC",
+                "blue": "#2563EB",
+                "green": "#059669",
+                "orange": "#EA580C"
+            },
+            "rules": [
+                "Command box remains primary.",
+                "Workflow pills stay secondary.",
+                "Right rail remains clean and one-line.",
+                "Reduce visual noise.",
+                "Use soft borders, hierarchy, and spacing.",
+                "No new product features."
+            ]
+        },
+        "success_criteria": [
+            "Looks premium without becoming busy.",
+            "User immediately sees where to type.",
+            "Right panel is readable.",
+            "Buttons feel clickable.",
+            "No backend behavior changes."
+        ]
+    }
+
+@app.get("/layout-brief")
+async def layout_brief():
+    return {
+        "ok": True,
+        "version": "V108",
+        "layout_decision": "Command-first executive workspace.",
+        "primary_screen_order": [
+            "Top bar: product name + compact system state",
+            "Main: Today’s Command Center",
+            "Main: one command box",
+            "Main: workflow pills",
+            "Main: latest output",
+            "Right rail: Current Focus, Open Actions, Saved Decisions, Learning Signal"
+        ],
+        "remove_or_reduce": [
+            "duplicate status cards",
+            "debug-looking controls",
+            "large metric blocks with no action value",
+            "too many workflow boxes",
+            "bottom-only composer",
+            "repeated navigation labels"
+        ],
+        "success_criteria": [
+            "User knows where to type in under 5 seconds",
+            "Run Engine is visually obvious",
+            "Right rail shows saved backend state",
+            "Learning and Profile remain available but secondary",
+            "No backend logic is broken"
+        ]
+    }
+
+@app.get("/figma-brief")
+async def figma_brief(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "title": "Executive Engine OS — Figma UI Brief",
+        "purpose": "Create a high-end executive command center that is obvious in under 5 seconds.",
+        "current_product_state": {
+            "backend": "Render FastAPI backend live.",
+            "database": "Supabase memory live.",
+            "ai": "OpenAI connected.",
+            "saved_state": "Runs, actions, decisions, memory items, learning, profile status.",
+            "frontend": "Functional but still too busy. Needs flow simplification, not more features."
+        },
+        "primary_user": "CEO / COO / Founder / senior operator who wants faster decisions and execution.",
+        "core_user_flow": [
+            "User lands on Today’s Command Center.",
+            "User sees one primary command input.",
+            "User chooses workflow only if needed.",
+            "User runs engine.",
+            "System returns decision, next move, actions, risk, priority, execution loop.",
+            "User saves action or decision.",
+            "Right panel updates with saved state.",
+            "Learning page shows patterns over time."
+        ],
+        "layout": {
+            "left_sidebar": [
+                "Command",
+                "Plan Today",
+                "Decision",
+                "Meeting",
+                "Content",
+                "Learning",
+                "Profile"
+            ],
+            "top_bar": [
+                "Executive Engine OS",
+                "Search centered but compact",
+                "System status chips only if useful"
+            ],
+            "main_area": [
+                "Today’s Command Center title",
+                "One command box near top-center",
+                "Workflow selector as compact tabs/pills",
+                "Suggested starter cards below command box",
+                "Output card below input, not scattered"
+            ],
+            "right_panel": [
+                "Current Focus",
+                "Open Actions",
+                "Saved Decisions",
+                "Learning Signal"
+            ]
+        },
+        "design_rules": [
+            "Keep dark navy left/top structure.",
+            "Use clean white main workspace.",
+            "Reduce cards and repeated labels.",
+            "No meaningless metrics.",
+            "No duplicate status widgets.",
+            "No debug controls visible to normal users.",
+            "Every visible button must have a clear action.",
+            "Use one-line right-panel rows.",
+            "Make the command input the hero."
+        ],
+        "visual_style": {
+            "tone": "Apple / Stripe / Linear quality",
+            "colors": "dark navy, white, muted blue, subtle green/orange status only",
+            "spacing": "less clutter, more hierarchy",
+            "typography": "larger labels, clear hierarchy, executive-grade"
+        },
+        "must_not_do": [
+            "Do not add bot team UI yet.",
+            "Do not add automation marketplace UI yet.",
+            "Do not add more navigation clutter.",
+            "Do not hide the command box at the bottom.",
+            "Do not make the user choose from too many modes.",
+            "Do not redesign the backend flow."
+        ],
+        "memory_counts": {
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        }
+    }
+
+
+@app.get("/ux-flow")
+async def ux_flow():
+    return {
+        "ok": True,
+        "version": "V108",
+        "screen_order": [
+            {
+                "screen": "Home / Command",
+                "job": "Let the executive immediately run the system.",
+                "primary_component": "Command input",
+                "secondary_component": "Workflow pills"
+            },
+            {
+                "screen": "Output",
+                "job": "Turn answer into action.",
+                "primary_component": "Decision / Next Move / Actions",
+                "secondary_component": "Save Action / Save Decision"
+            },
+            {
+                "screen": "Right Panel",
+                "job": "Show the user what the system remembers.",
+                "primary_component": "Current Focus / Open Actions / Saved Decisions"
+            },
+            {
+                "screen": "Learning",
+                "job": "Show patterns and repeated blockers.",
+                "primary_component": "Repeated constraints and decision patterns"
+            },
+            {
+                "screen": "Profile",
+                "job": "Make future output sharper.",
+                "primary_component": "Role, goals, constraints, resume/context"
+            }
+        ],
+        "decision": "Simplify UI around one command input and one memory-driven right panel.",
+        "next_move": "Use this endpoint output as the Figma prompt before making more code changes."
+    }
+
+@app.get("/ux-brief")
+async def ux_brief(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "brief": {
+            "ux_goal": "Make Executive Engine OS feel obvious when a CEO logs in: choose a workflow, type one command, get a decision, save actions/decisions, and see memory update.",
+            "current_state": {
+                "backend": "Live and connected to OpenAI + Supabase.",
+                "memory": "Runs, actions, decisions, and memory items are saving.",
+                "right_sidebar": "Backend data is available through /engine-state.",
+                "learning": "Learning dashboard is available through /learning.",
+                "profile": "Profile-aware output is available through /profile-status."
+            },
+            "ui_principles": [
+                "One obvious command area.",
+                "Right panel shows only useful saved state.",
+                "No duplicate buttons or redundant status cards.",
+                "No generic metrics.",
+                "No confusing mode clutter.",
+                "Every button must do something visible.",
+                "User should know what to do in under 5 seconds."
+            ],
+            "recommended_next_ui": [
+                "Top area: Today’s Command Center.",
+                "Primary CTA: Run Engine.",
+                "Secondary workflow selector: Execute, Today, Decision, Meeting, Content, Personal.",
+                "Right panel: Current Focus, Open Actions, Saved Decisions, Learning Signal.",
+                "Profile page: role, goals, constraints, resume/context.",
+                "Learning page: repeated constraints, decision patterns, open action count."
+            ],
+            "do_not_add_yet": [
+                "Bot team",
+                "External automation",
+                "Figma redesign before current UX flow is validated",
+                "More nav items",
+                "More dashboards without clear action value"
+            ],
+            "memory_counts": {
+                "recent_runs": len(memory_data.get("recent_runs") or []),
+                "open_actions": len(memory_data.get("open_actions") or []),
+                "saved_decisions": len(memory_data.get("recent_decisions") or []),
+                "memory_items": len(memory_data.get("memory_items") or [])
+            }
+        }
+    }
+
+
+@app.get("/next-build")
+async def next_build():
+    return {
+        "ok": True,
+        "version": "V108",
+        "recommended_next": "V108 — Frontend UX Simplification Build",
+        "why": "V108 defines the Figma-ready flow. V108 should implement the simplified frontend layout without changing backend logic.",
+        "requirements": [
+            "No new backend features unless a frontend bug blocks usage.",
+            "Simplify the home screen.",
+            "Make workflow selection clear and secondary.",
+            "Keep the command input central.",
+            "Make right sidebar show clean DB state.",
+            "Make Learning and Profile pages useful, not decorative.",
+            "Prepare Figma instructions from actual working product state."
+        ],
+        "hold": [
+            "Do not build bot team yet.",
+            "Do not add external automation yet.",
+            "Do not redesign blindly.",
+            "Do not add more nav clutter."
+        ]
+    }
+
+@app.get("/system-status")
+async def system_status(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    learning_data = build_learning_summary(memory_data) if "build_learning_summary" in globals() else {}
+    return {
+        "ok": True,
+        "version": "V108",
+        "status": "release_candidate",
+        "backend": {
+            "live": True,
+            "model": MODEL,
+            "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+            "timeout_seconds": TIMEOUT,
+            "max_tokens": MAX_TOKENS
+        },
+        "database": {
+            "supabase_enabled": SUPABASE_ENABLED,
+            "memory_accessible": bool(memory_data.get("supabase_enabled")),
+            "recent_runs": len(memory_data.get("recent_runs") or []),
+            "open_actions": len(memory_data.get("open_actions") or []),
+            "saved_decisions": len(memory_data.get("recent_decisions") or []),
+            "memory_items": len(memory_data.get("memory_items") or [])
+        },
+        "product": {
+            "manual_execution_only": True,
+            "auto_loop_enabled": False,
+            "bots_enabled": False,
+            "external_automation_enabled": False,
+            "figma_ready_next": True,
+            "ux_brief_ready": True
+        },
+        "learning": learning_data.get("product_read", {}) if isinstance(learning_data, dict) else {}
+    }
+
+
+@app.get("/go-live-check")
+async def go_live_check(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    recent_runs = memory_data.get("recent_runs") or []
+    open_actions = memory_data.get("open_actions") or []
+    recent_decisions = memory_data.get("recent_decisions") or []
+    memory_items = memory_data.get("memory_items") or []
+
+    checks = [
+        {"name": "Backend health", "passed": True, "detail": "FastAPI service is live."},
+        {"name": "OpenAI key", "passed": bool(os.getenv("OPENAI_API_KEY")), "detail": "OpenAI key is configured."},
+        {"name": "Supabase connection", "passed": bool(memory_data.get("supabase_enabled")), "detail": "Supabase memory is accessible."},
+        {"name": "Recent runs", "passed": len(recent_runs) > 0, "detail": f"{len(recent_runs)} recent runs found."},
+        {"name": "Open actions", "passed": len(open_actions) > 0, "detail": f"{len(open_actions)} open actions found."},
+        {"name": "Saved decisions", "passed": len(recent_decisions) > 0, "detail": f"{len(recent_decisions)} saved decisions found."},
+        {"name": "Memory items", "passed": len(memory_items) > 0, "detail": f"{len(memory_items)} memory items found."},
+        {"name": "Manual execution lock", "passed": True, "detail": "Auto-loop/bots/external automation are disabled."}
+    ]
+
+    passed = sum(1 for c in checks if c["passed"])
+    total = len(checks)
+    ready = passed >= 7
+
+    return {
+        "ok": True,
+        "version": "V108",
+        "ready_for_frontend_polish": ready,
+        "score": f"{passed}/{total}",
+        "checks": checks,
+        "decision": "Proceed to Figma/UI polish after verifying frontend displays V108 status cleanly." if ready else "Do not add new features. Fix failed checks first.",
+        "next_move": "Run one frontend prompt, save one action and one decision, then recheck /go-live-check."
+    }
+
+@app.get("/learning")
+async def learning(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    return {
+        "ok": True,
+        "version": "V108",
+        "learning": build_learning_summary(memory_data)
+    }
+
+
+@app.get("/learning-events")
+async def learning_events(user_id: str = Query("local_user"), limit: int = Query(50, ge=1, le=100)):
+    if not SUPABASE_ENABLED:
+        return {"ok": True, "supabase_enabled": False, "events": []}
+    user = await get_or_create_user(user_id)
+    rows = await sb_get("learning_events", f"?user_id=eq.{user['id']}&order=created_at.desc&limit={limit}")
+    return {"ok": True, "version": "V108", "events": rows}
+
+
+@app.get("/operator-brief")
+async def operator_brief(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    learning_data = build_learning_summary(memory_data)
+    return {
+        "ok": True,
+        "version": "V108",
+        "brief": {
+            "today_focus": learning_data["product_read"]["recommended_next"],
+            "system_status": "Backend + Supabase memory live. Learning dashboard active. Manual execution only.",
+            "open_actions": learning_data["open_actions"],
+            "saved_decisions": learning_data["saved_decisions"],
+            "memory_items": learning_data["memory_items"],
+            "highest_leverage_move": "Use the app for 3 real workflows and save actions/decisions so the learning layer has real signal.",
+            "do_not_do_yet": ["Do not build bot team", "Do not add external automation", "Do not start Figma redesign until learning output is useful"]
+        }
+    }
+
+@app.get("/profile-status")
+async def profile_status(user_id: str = Query("local_user")):
+    memory_data = await load_memory(user_id)
+    profile = memory_data.get("profile")
+    merged = merged_profile(memory_data)
+    completion = {
+        "has_saved_profile": bool(profile),
+        "has_role": bool(profile and profile.get("role")),
+        "has_goals": bool(profile and profile.get("goals")),
+        "has_experience": bool(profile and profile.get("experience")),
+        "has_constraints": bool(profile and profile.get("constraints")),
+        "has_resume_context": bool(profile and profile.get("resume_context"))
+    }
+    score = sum(1 for v in completion.values() if v)
+    return {
+        "ok": True,
+        "version": "V108",
+        "completion_score": score,
+        "completion": completion,
+        "profile_used_for_prompt": merged,
+        "recommendation": "Add role, goals, experience, constraints, and resume context to make output sharper." if score < 4 else "Profile is strong enough for personalized output."
+    }
 
 @app.get("/profile")
 async def get_profile(user_id: str = Query("local_user")):
@@ -1042,4 +1665,4 @@ async def save_profile(req: ProfileRequest):
         "updated_at": now_iso()
     }, "user_id")
     await save_learning_event(req.user_id or "local_user", "profile_saved", None, {})
-    return {"ok": True, "profile": row}
+    return {"ok": True, "version": "V108", "profile": row, "profile_status": "saved"}

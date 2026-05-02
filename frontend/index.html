@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
-  <title>Executive Engine OS V97</title>
+  <title>Executive Engine OS V108</title>
   <style>
     :root{
       --nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;
@@ -484,6 +484,661 @@ button.saved{
   border-color:#86efac!important;
 }
 
+
+/* V98 — profile-aware status */
+.profile-status{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.profile-status strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.profile-chip{
+  display:inline-flex;
+  align-items:center;
+  height:22px;
+  border-radius:999px;
+  padding:0 8px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  font-size:10px;
+  font-weight:900;
+  margin-top:6px;
+}
+.profile-chip.good{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#86efac;
+}
+
+
+/* V99 — Learning dashboard */
+.learning-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin:14px 0;
+}
+.learning-card{
+  border:1px solid #e2e8f0;
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+}
+.learning-card strong{
+  display:block;
+  font-size:22px;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.learning-card span{
+  color:#64748b;
+  font-size:12px;
+  font-weight:800;
+}
+.learning-list{
+  display:grid;
+  gap:8px;
+  margin-top:12px;
+}
+.learning-row{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  color:#334155;
+}
+.learning-row b{
+  color:#0f172a;
+}
+@media(max-width:900px){
+  .learning-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+
+
+/* V100 — release candidate status */
+.v100-status{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.v100-status strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.v100-checks{
+  display:grid;
+  gap:6px;
+  margin-top:8px;
+}
+.v100-check{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  padding:7px 8px;
+  background:#fff;
+}
+.v100-check span{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.v100-check b{
+  font-size:10px;
+  color:#047857;
+}
+
+
+/* V101 — UX readiness */
+.ux-brief-box{
+  border:1px solid #e2e8f0;
+  background:#ffffff;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.ux-brief-box strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.ux-mini-list{
+  margin-top:7px;
+  display:grid;
+  gap:5px;
+}
+.ux-mini-list div{
+  border:1px solid #e2e8f0;
+  border-radius:9px;
+  padding:6px 7px;
+  background:#f8fafc;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+
+/* V102 — UX flow simplification */
+.command-priority-note{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid #dbeafe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:11px;
+  font-weight:900;
+  width:max-content;
+  margin:0 auto 12px auto;
+}
+.workflow-simplified-label{
+  text-align:center;
+  font-size:12px;
+  color:#64748b;
+  font-weight:850;
+  margin:10px 0 8px;
+}
+.figma-brief-box{
+  border:1px solid #e2e8f0;
+  background:#fff;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+}
+.figma-brief-box strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+
+
+/* V103 — simplified command-first layout */
+body.v103-focus .workspace,
+.v103-command-shell{
+  max-width:1120px;
+}
+.v103-hero{
+  border:1px solid #e2e8f0;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 18px 55px rgba(15,23,42,.08);
+  margin-bottom:18px;
+}
+.v103-hero-kicker{
+  display:inline-flex;
+  height:28px;
+  align-items:center;
+  gap:8px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  border-radius:999px;
+  padding:0 11px;
+  font-size:11px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+.v103-hero h1{
+  margin:0;
+  font-size:36px;
+  line-height:1.05;
+  letter-spacing:-1.4px;
+  color:#0f172a;
+}
+.v103-hero p{
+  margin:10px 0 0;
+  color:#64748b;
+  font-size:15px;
+  max-width:720px;
+}
+.v103-command-card{
+  margin-top:18px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 10px 35px rgba(29,78,216,.08);
+}
+.v103-flow-pills{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.v103-flow-pills button{
+  height:34px;
+  border-radius:999px;
+  border:1px solid #e2e8f0;
+  background:#fff;
+  color:#334155;
+  font-weight:900;
+  padding:0 12px;
+  cursor:pointer;
+}
+.v103-flow-pills button.active{
+  background:#0f172a;
+  border-color:#0f172a;
+  color:#fff;
+}
+.v103-starters{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.v103-starter{
+  border:1px solid #e2e8f0;
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  cursor:pointer;
+}
+.v103-starter strong{
+  display:block;
+  color:#0f172a;
+  font-size:13px;
+}
+.v103-starter span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  margin-top:4px;
+}
+.v103-rail-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.v103-rail-title small{
+  color:#64748b;
+  font-weight:850;
+}
+@media(max-width:1000px){
+  .v103-starters{grid-template-columns:1fr;}
+  .v103-hero h1{font-size:30px;}
+}
+
+
+/* V104 — premium visual polish, no logic changes */
+:root{
+  --v104-navy:#0b1220;
+  --v104-navy-2:#111827;
+  --v104-blue:#2563eb;
+  --v104-blue-soft:#eff6ff;
+  --v104-border:#e2e8f0;
+  --v104-muted:#64748b;
+  --v104-surface:#f8fafc;
+  --v104-shadow:0 22px 70px rgba(15,23,42,.10);
+  --v104-soft-shadow:0 10px 30px rgba(15,23,42,.08);
+}
+body{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(37,99,235,.08), transparent 32%),
+    radial-gradient(circle at 90% 10%, rgba(14,165,233,.07), transparent 30%),
+    #f8fafc !important;
+}
+.sidebar,
+.left-nav,
+nav.sidebar{
+  background:linear-gradient(180deg,#0b1220 0%,#111827 100%) !important;
+  box-shadow:8px 0 30px rgba(15,23,42,.16);
+}
+.topbar,
+.top-nav,
+header{
+  background:rgba(11,18,32,.96) !important;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.topbar *,
+.top-nav *,
+header *{
+  color:inherit;
+}
+.v103-hero{
+  border:1px solid rgba(148,163,184,.30) !important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(248,250,252,.96) 100%) !important;
+  box-shadow:var(--v104-shadow) !important;
+  position:relative;
+  overflow:hidden;
+}
+.v103-hero::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:5px;
+  background:linear-gradient(90deg,#2563eb,#0ea5e9,#059669);
+}
+.v103-hero-kicker{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border:1px solid #bfdbfe !important;
+  box-shadow:0 8px 22px rgba(37,99,235,.10);
+}
+.v103-hero h1{
+  color:#0f172a !important;
+  letter-spacing:-1.7px !important;
+}
+.v103-hero p{
+  color:#475569 !important;
+}
+.v103-command-card{
+  border:1px solid #bfdbfe !important;
+  background:rgba(255,255,255,.98) !important;
+  box-shadow:0 18px 50px rgba(37,99,235,.12) !important;
+}
+.v103-command-card textarea,
+textarea,
+input[type="text"],
+input[type="search"]{
+  border:1px solid #dbeafe !important;
+  background:#ffffff !important;
+  box-shadow:inset 0 1px 0 rgba(15,23,42,.03);
+}
+.v103-command-card textarea:focus,
+textarea:focus,
+input:focus{
+  outline:none !important;
+  border-color:#2563eb !important;
+  box-shadow:0 0 0 4px rgba(37,99,235,.12) !important;
+}
+.run-btn,
+button.run-btn,
+button.primary,
+.primary-btn{
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%) !important;
+  color:#fff !important;
+  border:1px solid #1d4ed8 !important;
+  box-shadow:0 14px 30px rgba(37,99,235,.25) !important;
+}
+.run-btn:hover,
+button.primary:hover,
+.primary-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 38px rgba(37,99,235,.30) !important;
+}
+.v103-flow-pills button{
+  border:1px solid #e2e8f0 !important;
+  background:#ffffff !important;
+  transition:.18s ease;
+}
+.v103-flow-pills button:hover{
+  border-color:#bfdbfe !important;
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+}
+.v103-flow-pills button.active{
+  background:#0f172a !important;
+  border-color:#0f172a !important;
+  color:#fff !important;
+  box-shadow:0 10px 24px rgba(15,23,42,.18);
+}
+.v103-starter{
+  transition:.18s ease;
+  box-shadow:0 6px 20px rgba(15,23,42,.04);
+}
+.v103-starter:hover{
+  transform:translateY(-2px);
+  border-color:#bfdbfe !important;
+  box-shadow:0 16px 34px rgba(37,99,235,.11);
+}
+.panel,
+.page-card,
+.learning-card,
+.v100-status,
+.ux-brief-box,
+.figma-brief-box,
+.profile-status,
+.memory-summary-box{
+  border:1px solid rgba(226,232,240,.95) !important;
+  box-shadow:var(--v104-soft-shadow);
+}
+.rail-row-one,
+.engine-item,
+.queue-item,
+.decision-item{
+  transition:.16s ease;
+}
+.rail-row-one:hover,
+.engine-item:hover,
+.queue-item:hover,
+.decision-item:hover{
+  border-color:#bfdbfe !important;
+  background:#ffffff !important;
+  transform:translateY(-1px);
+  box-shadow:0 10px 26px rgba(37,99,235,.08);
+}
+.row-chip,
+.profile-chip{
+  font-weight:950 !important;
+}
+::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+::-webkit-scrollbar-track{
+  background:#eef2f7;
+}
+::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:999px;
+  border:2px solid #eef2f7;
+}
+::-webkit-scrollbar-thumb:hover{
+  background:#94a3b8;
+}
+
+
+/* V105 — cleanup / bugfix polish */
+.v105-clean-status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid #bbf7d0;
+  background:#ecfdf5;
+  color:#047857;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:950;
+}
+.v105-clean-status::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#059669;
+}
+button:disabled{
+  cursor:not-allowed!important;
+  opacity:.62!important;
+}
+.page-view.show,
+#pageView.show{
+  display:block;
+}
+.chat-shell.show,
+#chatShell.show{
+  display:flex;
+}
+.v103-command-card .composer-bottom{
+  align-items:center;
+  gap:12px;
+}
+.v103-command-card textarea{
+  min-height:120px!important;
+  resize:vertical;
+}
+@media(max-width:720px){
+  .v103-hero{padding:18px!important;border-radius:18px!important;}
+  .v103-hero h1{font-size:27px!important;}
+  .v103-flow-pills{gap:6px!important;}
+  .v103-flow-pills button{height:32px!important;padding:0 9px!important;font-size:11px!important;}
+  .run-btn{width:100%!important;margin-top:10px!important;}
+  .composer-bottom{flex-direction:column!important;align-items:stretch!important;}
+}
+
+
+/* V107 — frontend review fixes */
+.v107-diagnostic-box{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.v107-diagnostic-box strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.v107-diagnostic-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:24px;
+  border-radius:999px;
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:0 9px;
+  font-size:10px;
+  font-weight:950;
+  margin-top:6px;
+}
+.v107-diagnostic-pill.good{
+  border-color:#86efac;
+  background:#ecfdf5;
+  color:#047857;
+}
+.v103-command-card textarea,
+#v103Input{
+  width:100% !important;
+  box-sizing:border-box !important;
+  display:block !important;
+}
+.v103-command-card .composer-bottom{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:space-between !important;
+}
+.v103-flow-pills{
+  flex:1 1 auto !important;
+}
+.v103-flow-pills button{
+  margin-bottom:4px;
+}
+.run-btn{
+  white-space:nowrap !important;
+}
+@media(max-width:860px){
+  .v103-command-card .composer-bottom{
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  .v103-flow-pills{
+    width:100% !important;
+  }
+  .v103-flow-pills button{
+    flex:1 1 auto;
+  }
+}
+
+
+/* V108 — frontend stability polish */
+.v108-stability-box{
+  border:1px solid #dbeafe;
+  background:#f8fbff;
+  border-radius:14px;
+  padding:11px;
+  margin-top:10px;
+  font-size:11px;
+  color:#475569;
+  line-height:1.35;
+}
+.v108-stability-box strong{
+  display:block;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.v108-status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:24px;
+  border-radius:999px;
+  border:1px solid #86efac;
+  background:#ecfdf5;
+  color:#047857;
+  padding:0 9px;
+  font-size:10px;
+  font-weight:950;
+  margin-top:6px;
+}
+.v108-clickable{
+  cursor:pointer;
+}
+[data-nav], .nav-item, .sidebar a, .sidebar button{
+  cursor:pointer;
+}
+.v103-hero{
+  max-width:100%;
+}
+.v103-command-card{
+  position:relative;
+  z-index:1;
+}
+#v103Input{
+  font-size:15px!important;
+  line-height:1.45!important;
+}
+.rail-row-one strong{
+  max-width:220px!important;
+}
+.rail-row-one span{
+  max-width:220px!important;
+}
+@media(max-width:1180px){
+  .rail-row-one strong,.rail-row-one span{max-width:170px!important;}
+}
+@media(max-width:760px){
+  .v103-starters{grid-template-columns:1fr!important;}
+  .v103-command-card{padding:12px!important;}
+  .v108-stability-box{display:none;}
+}
+
 </style>
 </head>
 <body>
@@ -549,7 +1204,7 @@ button.saved{
     </main>
 
     <aside class="right">
-      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
+      <section class="panel"><h3>System Status</h3><div id="dbStatus" class="db-status bad"><span class="db-dot"></span>Checking backend</div><div class="memory-toolbar"><button onclick="refreshBackendMemory()">Refresh</button><button onclick="syncLocalToBackend()">Sync Local</button></div><div id="memorySummaryBox" class="memory-summary-box"><strong>Memory</strong>Not loaded yet.</div><div id="profileStatusBox" class="profile-status"><strong>Profile</strong>Checking profile...</div><div id="releaseStatusBox" class="v100-status"><strong>V108 UX</strong>Checking go-live status...</div><div id="uxBriefBox" class="ux-brief-box"><strong>UX Brief</strong>Checking UX readiness...</div><div id="figmaBriefBox" class="figma-brief-box"><strong>Figma Brief</strong>Ready after backend checks.</div><div id="visualBriefBox" class="figma-brief-box"><strong>Visual Polish</strong>Premium polish active.</div><div id="cleanupStatusBox" class="figma-brief-box"><strong>V107 Cleanup</strong><span class="v105-clean-status">Stable frontend pass</span></div><div id="frontendDiagnosticsBox" class="v107-diagnostic-box"><strong>Frontend Diagnostics</strong>Checking UI state...</div><div id="frontendStabilityBox" class="v108-stability-box"><strong>Frontend Stability</strong>Checking layout...</div></section><section class="panel"><h3>Your Engine</h3><div class="engine-help">Recent chats. Click a row to reopen.</div><div id="engineList" class="engine-list"><div class="empty">No recent chats yet.</div></div><div class="rail-actions"><button onclick="newChat()">New Chat</button><button onclick="goHome()">Home</button></div></section>
       <section class="panel"><h3>Today’s Focus</h3><div id="todayFocus" class="focus-box"><strong>No focus yet</strong><span>Run the engine to create your current focus.</span></div></section>
       <section class="panel"><h3>Action Queue</h3><div id="queueList"><div class="empty">No actions yet.</div></div></section>
       <section class="panel"><h3>Recent Decisions</h3><div id="recentDecisionList"><div class="empty">No decisions saved yet.</div></div></section>
@@ -563,10 +1218,10 @@ button.saved{
 <script>
 const API="https://executive-engine-os.onrender.com";
 const USER_ID="local_user";
-let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null};
+let backendMemory={online:false,supabase:false,runs:[],actions:[],decisions:[],profile:null,engineState:null,profileStatus:null};
 let actionSavedForRun=false;
 let decisionSavedForRun=false;
-const STORAGE_KEY="eeos_v97_threads",ACTIVE_KEY="eeos_v97_active_thread",PROFILE_KEY="eeos_v97_profile",ACTIONS_KEY="eeos_v97_actions",DECISIONS_KEY="eeos_v97_decisions";
+const STORAGE_KEY="eeos_v108_threads",ACTIVE_KEY="eeos_v108_active_thread",PROFILE_KEY="eeos_v108_profile",ACTIONS_KEY="eeos_v108_actions",DECISIONS_KEY="eeos_v108_decisions";
 const $=id=>document.getElementById(id);
 const input=$("input"),runBtn=$("runBtn"),workspace=$("workspace"),chatShell=$("chatShell"),chat=$("chat"),pageView=$("pageView"),workflowTabs=$("workflowTabs"),recentStrip=$("recentStrip"),notice=$("notice"),processingOverlay=$("processingOverlay"),runStatus=$("runStatus"),globalSearch=$("globalSearch"),searchResults=$("searchResults");
 const pageTitle=$("pageTitle"),pageDesc=$("pageDesc"),currentWorkflowIcon=$("currentWorkflowIcon"),currentWorkflowLabel=$("currentWorkflowLabel"),todayFocus=$("todayFocus"),queueList=$("queueList"),recentDecisionList=$("recentDecisionList"),engineList=$("engineList");
@@ -604,7 +1259,7 @@ function recentItems(mode){const msgs=Object.values(threads).flatMap(t=>(t.messa
 function renderWorkflowTabs(){workflowTabs.innerHTML=homeModes.map(mode=>{const w=workflows[mode];return`<button class="workflow-tab ${activeMode===mode?"active":""}" data-mode="${mode}"><span class="dot">${w.icon}</span><b>${esc(w.label)}</b><small>${esc(w.desc)}</small></button>`}).join("");workflowTabs.querySelectorAll(".workflow-tab").forEach(b=>b.onclick=()=>selectWorkflow(b.dataset.mode,true))}
 function renderRecent(){recentStrip.innerHTML=recentItems(activeMode).map(r=>`<div class="recent-card" data-text="${esc(r.text)}"><strong>${esc(r.text)}</strong><span>${r.at==="Suggested"?"Suggested starter":"Recent input"}</span></div>`).join("");recentStrip.querySelectorAll(".recent-card").forEach(c=>c.onclick=()=>{input.value=c.dataset.text;input.focus()})}
 function selectWorkflow(mode,focus=false){activeMode=mode;const w=workflows[mode]||workflows.execution;input.placeholder=w.placeholder;currentWorkflowIcon.textContent=w.icon;currentWorkflowLabel.textContent=w.label;pageTitle.textContent=mode==="execution"?"What needs to move forward?":w.label;pageDesc.textContent=w.desc+". Add details below and run the engine.";document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode||(mode==="execution"&&b.dataset.page==="command")));renderWorkflowTabs();renderRecent();if(focus)input.focus()}
-function goHome(){pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow("execution",false);input.focus()}
+function goHome(){renderV103Home();}
 function newChat(){createThread(false);input.value="";goHome();renderRight();notify("New workspace ready","success")}
 function openPage(page,mode){if(page==="profile")return renderProfile();const info=pageInfo[page]||pageInfo.command;workspace.style.display="none";chatShell.classList.remove("show");pageView.classList.add("show");document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));pageView.innerHTML=`<div class="page-header"><div class="page-title-block"><h2>${esc(info.title)}</h2><p>${esc(info.desc)}</p></div><button class="page-primary" onclick="startWorkflow('${info.mode}')">Start</button></div><div class="page-grid">${info.modules.map(m=>`<div class="page-module"><h3>${esc(m[0])}</h3><p>${esc(m[1])}</p><button onclick="moduleAction('${info.mode}','${esc(m[2])}')">${m[2].startsWith("__")?"Open":"Start"}</button></div>`).join("")}</div>`}
 function startWorkflow(mode){pageView.classList.remove("show");workspace.style.display="block";chatShell.classList.remove("show");selectWorkflow(mode,true);input.value=workflows[mode]?.prompt||""}
@@ -788,6 +1443,7 @@ function renderRight(){
 function latestAssistant(){return[...getMessages()].reverse().find(m=>m.role==="assistant")?.data}
 async function addLatestToQueue(){
   if(actionSavedForRun) return notify("Actions already saved for this output","success");
+  document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Add to Action Queue")){b.disabled=true;b.textContent="Saving Actions...";}});
   const d=latestAssistant();
   if(!d) return notify("Run the engine first");
   const nd=normalize(d);
@@ -812,6 +1468,7 @@ async function addLatestToQueue(){
 }
 async function saveLatestDecision(){
   if(decisionSavedForRun) return notify("Decision already saved for this output","success");
+  document.querySelectorAll("button").forEach(b=>{if(b.textContent.includes("Save Decision")){b.disabled=true;b.textContent="Saving Decision...";}});
   const d=latestAssistant();
   if(!d) return notify("Run the engine first");
   const nd=normalize(d);
@@ -834,7 +1491,7 @@ async function saveLatestDecision(){
 }
 function createFollowUp(){const d=normalize(latestAssistant());input.value=`Create a follow-up for this decision:\\n\\nDecision: ${d.decision}\\nNext move: ${d.next_move}\\nActions: ${d.actions.join("; ")}`;goHome();selectWorkflow("execution");notify("Follow-up prompt created")}
 function runDeeperAnalysis(){const d=normalize(latestAssistant());input.value=`Run deeper strategic analysis on this:\\n\\nDecision: ${d.decision}\\nRisk: ${d.risk}\\nNext move: ${d.next_move}`;goHome();selectWorkflow("execution");notify("Deep analysis prompt created")}
-function buildContext(){return["Executive Engine OS V97 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
+function buildContext(){return["Executive Engine OS V108 Context","Workflow: "+(workflows[activeMode]?.label||"Ask / Execute"),"Profile:\\n"+(profileText()||"No profile saved")].join("\\n\\n")}
 async function send(){
   const text=input.value.trim();
   if(!text) return notify("Add context first");
@@ -938,6 +1595,14 @@ async function refreshBackendMemory(){
       apiGet("/decisions?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/profile?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/engine-state?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/profile-status?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/go-live-check?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/ux-brief?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/figma-brief?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/visual-brief"),
+      apiGet("/cleanup-check?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/frontend-diagnostics?user_id="+encodeURIComponent(USER_ID)),
+      apiGet("/frontend-stability?user_id="+encodeURIComponent(USER_ID)),
       apiGet("/memory-summary?user_id="+encodeURIComponent(USER_ID))
     ]);
 
@@ -946,6 +1611,14 @@ async function refreshBackendMemory(){
     backendMemory.decisions = decisions.status==="fulfilled" ? (decisions.value.decisions||[]) : [];
     backendMemory.profile = profile.status==="fulfilled" ? profile.value.profile : null;
     backendMemory.engineState = engineState.status==="fulfilled" ? engineState.value : null;
+    backendMemory.profileStatus = profileStatus.status==="fulfilled" ? profileStatus.value : null;
+    backendMemory.goLive = goLive.status==="fulfilled" ? goLive.value : null;
+    backendMemory.uxBrief = uxBrief.status==="fulfilled" ? uxBrief.value : null;
+    backendMemory.figmaBrief = figmaBrief.status==="fulfilled" ? figmaBrief.value : null;
+    backendMemory.visualBrief = visualBrief.status==="fulfilled" ? visualBrief.value : null;
+    backendMemory.cleanupCheck = cleanupCheck.status==="fulfilled" ? cleanupCheck.value : null;
+    backendMemory.frontendDiagnostics = frontendDiagnostics.status==="fulfilled" ? frontendDiagnostics.value : null;
+    backendMemory.frontendStability = frontendStability.status==="fulfilled" ? frontendStability.value : null;
     backendMemory.memorySummary = memsum.status==="fulfilled" ? memsum.value.summary : null;
 
     const msb=document.getElementById("memorySummaryBox");
@@ -955,6 +1628,42 @@ async function refreshBackendMemory(){
       const decisionCount=(s.recent_decisions||[]).length||0;
       const profileStatus=s.profile?.role||s.status||"No profile";
       msb.innerHTML=`<strong>Memory</strong>${esc(profileStatus)} · ${actionCount} open actions · ${decisionCount} saved decisions`;
+    }
+    const psb=document.getElementById("profileStatusBox");
+    if(psb){
+      const ps=backendMemory.profileStatus||{};
+      const score=ps.completion_score||0;
+      const label=score>=4?"Profile active":"Default operator profile";
+      const chip=score>=4?"good":"";
+      psb.innerHTML=`<strong>Profile-Aware Output</strong>${esc(label)}<br><span class="profile-chip ${chip}">${score}/6 complete</span>`;
+    }
+    const rsb=document.getElementById("releaseStatusBox");
+    if(rsb){
+      const gl=backendMemory.goLive||{};
+      const ready=gl.ready_for_frontend_polish?"Ready":"Validate";
+      const score=gl.score||"—";
+      rsb.innerHTML=`<strong>V108 Command Flow</strong>${esc(ready)} · ${esc(score)} checks<br><span class="profile-chip ${gl.ready_for_frontend_polish?"good":""}">Go-live check</span>`;
+    }
+    const uxb=document.getElementById("uxBriefBox");
+    if(uxb){
+      const brief=backendMemory.uxBrief?.brief||{};
+      const counts=brief.memory_counts||{};
+      uxb.innerHTML=`<strong>UX Brief</strong>${esc(brief.ux_goal||"Make the system obvious and useful.")}<div class="ux-mini-list"><div>${counts.recent_runs||0} runs · ${counts.open_actions||0} actions · ${counts.saved_decisions||0} decisions</div></div>`;
+    }
+    const fgb=document.getElementById("figmaBriefBox");
+    if(fgb){
+      const fb=backendMemory.figmaBrief||{};
+      fgb.innerHTML=`<strong>Figma Brief</strong>${esc(fb.purpose||"Create a high-end executive command center that is obvious in under 5 seconds.")}`;
+    }
+    const vbb=document.getElementById("visualBriefBox");
+    if(vbb){
+      const vb=backendMemory.visualBrief||{};
+      vbb.innerHTML=`<strong>Visual Polish</strong>${esc(vb.visual_decision||"Premium polish active. No backend logic changed.")}`;
+    }
+    const csb=document.getElementById("cleanupStatusBox");
+    if(csb){
+      const cc=backendMemory.cleanupCheck?.checks||{};
+      csb.innerHTML=`<strong>V105 Cleanup</strong><span class="v105-clean-status">Backend ${cc.supabase_enabled?"DB live":"checking"}</span>`;
     }
 
     renderEngineList();
@@ -1021,7 +1730,79 @@ document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",
 $("newTopBtn").onclick=newChat;$("newLeftBtn").onclick=newChat;$("brandHome").onclick=goHome;runBtn.onclick=send;
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
 globalSearch.addEventListener("input",runSearch);globalSearch.addEventListener("focus",runSearch);globalSearch.addEventListener("keydown",e=>{if(e.key==="Escape"){globalSearch.value="";searchResults.classList.remove("show");input.focus()}});
-render();selectWorkflow("execution",false);input.focus();setTimeout(refreshBackendMemory, 300);
+
+
+function goCommand(){
+  try{ renderV103Home(); }catch(e){ goHome(); }
+}
+function openLearning(){
+  try{ showPage("learning"); }catch(e){ console.error(e); }
+}
+function openProfile(){
+  try{ showPage("profile"); }catch(e){ console.error(e); }
+}
+function setWorkflowAndHome(mode){
+  try{ selectWorkflow(mode,false); renderV103Home(); }catch(e){ console.error(e); }
+}
+
+function renderV103Home(){
+  if(!workspace) return;
+  document.body.classList.add("v103-focus");
+  workspace.style.display="block";
+  chatShell.classList.remove("show");
+  pageView.classList.remove("show");
+
+  const prompts=[
+    ["Validate the system","What should I focus on today to move Executive Engine OS forward?"],
+    ["Clean execution loop","Test the full flow: /run, /memory, save action, save decision, right sidebar."],
+    ["Improve output quality","Review the latest Executive Engine OS response and tell me exactly what to tighten next."]
+  ];
+
+  workspace.innerHTML=`
+    <section class="v103-hero">
+      <div class="v103-hero-kicker">V103 · Command-first OS</div>
+      <h1>Today’s Command Center</h1>
+      <p>Type one command. Get a decision, next move, actions, risk, and a clean execution loop. Save what matters.</p>
+
+      <div class="v103-command-card">
+        <textarea id="v103Input" placeholder="What needs to move forward?"></textarea>
+        <div class="composer-bottom">
+          <div class="v103-flow-pills">
+            <button class="${activeMode==="execution"?"active":""}" onclick="selectWorkflow('execution');renderV103Home()">Execute</button>
+            <button class="${activeMode==="daily_brief"?"active":""}" onclick="selectWorkflow('daily_brief');renderV103Home()">Today</button>
+            <button class="${activeMode==="decision"?"active":""}" onclick="selectWorkflow('decision');renderV103Home()">Decision</button>
+            <button class="${activeMode==="meeting"?"active":""}" onclick="selectWorkflow('meeting');renderV103Home()">Meeting</button>
+            <button class="${activeMode==="content"?"active":""}" onclick="selectWorkflow('content');renderV103Home()">Content</button>
+            <button class="${activeMode==="personal"?"active":""}" onclick="selectWorkflow('personal');renderV103Home()">Personal</button>
+          </div>
+          <button class="run-btn" onclick="runV103Command()">Run Engine</button>
+        </div>
+      </div>
+
+      <div class="v103-starters">
+        ${prompts.map(p=>`<div class="v103-starter" onclick="document.getElementById('v103Input').value='${p[1].replaceAll("'","\\'")}';document.getElementById('v103Input').focus();"><strong>${p[0]}</strong><span>${p[1]}</span></div>`).join("")}
+      </div>
+    </section>
+  `;
+  const v103Input=document.getElementById("v103Input");
+  if(v103Input){
+    v103Input.addEventListener("keydown",e=>{
+      if((e.metaKey||e.ctrlKey)&&e.key==="Enter") runV103Command();
+    });
+    v103Input.focus();
+  }
+  renderRight();
+}
+
+function runV103Command(){
+  const v103Input=document.getElementById("v103Input");
+  if(!v103Input || !v103Input.value.trim()) return notify("Type a command first");
+  input.value=v103Input.value.trim();
+  sendMessage();
+}
+
+
+selectWorkflow("execution",false);renderV103Home();setTimeout(refreshBackendMemory, 300);
 </script>
 </body>
 </html>
