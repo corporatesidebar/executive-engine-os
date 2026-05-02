@@ -1184,6 +1184,31 @@ textarea#input{
 @media(max-width:1280px){.v400-intel-strip{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.v400-intel-strip,.v400-output-grid{grid-template-columns:1fr}}
 
+
+/* V500 Product Candidate */
+.v500-cockpit{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin:0 0 14px}
+.v500-card{background:#fff;border:1px solid #dbe5f1;border-radius:18px;padding:16px;box-shadow:0 14px 34px rgba(7,18,38,.06)}
+.v500-card h3{margin:0 0 8px;color:#071226;font-size:18px;letter-spacing:-.02em}
+.v500-card p{margin:0;color:#64748b;font-size:13px;line-height:1.45}
+.v500-workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.v500-step{border:1px solid #dbe5f1;background:#f8fbff;border-radius:13px;padding:10px;font-size:11px;font-weight:850;color:#334155;text-align:center}
+.v500-step.active{background:#071226;color:#fff;border-color:#071226}
+.v500-notifications{display:grid;gap:8px;margin-top:10px}
+.v500-note{border:1px solid #dbe5f1;background:#fff;border-radius:13px;padding:10px;display:flex;gap:9px;align-items:flex-start}
+.v500-dot{width:9px;height:9px;border-radius:50%;background:#0f63ff;flex:0 0 9px;margin-top:5px}
+.v500-note.high .v500-dot{background:#ff6a00}.v500-note.medium .v500-dot{background:#7c3aed}.v500-note.low .v500-dot{background:#10b981}
+.v500-note b{display:block;font-size:12px;color:#071226}.v500-note span{display:block;font-size:11px;color:#64748b;margin-top:2px;line-height:1.35}
+.v500-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 14px}
+.v500-mini{background:#fff;border:1px solid #dbe5f1;border-left:5px solid #0f63ff;border-radius:16px;padding:13px;box-shadow:0 12px 28px rgba(7,18,38,.055);min-height:94px}
+.v500-mini.orange{border-left-color:#ff6a00}.v500-mini.green{border-left-color:#10b981}.v500-mini.purple{border-left-color:#7c3aed}
+.v500-mini small{display:block;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:900;font-size:10px;margin-bottom:6px}
+.v500-mini strong{color:#071226;font-size:13px;line-height:1.3}
+.v500-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.v500-actions button{height:34px;border:1px solid #dbe5f1;background:#fff;color:#334155;border-radius:11px;padding:0 12px;font-weight:800;font-size:12px}
+.v500-actions button.primary{background:#ff6a00;color:#fff;border-color:#ff6a00}
+@media(max-width:1280px){.v500-cockpit,.v500-mini-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.v500-cockpit,.v500-mini-grid,.v500-workflow{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1191,11 +1216,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V400 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V500 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V400 Intelligence</div>
+  <div class="lock">▣ V500 Product Candidate</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1259,7 +1284,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V400 Intelligence · V400 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V500 Product Candidate · V500 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1450,6 +1475,32 @@ function useCommandTemplate(id){
 function toggleTemplates(){const d=document.getElementById('v301TemplateDrawer'); if(d) d.classList.toggle('open');}
 
 
+
+function v500LocalState(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const text=(input && input.value ? input.value : "").toLowerCase();
+  let focus="Execution clarity", constraint="Too many possible priorities", load="Controlled", risk="Weak signal quality", command="Create my executive daily brief using memory, open actions, risks, and current priorities.";
+  if(text.includes("revenue")||text.includes("sales")||text.includes("pipeline")){focus="Revenue execution";constraint="Pipeline clarity and owner accountability";risk="Revenue action without owner";command="Review my revenue pipeline and tell me the one action most likely to create cash impact this week.";}
+  else if(text.includes("risk")||text.includes("blocker")||text.includes("broken")){focus="Risk removal";constraint="Execution blocker";load="Medium";risk="Recurring execution blocker";command="Turn my biggest recurring risk into a mitigation plan with owner, timing, and first action.";}
+  else if(text.includes("meeting")||text.includes("board")){focus="Meeting readiness";constraint="Unclear meeting decision";risk="Meeting without clear outcome";command="Prepare my meeting brief with objective, decision needed, risks, and follow-up actions.";}
+  else if(text.includes("action")||text.includes("tasks")||text.includes("queue")){focus="Action queue control";constraint="Open action load";load="High";risk="Action overload";command="Reduce my action queue. Tell me what to complete, cut, or defer today.";}
+  return {focus,constraint,load,risk,command};
+}
+function updateV500Cockpit(){
+  const s=v500LocalState();
+  const map={v500TodayFocus:s.focus,v500Constraint:s.constraint,v500ActionLoad:s.load,v500RecurringRisk:s.risk,v500CockpitSummary:`Focus: ${s.focus}. Constraint: ${s.constraint}. Recommended command: ${s.command}`};
+  Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id); if(el) el.textContent=val;});
+  const notes=document.getElementById("v500Notifications");
+  if(notes){
+    const list=[{p:"High",t:"Daily brief recommended",m:"Start with today’s operating focus."},{p:s.load==="High"?"High":"Medium",t:"Action load",m:s.load==="High"?"Reduce open actions before adding more.":"Action load controlled."},{p:"Medium",t:"Risk review",m:s.risk},{p:"Low",t:"System test",m:"Run diagnostic/system-test after deploys."}];
+    notes.innerHTML=list.map(n=>`<div class="v500-note ${n.p.toLowerCase()}"><span class="v500-dot"></span><div><b>${n.t}</b><span>${n.p} · ${n.m}</span></div></div>`).join("");
+  }
+}
+function v500LoadRecommendedCommand(){const s=v500LocalState();const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value=s.command;input.focus();updateV500Cockpit();if(typeof updateV350Workflow==="function")updateV350Workflow();if(typeof updateV400Intel==="function")updateV400Intel();}}
+function v500StartDay(){const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value="Create my executive daily brief using memory, open actions, risks, and current priorities. Tell me what to focus on, what to ignore, what decision to make, and what action to take first.";input.focus();}updateV500Cockpit();}
+function v500LoadDailyBrief(){v500StartDay();}
+function v500EndDay(){const input=inputEl ? inputEl() : document.getElementById("input");if(input){input.value="Create my end day summary. Review what was decided, what actions remain open, what risks need attention, and what command I should run tomorrow.";input.focus();}updateV500Cockpit();}
+
 function v400LocalIntel(text){
   const s=(text||"").toLowerCase();
   let memory="Building";
@@ -1621,7 +1672,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V400 Intelligence · V400 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V500 Product Candidate · V500 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");

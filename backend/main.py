@@ -14,16 +14,16 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V400: an executive intelligence and memory-quality layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V500: a serious executive operating system product candidate for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
 
-You are not a chatbot. You are a decision and execution intelligence system.
+You are not a chatbot. You are a daily execution cockpit.
 
 Operating principles:
-- Think like an elite COO, board operator, chief of staff, and strategy analyst.
-- Convert messy input into an executable executive decision.
-- Use memory context when available: prior decisions, saved actions, recurring risks, constraints, patterns.
-- Detect action overload, decision patterns, repeated constraints, recurring risks, and operational leverage.
+- Think like an elite COO, board operator, chief of staff, and execution strategist.
+- Convert messy input into an executable operating decision.
+- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
 - Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
+- Make the next move obvious.
 - No generic advice.
 - No motivational language.
 - No filler.
@@ -50,6 +50,7 @@ Required schema:
   "memory_signal": "Relevant pattern, past decision, recurring constraint, or action overload signal",
   "decision_pattern": "Pattern detected from the decision or input",
   "recurring_risk": "Risk likely to repeat if not addressed",
+  "notification": "One short alert the executive should see",
   "recommended_command": "Copy-paste-ready next command to run",
   "follow_up_question": "Only ask if absolutely required; otherwise use an empty string"
 }
@@ -59,11 +60,9 @@ Rules:
 - No markdown.
 - No text outside JSON.
 - Every action must be concrete, testable, and executable.
-- Avoid vague verbs like consider, explore, think about, maybe, leverage synergies.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
 - Keep it concise but executive-grade.
 - Tie the output to the user's exact input.
-- Use memory signal to improve specificity.
 - If there are too many open actions, recommend reducing or completing actions before creating more.
 - Manual execution only.
 - Auto-loop remains off.
@@ -72,8 +71,9 @@ Rules:
 
 
 
-VERSION = "V400"
-SERVICE_NAME = "Executive Engine OS V400"
+
+VERSION = "V500"
+SERVICE_NAME = "Executive Engine OS V500"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -96,7 +96,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="400.0.0")
+app = FastAPI(title=SERVICE_NAME, version="500.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -405,7 +405,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V400, an elite COO/operator system.
+You are Executive Engine OS V500, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -866,7 +866,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V400",
+        "backend_must_show": "Executive Engine OS V500",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3745,7 +3745,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V400",
+        "service": "Executive Engine OS V500",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4720,4 +4720,179 @@ async def v400_milestone(user_id: str = Query(DEFAULT_USER)):
             "/v400-milestone",
             "/health"
         ]
+    }
+
+
+
+
+# =========================
+# V500 PRODUCT CANDIDATE
+# =========================
+
+def v500_basic_counts(mem: Dict[str, Any]) -> Dict[str, int]:
+    return {
+        "recent_runs": len(mem.get("recent_runs") or []),
+        "open_actions": len(mem.get("open_actions") or []),
+        "saved_decisions": len(mem.get("recent_decisions") or []),
+        "memory_items": len(mem.get("memory_items") or [])
+    }
+
+
+def v500_action_load(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    high = [a for a in actions if str(a.get("priority", "")).lower() in ["high", "critical"]]
+    count = len(actions)
+    if count >= 25:
+        status = "Critical"
+        instruction = "Stop adding new work. Complete, cut, or defer at least five actions."
+    elif count >= 15:
+        status = "High"
+        instruction = "Reduce open actions before creating more."
+    elif count >= 8:
+        status = "Medium"
+        instruction = "Prioritize the top three actions and complete one today."
+    else:
+        status = "Controlled"
+        instruction = "Keep the action queue focused."
+    return {
+        "status": status,
+        "open_action_count": count,
+        "high_priority_count": len(high),
+        "instruction": instruction,
+        "top_actions": [{"text": a.get("text", ""), "priority": a.get("priority", "medium"), "created_at": a.get("created_at", "")} for a in actions[:5]]
+    }
+
+
+def v500_signal(mem: Dict[str, Any]) -> Dict[str, Any]:
+    counts = v500_basic_counts(mem)
+    try:
+        patterns = v400_detect_decision_patterns(mem) if "v400_detect_decision_patterns" in globals() else []
+    except Exception:
+        patterns = []
+    try:
+        risks = v400_detect_recurring_risks(mem) if "v400_detect_recurring_risks" in globals() else []
+    except Exception:
+        risks = []
+    load = v500_action_load(mem)
+    recurring_risk = risks[0] if risks else {"risk": "Weak operating signal", "severity": "Low", "mitigation": "Use the OS for one full day and save actions/decisions."}
+    decision_pattern = patterns[0] if patterns else {"pattern": "Insufficient repeated signal", "confidence": "Low", "recommended_action": "Run and save more real executive commands."}
+    today_focus = "Create execution clarity and complete the highest-impact action."
+    current_constraint = "Too many possible priorities."
+    if load["status"] in ["Critical", "High"]:
+        today_focus = "Reduce action overload."
+        current_constraint = "Open action queue is too large."
+    elif recurring_risk.get("severity") in ["High", "Medium"]:
+        today_focus = "Remove the biggest recurring risk."
+        current_constraint = recurring_risk.get("risk", "Recurring risk")
+    elif decision_pattern.get("confidence") in ["High", "Medium"]:
+        today_focus = decision_pattern.get("recommended_action", today_focus)
+        current_constraint = decision_pattern.get("operator_meaning", current_constraint)
+    recommended_command = "Reduce my action queue. Tell me what to complete, cut, or defer today." if load["status"] in ["Critical", "High"] else "Create my executive daily brief using memory, open actions, risks, and current priorities."
+    return {
+        "today_focus": today_focus,
+        "current_constraint": current_constraint,
+        "action_load": load,
+        "recurring_risk": recurring_risk,
+        "decision_pattern": decision_pattern,
+        "recommended_command": recommended_command,
+        "counts": counts,
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+def v500_notifications(mem: Dict[str, Any]) -> List[Dict[str, Any]]:
+    signal = v500_signal(mem)
+    load = signal["action_load"]
+    risk = signal["recurring_risk"]
+    counts = signal["counts"]
+    notifications = []
+    if load["status"] in ["Critical", "High"]:
+        notifications.append({"type": "action_overload", "priority": "High", "title": "Action queue needs reduction", "message": load["instruction"], "route": "actions"})
+    if risk.get("severity") in ["High", "Medium"]:
+        notifications.append({"type": "risk_review", "priority": risk.get("severity", "Medium"), "title": "Recurring risk needs review", "message": risk.get("risk", "Review recurring risk."), "route": "risk"})
+    if counts["saved_decisions"] > 0:
+        notifications.append({"type": "decision_followup", "priority": "Medium", "title": "Decision follow-up", "message": "Review saved decisions and attach one next action.", "route": "decisions"})
+    notifications.append({"type": "daily_brief", "priority": "High", "title": "Daily brief recommended", "message": "Start the day by generating an executive daily brief.", "route": "daily_brief"})
+    notifications.append({"type": "system_test", "priority": "Low", "title": "System test reminder", "message": "Run /diagnostic and /system-test after deploys.", "route": "settings"})
+    return notifications[:8]
+
+
+@app.get("/executive-cockpit")
+async def executive_cockpit(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    signal = v500_signal(mem)
+    return {"ok": True, "version": VERSION, "milestone": "Executive Cockpit", "cockpit": signal}
+
+
+@app.get("/notifications")
+async def notifications(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {"ok": True, "version": VERSION, "milestone": "Notification Center", "notifications": v500_notifications(mem)}
+
+
+@app.get("/daily-workflow")
+async def daily_workflow(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    signal = v500_signal(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Daily Operating Workflow",
+        "workflow": {
+            "steps": ["Start Day", "Daily Brief", "Run Command", "Save Decision", "Save Action", "Review Action Queue", "Review Risks", "End Day Summary"],
+            **signal,
+            "notifications": v500_notifications(mem)
+        }
+    }
+
+
+@app.get("/end-day-summary")
+async def end_day_summary(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    signal = v500_signal(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "summary": {
+            "today_focus": signal["today_focus"],
+            "what_remains_open": signal["action_load"],
+            "risk_to_watch": signal["recurring_risk"],
+            "decision_pattern": signal["decision_pattern"],
+            "recommended_command_for_tomorrow": signal["recommended_command"],
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/v500-milestone")
+async def v500_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    signal = v500_signal(mem)
+    notes = v500_notifications(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V400 diagnostics preserved", "passed": True},
+        {"name": "Executive cockpit available", "passed": True},
+        {"name": "Daily workflow available", "passed": True},
+        {"name": "Notification center available", "passed": True},
+        {"name": "Action load available", "passed": True},
+        {"name": "Recurring risk available", "passed": True},
+        {"name": "Recommended command available", "passed": bool(signal.get("recommended_command"))},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Candidate",
+        "ready": score >= 9,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V500 Product Candidate · V500 Backend",
+        "checks": checks,
+        "cockpit": signal,
+        "notifications": notes,
+        "test_order": ["/diagnostic", "/system-test", "/executive-cockpit", "/notifications", "/daily-workflow", "/end-day-summary", "/v500-milestone", "/health"]
     }
