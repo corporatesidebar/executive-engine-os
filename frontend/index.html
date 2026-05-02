@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-<title>Executive Engine OS — V130 Navigation</title>
+<title>Executive Engine OS — V150 Executive Layer</title>
 <style>
 :root{
   --nav:#061120;--ink:#071226;--muted:#5d6f89;--line:#dbe5f1;--bg:#f6f9fd;--blue:#0f63ff;--blue2:#0047d7;--orange:#ff6a00;--green:#09a66d;--purple:#7c3aed;--red:#ef4444;--shadow:0 18px 50px rgba(10,25,52,.10)
@@ -16,10 +16,12 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .app{height:100vh;display:grid;grid-template-columns:270px minmax(720px,1fr) 380px;grid-template-rows:64px 1fr}
 .top{grid-column:1/-1;display:grid;grid-template-columns:270px 1fr 380px;align-items:center;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);z-index:10}
 .brand{height:64px;background:linear-gradient(180deg,#071226,#040a13);color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px;border-right:1px solid rgba(255,255,255,.08);overflow:hidden}
-.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#1677ff,#0046d7);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(15,99,255,.32);flex:0 0 46px;overflow:hidden}
-.logo svg{display:block;width:34px;height:34px}
-.brand strong{display:block;font-size:18px;line-height:1.03;letter-spacing:-.04em;font-weight:700}
+.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#1677ff,#0046d7);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 36px rgba(15,99,255,.32);flex:0 0 48px;overflow:hidden}
+.logo svg{display:block;width:38px;height:38px}
+.brand strong{display:block;font-size:18px;line-height:1.04;letter-spacing:-.04em;font-weight:700}
 .brand span{display:block;color:#a5b4c9;font-size:12px;margin-top:4px;font-weight:400}
+.brand-link{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;cursor:pointer}.brand-link:hover{opacity:.98}.brand-copy{display:flex;flex-direction:column;justify-content:center}.brand-copy strong,.brand-copy span{pointer-events:none}
+
 .top-mid{display:flex;align-items:center;gap:14px;padding:0 22px}
 .new-btn{height:42px;border:0;border-radius:13px;padding:0 18px;background:linear-gradient(135deg,var(--orange),#ff8a1d);color:#fff;font-weight:700;box-shadow:0 14px 32px rgba(255,106,0,.24)}
 .search{height:42px;max-width:620px;flex:1;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:0 14px;box-shadow:0 8px 22px rgba(7,18,38,.04);color:#71829c}
@@ -106,7 +108,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 @media(max-width:1100px){.memory-command-row{grid-template-columns:1fr}}
 
 
-/* V145 Executive Layer */
+/* V150 Executive Layer */
 .exec-banner{border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
 .exec-banner h2{margin:0 0 5px;font-size:22px}.exec-banner p{margin:0;color:#52637a}
 .exec-mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
@@ -122,13 +124,13 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 14H13v36h17"/><path d="M30 32H15"/><path d="M34 14h17v36H34"/><path d="M34 32h15"/></g></svg></div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Professionals.</span></div></div>
+  <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 14H12v36h16"/><path d="M26 32H12"/><path d="M36 14h16"/><path d="M36 14v36"/><path d="M36 32h14"/><path d="M36 50h16"/></g></svg></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V145 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V150 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V145 Executive Layer</div>
+  <div class="lock">▣ V150 Executive Layer</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -178,7 +180,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V145 Executive Layer · V145 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V150 Executive Layer · V150 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};

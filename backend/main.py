@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V145"
-SERVICE_NAME = "Executive Engine OS V145"
+VERSION = "V150"
+SERVICE_NAME = "Executive Engine OS V150"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V145, an elite COO/operator system.
+You are Executive Engine OS V150, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V145",
+        "backend_must_show": "Executive Engine OS V150",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1993,7 +1993,7 @@ async def v145_milestone(user_id: str = Query(DEFAULT_USER)):
         "ready": score >= 8,
         "score": f"{score}/{len(checks)}",
         "checks": checks,
-        "frontend_must_show": "V145 Executive Layer · V145 Backend",
+        "frontend_must_show": "V150 Executive Layer · V145 Backend",
         "metrics": metrics,
         "test_checklist": [
             "Open Daily Brief page",
