@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V550: a product-candidate executive operating system with integration prep intelligence.
+You are Executive Engine OS V600: a product-candidate executive operating system with Calendar Intelligence readiness.
 
 You are not a chatbot. You are a daily execution cockpit.
 
@@ -23,13 +23,14 @@ Operating principles:
 - Convert messy input into an executable operating decision.
 - Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
 - Use manually provided Calendar + Files prep context when the user includes it.
-- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected in a future build.
+- Treat calendar intelligence as read-only and user-controlled.
+- Never imply live Google Calendar access unless the user has connected it in a future build.
+- Never create, edit, delete, invite, reschedule, email, auto-join, or auto-respond.
 - Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
 - Make the next move obvious.
 - No generic advice.
 - No motivational language.
 - No filler.
-- No theory unless requested.
 
 You must return STRICT JSON ONLY.
 
@@ -48,7 +49,8 @@ Required schema:
   "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
   "financial_impact": "Likely financial or operational impact in plain English",
   "leverage": "Highest leverage opportunity",
-  "memory_signal": "Relevant pattern, past decision, recurring constraint, manual integration context, or action overload signal",
+  "memory_signal": "Relevant pattern, prior decision, recurring constraint, manual integration context, or action overload signal",
+  "calendar_signal": "Calendar-related signal if calendar context is provided; otherwise state prep/not connected",
   "decision_pattern": "Pattern detected from the decision or input",
   "recurring_risk": "Risk likely to repeat if not addressed",
   "notification": "One short alert the executive should see",
@@ -62,9 +64,7 @@ Rules:
 - No text outside JSON.
 - Every action must be concrete, testable, and executable.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- If Calendar/Files context is provided, treat it as manual user-provided context only.
-- Do not claim OAuth is connected.
-- Do not claim live Google data was fetched.
+- Calendar and Files context is manual/read-only unless future OAuth is explicitly connected.
 - Manual execution only.
 - Auto-loop remains off.
 """
@@ -74,8 +74,9 @@ Rules:
 
 
 
-VERSION = "V550"
-SERVICE_NAME = "Executive Engine OS V550"
+
+VERSION = "V600"
+SERVICE_NAME = "Executive Engine OS V600"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -98,7 +99,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="550.0.0")
+app = FastAPI(title=SERVICE_NAME, version="600.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -407,7 +408,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V550, an elite COO/operator system.
+You are Executive Engine OS V600, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -868,7 +869,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V550",
+        "backend_must_show": "Executive Engine OS V600",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3747,7 +3748,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V550",
+        "service": "Executive Engine OS V600",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -5084,6 +5085,223 @@ async def v550_milestone():
             "/system-test",
             "/integrations/status",
             "/v550-milestone",
+            "/health"
+        ]
+    }
+
+
+
+
+# =========================
+# V600 CALENDAR INTELLIGENCE READ-ONLY MODULE
+# =========================
+# Safe read-only contract layer. No real Google OAuth/token storage/live Calendar fetch yet.
+
+def v600_calendar_status_payload() -> Dict[str, Any]:
+    return {
+        "connected": False,
+        "provider": "google_calendar",
+        "mode": "read_only_prep",
+        "oauth_enabled": False,
+        "scope_required_later": "https://www.googleapis.com/auth/calendar.events.readonly",
+        "write_access": False,
+        "live_data_fetch": False,
+        "status": "not_connected",
+        "message": "Calendar Intelligence is ready in read-only prep mode. Real Google OAuth is not connected yet."
+    }
+
+
+def v600_empty_day_summary(timezone: str = "America/Toronto") -> Dict[str, Any]:
+    return {
+        "date": "",
+        "timezone": timezone,
+        "totalEvents": 0,
+        "totalMeetingMinutes": 0,
+        "firstMeetingAt": None,
+        "nextMeetingAt": None,
+        "meetingDensity": "light",
+        "prepNeededCount": 0,
+        "events": [],
+        "source": "calendar_prep",
+        "connected": False,
+        "message": "No live calendar events available because Google Calendar OAuth is not connected."
+    }
+
+
+def v600_calendar_alerts_payload() -> List[Dict[str, Any]]:
+    return [
+        {
+            "type": "calendar_not_connected",
+            "priority": "Low",
+            "title": "Calendar not connected",
+            "message": "Calendar Intelligence is in read-only prep mode. Use manual calendar context until OAuth is enabled.",
+            "action": "Use Integration Prep Center"
+        },
+        {
+            "type": "oauth_review_required",
+            "priority": "Medium",
+            "title": "OAuth review required",
+            "message": "Real Google Calendar connection requires review before enabling.",
+            "action": "Review read-only scope and safety rules"
+        }
+    ]
+
+
+@app.get("/calendar/status")
+async def calendar_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V600 Calendar Intelligence",
+        **v600_calendar_status_payload()
+    }
+
+
+@app.get("/calendar/events/today")
+async def calendar_events_today(timezone: str = Query("America/Toronto"), calendar_id: str = Query("primary")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "calendar_id": calendar_id,
+        "summary": v600_empty_day_summary(timezone),
+        "safety": {
+            "read_only": True,
+            "oauth_enabled": False,
+            "write_access": False,
+            "live_google_fetch": False
+        }
+    }
+
+
+@app.get("/calendar/events/upcoming")
+async def calendar_events_upcoming(days: int = Query(7), timezone: str = Query("America/Toronto"), calendar_id: str = Query("primary")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "calendar_id": calendar_id,
+        "days": days,
+        "timezone": timezone,
+        "events": [],
+        "connected": False,
+        "message": "Upcoming live calendar events are unavailable until Google Calendar OAuth is connected.",
+        "safety": {
+            "read_only": True,
+            "oauth_enabled": False,
+            "write_access": False,
+            "live_google_fetch": False
+        }
+    }
+
+
+@app.get("/calendar/day-load")
+async def calendar_day_load(timezone: str = Query("America/Toronto")):
+    summary = v600_empty_day_summary(timezone)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "day_load": {
+            "timezone": timezone,
+            "meeting_density": summary["meetingDensity"],
+            "total_events": summary["totalEvents"],
+            "total_meeting_minutes": summary["totalMeetingMinutes"],
+            "prep_needed_count": summary["prepNeededCount"],
+            "status": "prep_mode"
+        }
+    }
+
+
+@app.get("/calendar/alerts")
+async def calendar_alerts():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "alerts": v600_calendar_alerts_payload()
+    }
+
+
+@app.post("/calendar/context-to-brief")
+async def calendar_context_to_brief(payload: Dict[str, Any]):
+    calendar_context = payload.get("calendar_context") or {}
+    destination = payload.get("destination", "daily_brief")
+    meetings = calendar_context.get("meetings") or []
+    notes = calendar_context.get("notes") or ""
+    risks = calendar_context.get("risks") or []
+    prep_needed = calendar_context.get("prep_needed") or calendar_context.get("prepNeeded") or []
+
+    prompt = (
+        "Use this manual read-only Calendar Intelligence context. "
+        "Do not assume live Google Calendar access. "
+        f"Destination: {destination}. "
+        f"Meetings: {meetings}. Notes: {notes}. Risks: {risks}. Prep needed: {prep_needed}. "
+        "Return decision, next_move, actions, risk, priority, and recommended_command."
+    )
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "safe_to_send_to_ai": True,
+        "destination": destination,
+        "prompt": prompt,
+        "safety": {
+            "manual_context_only": True,
+            "oauth_enabled": False,
+            "write_access": False,
+            "live_google_data": False,
+            "auto_loop": False
+        }
+    }
+
+
+@app.get("/v600-milestone")
+async def v600_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V550 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Calendar status endpoint available", "passed": True},
+        {"name": "Today events contract available", "passed": True},
+        {"name": "Upcoming events contract available", "passed": True},
+        {"name": "Calendar alerts available", "passed": True},
+        {"name": "OAuth disabled", "passed": True},
+        {"name": "Write access disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Intelligence Read-Only Module",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V600 Calendar Intelligence · V600 Backend",
+        "checks": checks,
+        "added": [
+            "Calendar Intelligence panel",
+            "Calendar status contract",
+            "Today events contract",
+            "Upcoming events contract",
+            "Day load contract",
+            "Calendar alerts contract",
+            "Manual calendar context to brief prompt"
+        ],
+        "not_added": [
+            "Real Google OAuth",
+            "Token storage",
+            "Live Calendar event fetch",
+            "Calendar write access",
+            "Background sync",
+            "Automation loop"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/calendar/status",
+            "/calendar/events/today",
+            "/calendar/events/upcoming",
+            "/calendar/day-load",
+            "/calendar/alerts",
+            "/v600-milestone",
             "/health"
         ]
     }

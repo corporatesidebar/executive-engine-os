@@ -1336,6 +1336,107 @@ textarea#input{
 }
 @media(max-width:1180px){.v550-prep-center{grid-template-columns:1fr}}
 
+
+/* V600 Calendar Intelligence */
+.v600-calendar{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v600-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v600-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v600-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v600-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v600-stat{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v600-stat small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:900;
+  font-size:10px;
+  margin-bottom:4px;
+}
+.v600-stat strong{
+  color:#071226;
+  font-size:13px;
+}
+.v600-alerts{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.v600-alert{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-left:5px solid #0f63ff;
+  border-radius:13px;
+  padding:10px;
+}
+.v600-alert.medium{border-left-color:#ff6a00}
+.v600-alert.low{border-left-color:#10b981}
+.v600-alert b{
+  display:block;
+  color:#071226;
+  font-size:12px;
+  margin-bottom:3px;
+}
+.v600-alert span{
+  display:block;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v600-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v600-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v600-actions button.primary{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+}
+@media(max-width:1180px){.v600-calendar{grid-template-columns:1fr}.v600-stats{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -1343,11 +1444,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V550 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V600 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V550 Integration Prep</div>
+  <div class="lock">▣ V600 Calendar Intelligence</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1411,7 +1512,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V550 Integration Prep · V550 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V600 Calendar Intelligence · V600 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1607,6 +1708,52 @@ function toggleTemplates(){const d=document.getElementById('v301TemplateDrawer')
 const V550_KEY="EXEC_ENGINE_V550_INTEGRATION_PREP";
 let v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
 
+
+async function v600RefreshCalendar(){
+  try{
+    const base=(typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com");
+    const status=await fetch(base+"/calendar/status").then(r=>r.json());
+    const today=await fetch(base+"/calendar/events/today?timezone=America/Toronto&calendar_id=primary").then(r=>r.json());
+    const alerts=await fetch(base+"/calendar/alerts").then(r=>r.json());
+    const s=document.getElementById("v600CalStatus");
+    const m=document.getElementById("v600CalMeetings");
+    const d=document.getElementById("v600CalDensity");
+    if(s) s.textContent=status.connected?"Connected":"Prep Mode";
+    if(m) m.textContent=String(today.summary?.totalEvents || 0);
+    if(d) d.textContent=(today.summary?.meetingDensity || "light").replace(/^./,c=>c.toUpperCase());
+    const box=document.getElementById("v600CalendarAlerts");
+    if(box){
+      box.innerHTML=(alerts.alerts||[]).map(a=>`<div class="v600-alert ${(a.priority||"low").toLowerCase()}"><b>${a.title}</b><span>${a.priority} · ${a.message}</span></div>`).join("");
+    }
+    if(typeof toast==="function") toast("Calendar status refreshed","success");
+  }catch(e){
+    if(typeof toast==="function") toast("Calendar status unavailable","error");
+  }
+}
+
+function v600ManualCalendarContext(){
+  const el=document.getElementById("v550CalendarContext");
+  return el && el.value.trim() ? el.value.trim() : "No manual calendar context saved yet.";
+}
+
+function v600SendCalendarBrief(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const context=v600ManualCalendarContext();
+  const prompt=`Use this manual read-only Calendar Intelligence context for today's Daily Brief. Do not assume live Google access. Identify today's focus, meeting prep needed, decision, actions, risk, priority, and recommended command.\n\nCalendar Context:\n${context}`;
+  if(input){input.value=prompt;input.focus();}
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Calendar context loaded into command","success");
+}
+
+function v600LoadMeetingPrep(){
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const context=v600ManualCalendarContext();
+  const prompt=`Create meeting prep using this manual read-only calendar context. Provide objective, agenda, hard questions, decision needed, risks, talking points, and follow-up actions. Do not assume live Google access.\n\nCalendar Context:\n${context}`;
+  if(input){input.value=prompt;input.focus();}
+  if(typeof toast==="function")toast("Meeting prep command loaded","success");
+}
+
 function v550Load(){
   try{const s=localStorage.getItem(V550_KEY); if(s) v550State=JSON.parse(s);}catch(e){}
   const cal=document.getElementById("v550CalendarContext");
@@ -1679,7 +1826,7 @@ async function v550CopyContext(){
 function v550ResetPrep(){
   v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
   localStorage.removeItem(V550_KEY);
-  v550Load();
+  v550Load();v600RefreshCalendar();
 }
 
 function v500LocalState(){
@@ -1878,7 +2025,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V550 Integration Prep · V550 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V600 Calendar Intelligence · V600 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
