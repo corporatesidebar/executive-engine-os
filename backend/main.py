@@ -52,8 +52,8 @@ Rules:
 - Priority must be High, Medium, or Low.
 """
 
-VERSION = "V130"
-SERVICE_NAME = "Executive Engine OS V130"
+VERSION = "V135"
+SERVICE_NAME = "Executive Engine OS V135"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +76,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="130.0.0")
+app = FastAPI(title=SERVICE_NAME, version="135.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +385,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V130, an elite COO/operator system.
+You are Executive Engine OS V135, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +846,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V130",
+        "backend_must_show": "Executive Engine OS V135",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -1545,3 +1545,40 @@ async def v130_milestone(user_id: str = Query(DEFAULT_USER)):
         ]
     }
 
+
+
+# =========================
+# V135 UNIQUE FIGMA SUBPAGES + WORKFLOW CONTROL
+# =========================
+
+@app.get("/v135-milestone")
+async def v135_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Unique Figma Subpages + Workflow Control",
+        "ready": True,
+        "frontend_must_show": "V135 Figma Subpages · V135 Backend",
+        "keeps_locked_command_center": True,
+        "counts": {
+            "recent_runs": len(mem.get("recent_runs") or []),
+            "open_actions": len(mem.get("open_actions") or []),
+            "saved_decisions": len(mem.get("recent_decisions") or []),
+            "memory_items": len(mem.get("memory_items") or [])
+        },
+        "pages": [
+            "Daily Brief", "Decisions", "Meeting Prep", "Strategy Board", "Risk Monitor",
+            "Action Queue", "Analytics", "Memory", "Profile", "Settings"
+        ],
+        "test_checklist": [
+            "Click every sidebar page",
+            "Confirm each page has a unique layout",
+            "Run Engine",
+            "Save Action",
+            "Save Decision",
+            "Open Action Queue",
+            "Open Decisions",
+            "Open Memory"
+        ]
+    }
