@@ -1209,6 +1209,133 @@ textarea#input{
 @media(max-width:1280px){.v500-cockpit,.v500-mini-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.v500-cockpit,.v500-mini-grid,.v500-workflow{grid-template-columns:1fr}}
 
+
+/* V550 Integration Prep Center */
+.v550-prep-center{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:0 0 14px;
+}
+.v550-card{
+  background:#fff;
+  border:1px solid #dbe5f1;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 14px 34px rgba(7,18,38,.06);
+}
+.v550-card h3{
+  margin:0 0 8px;
+  color:#071226;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.v550-card p{
+  margin:0 0 10px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+}
+.v550-status-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+.v550-status{
+  border:1px solid #dbe5f1;
+  background:#f8fbff;
+  border-radius:12px;
+  padding:10px;
+}
+.v550-status small{
+  display:block;
+  color:#64748b;
+  text-transform:uppercase;
+  font-size:10px;
+  letter-spacing:.08em;
+  font-weight:900;
+  margin-bottom:4px;
+}
+.v550-status strong{
+  font-size:12px;
+  color:#071226;
+}
+.v550-textarea{
+  width:100%;
+  min-height:92px;
+  resize:vertical;
+  border:1px solid #cbd5e1;
+  border-radius:14px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.45;
+  color:#071226;
+  outline:none;
+}
+.v550-textarea:focus{
+  border-color:#0f63ff;
+  box-shadow:0 0 0 4px rgba(15,99,255,.12);
+}
+.v550-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.v550-actions button{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:10px;
+  padding:0 10px;
+  font-weight:850;
+  font-size:12px;
+}
+.v550-actions button.primary{
+  background:#ff6a00;
+  color:#fff;
+  border-color:#ff6a00;
+}
+.v550-actions button.safe{
+  background:#ecfdf5;
+  color:#047857;
+  border-color:#bbf7d0;
+}
+.v550-preview{
+  background:#071226;
+  color:#dbeafe;
+  border-radius:14px;
+  padding:12px;
+  font-size:12px;
+  line-height:1.45;
+  white-space:pre-wrap;
+  max-height:220px;
+  overflow:auto;
+}
+.v550-safety-list{
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+}
+.v550-safety-item{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:#334155;
+  font-size:12px;
+  font-weight:750;
+}
+.v550-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#10b981;
+  flex:0 0 9px;
+}
+@media(max-width:1180px){.v550-prep-center{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1216,11 +1343,11 @@ textarea#input{
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V500 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V550 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V500 Product Candidate</div>
+  <div class="lock">▣ V550 Integration Prep</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -1284,7 +1411,7 @@ textarea#input{
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V500 Product Candidate · V500 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V550 Integration Prep · V550 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1475,6 +1602,85 @@ function useCommandTemplate(id){
 function toggleTemplates(){const d=document.getElementById('v301TemplateDrawer'); if(d) d.classList.toggle('open');}
 
 
+
+
+const V550_KEY="EXEC_ENGINE_V550_INTEGRATION_PREP";
+let v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
+
+function v550Load(){
+  try{const s=localStorage.getItem(V550_KEY); if(s) v550State=JSON.parse(s);}catch(e){}
+  const cal=document.getElementById("v550CalendarContext");
+  const files=document.getElementById("v550FilesContext");
+  if(cal) cal.value=v550State.calendar.context||"";
+  if(files) files.value=v550State.files.context||"";
+  v550BuildPreview();
+}
+function v550Save(){localStorage.setItem(V550_KEY,JSON.stringify(v550State));v550BuildPreview();}
+function v550SaveCalendar(){const el=document.getElementById("v550CalendarContext");v550State.calendar.context=el?el.value.trim():"";v550State.calendar.lastUpdatedAt=new Date().toISOString();v550Save();if(typeof toast==="function")toast("Calendar prep saved","success");}
+function v550SaveFiles(){const el=document.getElementById("v550FilesContext");v550State.files.context=el?el.value.trim():"";v550State.files.lastUpdatedAt=new Date().toISOString();v550Save();if(typeof toast==="function")toast("Files prep saved","success");}
+function v550ClearCalendar(){v550State.calendar.context="";const el=document.getElementById("v550CalendarContext");if(el)el.value="";v550Save();}
+function v550ClearFiles(){v550State.files.context="";const el=document.getElementById("v550FilesContext");if(el)el.value="";v550Save();}
+function v550ContextText(){
+  return `READ-ONLY INTEGRATION PREP CONTEXT
+No live Google access. OAuth disabled. Manual context only.
+
+Calendar Prep:
+${v550State.calendar.context||"No calendar context saved."}
+
+Files Prep:
+${v550State.files.context||"No files context saved."}
+
+Safety:
+- Calendar OAuth disabled
+- Files OAuth disabled
+- Write access disabled
+- Auto-loop off
+- Manual execution only`;
+}
+function v550BuildPreview(){
+  const preview=document.getElementById("v550Preview");
+  if(preview) preview.textContent=v550ContextText();
+}
+function v550SendToCommand(destination){
+  v550SaveCalendar();v550SaveFiles();
+  const input=inputEl ? inputEl() : document.getElementById("input");
+  const context=v550ContextText();
+  let prompt="";
+  if(destination==="daily_brief"){
+    prompt=`Use this manual Calendar + Files prep context for today's Daily Brief. Return decision, next_move, actions, risk, priority, recommended_command.\n\n${context}`;
+  }else if(destination==="meeting_prep"){
+    prompt=`Use this manual Calendar prep context to create meeting prep. Identify objective, decision needed, risks, talking points, and follow-up actions.\n\n${context}`;
+  }else if(destination==="end_day_summary"){
+    prompt=`Use this manual Calendar + Files prep context for End Day Summary. Identify what happened, what remains open, risk, and tomorrow's recommended command.\n\n${context}`;
+  }else{
+    prompt=`Use this manual Calendar + Files prep context. Identify highest leverage decision, next move, execution actions, risks, and priority.\n\n${context}`;
+  }
+  if(input){input.value=prompt;input.focus();}
+  v550State.lastSent={destination,payload:context,sentAt:new Date().toISOString()};
+  v550Save();
+  if(typeof updateV500Cockpit==="function")updateV500Cockpit();
+  if(typeof updateV400Intel==="function")updateV400Intel();
+  if(typeof toast==="function")toast("Integration context loaded","success");
+}
+async function v550SafetyCheck(){
+  try{
+    const res=await fetch((typeof API!=="undefined"?API:"https://executive-engine-os.onrender.com")+"/integrations/safety-check",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({calendar_oauth_enabled:false,files_oauth_enabled:false,write_access_requested:false,auto_loop_enabled:false})});
+    const data=await res.json();
+    v550State.safety={passed:!!data.passed,lastSafetyCheckAt:new Date().toISOString(),result:data};
+    v550Save();
+    if(typeof toast==="function")toast(data.passed?"Safety check passed":"Safety review required",data.passed?"success":"error");
+  }catch(e){
+    if(typeof toast==="function")toast("Safety check unavailable","error");
+  }
+}
+async function v550CopyContext(){
+  try{await navigator.clipboard.writeText(v550ContextText());if(typeof toast==="function")toast("Context copied","success");}catch(e){}
+}
+function v550ResetPrep(){
+  v550State={calendar:{context:"",lastUpdatedAt:null},files:{context:"",lastUpdatedAt:null},safety:{passed:true,lastSafetyCheckAt:null},lastSent:{destination:null,payload:null,sentAt:null}};
+  localStorage.removeItem(V550_KEY);
+  v550Load();
+}
 
 function v500LocalState(){
   const input=inputEl ? inputEl() : document.getElementById("input");
@@ -1672,7 +1878,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V500 Product Candidate · V500 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V550 Integration Prep · V550 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");

@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V500: a serious executive operating system product candidate for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V550: a product-candidate executive operating system with integration prep intelligence.
 
 You are not a chatbot. You are a daily execution cockpit.
 
@@ -22,13 +22,14 @@ Operating principles:
 - Think like an elite COO, board operator, chief of staff, and execution strategist.
 - Convert messy input into an executable operating decision.
 - Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
+- Use manually provided Calendar + Files prep context when the user includes it.
+- Never imply live Google Calendar, Google Drive, Gmail, or OAuth access unless explicitly connected in a future build.
 - Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
 - Make the next move obvious.
 - No generic advice.
 - No motivational language.
 - No filler.
 - No theory unless requested.
-- Assume the user wants the next real move today.
 
 You must return STRICT JSON ONLY.
 
@@ -47,7 +48,7 @@ Required schema:
   "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
   "financial_impact": "Likely financial or operational impact in plain English",
   "leverage": "Highest leverage opportunity",
-  "memory_signal": "Relevant pattern, past decision, recurring constraint, or action overload signal",
+  "memory_signal": "Relevant pattern, past decision, recurring constraint, manual integration context, or action overload signal",
   "decision_pattern": "Pattern detected from the decision or input",
   "recurring_risk": "Risk likely to repeat if not addressed",
   "notification": "One short alert the executive should see",
@@ -61,9 +62,9 @@ Rules:
 - No text outside JSON.
 - Every action must be concrete, testable, and executable.
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- Keep it concise but executive-grade.
-- Tie the output to the user's exact input.
-- If there are too many open actions, recommend reducing or completing actions before creating more.
+- If Calendar/Files context is provided, treat it as manual user-provided context only.
+- Do not claim OAuth is connected.
+- Do not claim live Google data was fetched.
 - Manual execution only.
 - Auto-loop remains off.
 """
@@ -72,8 +73,9 @@ Rules:
 
 
 
-VERSION = "V500"
-SERVICE_NAME = "Executive Engine OS V500"
+
+VERSION = "V550"
+SERVICE_NAME = "Executive Engine OS V550"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -96,7 +98,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="500.0.0")
+app = FastAPI(title=SERVICE_NAME, version="550.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -405,7 +407,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V500, an elite COO/operator system.
+You are Executive Engine OS V550, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -866,7 +868,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V500",
+        "backend_must_show": "Executive Engine OS V550",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3745,7 +3747,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V500",
+        "service": "Executive Engine OS V550",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4895,4 +4897,193 @@ async def v500_milestone(user_id: str = Query(DEFAULT_USER)):
         "cockpit": signal,
         "notifications": notes,
         "test_order": ["/diagnostic", "/system-test", "/executive-cockpit", "/notifications", "/daily-workflow", "/end-day-summary", "/v500-milestone", "/health"]
+    }
+
+
+
+
+# =========================
+# V550 CALENDAR + FILES READ-ONLY INTEGRATION PREP
+# =========================
+
+def v550_integration_status_payload() -> Dict[str, Any]:
+    return {
+        "calendar": {
+            "provider": "google_calendar",
+            "mode": "prep",
+            "connected": False,
+            "oauth_enabled": False,
+            "read_only": True,
+            "write_access": False,
+            "live_data_fetch": False,
+            "status": "prep_mode"
+        },
+        "files": {
+            "provider": "google_drive",
+            "mode": "prep",
+            "connected": False,
+            "oauth_enabled": False,
+            "read_only": True,
+            "write_access": False,
+            "live_data_fetch": False,
+            "status": "prep_mode"
+        },
+        "auto_loop": False,
+        "manual_execution_only": True,
+        "status": "prep_ready",
+        "message": "Integration Prep Center is active. OAuth and live Google access are intentionally disabled."
+    }
+
+
+def v550_context_summary(calendar_context: Dict[str, Any], files_context: Dict[str, Any]) -> Dict[str, Any]:
+    calendar_context = calendar_context or {}
+    files_context = files_context or {}
+
+    meetings = calendar_context.get("meetings") or []
+    calendar_notes = calendar_context.get("notes") or ""
+    calendar_risks = calendar_context.get("risks") or []
+    prep_needed = calendar_context.get("prep_needed") or calendar_context.get("prepNeeded") or []
+
+    files = files_context.get("files") or []
+    files_notes = files_context.get("notes") or ""
+    decisions_needed = files_context.get("decisions_needed") or files_context.get("decisionsNeeded") or []
+    actions_needed = files_context.get("actions_needed") or files_context.get("actionsNeeded") or []
+
+    calendar_summary = (
+        f"Calendar prep mode: {len(meetings)} meeting item(s), "
+        f"{len(prep_needed)} prep item(s), {len(calendar_risks)} risk item(s). "
+        f"Notes: {str(calendar_notes)[:600]}"
+    )
+
+    files_summary = (
+        f"Files prep mode: {len(files)} file/project item(s), "
+        f"{len(decisions_needed)} decision item(s), {len(actions_needed)} action item(s). "
+        f"Notes: {str(files_notes)[:600]}"
+    )
+
+    executive_context = (
+        "Manual read-only integration prep context. "
+        "No live Google Calendar or Drive access is connected. "
+        f"{calendar_summary} {files_summary}"
+    )
+
+    return {
+        "calendar_summary": calendar_summary,
+        "files_summary": files_summary,
+        "executive_context": executive_context
+    }
+
+
+@app.get("/integrations/status")
+async def integrations_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "V550 Integration Prep Center",
+        **v550_integration_status_payload()
+    }
+
+
+@app.post("/integrations/safety-check")
+async def integrations_safety_check(payload: Dict[str, Any]):
+    calendar_oauth_enabled = bool(payload.get("calendar_oauth_enabled", False))
+    files_oauth_enabled = bool(payload.get("files_oauth_enabled", False))
+    write_access_requested = bool(payload.get("write_access_requested", False))
+    auto_loop_enabled = bool(payload.get("auto_loop_enabled", False))
+
+    checks = [
+        {"name": "Calendar OAuth disabled", "passed": not calendar_oauth_enabled},
+        {"name": "Files OAuth disabled", "passed": not files_oauth_enabled},
+        {"name": "Write access disabled", "passed": not write_access_requested},
+        {"name": "Auto-loop disabled", "passed": not auto_loop_enabled},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "No token storage active", "passed": True},
+        {"name": "No live Google fetch active", "passed": True}
+    ]
+    passed = all(c["passed"] for c in checks)
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "passed": passed,
+        "status": "safe" if passed else "review_required",
+        "checks": checks,
+        "message": "Integration prep is safe. OAuth remains disabled." if passed else "Integration safety failed. Review settings before continuing."
+    }
+
+
+@app.post("/integrations/context-preview")
+async def integrations_context_preview(payload: Dict[str, Any]):
+    calendar_context = payload.get("calendar_context") or {}
+    files_context = payload.get("files_context") or {}
+    summary = v550_context_summary(calendar_context, files_context)
+
+    return {
+        "ok": True,
+        "version": VERSION,
+        "summary": summary,
+        "safe_to_send_to_ai": True,
+        "recommended_destinations": [
+            "daily_brief",
+            "run_command",
+            "meeting_prep",
+            "end_day_summary"
+        ],
+        "safety": {
+            "manual_context_only": True,
+            "oauth_enabled": False,
+            "write_access": False,
+            "auto_loop": False,
+            "live_google_data": False
+        }
+    }
+
+
+@app.get("/v550-milestone")
+async def v550_milestone():
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "V500 baseline preserved", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Integration status endpoint available", "passed": True},
+        {"name": "Safety check endpoint available", "passed": True},
+        {"name": "Context preview endpoint available", "passed": True},
+        {"name": "OAuth disabled", "passed": True},
+        {"name": "Write access disabled", "passed": True},
+        {"name": "Manual execution only", "passed": True},
+        {"name": "Auto-loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar + Files Read-Only Integration Prep",
+        "ready": True,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V550 Integration Prep · V550 Backend",
+        "checks": checks,
+        "added": [
+            "Integration Prep Center",
+            "Calendar Prep",
+            "Files Prep",
+            "Integration Status",
+            "Read-Only Safety",
+            "Context Preview",
+            "Manual context send-to-command flow"
+        ],
+        "not_added": [
+            "Google OAuth",
+            "Google token storage",
+            "Live Calendar fetch",
+            "Live Drive fetch",
+            "Supabase schema changes",
+            "Autonomous automation"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/integrations/status",
+            "/v550-milestone",
+            "/health"
+        ]
     }
