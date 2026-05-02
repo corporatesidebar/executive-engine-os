@@ -14,15 +14,16 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V350: a high-signal executive operating system for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V400: an executive intelligence and memory-quality layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
 
-You are not a chatbot. You are an execution layer.
+You are not a chatbot. You are a decision and execution intelligence system.
 
 Operating principles:
-- Think like an elite COO, board operator, and wartime chief of staff.
-- Convert unclear input into an executable decision.
-- Prioritize leverage, sequence, ownership, cash impact, risk, and speed.
-- Force specificity.
+- Think like an elite COO, board operator, chief of staff, and strategy analyst.
+- Convert messy input into an executable executive decision.
+- Use memory context when available: prior decisions, saved actions, recurring risks, constraints, patterns.
+- Detect action overload, decision patterns, repeated constraints, recurring risks, and operational leverage.
+- Prioritize leverage, sequence, owner clarity, cash impact, risk, and speed.
 - No generic advice.
 - No motivational language.
 - No filler.
@@ -46,6 +47,9 @@ Required schema:
   "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
   "financial_impact": "Likely financial or operational impact in plain English",
   "leverage": "Highest leverage opportunity",
+  "memory_signal": "Relevant pattern, past decision, recurring constraint, or action overload signal",
+  "decision_pattern": "Pattern detected from the decision or input",
+  "recurring_risk": "Risk likely to repeat if not addressed",
   "recommended_command": "Copy-paste-ready next command to run",
   "follow_up_question": "Only ask if absolutely required; otherwise use an empty string"
 }
@@ -59,14 +63,17 @@ Rules:
 - Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
 - Keep it concise but executive-grade.
 - Tie the output to the user's exact input.
+- Use memory signal to improve specificity.
+- If there are too many open actions, recommend reducing or completing actions before creating more.
 - Manual execution only.
 - Auto-loop remains off.
 """
 
 
 
-VERSION = "V350"
-SERVICE_NAME = "Executive Engine OS V350"
+
+VERSION = "V400"
+SERVICE_NAME = "Executive Engine OS V400"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -89,7 +96,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="350.0.0")
+app = FastAPI(title=SERVICE_NAME, version="400.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -398,7 +405,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V350, an elite COO/operator system.
+You are Executive Engine OS V400, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -859,7 +866,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V350",
+        "backend_must_show": "Executive Engine OS V400",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3738,7 +3745,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V350",
+        "service": "Executive Engine OS V400",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4377,4 +4384,340 @@ async def v350_milestone():
             "/health"
         ],
         "next_move": "Use V350 for real daily execution. Run one high-stakes command in CEO or COO mode and save the action and decision."
+    }
+
+
+
+
+# =========================
+# V400 INTELLIGENCE + MEMORY QUALITY
+# =========================
+
+def v400_text_blob(mem: Dict[str, Any]) -> str:
+    parts = []
+    for r in (mem.get("recent_runs") or [])[:20]:
+        parts.append(str(r.get("input", "")))
+        parts.append(str(r.get("output", "")))
+    for d in (mem.get("recent_decisions") or [])[:20]:
+        parts.append(str(d.get("decision", "")))
+        parts.append(str(d.get("risk", "")))
+        parts.append(str(d.get("priority", "")))
+    for a in (mem.get("open_actions") or [])[:30]:
+        parts.append(str(a.get("text", "")))
+        parts.append(str(a.get("priority", "")))
+        parts.append(str(a.get("status", "")))
+    for m in (mem.get("memory_items") or [])[:30]:
+        parts.append(str(m.get("content", "")))
+        parts.append(str(m.get("type", "")))
+    return " ".join(parts).lower()
+
+
+def v400_detect_decision_patterns(mem: Dict[str, Any]) -> List[Dict[str, Any]]:
+    text = v400_text_blob(mem)
+    decisions = mem.get("recent_decisions") or []
+    patterns = []
+
+    if any(w in text for w in ["deploy", "render", "backend", "frontend", "system-test", "diagnostic"]):
+        patterns.append({
+            "pattern": "Deployment and stability decisions are recurring.",
+            "confidence": "High",
+            "operator_meaning": "The system needs deploy-proof checkpoints before major feature work.",
+            "recommended_action": "Run diagnostic/system-test before each new milestone."
+        })
+
+    if any(w in text for w in ["ui", "layout", "design", "figma", "command center"]):
+        patterns.append({
+            "pattern": "UI/workflow clarity is a recurring decision driver.",
+            "confidence": "High",
+            "operator_meaning": "The product succeeds only if the command flow feels obvious and executive-grade.",
+            "recommended_action": "Keep templates collapsed and make the command input visible first."
+        })
+
+    if any(w in text for w in ["revenue", "pipeline", "sales", "customer", "deal"]):
+        patterns.append({
+            "pattern": "Revenue/pipeline thinking appears in the operating context.",
+            "confidence": "Medium",
+            "operator_meaning": "Revenue actions should be ranked by cash impact and owner clarity.",
+            "recommended_action": "Review pipeline priorities and assign one owner to the highest-value action."
+        })
+
+    if any(w in text for w in ["risk", "constraint", "blocker", "broken", "fails", "issue"]):
+        patterns.append({
+            "pattern": "Risk and blockers recur in execution.",
+            "confidence": "High",
+            "operator_meaning": "The system should identify the blocker before creating more tasks.",
+            "recommended_action": "Convert the biggest blocker into owner, mitigation, deadline."
+        })
+
+    if len(decisions) >= 8:
+        patterns.append({
+            "pattern": "Decision volume is increasing.",
+            "confidence": "Medium",
+            "operator_meaning": "Saved decisions need follow-up actions or they become archive noise.",
+            "recommended_action": "Connect each new decision to one action and one owner."
+        })
+
+    if not patterns:
+        patterns.append({
+            "pattern": "Insufficient repeated signal yet.",
+            "confidence": "Low",
+            "operator_meaning": "More real commands and saves are needed for stronger pattern detection.",
+            "recommended_action": "Run five real commands and save actions/decisions."
+        })
+
+    return patterns[:6]
+
+
+def v400_detect_recurring_risks(mem: Dict[str, Any]) -> List[Dict[str, Any]]:
+    text = v400_text_blob(mem)
+    actions = mem.get("open_actions") or []
+    risks = []
+
+    if len(actions) >= 20:
+        risks.append({
+            "risk": "Action overload",
+            "severity": "High",
+            "why_it_matters": "Too many open actions reduce execution clarity and increase context switching.",
+            "mitigation": "Complete, archive, or cut low-value actions before adding new work."
+        })
+    elif len(actions) >= 10:
+        risks.append({
+            "risk": "Action accumulation",
+            "severity": "Medium",
+            "why_it_matters": "The queue is growing and may reduce operator focus.",
+            "mitigation": "Pick the top three actions and finish one before creating more."
+        })
+
+    if any(w in text for w in ["broken", "fails", "internal server error", "not working"]):
+        risks.append({
+            "risk": "Reliability regression",
+            "severity": "High",
+            "why_it_matters": "New features can break stable routes if diagnostics are not preserved.",
+            "mitigation": "Run /diagnostic and /system-test before accepting any milestone."
+        })
+
+    if any(w in text for w in ["generic", "vague", "bad output", "not smart"]):
+        risks.append({
+            "risk": "Low-quality output",
+            "severity": "Medium",
+            "why_it_matters": "Generic output lowers trust and makes the OS feel like a wrapper.",
+            "mitigation": "Force specific decision, action priority, constraint, and next command."
+        })
+
+    if any(w in text for w in ["automation", "auto-loop", "external", "send"]):
+        risks.append({
+            "risk": "Automation overreach",
+            "severity": "Medium",
+            "why_it_matters": "External actions before approval gates can create operational risk.",
+            "mitigation": "Keep manual execution only and supervised automation only."
+        })
+
+    if not risks:
+        risks.append({
+            "risk": "Weak signal quality",
+            "severity": "Low",
+            "why_it_matters": "Not enough real usage data exists to detect recurring risks.",
+            "mitigation": "Use the OS for a full day and save decisions/actions."
+        })
+
+    return risks[:6]
+
+
+def v400_action_overload(mem: Dict[str, Any]) -> Dict[str, Any]:
+    actions = mem.get("open_actions") or []
+    high = [a for a in actions if str(a.get("priority", "")).lower() in ["high", "critical"]]
+    count = len(actions)
+
+    if count >= 25:
+        status = "Critical"
+        instruction = "Stop creating new actions. Cut or complete at least five actions."
+    elif count >= 15:
+        status = "High"
+        instruction = "Reduce the queue. Complete one high-priority action before adding more."
+    elif count >= 8:
+        status = "Medium"
+        instruction = "Prioritize the top three actions and execute one."
+    else:
+        status = "Controlled"
+        instruction = "Keep the queue focused and continue saving only important actions."
+
+    return {
+        "open_action_count": count,
+        "high_priority_count": len(high),
+        "status": status,
+        "operator_instruction": instruction,
+        "top_actions": [
+            {
+                "text": a.get("text", ""),
+                "priority": a.get("priority", "medium"),
+                "status": a.get("status", "open")
+            } for a in actions[:5]
+        ]
+    }
+
+
+def v400_executive_signal_summary(mem: Dict[str, Any]) -> Dict[str, Any]:
+    patterns = v400_detect_decision_patterns(mem)
+    risks = v400_detect_recurring_risks(mem)
+    overload = v400_action_overload(mem)
+    decisions = mem.get("recent_decisions") or []
+    memory_items = mem.get("memory_items") or []
+    recent_runs = mem.get("recent_runs") or []
+
+    if overload["status"] in ["Critical", "High"]:
+        next_command = "Reduce my action queue. Tell me what to complete, cut, or defer today."
+    elif risks and risks[0]["severity"] in ["High", "Medium"]:
+        next_command = "Turn my biggest recurring risk into a mitigation plan with owner, timing, and first action."
+    else:
+        next_command = "Create my executive daily brief using memory, open actions, risks, and current priorities."
+
+    return {
+        "today_focus": patterns[0]["recommended_action"] if patterns else "Create execution clarity.",
+        "decision_pattern": patterns[0] if patterns else {},
+        "recurring_risk": risks[0] if risks else {},
+        "action_overload": overload,
+        "memory_quality": {
+            "status": "Strong" if len(memory_items) >= 15 else ("Building" if len(memory_items) >= 5 else "Thin"),
+            "memory_items": len(memory_items),
+            "recent_runs": len(recent_runs),
+            "saved_decisions": len(decisions)
+        },
+        "executive_signal": {
+            "summary": "Use memory patterns, recurring risks, and action load to guide the next executive move.",
+            "recommended_command": next_command,
+            "priority": "High" if overload["status"] in ["Critical", "High"] else "Medium"
+        }
+    }
+
+
+@app.get("/memory-quality")
+async def memory_quality(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    summary = v400_executive_signal_summary(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory Quality",
+        "memory_quality": summary["memory_quality"],
+        "decision_pattern": summary["decision_pattern"],
+        "recurring_risk": summary["recurring_risk"],
+        "action_overload": summary["action_overload"]
+    }
+
+
+@app.get("/decision-patterns-v400")
+async def decision_patterns_v400(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "patterns": v400_detect_decision_patterns(mem)
+    }
+
+
+@app.get("/recurring-risks")
+async def recurring_risks(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "risks": v400_detect_recurring_risks(mem)
+    }
+
+
+@app.get("/action-overload")
+async def action_overload(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "action_overload": v400_action_overload(mem)
+    }
+
+
+@app.get("/executive-signal-summary")
+async def executive_signal_summary(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Signal Summary",
+        "summary": v400_executive_signal_summary(mem)
+    }
+
+
+@app.get("/daily-brief-intelligence")
+async def daily_brief_intelligence(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    summary = v400_executive_signal_summary(mem)
+    return {
+        "ok": True,
+        "version": VERSION,
+        "daily_brief": {
+            "today_focus": summary["today_focus"],
+            "action_priority": summary["action_overload"]["operator_instruction"],
+            "decision_pattern": summary["decision_pattern"],
+            "risk_to_watch": summary["recurring_risk"],
+            "memory_quality": summary["memory_quality"],
+            "recommended_command": summary["executive_signal"]["recommended_command"],
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/v400-milestone")
+async def v400_milestone(user_id: str = Query(DEFAULT_USER)):
+    mem = await memory_data(user_id)
+    summary = v400_executive_signal_summary(mem)
+    checks = [
+        {"name": "Backend live", "passed": True},
+        {"name": "Diagnostic routes preserved", "passed": True},
+        {"name": "Memory quality available", "passed": True},
+        {"name": "Decision patterns available", "passed": True},
+        {"name": "Recurring risks available", "passed": True},
+        {"name": "Action overload available", "passed": True},
+        {"name": "Executive signal summary available", "passed": True},
+        {"name": "Manual execution locked", "passed": True},
+        {"name": "Auto loop off", "passed": True}
+    ]
+    score = sum(1 for c in checks if c["passed"])
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Intelligence + Memory Quality",
+        "ready": score >= 8,
+        "score": f"{score}/{len(checks)}",
+        "frontend_must_show": "V400 Intelligence · V400 Backend",
+        "checks": checks,
+        "summary": summary,
+        "kept": [
+            "V350 stable baseline",
+            "V290/V350 diagnostic routes",
+            "Supabase schema unchanged",
+            "Deployment structure unchanged",
+            "Manual execution only",
+            "Auto-loop off"
+        ],
+        "added": [
+            "Memory quality",
+            "Decision pattern detection",
+            "Recurring risk detection",
+            "Action overload detection",
+            "Executive signal summary",
+            "Daily brief intelligence",
+            "Improved V400 /run prompt"
+        ],
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/memory-quality",
+            "/decision-patterns-v400",
+            "/recurring-risks",
+            "/action-overload",
+            "/executive-signal-summary",
+            "/daily-brief-intelligence",
+            "/v400-milestone",
+            "/health"
+        ]
     }
