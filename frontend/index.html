@@ -821,6 +821,85 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   font-weight:650;
 }
 
+
+/* V300 Executive Command Center 2.0 */
+.v300-template-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:14px 0;
+}
+.v300-template{
+  border:1px solid #dbe5f1;
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  text-align:left;
+  box-shadow:0 10px 24px rgba(7,18,38,.045);
+  transition:.15s ease;
+}
+.v300-template:hover{
+  transform:translateY(-1px);
+  border-color:#bfdbfe;
+  box-shadow:0 16px 34px rgba(15,99,255,.10);
+}
+.v300-template b{
+  display:block;
+  color:#071226;
+  margin-bottom:5px;
+  font-size:13px;
+}
+.v300-template span{
+  color:#64748b;
+  font-size:11px;
+  line-height:1.35;
+}
+.v300-mode-strip{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:12px 0 0;
+}
+.v300-mode{
+  height:32px;
+  border:1px solid #dbe5f1;
+  background:#fff;
+  color:#334155;
+  border-radius:999px;
+  padding:0 12px;
+  font-weight:700;
+  font-size:12px;
+}
+.v300-mode.active{
+  background:#0f63ff;
+  color:#fff;
+  border-color:#0f63ff;
+  box-shadow:0 10px 24px rgba(15,99,255,.20);
+}
+.v300-next-command{
+  border:1px solid #bbf7d0;
+  background:linear-gradient(135deg,#ecfdf5,#ffffff);
+  border-radius:16px;
+  padding:14px;
+  margin-top:14px;
+}
+.v300-next-command b{
+  color:#047857;
+}
+.v300-next-command code{
+  display:block;
+  margin-top:8px;
+  background:#071226;
+  color:#dbeafe;
+  border-radius:12px;
+  padding:12px;
+  white-space:pre-wrap;
+  font-size:12px;
+  line-height:1.45;
+}
+@media(max-width:1180px){.v300-template-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.v300-template-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -828,11 +907,11 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
 <header class="top">
   <div class="brand"><a href="#" class="brand-link" onclick="showPage('command'); return false;" aria-label="Go to Dashboard / Command Center"><div class="logo logo-ee"><span class="ee-letter ee-back">E</span><span class="ee-letter">E</span></div><div class="brand-copy"><strong>Executive<br>Engine OS</strong><span>Productivity OS</span></div></a></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="quick-nav"><button onclick="showPage('command')">Dashboard</button><button onclick="showPage('daily_brief')">Brief</button><button onclick="showPage('actions')">Actions</button><button onclick="showPage('memory')">Memory</button></div><div class="search">⌕<input id="searchInput" placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
-  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V290 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
+  <div class="top-right"><span class="pill live">System Live</span><span class="pill">V300 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
 
 <aside class="sidebar">
-  <div class="lock">▣ V290 Test Lock</div>
+  <div class="lock">▣ V300 Command Center 2.0</div>
   <div class="group">Command</div>
   <button class="nav active" data-page="command" data-mode="execution"><span class="nav-main"><span class="ico">⌘</span>Command Center</span></button>
   <button class="nav" data-page="daily_brief" data-mode="daily_brief"><span class="nav-main"><span class="ico">◷</span>Daily Brief</span></button>
@@ -864,7 +943,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <div id="commandPage">
     <section class="command">
       <div class="command-head"><strong>COMMAND INPUT</strong><div class="mode-row"><span class="mode-label">Mode:</span><button class="mode active" data-mode="execution">Execute</button><button class="mode" data-mode="decision">Decide</button><button class="mode" data-mode="daily_brief">Plan</button><button class="mode" data-mode="meeting">Analyze</button></div><span class="mode-label">Context: <b>V128 Operator</b>⌄</span></div>
-      <div class="command-body"><textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea><div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div><div class="context">✓ Using latest intelligence, risk models, and company context</div><div class="status" id="status"></div></div>
+      <div class="command-body"><div class="v300-next-command"><b>Executive Mode: <span id="v300ModeLabel">CEO</span></b><p style="margin:6px 0 0;color:#334155;font-size:13px">Pick a mode and template, then run the Command Center.</p><div id="v300CommandModules"></div></div><textarea id="input" placeholder="What needs to happen? Describe the decision, action, blocker, meeting, risk, or opportunity..."></textarea><div class="command-actions"><div class="tools"><button class="tool">⌘ Attach</button><button class="tool">▣ Context</button><button class="tool">◍ People</button><button class="tool">▤ Data</button><button class="tool">▱ Saved Commands</button></div><button class="run" id="runBtn" onclick="runEngine()">⚡ Run Engine</button></div><div class="context">✓ Using latest intelligence, risk models, and company context</div><div class="status" id="status"></div></div>
     </section>
     <section class="feed">
       <div class="feed-head"><div><h3>EXECUTIVE FEED</h3><span>Real-time intelligence and execution readiness.</span></div><button class="custom">Show: All Signals⌄</button></div>
@@ -882,7 +961,7 @@ textarea{width:100%;height:150px;resize:vertical;border:1px solid #ccd9ea;border
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V290 Test Lock · V290 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V300 Command Center 2.0 · V300 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",activePage="command",lastOutput=null,lastCommand="",appState={actions:[],decisions:[],memory:[],focus:{}};
@@ -1038,8 +1117,53 @@ function renderPage(page){
 function runPagePrompt(page){showPage("command");const promptMap={daily_brief:"Create today’s daily brief and execution sequence.",meeting:"Prepare this meeting: objective, agenda, questions, risks, follow-up.",strategy:"Build a strategy board for Executive Engine OS: current objective, execution tracks, risks, next moves.",risk:"Review current Executive Engine OS risks and mitigation steps.",actions:"Prioritize my action queue and identify what should be completed first.",analytics:"Audit Executive Engine OS workflow health and identify bottlenecks.",memory:"Summarize the strongest memory patterns and constraints.",profile:"Summarize my executive operator profile and how the system should adapt.",settings:"Show current system settings and what should stay locked."};inputEl().value=promptMap[page]||"Run an executive command.";activeMode=document.querySelector(`[data-page="${page}"]`)?.dataset.mode||"execution";runEngine()}
 function newRun(){showPage("command");inputEl().value="";lastOutput=null;lastCommand="";inputEl().focus()}
 document.querySelectorAll(".mode,.nav").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.mode)activeMode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x.dataset.mode===activeMode));if(b.dataset.page)showPage(b.dataset.page);}));
-async function runEngine(){const input=inputEl(),command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,depth:"standard",user_id:USER_ID,session_id:"v130_navigation",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
-function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>`;document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
+
+let activeExecutiveMode = "CEO";
+
+const V300_TEMPLATES = [
+  {id:"daily_brief", title:"Daily Brief", mode:"CEO", prompt:"Create my executive daily brief. Tell me what to focus on, what to ignore, top risks, and the first action to take today."},
+  {id:"meeting_prep", title:"Meeting Prep", mode:"COO", prompt:"Prepare me for this meeting. Give me the objective, agenda, hard questions, talking points, decision needed, and follow-up actions."},
+  {id:"strategy_decision", title:"Strategy Decision", mode:"CEO", prompt:"Help me make a strategy decision. Clarify the tradeoff, recommend the decision, identify risk, and give me the next 3 execution steps."},
+  {id:"risk_review", title:"Risk Review", mode:"COO", prompt:"Review the current risk. Identify what can break, the likely cause, severity, mitigation, owner, and what I should do today."},
+  {id:"revenue_review", title:"Revenue Review", mode:"CFO", prompt:"Review revenue and pipeline priorities. Identify the highest value opportunity, financial risk, next sales action, and what to cut or accelerate."},
+  {id:"hiring_decision", title:"Hiring Decision", mode:"CEO", prompt:"Help me make a hiring decision. Identify the role impact, urgency, cost/risk, hiring criteria, and next step."},
+  {id:"board_prep", title:"Board Prep", mode:"CEO", prompt:"Prepare a board-level update. Give me wins, risks, metrics, decisions needed, and the narrative I should use."},
+  {id:"execution_reset", title:"Execution Reset", mode:"COO", prompt:"Reset my execution plan. Identify what matters, what to stop, what to finish first, and the next command I should run."}
+];
+
+function setExecutiveMode(mode){
+  activeExecutiveMode = mode || "CEO";
+  document.querySelectorAll(".v300-mode").forEach(b=>b.classList.toggle("active", b.dataset.execMode===activeExecutiveMode));
+  const label=document.getElementById("v300ModeLabel");
+  if(label) label.textContent=activeExecutiveMode;
+}
+
+function useCommandTemplate(id){
+  const t=V300_TEMPLATES.find(x=>x.id===id);
+  if(!t) return;
+  setExecutiveMode(t.mode);
+  activeMode = t.id==="meeting_prep" ? "meeting" : (t.id==="strategy_decision" ? "strategy" : "execution");
+  const input=inputEl();
+  input.value=t.prompt;
+  input.focus();
+  toast(t.title+" loaded","success");
+}
+
+function renderV300CommandModules(){
+  const host=document.getElementById("v300CommandModules");
+  if(!host) return;
+  host.innerHTML = `
+    <div class="v300-mode-strip">
+      ${["CEO","COO","CMO","CTO","CFO"].map(m=>`<button class="v300-mode ${m===activeExecutiveMode?"active":""}" data-exec-mode="${m}" onclick="setExecutiveMode('${m}')">${m}</button>`).join("")}
+    </div>
+    <div class="v300-template-grid">
+      ${V300_TEMPLATES.map(t=>`<button class="v300-template" onclick="useCommandTemplate('${t.id}')"><b>${t.title}</b><span>${t.mode} · ${t.prompt.slice(0,72)}...</span></button>`).join("")}
+    </div>
+  `;
+}
+
+async function runEngine(){const input=inputEl(),command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,executive_mode:activeExecutiveMode,depth:"standard",user_id:USER_ID,session_id:"v300_command_center",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
+function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>${d.next_recommended_command?`<div class="v300-next-command"><b>Next Recommended Command</b><code>${esc(d.next_recommended_command)}</code><button class="tool" style="margin-top:10px" onclick="inputEl().value=${JSON.stringify("${d.next_recommended_command}")}">Load Next Command</button></div>`:""}`;document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
 function extractQuotedAfter(label,s){s=String(s||"");for(const p of [new RegExp(label+'\\s+called\\s+"([^"]+)"','i'),new RegExp(label+"\\s+called\\s+'([^']+)'",'i')]){const m=s.match(p);if(m&&m[1])return m[1].trim()}return""}function explicitActionText(){return extractQuotedAfter("one action",lastCommand)||extractQuotedAfter("action",lastCommand)}function explicitDecisionText(){return extractQuotedAfter("one decision",lastCommand)||extractQuotedAfter("decision",lastCommand)}
 async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"v130_navigation",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
 async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"v130_navigation",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
@@ -1135,7 +1259,7 @@ async function runSystemTest(){
   const deg=Math.round(percent*3.6);
 
   if(panel){
-    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V290 Test Lock · V290 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
+    panel.innerHTML=`<div class="system-score"><div class="system-ring" style="background:conic-gradient(#0f63ff 0deg,#0f63ff ${deg}deg,#e5edf7 ${deg}deg,#e5edf7 360deg)"><span>${scoreText}</span></div><div><h3>System Test Dashboard</h3><p><b>Status:</b> ${d.ready?"Ready":"Needs Review"}</p><p><b>Expected Badge:</b> ${esc(d.expected_frontend_badge||"V300 Command Center 2.0 · V300 Backend")}</p><p><b>Next Move:</b> ${esc(d.next_move||"Use this test after every deploy.")}</p></div></div>`;
   }
   if(tests){
     tests.innerHTML=(d.tests||[]).map(t=>`<div class="system-test-card ${t.passed?"test-pass":"test-fail"}"><b>${esc(t.name)}</b><p>${t.passed?"Passed":"Failed"}</p><span class="status-pill ${t.passed?"green":"orange"}">${esc(t.status||"UNKNOWN")}</span>${t.error?`<p>${esc(t.error)}</p>`:""}</div>`).join("");
@@ -1354,7 +1478,7 @@ async function loadMemoryIntelligence(){
 
 async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};appState={actions,decisions,memory:mem,focus};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";const fa=document.getElementById("feedActions");if(fa)fa.textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory");if(activePage!=="command")renderPage(activePage)}catch(e){if(statusBox())status("Backend status issue: "+e.message,"error")}}
 async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
-setDefaultFeed();defaultPreview();refreshState();stabilityAudit();
+setDefaultFeed();defaultPreview();renderV300CommandModules();refreshState();stabilityAudit();
 </script>
 </body>
 </html>

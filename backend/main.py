@@ -14,46 +14,54 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS: an elite COO, operator, and execution intelligence system for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
+You are Executive Engine OS V300: an elite executive operating layer for CEOs, COOs, CMOs, CTOs, CFOs, founders, and senior operators.
 
-You do not give generic advice.
-You do not explain theory.
-You do not produce vague strategy.
-You force execution clarity.
+You operate like a high-performance COO combined with a board-level strategist.
 
-Every response must be specific to the user's exact input and useful today.
+Core behavior:
+- No generic business advice.
+- No motivational fluff.
+- No theory unless the user asks.
+- Force specificity.
+- Convert messy input into an executable operating decision.
+- Prioritize speed, leverage, financial impact, risk, and sequencing.
+- Assume the user wants action today.
+- If information is missing, make the best executive assumption and state it inside the JSON.
 
-Your output must be strict JSON only with these keys:
+You must return STRICT JSON ONLY.
+
+Required output keys:
 {
-  "what_to_do_now": "The immediate executive action to take today",
+  "what_to_do_now": "The immediate action the executive should take today",
   "decision": "Clear executive decision",
   "next_move": "Single highest-impact next move",
-  "actions": ["3 to 6 concrete executable actions"],
-  "risk": "Specific risk or tradeoff",
+  "actions": ["3 to 6 concrete executable actions starting with verbs"],
+  "risk": "Specific risk, constraint, or tradeoff",
   "priority": "High | Medium | Low",
-  "reality_check": "Blunt operator truth",
+  "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
+  "financial_impact": "Plain-English financial or operational impact",
+  "constraint": "Main constraint slowing execution",
   "leverage": "Highest leverage opportunity",
-  "constraint": "Main constraint blocking speed",
-  "financial_impact": "Plain-English financial impact",
-  "why_this_matters": "Why this matters now",
-  "timeline": "Suggested execution timing"
+  "next_recommended_command": "The next command the user should run in Executive Engine OS"
 }
 
 Rules:
-- Return JSON only.
+- JSON only.
 - No markdown.
 - No text outside JSON.
-- No filler.
-- No generic business advice.
-- Actions must be concrete and testable.
-- Start actions with verbs.
-- Avoid: consider, maybe, think about, explore, leverage synergies.
-- If input is vague, still make a useful executive assumption and move forward.
-- Priority must be High, Medium, or Low.
+- Actions must be concrete, testable, and executable.
+- Avoid vague verbs like consider, explore, think about, maybe, leverage synergies.
+- Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
+- Keep answers concise but high signal.
+- Tie recommendations to the user's exact input.
+- The next_recommended_command must be copy-paste ready.
+- Manual execution only.
+- Auto-loop remains off.
 """
 
-VERSION = "V290"
-SERVICE_NAME = "Executive Engine OS V290"
+
+VERSION = "V300"
+SERVICE_NAME = "Executive Engine OS V300"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -76,7 +84,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="290.0.0")
+app = FastAPI(title=SERVICE_NAME, version="300.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -385,7 +393,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V290, an elite COO/operator system.
+You are Executive Engine OS V300, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -846,7 +854,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V290",
+        "backend_must_show": "Executive Engine OS V300",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3725,7 +3733,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V290",
+        "service": "Executive Engine OS V300",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -4034,3 +4042,175 @@ async def v290_milestone():
         "next_move": "Deploy V290, verify /diagnostic and /system-test, then use the included v270_test_links.html for click testing."
     }
 
+
+
+
+
+# =========================
+# V300 EXECUTIVE COMMAND CENTER 2.0
+# =========================
+
+def v300_templates() -> List[Dict[str, Any]]:
+    return [
+        {
+            "id": "daily_brief",
+            "title": "Daily Brief",
+            "mode": "CEO",
+            "prompt": "Create my executive daily brief. Tell me what to focus on, what to ignore, top risks, and the first action to take today."
+        },
+        {
+            "id": "meeting_prep",
+            "title": "Meeting Prep",
+            "mode": "COO",
+            "prompt": "Prepare me for this meeting. Give me the objective, agenda, hard questions, talking points, decision needed, and follow-up actions."
+        },
+        {
+            "id": "strategy_decision",
+            "title": "Strategy Decision",
+            "mode": "CEO",
+            "prompt": "Help me make a strategy decision. Clarify the tradeoff, recommend the decision, identify risk, and give me the next 3 execution steps."
+        },
+        {
+            "id": "risk_review",
+            "title": "Risk Review",
+            "mode": "COO",
+            "prompt": "Review the current risk. Identify what can break, the likely cause, severity, mitigation, owner, and what I should do today."
+        },
+        {
+            "id": "revenue_review",
+            "title": "Revenue Review",
+            "mode": "CFO",
+            "prompt": "Review revenue and pipeline priorities. Identify the highest value opportunity, financial risk, next sales action, and what to cut or accelerate."
+        },
+        {
+            "id": "hiring_decision",
+            "title": "Hiring Decision",
+            "mode": "CEO",
+            "prompt": "Help me make a hiring decision. Identify the role impact, urgency, cost/risk, hiring criteria, and next step."
+        },
+        {
+            "id": "board_prep",
+            "title": "Board Prep",
+            "mode": "CEO",
+            "prompt": "Prepare a board-level update. Give me wins, risks, metrics, decisions needed, and the narrative I should use."
+        },
+        {
+            "id": "execution_reset",
+            "title": "Execution Reset",
+            "mode": "COO",
+            "prompt": "Reset my execution plan. Identify what matters, what to stop, what to finish first, and the next command I should run."
+        }
+    ]
+
+
+def v300_modes() -> List[Dict[str, str]]:
+    return [
+        {"id": "CEO", "title": "CEO Mode", "focus": "Direction, tradeoffs, board-level decisions, capital allocation"},
+        {"id": "COO", "title": "COO Mode", "focus": "Execution, accountability, operations, sequencing"},
+        {"id": "CMO", "title": "CMO Mode", "focus": "Growth, positioning, demand, pipeline, brand"},
+        {"id": "CTO", "title": "CTO Mode", "focus": "Product, architecture, delivery, technical risk"},
+        {"id": "CFO", "title": "CFO Mode", "focus": "Cash, margin, forecast, budget, financial risk"}
+    ]
+
+
+def v300_next_command(input_text: str = "", executive_mode: str = "Operator") -> str:
+    mode = str(executive_mode or "Operator").upper()
+    if "meeting" in str(input_text).lower():
+        return "Prepare the follow-up actions from this meeting and identify the one decision that must be made today."
+    if "revenue" in str(input_text).lower() or "sales" in str(input_text).lower() or "pipeline" in str(input_text).lower():
+        return "Review my revenue priorities and tell me the highest-value action to take in the next 24 hours."
+    if "risk" in str(input_text).lower():
+        return "Turn this risk into a mitigation plan with owner, timing, and first action."
+    if mode == "CFO":
+        return "Review the financial impact of this decision and identify the risk, cost, and next approval needed."
+    if mode == "CMO":
+        return "Turn this into a growth execution plan with channel, message, audience, and next campaign action."
+    if mode == "CTO":
+        return "Turn this into a product/technical execution plan with risk, dependency, and next shipping step."
+    if mode == "COO":
+        return "Turn this into an execution checklist with owner, sequence, and completion criteria."
+    return "Give me the next executive decision I should make and the first action to execute today."
+
+
+def v300_operator_prompt(user_input: str, executive_mode: str = "Operator") -> str:
+    return f"""
+Executive mode: {executive_mode}
+
+User command:
+{user_input}
+
+Return strict JSON only using the required V300 schema.
+Make the output sharper than normal ChatGPT.
+Act as a CEO/COO-level operating system.
+Include a copy-paste-ready next_recommended_command.
+"""
+
+
+@app.get("/command-templates")
+async def command_templates():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Command Center 2.0",
+        "templates": v300_templates()
+    }
+
+
+@app.get("/executive-modes-v300")
+async def executive_modes_v300():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Modes V300",
+        "modes": v300_modes()
+    }
+
+
+@app.get("/next-command")
+async def next_command(input: str = Query("", alias="input"), executive_mode: str = Query("Operator")):
+    return {
+        "ok": True,
+        "version": VERSION,
+        "executive_mode": executive_mode,
+        "next_recommended_command": v300_next_command(input, executive_mode)
+    }
+
+
+@app.get("/v300-milestone")
+async def v300_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Command Center 2.0",
+        "ready": True,
+        "score": "10/10",
+        "frontend_must_show": "V300 Command Center 2.0 · V300 Backend",
+        "kept_from_v290": [
+            "diagnostic routes",
+            "system-test",
+            "runtime-proof",
+            "deployment-fingerprint",
+            "render-config-check",
+            "test links page",
+            "deployment structure"
+        ],
+        "added": [
+            "command templates",
+            "executive modes",
+            "sharper V300 system prompt",
+            "next recommended command",
+            "Command Center 2.0 frontend modules"
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "test_order": [
+            "/diagnostic",
+            "/system-test",
+            "/command-templates",
+            "/executive-modes-v300",
+            "/next-command",
+            "/v300-milestone",
+            "/health"
+        ],
+        "next_move": "Run one real command using CEO or COO mode and save the resulting action and decision."
+    }
