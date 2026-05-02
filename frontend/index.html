@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-<title>Executive Engine OS — V128 Approved UI</title>
+<title>Executive Engine OS — V129 Approved UI</title>
 <style>
 :root{
   --nav:#061120;
@@ -106,12 +106,47 @@ textarea::placeholder{color:#8ca0bb}
 .version{position:fixed;right:18px;bottom:18px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:8px 12px;font-weight:1000;font-size:11px;box-shadow:0 12px 32px rgba(7,18,38,.1)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);opacity:0;background:#071226;color:#fff;border-radius:14px;padding:12px 15px;font-weight:900;transition:.18s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast.success{background:#047857}.toast.error{background:#b91c1c}
 @media(max-width:1280px){.app{grid-template-columns:250px 1fr}.right{display:none}.top{grid-template-columns:250px 1fr}.top-right{display:none}.snapshot{grid-template-columns:repeat(2,1fr)}.feed-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:820px){body{overflow:auto}.app{display:block;height:auto}.brand{height:64px}.sidebar,.right,.top-mid{display:none}.main{padding:16px}.hero{display:block}.snapshot,.feed-grid{grid-template-columns:1fr}.command-actions{display:block}.run{width:100%;margin-top:12px}}
+
+/* V129 logo fix — crisp backwards EE, not squished */
+.logo{
+  width:56px!important;
+  height:56px!important;
+  min-width:56px!important;
+  border-radius:15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  padding:0!important;
+  background:linear-gradient(135deg,#1677ff,#0046d7)!important;
+  color:#fff!important;
+  box-shadow:0 16px 34px rgba(11,99,255,.32)!important;
+  overflow:hidden!important;
+}
+.logo-e{
+  display:inline-block!important;
+  font-family:Inter,Arial,sans-serif!important;
+  font-size:29px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:-0.08em!important;
+  transform:none!important;
+}
+.logo-e-back{
+  transform:scaleX(-1)!important;
+  margin-right:-2px!important;
+}
+.brand strong{
+  font-size:19px!important;
+  line-height:1.03!important;
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="logo">ƎE</div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Executives</span></div></div>
+  <div class="brand"><div class="logo"><span class="logo-e logo-e-back">E</span><span class="logo-e">E</span></div><div><strong>Executive<br>Engine OS</strong><span>Productivity OS for Executives</span></div></div>
   <div class="top-mid"><button class="new-btn" onclick="newRun()">+ New Command</button><div class="search">⌕<input placeholder="Search commands, decisions, people, or insights..." onkeydown="if(event.key==='Enter'){input.value=this.value;runEngine()}"><span class="key">⌘K</span></div></div>
   <div class="top-right"><span class="pill live">System Live</span><span class="pill">V125 · Backend</span><span class="bell">♧</span><div class="avatar">JD</div></div>
 </header>
@@ -178,7 +213,7 @@ textarea::placeholder{color:#8ca0bb}
   <section class="rsection"><h3 class="rtitle">Memory Signals</h3><div id="memoryList"><div class="r-card">Waiting for memory signals.</div></div></section>
 </aside>
 </div>
-<div class="version">V128 UI · V125 Backend</div><div class="toast" id="toast"></div>
+<div class="version">V129 UI · V125 Backend</div><div class="toast" id="toast"></div>
 
 <script>
 const API="https://executive-engine-os.onrender.com",USER_ID="local_user";let activeMode="execution",lastOutput=null,lastCommand="";const input=document.getElementById("input"),statusBox=document.getElementById("status");
@@ -186,12 +221,12 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 async function api(p,o={}){const r=await fetch(API+p,o),txt=await r.text();let d;try{d=txt?JSON.parse(txt):{}}catch(e){d={raw:txt}}if(!r.ok)throw new Error(d.error||d.detail||txt||`HTTP ${r.status}`);return d}
 function newRun(){input.value="";lastOutput=null;lastCommand="";status("Ready for new command.","success");input.focus()}
 document.querySelectorAll(".mode,.nav").forEach(b=>b.addEventListener("click",()=>{if(!b.dataset.mode)return;activeMode=b.dataset.mode;document.querySelectorAll(".mode,.nav").forEach(x=>x.classList.remove("active"));document.querySelectorAll(`[data-mode="${activeMode}"]`).forEach(x=>x.classList.add("active"));input.focus()}));
-async function runEngine(){const command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,depth:"standard",user_id:USER_ID,session_id:"frontend_v128",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
+async function runEngine(){const command=input.value.trim();if(!command){status("Type a command first.","error");return}const btn=document.getElementById("runBtn");btn.disabled=true;btn.textContent="Running...";status("Running Executive Engine...","");try{const data=await api("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:command,mode:activeMode,depth:"standard",user_id:USER_ID,session_id:"frontend_v129",auto_save:true})});lastOutput=data;lastCommand=command;renderOutput(data);status("Engine response received. Review, save, and audit.","success");toast("Executive output ready","success");await refreshState()}catch(e){status("Run failed: "+e.message,"error");toast("Run failed","error")}finally{btn.disabled=false;btn.textContent="⚡ Run Engine"}}
 function renderOutput(d){const acts=Array.isArray(d.actions)?d.actions:[];document.getElementById("outputHost").innerHTML=`<article class="feed-card"><h4>What To Do Now</h4><strong>${esc(short(d.what_to_do_now||d.executive_summary||"Review output",60))}</strong><p>${esc(short(d.why_this_matters||"",90))}</p><a>View Prioritized List →</a></article><article class="feed-card purple"><h4>Decision</h4><strong>${esc(short(d.decision||"No decision",58))}</strong><p>Confidence: High · Risk: ${esc(d.priority||"medium")}</p><a>View Decision →</a></article><article class="feed-card"><h4>Next Move</h4><strong>${esc(short(d.next_move||"No next move",58))}</strong><p>${esc(short(d.timeline||"",75))}</p><a>View Next Steps →</a></article><article class="feed-card green"><h4>Actions</h4><strong>${acts.length} Total</strong><p>${acts.slice(0,3).map(a=>esc(short(a,30))).join("<br>")}</p><a>Go to Action Queue →</a></article><article class="feed-card orange"><h4>Risk</h4><strong>${esc(short(d.risk||"Medium Risk",50))}</strong><p>Priority: ${esc(d.priority||"medium")}</p><a>View Risk Monitor →</a></article><div class="feed-card" style="grid-column:1/-1;min-height:auto"><h4>Actions</h4><div class="tools"><button class="tool" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button><button class="tool" id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button><button class="tool" id="verifySaveBtn" onclick="verifyLatestSave()">Verify Save</button><button class="tool" id="auditBtn" onclick="runSaveAudit()">Audit Save Flow</button><button class="tool" id="persistBtn" onclick="checkPersistence()">Check Persistence</button></div></div>`;
 document.getElementById("previewList").innerHTML=`<div class="r-card preview-card"><h4>What To Do Now</h4><ol>${acts.slice(0,3).map(a=>`<li>${esc(a)}</li>`).join("")||"<li>"+esc(d.what_to_do_now||"Review output")+"</li>"}</ol></div><div class="r-card preview-card"><h4>Decision</h4><p>${esc(d.decision||"No decision returned.")}</p></div><div class="r-card preview-card"><h4>Next Move</h4><p>${esc(d.next_move||"No next move returned.")}</p></div><div class="r-card orange"><h4>Risk / Priority</h4><p>${esc(d.risk||"No risk returned.")}</p><span class="tag orange">${esc(d.priority||"medium")}</span></div>`}
 function extractQuotedAfter(label,s){s=String(s||"");for(const p of [new RegExp(label+'\\s+called\\s+"([^"]+)"','i'),new RegExp(label+"\\s+called\\s+'([^']+)'",'i')]){const m=s.match(p);if(m&&m[1])return m[1].trim()}return""}function explicitActionText(){return extractQuotedAfter("one action",lastCommand)||extractQuotedAfter("action",lastCommand)}function explicitDecisionText(){return extractQuotedAfter("one decision",lastCommand)||extractQuotedAfter("decision",lastCommand)}
-async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"frontend_v128",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
-async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"frontend_v128",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
+async function saveActions(){if(!lastOutput){status("No output available to save.","error");return}const btn=document.getElementById("saveActionsBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{const ex=explicitActionText(),list=ex?[ex]:(Array.isArray(lastOutput.actions)?lastOutput.actions:[]);if(!list.length)throw new Error("No actions available.");for(const text of list){await api("/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,text:String(text),priority:lastOutput.priority||"medium",status:"open",metadata:{source:"frontend_v129",explicit_save:Boolean(ex),command:lastCommand}})})}if(btn){btn.textContent="Actions Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Actions saved.","success");toast("Actions saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Add to Action Queue"}status("Save actions failed: "+e.message,"error")}}
+async function saveDecision(){if(!lastOutput){status("No output available to save.","error");return}const ex=explicitDecisionText(),decisionText=ex||lastOutput.decision;if(!decisionText){status("No decision available.","error");return}const btn=document.getElementById("saveDecisionBtn");if(btn){btn.disabled=true;btn.textContent="Saving..."}try{await api("/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:USER_ID,run_id:lastOutput.run_id||null,decision:decisionText,risk:lastOutput.risk||"",priority:lastOutput.priority||"medium",rationale:lastOutput.why_this_matters||lastOutput.reality_check||"",next_move:lastOutput.next_move||"",metadata:{source:"frontend_v129",explicit_save:Boolean(ex),command:lastCommand}})});if(btn){btn.textContent="Decision Saved";btn.style.background="#ecfdf5";btn.style.color="#047857"}status("Decision saved.","success");toast("Decision saved","success");await refreshState();await saveFlowStatus()}catch(e){if(btn){btn.disabled=false;btn.textContent="Save Decision"}status("Save decision failed: "+e.message,"error")}}
 async function saveFlowStatus(){const d=await api("/save-flow-status?user_id="+encodeURIComponent(USER_ID));status(`Save Flow: ${d.latest?.action_text||"no latest action"} · ${d.latest?.decision_text||"no latest decision"}`,"success");return d}
 async function verifyLatestSave(){try{const d=await saveFlowStatus();const btn=document.getElementById("verifySaveBtn");if(btn){btn.textContent="Verified";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Save verified","success");return d}catch(e){status("Verify Save failed: "+e.message,"error")}}
 async function runSaveAudit(){try{const d=await api("/run-save-audit?user_id="+encodeURIComponent(USER_ID));status(`Audit: ${d.latest_action?.text||"no latest action"} · ${d.latest_decision?.decision||"no latest decision"}`,"success");const btn=document.getElementById("auditBtn");if(btn){btn.textContent="Audit Complete";btn.style.background="#ecfdf5";btn.style.color="#047857"}toast("Audit complete","success");return d}catch(e){status("Audit failed: "+e.message,"error")}}
@@ -200,7 +235,7 @@ function row(t,s,tag="",cls=""){return `<div class="r-row"><span class="check"><
 function renderRows(id,rows,type){const el=document.getElementById(id);if(!rows||!rows.length){el.innerHTML='<div class="r-card">No records yet.</div>';return}el.innerHTML=rows.slice(0,5).map(r=>type==="action"?row(r.text||"Action",(r.priority||"medium")+" · "+(r.status||"open"),"Run","green"):type==="decision"?row(r.decision||"Decision",r.created_at?new Date(r.created_at).toLocaleString():"",r.priority||"medium",priorityTag(r.priority)):`<div class="r-card"><strong>${esc(r.type||"Memory")}</strong><br><span>${esc(short(r.content||"",82))}</span></div>`).join("")}
 async function refreshState(){try{const t0=performance.now(),health=await api("/health"),state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID)),ms=Math.max(1,Math.round(performance.now()-t0));document.getElementById("backendSmall").textContent=ms+"ms";document.getElementById("dbSmall").textContent=state.supabase_enabled?"Live":"Offline";document.getElementById("apiSmall").textContent=health.openai_key_set?"Healthy":"No key";const actions=state.open_actions||[],decisions=state.recent_decisions||[],mem=state.memory_items||[],focus=state.today_focus||{};document.getElementById("actionCount").textContent=actions.length;document.getElementById("actionCountSide").textContent=actions.length;document.getElementById("snapActions").textContent=actions.length+" Active";document.getElementById("feedActions").textContent=actions.length+" Total";document.getElementById("snapActionsSub").textContent=actions.filter(a=>String(a.priority).toLowerCase()==="high"||String(a.priority).toLowerCase()==="critical").length+" high priority";document.getElementById("snapFocus").textContent=short(focus.title||"Ready",30);document.getElementById("snapFocusSub").textContent=short(focus.next_move||"Run one executive command",52);document.getElementById("focusList").innerHTML=`<div class="r-card"><strong>${esc(short(focus.title||"No focus yet",48))}</strong><br><span>${esc(short(focus.next_move||"Run engine to create one",80))}</span></div>`;if(decisions.length){document.getElementById("snapDecision").textContent=short(decisions[0].decision,32);document.getElementById("snapDecisionSub").textContent=(decisions[0].priority||"medium")+" priority"}renderRows("actionsList",actions,"action");renderRows("decisionsList",decisions,"decision");renderRows("memoryList",mem,"memory")}catch(e){status("Backend status issue: "+e.message,"error")}}
 async function stabilityAudit(){try{const d=await api("/stability-audit?user_id="+encodeURIComponent(USER_ID));document.getElementById("auditText").textContent=d.score+" stability audit"}catch(e){}}
-refreshState();stabilityAudit();status("V128 approved UI loaded. Backend remains V125.","success");
+refreshState();stabilityAudit();status("V129 logo-fixed UI loaded. Backend remains V125.","success");
 </script>
 </body>
 </html>
