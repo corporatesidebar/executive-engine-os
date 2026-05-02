@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from openai import AsyncOpenAI
 
 
-APP_NAME = "Executive Engine OS V97"
+APP_NAME = "Executive Engine OS V96.1"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 TIMEOUT = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "2800"))
@@ -25,7 +25,7 @@ SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
 
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-app = FastAPI(title=APP_NAME, version="97.0.0")
+app = FastAPI(title=APP_NAME, version="96.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -333,7 +333,7 @@ def build_system_prompt(mode, depth, loop_mode=False):
     )
 
     return f"""
-You are Executive Engine OS V97.
+You are Executive Engine OS V96.1.
 
 ROLE:
 Act like an elite CEO, COO, President, Chief of Staff, strategist, and operator.
@@ -635,7 +635,7 @@ async def robots():
 
 @app.get("/")
 async def root():
-    return {"ok": True, "service": APP_NAME, "version": "V97"}
+    return {"ok": True, "service": APP_NAME, "version": "V96.1"}
 
 
 @app.get("/health")
@@ -643,7 +643,7 @@ async def health():
     return {
         "ok": True,
         "service": APP_NAME,
-        "version": "V97",
+        "version": "V96.1",
         "model": MODEL,
         "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
         "supabase_enabled": SUPABASE_ENABLED,
@@ -658,10 +658,10 @@ async def health():
 async def debug():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V96.1",
         "routes": [
             "/", "/health", "/debug", "/schema", "/run", "/run-test", "/auto-loop",
-            "/recent-runs", "/engine-state", "/project-context", "/memory", "/memory-summary", "/stability-check", "/actions", "/save-action",
+            "/recent-runs", "/project-context", "/memory", "/memory-summary", "/stability-check", "/actions", "/save-action",
             "/decisions", "/save-decision", "/profile", "/robots.txt"
         ],
         "model": MODEL,
@@ -676,7 +676,7 @@ async def debug():
 async def schema():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V96.1",
         "response_schema": CANONICAL_SCHEMA,
         "modes": MODE_GUIDANCE,
         "depths": list(DEPTH_GUIDANCE.keys())
@@ -751,7 +751,7 @@ async def auto_loop(req: AutoLoopRequest):
     ]
 
     await save_learning_event(req.user_id or "local_user", "manual_loop_planned", req.mode, {"auto_disabled": True})
-    return {"ok": True, "version": "V97", "auto_enabled": False, "message": "Manual execution loop only in V95.", "final": output}
+    return {"ok": True, "version": "V96.1", "auto_enabled": False, "message": "Manual execution loop only in V95.", "final": output}
 
 
 
@@ -768,69 +768,22 @@ async def run_test():
     try:
         memory = await load_memory("local_user")
         output = await ai_run(req, memory, False)
-        return {"ok": True, "version": "V97", "output": validate_output_shape(output)}
+        return {"ok": True, "version": "V96.1", "output": validate_output_shape(output)}
     except Exception as exc:
-        return {"ok": False, "version": "V97", "output": validate_output_shape(fallback_response(str(exc)))}
+        return {"ok": False, "version": "V96.1", "output": validate_output_shape(fallback_response(str(exc)))}
 
-
-
-@app.get("/engine-state")
-async def engine_state(user_id: str = Query("local_user")):
-    memory = await load_memory(user_id)
-    summary = summarize_memory_for_prompt(memory) if "summarize_memory_for_prompt" in globals() else memory
-
-    recent_runs = memory.get("recent_runs") or []
-    open_actions = memory.get("open_actions") or []
-    recent_decisions = memory.get("recent_decisions") or []
-    memory_items = memory.get("memory_items") or []
-
-    latest = recent_runs[0] if recent_runs else None
-    latest_output = latest.get("output") if isinstance(latest, dict) else {}
-
-    return {
-        "ok": True,
-        "version": "V97",
-        "supabase_enabled": memory.get("supabase_enabled", False),
-        "today_focus": {
-            "title": latest_output.get("what_to_do_now") if isinstance(latest_output, dict) else "No focus yet",
-            "next_move": latest_output.get("next_move") if isinstance(latest_output, dict) else "Run the engine to create one."
-        },
-        "your_engine": [
-            {
-                "id": r.get("id"),
-                "title": str(r.get("input") or "Saved run")[:80],
-                "mode": r.get("mode"),
-                "created_at": r.get("created_at")
-            }
-            for r in recent_runs[:10]
-        ],
-        "open_actions": [
-            {"id": a.get("id"), "text": a.get("text"), "priority": a.get("priority"), "status": a.get("status")}
-            for a in open_actions[:10]
-        ],
-        "recent_decisions": [
-            {"id": d.get("id"), "decision": d.get("decision"), "priority": d.get("priority"), "created_at": d.get("created_at")}
-            for d in recent_decisions[:10]
-        ],
-        "memory_items": [
-            {"type": m.get("type"), "content": m.get("content"), "importance": m.get("importance")}
-            for m in memory_items[:5]
-        ],
-        "manual_execution_only": True,
-        "auto_loop_enabled": False
-    }
 
 @app.get("/project-context")
 async def project_context():
     return {
         "ok": True,
-        "version": "V97",
+        "version": "V96.1",
         "project_context": PROJECT_CONTEXT,
         "manual_execution_only": True,
         "auto_loop_enabled": False
     }
 
-@app.get("/engine-state", "/project-context", "/memory")
+@app.get("/project-context", "/memory")
 async def memory(user_id: str = Query("local_user")):
     return await load_memory(user_id)
 
@@ -840,7 +793,7 @@ async def memory(user_id: str = Query("local_user")):
 @app.get("/memory-summary")
 async def memory_summary(user_id: str = Query("local_user")):
     memory = await load_memory(user_id)
-    return {"ok": True, "version": "V97", "summary": summarize_memory_for_prompt(memory)}
+    return {"ok": True, "version": "V96.1", "summary": summarize_memory_for_prompt(memory)}
 
 @app.post("/stability-check")
 async def stability_check():
@@ -856,7 +809,7 @@ async def stability_check():
         "auto_loop_enabled": False,
         "memory_injection": "last_3_items"
     }
-    return {"ok": True, "version": "V97", "health": health_data, "checks": checks}
+    return {"ok": True, "version": "V96.1", "health": health_data, "checks": checks}
 
 @app.get("/recent-runs")
 async def recent_runs(user_id: str = Query("local_user"), limit: int = Query(20, ge=1, le=50)):
