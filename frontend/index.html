@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <title>Executive Engine OS V120</title>
+  <title>Executive Engine OS V121</title>
   <style>
     :root{--nav:#071226;--nav2:#0b1830;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f7f9fc;--card:#fff;--line:#dbe3ef;--muted:#64748b;--text:#071226;--green:#059669;--orange:#ea580c;--red:#b91c1c;--shadow:0 20px 70px rgba(15,23,42,.10)}
     *{box-sizing:border-box}
@@ -43,7 +43,7 @@
     @media(max-width:1180px){.app{grid-template-columns:230px 1fr}.right{display:none}.top{grid-template-columns:230px 92px minmax(240px,1fr)}}
     @media(max-width:760px){body{overflow:auto}.app{display:block;height:auto}.top{position:sticky;top:0;display:grid;grid-template-columns:1fr}.side,.right,.search,.top .new{display:none}.wrap{padding:24px 14px}.composer-row{flex-direction:column;align-items:stretch}.run{width:100%}.starters,.grid{grid-template-columns:1fr}.block.full{grid-column:auto}}
   
-/* V120 — hardening layer */
+/* V121 — hardening layer */
 .version-lock{
   position:fixed;
   right:18px;
@@ -67,7 +67,7 @@
 }
 
   
-/* V120 — ship lock layer */
+/* V121 — ship lock layer */
 .version-lock{
   border-color:#93c5fd!important;
   background:#eff6ff!important;
@@ -88,6 +88,20 @@
   color:#0f172a;
   margin-bottom:3px;
 }
+
+  
+/* V121 — explicit save fix */
+.explicit-save-note{
+  margin-top:10px;
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  font-weight:850;
+}
+.explicit-save-note strong{display:block;color:#0f172a;margin-bottom:3px;}
 
   </style>
 </head>
@@ -113,15 +127,15 @@
     <button class="nav" data-mode="learning"><span class="ico">◈</span>Learning</button>
     <div class="label">Setup</div>
     <button class="nav" data-mode="personal"><span class="ico">☰</span>Your Profile</button>
-    <div class="help"><strong>V120 Ship Lock</strong>One visible input. One direct /run path. One output renderer. Working save buttons. No stacked legacy functions.</div>
+    <div class="help"><strong>V121 Save Fix</strong>One visible input. One direct /run path. One output renderer. Working save buttons. No stacked legacy functions.</div>
   </aside>
 
   <main class="main">
     <div class="wrap">
       <section class="hero">
-        <div class="badge">V120 · Ship Lock</div>
+        <div class="badge">V121 · Save Fix</div>
         <h1>Today’s Command Center</h1>
-        <p class="sub">Type one command. Get a decision, next move, actions, risk, and a clean execution loop. Save what matters.</p><div class="ship-lock-note"><strong>Ship Lock:</strong> Validate this build with 10 real runs before building more versions.</div>
+        <p class="sub">Type one command. Get a decision, next move, actions, risk, and a clean execution loop. Save what matters.</p><div class="explicit-save-note"><strong>V121 Save Fix:</strong> If your prompt says create one action called "X" and one decision called "Y", the save buttons store X and Y directly.</div>
 
         <div class="box">
           <textarea id="input" placeholder="What needs to move forward?"></textarea>
@@ -185,8 +199,8 @@
     </section>
   </aside>
 </div>
-<div class="version-lock">V120 · Ship Lock</div>
-<div id="buildCheck">frontend_v120</div>
+<div class="version-lock">V121 · Save Fix</div>
+<div id="buildCheck">frontend_v121</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -243,7 +257,7 @@ async function runEngine(){
         mode:activeMode,
         depth:"standard",
         user_id:USER_ID,
-        session_id:"frontend_v120",
+        session_id:"frontend_v121",
         auto_save:true
       })
     });
@@ -266,7 +280,7 @@ function renderOutput(data){
   const actions = Array.isArray(data.actions) ? data.actions : [];
   outputHost.innerHTML = `
     <section class="output">
-      <div class="out-head"><strong>Executive Engine Output</strong><span class="live">V120 · Locked</span></div>
+      <div class="out-head"><strong>Executive Engine Output</strong><span class="live">V121 · Explicit Save</span></div>
       <div class="out-body">
         <div class="grid">
           <div class="block full"><h4>What to do now</h4><p>${esc(data.what_to_do_now || data.executive_summary || "Review output and take the first action.")}</p></div>
@@ -281,7 +295,7 @@ function renderOutput(data){
         <button class="primary" id="saveActionsBtn" onclick="saveActions()">Add to Action Queue</button>
         <button id="saveDecisionBtn" onclick="saveDecision()">Save Decision</button>
         <button onclick="validateRun()">Validate Run</button>
-        <button onclick="checkPersistence()">Check Persistence</button>
+        <button onclick="checkPersistence()">Check Persistence</button><button onclick="saveVerification()">Verify Latest Save</button>
         <button onclick="refreshState()">Refresh Right Panel</button>
       </div>
     </section>
@@ -307,7 +321,7 @@ async function saveActions(){
           text:String(text),
           priority:lastOutput.priority || "medium",
           status:"open",
-          metadata:{source:"frontend_v120"}
+          metadata:{source:"frontend_v121"}
         })
       });
       count++;
@@ -343,7 +357,7 @@ async function saveDecision(){
         priority:lastOutput.priority || "medium",
         rationale:lastOutput.why_this_matters || lastOutput.reality_check || "",
         next_move:lastOutput.next_move || "",
-        metadata:{source:"frontend_v120"}
+        metadata:{source:"frontend_v121"}
       })
     });
     btn.textContent="Decision Saved";
@@ -395,7 +409,7 @@ async function refreshState(){
     const state=await api("/engine-state?user_id="+encodeURIComponent(USER_ID));
     const db=document.getElementById("dbStatus");
     db.className="db "+(state.supabase_enabled?"ok":"");
-    db.textContent=state.supabase_enabled ? "DB memory live · V120" : "Backend live · DB off";
+    db.textContent=state.supabase_enabled ? "DB memory live · V121" : "Backend live · DB off";
     renderRows("runsList", state.your_engine || [], "run");
     renderRows("actionsList", state.open_actions || [], "action");
     renderRows("decisionsList", state.recent_decisions || [], "decision");
@@ -415,13 +429,127 @@ window.saveDecision=saveDecision;
 window.validateRun=validateRun;
 window.checkPersistence=checkPersistence;
 window.refreshState=refreshState;
+
+function extractQuotedAfter(label, source){
+  const s = String(source || "");
+  const patterns = [
+    new RegExp(label + '\\s+called\\s+"([^"]+)"', 'i'),
+    new RegExp(label + "\\s+called\\s+'([^']+)'", 'i'),
+    new RegExp(label + '\\s+called\\s+“([^”]+)”', 'i'),
+    new RegExp(label + '\\s*:\\s*"([^"]+)"', 'i'),
+    new RegExp(label + "\\s*:\\s*'([^']+)'", 'i')
+  ];
+  for(const p of patterns){
+    const m = s.match(p);
+    if(m && m[1]) return m[1].trim();
+  }
+  return "";
+}
+
+function explicitActionText(){
+  return extractQuotedAfter("one action", lastCommand) || extractQuotedAfter("action", lastCommand);
+}
+
+function explicitDecisionText(){
+  return extractQuotedAfter("one decision", lastCommand) || extractQuotedAfter("decision", lastCommand);
+}
+
+async function saveActions(){
+  if(!lastOutput){
+    status("No output available to save.","error");return;
+  }
+  const btn=document.getElementById("saveActionsBtn");
+  if(btn){btn.disabled=true;btn.textContent="Saving Actions...";}
+  try{
+    const explicit = explicitActionText();
+    const list = explicit ? [explicit] : (Array.isArray(lastOutput.actions) ? lastOutput.actions : []);
+    if(!list.length){throw new Error("No actions available to save.");}
+    let count=0;
+    for(const text of list){
+      await api("/save-action",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          user_id:USER_ID,
+          run_id:lastOutput.run_id || null,
+          text:String(text),
+          priority:lastOutput.priority || "medium",
+          status:"open",
+          metadata:{source:"frontend_v121", explicit_save: Boolean(explicit), command:lastCommand}
+        })
+      });
+      count++;
+    }
+    if(btn){btn.textContent=explicit ? "Explicit Action Saved" : "Actions Saved";btn.classList.add("saved");}
+    status(`${count} action(s) saved${explicit ? ": "+explicit : ""}.`,"success");
+    toast("Actions saved","success");
+    await refreshState();
+    await checkPersistence();
+  }catch(e){
+    console.error(e);
+    if(btn){btn.disabled=false;btn.textContent="Add to Action Queue";}
+    status("Save actions failed: "+e.message,"error");
+  }
+}
+
+async function saveDecision(){
+  if(!lastOutput){
+    status("No output available to save.","error");return;
+  }
+  const explicit = explicitDecisionText();
+  const decisionText = explicit || lastOutput.decision;
+  if(!decisionText){status("No decision available to save.","error");return;}
+  const btn=document.getElementById("saveDecisionBtn");
+  if(btn){btn.disabled=true;btn.textContent="Saving Decision...";}
+  try{
+    await api("/save-decision",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        user_id:USER_ID,
+        run_id:lastOutput.run_id || null,
+        decision:decisionText,
+        risk:lastOutput.risk || "",
+        priority:lastOutput.priority || "medium",
+        rationale:lastOutput.why_this_matters || lastOutput.reality_check || "",
+        next_move:lastOutput.next_move || "",
+        metadata:{source:"frontend_v121", explicit_save:Boolean(explicit), command:lastCommand}
+      })
+    });
+    if(btn){btn.textContent=explicit ? "Explicit Decision Saved" : "Decision Saved";btn.classList.add("saved");}
+    status(`Decision saved${explicit ? ": "+explicit : ""}.`,"success");
+    toast("Decision saved","success");
+    await refreshState();
+    await checkPersistence();
+  }catch(e){
+    console.error(e);
+    if(btn){btn.disabled=false;btn.textContent="Save Decision";}
+    status("Save decision failed: "+e.message,"error");
+  }
+}
+
+async function saveVerification(){
+  try{
+    const data = await api("/save-verification?user_id="+encodeURIComponent(USER_ID));
+    console.log("V121 save verification:", data);
+    status(`Latest saved: ${data.latest_saved_action?.text || "no action"} · ${data.latest_saved_decision?.decision || "no decision"}`,"success");
+    return data;
+  }catch(e){
+    status("Save verification failed: "+e.message,"error");
+  }
+}
+
+window.saveActions=saveActions;
+window.saveDecision=saveDecision;
+window.saveVerification=saveVerification;
+
 window.frontendVersionCheck=frontendVersionCheck;
 window.buttonContractCheck=buttonContractCheck;
 
 async function shipLockCheck(){
   try{
     const data = await api("/ship-lock?user_id="+encodeURIComponent(USER_ID));
-    console.log("V120 ship lock:", data);
+    console.log("V121 ship lock:", data);
     status(`Ship Lock: ${data.score} checks · ${data.ready ? "ready" : "validate"}`,"success");
     return data;
   }catch(e){
@@ -432,7 +560,7 @@ async function shipLockCheck(){
 async function nextPhase(){
   try{
     const data = await api("/next-phase");
-    console.log("V120 next phase:", data);
+    console.log("V121 next phase:", data);
     status("Next phase: run 10 real commands before V121.","success");
     return data;
   }catch(e){
@@ -446,7 +574,7 @@ window.nextPhase=nextPhase;
 frontendVersionCheck();
 shipLockCheck();
 refreshState();
-status("Ready. V120 ship lock loaded.","success");
+status("Ready. V121 ship lock loaded.","success");
 </script>
 </body>
 </html>
