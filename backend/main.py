@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1207: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1500: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1207"
-SERVICE_NAME = "Executive Engine OS V1207"
+VERSION = "V1500"
+SERVICE_NAME = "Executive Engine OS V1500"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1207.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1500.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1207, an elite COO/operator system.
+You are Executive Engine OS V1500, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1207",
+        "backend_must_show": "Executive Engine OS V1500",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1207",
+        "service": "Executive Engine OS V1500",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7923,7 +7923,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1207 Test Links</title>
+      <title>Executive Engine OS V1500 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7937,7 +7937,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1207 Test Links</h1>
+        <h1>Executive Engine OS V1500 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8128,7 +8128,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1207 Test Links</title>
+      <title>Executive Engine OS V1500 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8150,7 +8150,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1207 Test Links</h1>
+          <h1>Executive Engine OS V1500 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8327,7 +8327,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1207 Absolute Test Links</title>
+      <title>Executive Engine OS V1500 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8349,7 +8349,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1207 Absolute Test Links</h1>
+          <h1>Executive Engine OS V1500 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8498,7 +8498,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1207 Test Links</title>
+  <title>Executive Engine OS V1500 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8520,7 +8520,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V1207 Test Links</h1>
+      <h1>Executive Engine OS V1500 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8678,7 +8678,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1207 Test Report</title>
+  <title>Executive Engine OS V1500 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8699,7 +8699,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1207 Test Report</h1>
+    <h1>Executive Engine OS V1500 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8771,7 +8771,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V1207 Test Report");
+  lines.push("Executive Engine OS V1500 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8951,7 +8951,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1207 Test Report</title>
+  <title>Executive Engine OS V1500 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8972,7 +8972,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1207 Test Report</h1>
+    <h1>Executive Engine OS V1500 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9021,7 +9021,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V1207 Test Report");
+  out.push("Executive Engine OS V1500 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -9108,4 +9108,588 @@ async def v1207_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v1207-milestone"
         ]
+    }
+
+
+
+
+# =========================
+# V1250 PRODUCT POLISH + UX STABILIZATION
+# =========================
+# Frontend polish release. Preserves diagnostic routes, /test-report, manual-only execution, no OAuth activation.
+
+@app.get("/stable-version")
+async def stable_version():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "stable_checkpoint": "V1250",
+        "baseline": "V1207",
+        "frontend_badge": "V1250 Product Polish · V1250 Backend",
+        "backend_base": "https://executive-engine-os.onrender.com",
+        "manual_execution_only": True,
+        "auto_loop_enabled": False,
+        "oauth_active": False,
+        "external_writes_enabled": False,
+        "notes": [
+            "Visible frontend hides confusing old checkpoint labels.",
+            "Preserved diagnostic routes may still return older milestone labels by design.",
+            "/test-report remains the primary copy/paste report page."
+        ]
+    }
+
+
+@app.get("/frontend-polish-status")
+async def frontend_polish_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Polish + UX Stabilization",
+        "frontend": {
+            "status": "polished",
+            "command_center": "working",
+            "dashboard_layout": "cleaned",
+            "stable_version_panel": "added",
+            "test_report_button": "/test-report",
+            "old_checkpoint_labels_hidden_from_frontend": True
+        },
+        "backend": {
+            "diagnostic_routes_preserved": True,
+            "supabase_schema_changed": False,
+            "oauth_activated": False,
+            "external_writes_enabled": False,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/v1250-milestone")
+async def v1250_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Polish + UX Stabilization",
+        "ready": True,
+        "frontend_must_show": "V1250 Product Polish · V1250 Backend",
+        "baseline": "V1207",
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "improved": [
+            "Cleaned frontend UX",
+            "Improved dashboard layout",
+            "Added Stable Version panel",
+            "Hid confusing old checkpoint labels from visible frontend",
+            "Fixed frontend button routing",
+            "Open Copy/Paste Test Report points directly to /test-report"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/stable-version",
+            "https://executive-engine-os.onrender.com/frontend-polish-status",
+            "https://executive-engine-os.onrender.com/test-report-json",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1250-milestone"
+        ],
+        "recommended_next_build": "V1300 Product Dashboard + Real Workflows OR V1300 Calendar Env Setup Prep"
+    }
+
+
+
+
+# =========================
+# V1300 PRODUCT DASHBOARD + REAL WORKFLOWS
+# =========================
+# Product dashboard release. Preserves /test-report, diagnostic routes, Supabase schema, and manual execution policy.
+# No OAuth activation. No external writes. No automation loop.
+
+@app.get("/product-dashboard")
+async def product_dashboard():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Dashboard + Real Workflows",
+        "dashboard": {
+            "stable_version": "V1300",
+            "baseline": "V1250",
+            "today_focus": "Run the OS from one clean command dashboard.",
+            "current_constraint": "OAuth is not activated and action load remains high.",
+            "next_decision": "Choose between product workflow polish and real Calendar activation prep.",
+            "next_move": "Use Command Center, then copy/paste /test-report after each deploy.",
+            "recommended_command": "Review V1300 dashboard and identify the single highest-impact product workflow to improve next.",
+            "system_status": {
+                "backend": "live_candidate",
+                "frontend": "polished_dashboard",
+                "manual_execution_only": True,
+                "auto_loop_enabled": False,
+                "oauth_active": False,
+                "external_writes_enabled": False,
+                "supabase_schema_changed": False
+            }
+        }
+    }
+
+
+@app.get("/workflow-dashboard")
+async def workflow_dashboard():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow Dashboard",
+        "workflow": [
+            {
+                "id": "start_day",
+                "title": "Start Day",
+                "purpose": "Set today's focus, constraint, next decision, and priority.",
+                "command": "Start my day. Identify today's focus, current constraint, next decision, highest-impact action, risk, and recommended command.",
+                "status": "ready"
+            },
+            {
+                "id": "daily_brief",
+                "title": "Daily Brief",
+                "purpose": "Generate one operating brief for the day.",
+                "command": "Create my daily operating brief with focus, decisions, risks, actions, and priority.",
+                "status": "ready"
+            },
+            {
+                "id": "run_command",
+                "title": "Run Command",
+                "purpose": "Convert any messy input into executive decision/action output.",
+                "command": "Turn this into a decision, next move, action plan, risk, and priority.",
+                "status": "ready"
+            },
+            {
+                "id": "review_queue",
+                "title": "Review Action Queue",
+                "purpose": "Reduce action overload and pick what to complete, cut, or defer.",
+                "command": "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.",
+                "status": "ready"
+            },
+            {
+                "id": "review_risks",
+                "title": "Review Risks",
+                "purpose": "Identify recurring execution risks and mitigation.",
+                "command": "Review current execution risks, recurring constraints, and mitigation actions.",
+                "status": "ready"
+            },
+            {
+                "id": "end_day",
+                "title": "End Day Summary",
+                "purpose": "Close the execution loop and set tomorrow's starting point.",
+                "command": "Create my end-day summary. What was decided, what remains open, what risk remains, and what starts tomorrow?",
+                "status": "ready"
+            }
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/product-navigation-map")
+async def product_navigation_map():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Navigation Map",
+        "pages": [
+            {"id": "command", "title": "Command Center", "status": "live", "purpose": "Run executive commands."},
+            {"id": "dashboard", "title": "Product Dashboard", "status": "live", "purpose": "See stable version, workflow state, and next move."},
+            {"id": "workflow", "title": "Workflow Dashboard", "status": "live", "purpose": "Run daily operating workflow."},
+            {"id": "cockpit", "title": "Executive Cockpit", "status": "connected", "purpose": "Review action load, recurring risk, and decision patterns."},
+            {"id": "calendar", "title": "Calendar", "status": "prep", "purpose": "Read-only OAuth candidate; inactive until env setup."},
+            {"id": "connectors", "title": "Connectors", "status": "prep", "purpose": "Approval-gated connector planning."},
+            {"id": "testing", "title": "Test Report", "status": "live", "purpose": "Copy/paste deploy validation report."},
+            {"id": "settings", "title": "Settings", "status": "live", "purpose": "Diagnostics and stable version controls."}
+        ]
+    }
+
+
+@app.get("/v1300-milestone")
+async def v1300_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Dashboard + Real Workflows",
+        "ready": True,
+        "frontend_must_show": "V1300 Product Dashboard · V1300 Backend",
+        "baseline": "V1250",
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "added": [
+            "Product Dashboard page",
+            "Workflow Dashboard page",
+            "Product Navigation Map",
+            "Start Day workflow",
+            "Review Queue workflow",
+            "Review Risks workflow",
+            "End Day workflow",
+            "Cleaner command templates",
+            "More product-level frontend layout"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/stable-version",
+            "https://executive-engine-os.onrender.com/product-dashboard",
+            "https://executive-engine-os.onrender.com/workflow-dashboard",
+            "https://executive-engine-os.onrender.com/product-navigation-map",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1300-milestone"
+        ],
+        "recommended_next_build": "V1400 Intelligence Board"
+    }
+
+
+# =========================
+# V1350 WORKFLOW PERSISTENCE POLISH
+# =========================
+# Adds local workflow model/contracts only. No schema change. No external writes.
+
+@app.get("/workflow-state")
+async def workflow_state():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow Persistence Polish",
+        "state": {
+            "active_workflow": "daily_operating_loop",
+            "current_step": "command_center",
+            "last_completed_step": "test_report_verified",
+            "next_step": "run_start_day_or_review_queue",
+            "saved_locally_in_frontend": True,
+            "server_persistence_changed": False,
+            "supabase_schema_changed": False
+        },
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/workflow/checkpoints")
+async def workflow_checkpoints():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "checkpoints": [
+            {"id": "start_day", "title": "Start Day", "status": "ready", "command": "Start my day. Identify focus, constraint, next decision, action, risk, and priority."},
+            {"id": "daily_brief", "title": "Daily Brief", "status": "ready", "command": "Create my daily operating brief."},
+            {"id": "run_command", "title": "Run Command", "status": "ready", "command": "Turn this into a decision, next move, action plan, risk, and priority."},
+            {"id": "review_queue", "title": "Review Queue", "status": "ready", "command": "Reduce my action queue. Tell me what to complete, cut, or defer."},
+            {"id": "review_risks", "title": "Review Risks", "status": "ready", "command": "Review execution risks and mitigations."},
+            {"id": "end_day", "title": "End Day", "status": "ready", "command": "Create my end-day summary."}
+        ],
+        "server_writes": False
+    }
+
+
+@app.get("/v1350-milestone")
+async def v1350_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow Persistence Polish",
+        "ready": True,
+        "frontend_must_show": "V1350 Workflow Persistence · V1350 Backend",
+        "baseline": "V1300",
+        "added": [
+            "Workflow state endpoint",
+            "Workflow checkpoints endpoint",
+            "Frontend local workflow progress",
+            "Workflow progress panel",
+            "No backend schema change"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/workflow-state",
+            "https://executive-engine-os.onrender.com/workflow/checkpoints",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1350-milestone"
+        ],
+        "recommended_next_build": "V1400 Intelligence Board"
+    }
+
+
+# =========================
+# V1400 INTELLIGENCE BOARD
+# =========================
+# Adds intelligence board summaries. No AI automation loop. Manual execution only.
+
+@app.get("/intelligence-board")
+async def intelligence_board():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Intelligence Board",
+        "signals": {
+            "action_load": {
+                "status": "high",
+                "signal": "Open action queue is high; reduce before adding more.",
+                "recommended_command": "Reduce my action queue. Tell me what to complete, cut, or defer."
+            },
+            "deployment_pattern": {
+                "status": "recurring",
+                "signal": "Deployment and stability checks are recurring decisions.",
+                "recommended_command": "Run the test report and identify the next safe product milestone."
+            },
+            "calendar_readiness": {
+                "status": "blocked",
+                "signal": "Google OAuth env vars are not set. Calendar remains read-only prep.",
+                "recommended_command": "Review Calendar activation prerequisites before enabling OAuth."
+            },
+            "connector_risk": {
+                "status": "controlled",
+                "signal": "External writes are blocked and approval gates remain active.",
+                "recommended_command": "Review connector command center and pick the next safe integration."
+            }
+        },
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/intelligence/recommended-commands")
+async def intelligence_recommended_commands():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "commands": [
+            "Reduce my action queue. Tell me what to complete, cut, or defer today.",
+            "Review current risks and identify the one constraint blocking execution.",
+            "Create my daily brief using the current product dashboard and workflow state.",
+            "Review Calendar OAuth readiness and list only the safe next steps.",
+            "Review V1400 Intelligence Board and recommend the next product milestone."
+        ]
+    }
+
+
+@app.get("/v1400-milestone")
+async def v1400_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Intelligence Board",
+        "ready": True,
+        "frontend_must_show": "V1400 Intelligence Board · V1400 Backend",
+        "baseline": "V1350",
+        "added": [
+            "Intelligence Board endpoint",
+            "Recommended commands endpoint",
+            "Frontend Intelligence Board page",
+            "Signals for action load, deployment pattern, calendar readiness, connector risk"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/intelligence-board",
+            "https://executive-engine-os.onrender.com/intelligence/recommended-commands",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1400-milestone"
+        ],
+        "recommended_next_build": "V1450 Operator Console"
+    }
+
+
+# =========================
+# V1450 OPERATOR CONSOLE
+# =========================
+# Adds operator console command/control model. No autonomous execution.
+
+@app.get("/operator-console")
+async def operator_console():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Operator Console",
+        "console": {
+            "mode": "manual_operator",
+            "primary_action": "Run one command, review result, decide next move.",
+            "safe_actions": [
+                "Run Engine",
+                "Load workflow command",
+                "Open test report",
+                "Review cockpit",
+                "Review intelligence board",
+                "Review connector gates"
+            ],
+            "blocked_actions": [
+                "Autonomous loop",
+                "External writes",
+                "Calendar writes",
+                "Email sending",
+                "File editing",
+                "OAuth activation without env/token review"
+            ],
+            "operator_instruction": "Complete one workflow step, then run /test-report after deploy changes."
+        }
+    }
+
+
+@app.get("/operator/command-palette")
+async def operator_command_palette():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "palette": [
+            {"label": "Start Day", "command": "Start my day. Identify focus, constraint, next decision, action, risk, and priority."},
+            {"label": "Reduce Queue", "command": "Reduce my action queue. Tell me what to complete, cut, or defer today."},
+            {"label": "Review Risk", "command": "Review current execution risks and mitigations."},
+            {"label": "Product Next Move", "command": "Review the product dashboard and recommend the next milestone."},
+            {"label": "Connector Safety", "command": "Review connector gates and identify the next safe integration step."},
+            {"label": "End Day", "command": "Create my end-day summary and tomorrow's starting command."}
+        ]
+    }
+
+
+@app.get("/v1450-milestone")
+async def v1450_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Operator Console",
+        "ready": True,
+        "frontend_must_show": "V1450 Operator Console · V1450 Backend",
+        "baseline": "V1400",
+        "added": [
+            "Operator Console endpoint",
+            "Command Palette endpoint",
+            "Frontend Operator Console page",
+            "Clear blocked/safe action model",
+            "Command palette for manual operation"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/operator-console",
+            "https://executive-engine-os.onrender.com/operator/command-palette",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1450-milestone"
+        ],
+        "recommended_next_build": "V1500 Product Candidate Stable"
+    }
+
+
+# =========================
+# V1500 PRODUCT CANDIDATE STABLE
+# =========================
+# Stable product candidate rollup: dashboard, workflows, intelligence, operator console, testing.
+
+@app.get("/product-candidate-status")
+async def product_candidate_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Candidate Stable",
+        "status": "stable_candidate",
+        "modules": {
+            "command_center": "live",
+            "product_dashboard": "live",
+            "workflow_dashboard": "live",
+            "workflow_persistence": "local_frontend",
+            "intelligence_board": "live",
+            "operator_console": "live",
+            "test_report": "live",
+            "calendar_oauth": "prep_only",
+            "connectors": "approval_gated",
+            "external_writes": "blocked"
+        },
+        "operating_policy": {
+            "manual_execution_only": True,
+            "auto_loop_enabled": False,
+            "oauth_active": False,
+            "supabase_schema_changed": False,
+            "external_writes_enabled": False
+        }
+    }
+
+
+@app.get("/product-candidate/checklist")
+async def product_candidate_checklist():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "checklist": [
+            "Run /health",
+            "Run /product-candidate-status",
+            "Open frontend and confirm V1500 badge",
+            "Run a command from Command Center",
+            "Open Workflow Dashboard",
+            "Open Intelligence Board",
+            "Open Operator Console",
+            "Run /test-report and copy results",
+            "Do not activate OAuth until env/token storage is ready"
+        ]
+    }
+
+
+@app.get("/v1500-milestone")
+async def v1500_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Product Candidate Stable",
+        "ready": True,
+        "frontend_must_show": "V1500 Product Candidate Stable · V1500 Backend",
+        "baseline": "V1450",
+        "includes": [
+            "V1300 Product Dashboard + Real Workflows",
+            "V1350 Workflow Persistence Polish",
+            "V1400 Intelligence Board",
+            "V1450 Operator Console",
+            "V1500 Stable Candidate Rollup"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/product-candidate-status",
+            "https://executive-engine-os.onrender.com/product-candidate/checklist",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1500-milestone"
+        ],
+        "recommended_next_build": "V1550 Real Calendar Env Setup Prep OR V1550 UI/Workflow QA Pass"
     }

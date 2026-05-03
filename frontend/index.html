@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Executive Engine OS — V1207</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Executive Engine OS — V1500</title>
   <style>
     :root{
-      --bg:#f8fbff;
+      --bg:#f5f7fb;
       --panel:#ffffff;
       --ink:#071226;
       --muted:#64748b;
@@ -14,333 +14,336 @@
       --blue:#0f63ff;
       --orange:#ff6a00;
       --green:#10b981;
+      --red:#ef4444;
       --nav:#071226;
+      --shadow:0 18px 45px rgba(7,18,38,.08);
+      --radius:20px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      font-weight:500;
-    }
-    .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-    .sidebar{
-      background:var(--nav);
-      color:#fff;
-      padding:20px 16px;
-      position:sticky;
-      top:0;
-      height:100vh;
-      overflow:auto;
-    }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      margin-bottom:22px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .mark{
-      width:38px;height:38px;border-radius:12px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,#0f63ff,#ff6a00);
-      font-weight:900;
-      letter-spacing:-.08em;
-    }
-    .brand h1{font-size:15px;line-height:1.05;margin:0;font-weight:850}
-    .brand span{display:block;color:#94a3b8;font-size:11px;margin-top:3px;font-weight:650}
-    .nav-title{
-      color:#94a3b8;
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      margin:18px 0 8px;
-    }
-    .nav-btn{
-      width:100%;
-      border:0;
-      background:transparent;
-      color:#cbd5e1;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px 10px;
-      border-radius:11px;
-      cursor:pointer;
-      font-weight:750;
-      text-align:left;
-      margin:2px 0;
-    }
-    .nav-btn:hover,.nav-btn.active{background:#0f1b31;color:#fff}
-    .badge{
-      font-size:10px;
-      color:#93c5fd;
-      background:#11284a;
-      border:1px solid #1d4ed8;
-      padding:2px 6px;
-      border-radius:999px;
-    }
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
+    button,a,textarea{font:inherit}
+    .app{display:grid;grid-template-columns:286px minmax(0,1fr);min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,var(--nav),#07101f);color:#fff;padding:18px 16px;height:100vh;position:sticky;top:0;overflow:auto}
+    .brand{display:flex;gap:11px;align-items:center;padding:8px 8px 20px;cursor:pointer}
+    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#0f63ff,#ff6a00);display:grid;place-items:center;font-weight:950;letter-spacing:-.08em;box-shadow:0 14px 24px rgba(15,99,255,.25)}
+    .brand h1{font-size:15px;line-height:1.03;margin:0;font-weight:950;letter-spacing:-.03em}
+    .brand span{display:block;color:#94a3b8;font-size:11px;margin-top:4px;font-weight:750}
+    .nav-section{color:#94a3b8;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.16em;margin:16px 8px 8px}
+    .nav-btn{width:100%;min-height:42px;border:0;background:transparent;color:#cbd5e1;display:flex;align-items:center;justify-content:space-between;border-radius:13px;padding:10px 11px;cursor:pointer;margin:3px 0;text-align:left;font-weight:850}
+    .nav-btn:hover,.nav-btn.active{background:#11213a;color:#fff}
+    .pill{font-size:10px;color:#bfdbfe;background:#10294c;border:1px solid #1d4ed8;border-radius:999px;padding:3px 7px;font-weight:950}
+    .side-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05);border-radius:16px;padding:12px;margin-top:18px}
+    .side-card small{display:block;color:#94a3b8;font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:950}
+    .side-card strong{display:block;color:#fff;font-size:13px;line-height:1.25}
     .main{min-width:0;display:flex;flex-direction:column}
-    .topbar{
-      height:64px;
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 24px;
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-    .topbar strong{font-size:14px}
-    .version{
-      font-size:12px;
-      font-weight:850;
-      color:#0f63ff;
-      background:#eff6ff;
-      border:1px solid #bfdbfe;
-      padding:7px 10px;
-      border-radius:999px;
-    }
-    .content{padding:20px;max-width:1320px;width:100%;margin:0 auto}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:18px;
-      box-shadow:0 14px 34px rgba(7,18,38,.06);
-    }
-    .card h2,.card h3{margin:0 0 8px;letter-spacing:-.02em}
-    .card h2{font-size:24px}
-    .card h3{font-size:18px}
-    .card p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
-    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
-    .metric{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#f8fbff;
-      padding:12px;
-      min-height:80px;
-    }
-    .metric small{
-      display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:900;font-size:10px;margin-bottom:6px;
-    }
-    .metric strong{font-size:15px;line-height:1.25;display:block}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    button,.button{
-      border:1px solid var(--line);
-      background:#fff;
-      color:#334155;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:850;
-      font-size:13px;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    button:hover,.button:hover{border-color:#93c5fd;background:#eff6ff}
-    button.primary,.button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-    button.orange{background:var(--orange);border-color:var(--orange);color:#fff}
-    textarea{
-      width:100%;
-      min-height:160px;
-      resize:vertical;
-      border:1px solid #cbd5e1;
-      border-radius:16px;
-      padding:14px;
-      outline:none;
-      color:var(--ink);
-      font-size:14px;
-      line-height:1.5;
-    }
+    .topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 26px;position:sticky;top:0;z-index:20}
+    .topbar strong{font-size:14px;letter-spacing:-.02em}
+    .version-badge{color:#0f63ff;background:#eff6ff;border:1px solid #bfdbfe;padding:8px 11px;border-radius:999px;font-size:12px;font-weight:950;white-space:nowrap}
+    .content{max-width:1450px;width:100%;margin:0 auto;padding:24px}
+    .page{display:none}.page.active{display:block}
+    .stable-panel{border:1px solid #bbf7d0;background:linear-gradient(180deg,#ecfdf5,#f8fffb);border-radius:18px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .stable-panel strong{display:block;color:#047857;font-size:14px;margin-bottom:4px}.stable-panel span{display:block;color:#065f46;font-size:12px;line-height:1.4}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-bottom:16px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .card.soft{box-shadow:0 10px 28px rgba(7,18,38,.05)}
+    .eyebrow{font-size:11px;color:#0f63ff;text-transform:uppercase;letter-spacing:.14em;font-weight:950;margin-bottom:8px}
+    h2,h3{letter-spacing:-.035em;margin:0 0 8px}h2{font-size:30px;line-height:1.08}h3{font-size:18px;line-height:1.15}
+    p{margin:0 0 12px;color:var(--muted);line-height:1.55;font-size:13px}
+    textarea{width:100%;min-height:168px;border:1px solid #cbd5e1;border-radius:18px;padding:15px;color:var(--ink);background:#fff;outline:none;resize:vertical;font-size:14px;line-height:1.55;font-weight:600}
     textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
-    .output{
-      background:#071226;
-      color:#dbeafe;
-      border-radius:16px;
-      padding:14px;
-      font-size:12px;
-      line-height:1.5;
-      white-space:pre-wrap;
-      overflow:auto;
-      max-height:360px;
-    }
-    .links{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-    .links a{
-      text-decoration:none;
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:12px;
-      padding:10px;
-      color:#0f63ff;
-      font-weight:850;
-      font-size:12px;
-    }
-    .links a:hover{background:#eff6ff;border-color:#93c5fd}
-    .page{display:none}
-    .page.active{display:block}
-    .notice{
-      border:1px solid #bbf7d0;
-      background:#ecfdf5;
-      color:#047857;
-      border-radius:16px;
-      padding:12px;
-      font-weight:750;
-      font-size:13px;
-      margin-bottom:14px;
-    }
-    @media(max-width:980px){
-      .app{grid-template-columns:1fr}
-      .sidebar{position:relative;height:auto}
-      .grid,.metric-grid,.links{grid-template-columns:1fr}
-      .topbar{position:relative}
-    }
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .btn{border:1px solid var(--line);background:#fff;color:#334155;border-radius:13px;padding:10px 13px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px}
+    .btn:hover{background:#eff6ff;border-color:#93c5fd}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.dark{background:#071226;border-color:#071226;color:#fff}.btn.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.btn.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .metric{border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:14px;min-height:90px}
+    .metric small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;font-size:10px;font-weight:950;margin-bottom:6px}
+    .metric strong{font-size:15px;line-height:1.25;display:block}.green{color:#047857}.orange{color:#c2410c}.blue{color:#0f63ff}
+    .output{background:#071226;color:#dbeafe;border-radius:18px;padding:15px;font-size:12px;line-height:1.5;white-space:pre-wrap;overflow:auto;min-height:72px;max-height:500px}
+    .list{display:grid;gap:10px;margin-top:10px}.item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+    .workflow-card{border:1px solid var(--line);background:#fff;border-left:5px solid var(--blue);border-radius:18px;padding:15px;cursor:pointer}.workflow-card:hover{background:#eff6ff;border-color:#93c5fd}.workflow-card b{display:block;margin-bottom:5px}.workflow-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+    .link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.link-grid a{text-decoration:none;border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:12px;color:#0f63ff;font-weight:900;font-size:13px;word-break:break-word}.link-grid a:hover{border-color:#93c5fd;background:#eff6ff}
+    .callout{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:16px;padding:13px;font-size:13px;font-weight:800;line-height:1.45}
+    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.two-col,.three-col,.four-col,.link-grid{grid-template-columns:1fr}.topbar{position:relative}.content{padding:16px}}
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand" onclick="showPage('command')">
-      <div class="mark">ƎE</div>
-      <div>
-        <h1>Executive<br>Engine OS</h1>
-        <span>Productivity OS</span>
-      </div>
+    <div class="brand" onclick="showPage('dashboard')">
+      <div class="logo">ƎE</div>
+      <div><h1>Executive<br>Engine OS</h1><span>Productivity OS</span></div>
     </div>
 
-    <div class="nav-title">Command</div>
-    <button class="nav-btn active" data-page="command" onclick="showPage('command')">Command Center <span class="badge">Live</span></button>
-    <button class="nav-btn" data-page="daily" onclick="showPage('daily')">Daily Brief</button>
-    <button class="nav-btn" data-page="calendar" onclick="showPage('calendar')">Calendar OAuth</button>
+    <div class="nav-section">Operate</div>
+    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">Product Dashboard <span class="pill">New</span></button>
+    <button class="nav-btn" data-page="operator" onclick="showPage('operator')">Operator Console <span class="pill">Control</span></button>
+    <button class="nav-btn" data-page="command" onclick="showPage('command')">Command Center</button>
+    <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Workflows</button>
+
+    <div class="nav-section">Intelligence</div>
+    <button class="nav-btn" data-page="cockpit" onclick="showPage('cockpit')">Executive Cockpit</button>
+    <button class="nav-btn" data-page="intelligence" onclick="showPage('intelligence')">Intelligence Board <span class="pill">Signals</span></button>
+    <button class="nav-btn" data-page="calendar" onclick="showPage('calendar')">Calendar Prep</button>
     <button class="nav-btn" data-page="connectors" onclick="showPage('connectors')">Connectors</button>
 
-    <div class="nav-title">System</div>
-    <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Links <span class="badge">Fix</span></button>
-    <button class="nav-btn" data-page="beta" onclick="showPage('beta')">Beta Status</button>
+    <div class="nav-section">Workflow</div>
+    <button class="nav-btn" data-page="progress" onclick="showPage('progress')">Progress <span class="pill">Local</span></button>
+
+    <button class="nav-btn" data-page="candidate" onclick="showPage('candidate')">Candidate Status <span class="pill">V1500</span></button>
+
+    <div class="nav-section">System</div>
+    <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report <span class="pill">Copy</span></button>
     <button class="nav-btn" data-page="settings" onclick="showPage('settings')">Settings</button>
+
+    <div class="side-card">
+      <small>Stable Checkpoint</small>
+      <strong>V1500 Workflow Persistence</strong>
+    </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version">V1207 Test Report Runtime Fix · V1207 Backend</div>
+      <div class="version-badge">V1500 Product Candidate Stable · V1500 Backend</div>
     </div>
 
     <section class="content">
-      <div class="notice">V1207 fixes /test-links Internal Server Error by using plain HTML response headers. <button onclick="openBackend(\'/test-links\')" style="margin-left:8px">Open Copy/Paste Test Report</button></div>
+      <div class="stable-panel">
+        <div>
+          <strong>Stable Version: V1500</strong>
+          <span>Built from V1250. Product dashboard + real workflows. /test-report preserved. OAuth inactive. External writes blocked.</span>
+        </div>
+        <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
+      </div>
 
-      <div id="page-command" class="page active">
-        <div class="grid">
+      <div id="page-dashboard" class="page active">
+        <div class="hero-grid">
           <div class="card">
-            <h2>Command Center</h2>
-            <p>Run the executive engine. Manual execution only. Auto-loop off.</p>
-            <textarea id="input" placeholder="Enter a command...">Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.</textarea>
-            <div class="actions">
-              <button class="primary" onclick="runEngine()">Run Engine</button>
-              <button onclick="loadTemplate('daily')">Daily Brief</button>
-              <button onclick="loadTemplate('calendar')">Calendar Review</button>
-              <button onclick="loadTemplate('beta')">Beta Review</button>
-              <button onclick="clearOutput()">Clear</button>
+            <div class="eyebrow">Product Dashboard</div>
+            <h2>Run the OS from one stable dashboard.</h2>
+            <p>V1500 is the stable product candidate rollup: dashboard, workflows, intelligence, operator console, and testing.</p>
+            <div class="four-col">
+              <div class="metric"><small>Backend</small><strong>V1500</strong></div>
+              <div class="metric"><small>Execution</small><strong class="green">Manual</strong></div>
+              <div class="metric"><small>OAuth</small><strong>Inactive</strong></div>
+              <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
+            </div>
+            <div class="toolbar">
+              <button class="btn primary" onclick="showPage('command')">Run Command</button>
+              <button class="btn" onclick="showPage('workflow')">Open Workflows</button>
+              <button class="btn" onclick="openBackend('/product-dashboard')">Raw Dashboard</button>
             </div>
           </div>
 
-          <div class="card">
-            <h3>Executive Cockpit</h3>
-            <p>Stable V1207 shell. If links failed before, use the Test Links page.</p>
-            <div class="metric-grid">
-              <div class="metric"><small>Status</small><strong>Frontend Fixed</strong></div>
-              <div class="metric"><small>Manual</small><strong>On</strong></div>
-              <div class="metric"><small>Auto-loop</small><strong>Off</strong></div>
-              <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
-            </div>
-            <div class="actions">
-              <button onclick="showPage('tests')">Open Test Links</button>
-              <button onclick="openBackend('/system-test')">System Test</button>
+          <div class="card soft">
+            <div class="eyebrow">Next Move</div>
+            <h3>Use the daily operating loop.</h3>
+            <p>Start day, run command, review queue, review risks, then end day summary.</p>
+            <div class="list">
+              <div class="item"><b>Current Constraint</b><span>Action load is high. OAuth is not ready because env vars are not set.</span></div>
+              <div class="item"><b>Recommended Command</b><span>Review V1500 dashboard and choose the next product workflow.</span></div>
             </div>
           </div>
         </div>
 
-        <div class="card" style="margin-top:16px">
-          <h3>Output</h3>
-          <div class="output" id="output">Ready.</div>
+        <div class="three-col">
+          <div class="workflow-card" onclick="loadWorkflowCommand('start_day')"><b>Start Day</b><span>Set focus, constraint, next decision, and priority.</span></div>
+          <div class="workflow-card" onclick="loadWorkflowCommand('review_queue')"><b>Review Queue</b><span>Complete, cut, or defer open actions.</span></div>
+          <div class="workflow-card" onclick="loadWorkflowCommand('end_day')"><b>End Day</b><span>Close the loop and set tomorrow’s start.</span></div>
         </div>
       </div>
 
-      <div id="page-daily" class="page">
-        <div class="card">
-          <h2>Daily Brief</h2>
-          <p>Load a daily operating command into the Command Center.</p>
-          <div class="actions">
-            <button class="primary" onclick="loadTemplate('daily');showPage('command')">Load Daily Brief Command</button>
-            <button onclick="openBackend('/beta/operating-brief')">Open Backend Operating Brief</button>
+      <div id="page-command" class="page">
+        <div class="hero-grid">
+          <div class="card">
+            <div class="eyebrow">Executive Command</div>
+            <h2>Command Center</h2>
+            <p>Run decisions, actions, daily focus, constraints, risk, and next moves.</p>
+            <textarea id="input" placeholder="Enter command...">Review V1500 dashboard and identify the single highest-impact product workflow to improve next.</textarea>
+            <div class="toolbar">
+              <button class="btn primary" onclick="runEngine()">Run Engine</button>
+              <button class="btn" onclick="loadTemplate('daily')">Daily Brief</button>
+              <button class="btn" onclick="loadTemplate('actions')">Reduce Actions</button>
+              <button class="btn" onclick="loadTemplate('calendar')">Calendar Review</button>
+              <button class="btn" onclick="clearOutput()">Clear</button>
+            </div>
           </div>
+          <div class="card soft">
+            <div class="eyebrow">Stable Controls</div>
+            <h3>V1500 status</h3>
+            <p>Frontend hides old checkpoint labels. Backend diagnostic routes remain preserved.</p>
+            <div class="toolbar">
+              <button class="btn dark" onclick="openBackend('/stable-version')">Stable Version</button>
+              <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+              <button class="btn" onclick="openBackend('/product-dashboard')">Product Dashboard</button>
+            </div>
+          </div>
+        </div>
+        <div class="card"><h3>Output</h3><div id="output" class="output">Ready.</div></div>
+      </div>
+
+      <div id="page-workflow" class="page">
+        <div class="card">
+          <div class="eyebrow">Workflow Dashboard</div>
+          <h2>Daily Operating Workflow</h2>
+          <p>Click a workflow to load the command. Run it manually from Command Center.</p>
+          <div class="three-col">
+            <div class="workflow-card" onclick="loadWorkflowCommand('start_day')"><b>1. Start Day</b><span>Set focus and operating constraint.</span></div>
+            <div class="workflow-card" onclick="loadWorkflowCommand('daily_brief')"><b>2. Daily Brief</b><span>Build the day’s execution brief.</span></div>
+            <div class="workflow-card" onclick="loadWorkflowCommand('run_command')"><b>3. Run Command</b><span>Convert input into decisions/actions.</span></div>
+            <div class="workflow-card" onclick="loadWorkflowCommand('review_queue')"><b>4. Review Queue</b><span>Cut, defer, complete actions.</span></div>
+            <div class="workflow-card" onclick="loadWorkflowCommand('review_risks')"><b>5. Review Risks</b><span>Surface recurring risks.</span></div>
+            <div class="workflow-card" onclick="loadWorkflowCommand('end_day')"><b>6. End Day</b><span>Close the loop.</span></div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" onclick="openBackend('/workflow-dashboard')">Raw Workflow Dashboard</button>
+            <button class="btn" onclick="openBackend('/product-navigation-map')">Navigation Map</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-cockpit" class="page">
+        <div class="card">
+          <div class="eyebrow">Executive Cockpit</div>
+          <h2>Cockpit</h2>
+          <p>Review action overload, recurring risk, decision pattern, and recommended command.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCockpit()">Load Cockpit</button>
+            <button class="btn" onclick="openBackend('/executive-cockpit')">Open Raw Cockpit</button>
+          </div>
+          <div id="cockpitOutput" class="output" style="margin-top:12px">Cockpit not loaded.</div>
         </div>
       </div>
 
       <div id="page-calendar" class="page">
-        <div class="card">
-          <h2>Calendar OAuth Candidate</h2>
-          <p>Read-only calendar candidate. No calendar writes. Token exchange/storage remain guarded.</p>
-          <div class="actions">
-            <button class="primary" onclick="openBackend('/calendar/connect-status')">Connect Status</button>
-            <button onclick="openBackend('/calendar/auth-url')">Auth URL</button>
-            <button onclick="openBackend('/calendar/status-live-candidate')">Live Candidate Status</button>
-            <button onclick="openBackend('/calendar/oauth-test-page')">OAuth Test Page</button>
+        <div class="two-col">
+          <div class="card">
+            <div class="eyebrow">Calendar Prep</div>
+            <h2>Calendar Candidate</h2>
+            <p>Read-only candidate only. Google env vars are not set. OAuth remains inactive.</p>
+            <div class="toolbar">
+              <button class="btn primary" onclick="openBackend('/calendar/connect-status')">Connect Status</button>
+              <button class="btn" onclick="openBackend('/calendar/auth-url')">Auth URL</button>
+              <button class="btn" onclick="openBackend('/oauth/live-gates')">OAuth Gates</button>
+            </div>
           </div>
+          <div class="card"><h3>Activation Blocked</h3><div class="callout">Do not activate OAuth until Google env vars, token storage, and disconnect/revoke flows are ready.</div></div>
         </div>
       </div>
 
       <div id="page-connectors" class="page">
         <div class="card">
+          <div class="eyebrow">Connector Control</div>
           <h2>Connectors</h2>
-          <p>Connector gates, approval queue, and security policy.</p>
-          <div class="actions">
-            <button class="primary" onclick="openBackend('/connector-command-center')">Connector Command Center</button>
-            <button onclick="openBackend('/approval-queue')">Approval Queue</button>
-            <button onclick="openBackend('/security-gates')">Security Gates</button>
-            <button onclick="openBackend('/google/connector-blueprint')">Google Blueprint</button>
+          <p>Calendar, files, email, and CRM remain read-only prep or draft-only future.</p>
+          <div class="link-grid">
+            <a href="#" onclick="openBackend('/connector-command-center');return false;">Connector Command Center</a>
+            <a href="#" onclick="openBackend('/approval-queue');return false;">Approval Queue</a>
+            <a href="#" onclick="openBackend('/security-gates');return false;">Security Gates</a>
+            <a href="#" onclick="openBackend('/files/status');return false;">Files Status</a>
+            <a href="#" onclick="openBackend('/google/connector-blueprint');return false;">Google Blueprint</a>
+            <a href="#" onclick="openBackend('/tokens/storage-health');return false;">Token Storage Health</a>
           </div>
         </div>
       </div>
 
       <div id="page-tests" class="page">
-        <div class="card">
-          <h2>Backend Test Links</h2>
-          <p>These are direct backend GET routes. They open in a new tab.</p>
-          <div class="links" id="testLinks"></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="eyebrow">Testing</div>
+            <h2>Copy/Paste Test Report</h2>
+            <p>Primary deploy validation page. Run report, copy all results, paste into ChatGPT.</p>
+            <div class="toolbar">
+              <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
+              <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
+              <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Direct Test Links</h3>
+            <div class="link-grid">
+              <a href="#" onclick="openBackend('/health');return false;">Health</a>
+              <a href="#" onclick="openBackend('/stable-version');return false;">Stable Version</a>
+              <a href="#" onclick="openBackend('/product-dashboard');return false;">Product Dashboard</a>
+              <a href="#" onclick="openBackend('/workflow-dashboard');return false;">Workflow Dashboard</a>
+              <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
+              <a href="#" onclick="openBackend('/v1500-milestone');return false;">Milestone</a>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div id="page-beta" class="page">
+      
+      <div id="page-progress" class="page">
         <div class="card">
-          <h2>Beta Status</h2>
-          <p>V1207 keeps the V1200 beta routes and adds frontend click stability.</p>
-          <div class="actions">
-            <button class="primary" onclick="openBackend('/beta/system-score')">Beta System Score</button>
-            <button onclick="openBackend('/beta/operating-brief')">Operating Brief</button>
-            <button onclick="openBackend('/beta/launch-checklist')">Launch Checklist</button>
-            <button onclick="openBackend('/v1207-milestone')">V1207 Milestone</button>
+          <div class="eyebrow">Workflow Persistence</div>
+          <h2>Workflow Progress</h2>
+          <p>V1500 tracks workflow progress locally in the browser. No Supabase schema change.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadWorkflowState()">Load Workflow State</button>
+            <button class="btn" onclick="resetLocalProgress()">Reset Local Progress</button>
+            <button class="btn" onclick="openBackend('/workflow/checkpoints')">Raw Checkpoints</button>
           </div>
+          <div id="progressOutput" class="output" style="margin-top:12px">Progress not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-intelligence" class="page">
+        <div class="card">
+          <div class="eyebrow">Intelligence Board</div>
+          <h2>Execution Signals</h2>
+          <p>V1500 surfaces product signals and recommended commands. No automation loop.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadIntelligenceBoard()">Load Intelligence Board</button>
+            <button class="btn" onclick="openBackend('/intelligence/recommended-commands')">Recommended Commands</button>
+          </div>
+          <div id="intelligenceOutput" class="output" style="margin-top:12px">Intelligence Board not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-operator" class="page">
+        <div class="card">
+          <div class="eyebrow">Operator Console</div>
+          <h2>Manual Command Control</h2>
+          <p>V1500 clarifies safe actions, blocked actions, and command palette control.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadOperatorConsole()">Load Operator Console</button>
+            <button class="btn" onclick="loadCommandPalette()">Load Command Palette</button>
+            <button class="btn" onclick="openBackend('/operator-console')">Raw Console</button>
+          </div>
+          <div id="operatorOutput" class="output" style="margin-top:12px">Operator Console not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-candidate" class="page">
+        <div class="card">
+          <div class="eyebrow">Product Candidate Stable</div>
+          <h2>V1500 Candidate Status</h2>
+          <p>Stable rollup: dashboard, workflows, intelligence board, operator console, and test report.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCandidateStatus()">Load Candidate Status</button>
+            <button class="btn" onclick="openBackend('/product-candidate/checklist')">Checklist</button>
+            <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+          </div>
+          <div id="candidateOutput" class="output" style="margin-top:12px">Candidate status not loaded.</div>
         </div>
       </div>
 
       <div id="page-settings" class="page">
         <div class="card">
-          <h2>Settings</h2>
-          <p>Deployment and diagnostics.</p>
-          <div class="actions">
-            <button class="primary" onclick="openBackend('/health')">Health</button>
-            <button onclick="openBackend('/diagnostic')">Diagnostic</button>
-            <button onclick="openBackend('/system-test')">System Test</button>
-            <button onclick="openBackend('/test-report')">V1201 Test Links</button>
+          <div class="eyebrow">Settings</div>
+          <h2>System Controls</h2>
+          <p>Preserved diagnostic routes may still show old milestone labels by design.</p>
+          <div class="link-grid">
+            <a href="#" onclick="openBackend('/health');return false;">Health</a>
+            <a href="#" onclick="openBackend('/diagnostic');return false;">Diagnostic</a>
+            <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
+            <a href="#" onclick="openBackend('/stable-version');return false;">Stable Version</a>
+            <a href="#" onclick="openBackend('/frontend-polish-status');return false;">Frontend Polish Status</a>
+            <a href="#" onclick="openBackend('/v1500-milestone');return false;">V1500 Milestone</a>
           </div>
         </div>
       </div>
@@ -351,16 +354,14 @@
 <script>
 const API = "https://executive-engine-os.onrender.com";
 
-const TEST_ROUTES = [
-  "/health",
-  "/test-report",
-  "/test-report-json",
-  "/v1207-milestone",
-  "/diagnostic",
-  "/system-test",
-  "/test-links",
-  "/test-links-json"
-];
+const workflowCommands = {
+  start_day: "Start my day. Identify today's focus, current constraint, next decision, highest-impact action, risk, priority, and recommended command.",
+  daily_brief: "Create my daily operating brief with focus, decisions, risks, actions, priority, and next command.",
+  run_command: "Turn this into a decision, next move, action plan, risk, and priority.",
+  review_queue: "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.",
+  review_risks: "Review current execution risks, recurring constraints, and mitigation actions.",
+  end_day: "Create my end-day summary. What was decided, what remains open, what risk remains, and what starts tomorrow?"
+};
 
 function showPage(page){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -371,52 +372,120 @@ function showPage(page){
   if(btn) btn.classList.add("active");
 }
 
-function openBackend(route){
-  window.open(API + route, "_blank", "noopener,noreferrer");
-}
-
-function renderTestLinks(){
-  const box = document.getElementById("testLinks");
-  if(!box) return;
-  box.innerHTML = TEST_ROUTES.map(r => `<a href="${API}${r}" target="_blank" rel="noopener noreferrer">${r}</a>`).join("");
-}
+function openBackend(route){ window.open(API + route, "_blank", "noopener,noreferrer"); }
+function inputEl(){ return document.getElementById("input"); }
+function outputEl(){ return document.getElementById("output"); }
 
 function loadTemplate(type){
-  const input = document.getElementById("input");
   const templates = {
-    daily: "Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.",
-    calendar: "Review Calendar OAuth candidate status, connector readiness, manual execution policy, and next safest build. Keep writes blocked.",
-    beta: "Review V1207 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
+    daily: workflowCommands.daily_brief,
+    actions: workflowCommands.review_queue,
+    calendar: "Review calendar readiness and connector gates. Confirm what is safe, what is blocked, and the next step before real OAuth activation.",
+    polish: "Review V1500 product dashboard and real workflows. Identify UX improvements, route stability, and next milestone."
   };
-  input.value = templates[type] || templates.daily;
+  showPage("command");
+  setTimeout(()=>{ inputEl().value = templates[type] || templates.daily; inputEl().focus(); }, 50);
 }
 
-function clearOutput(){
-  document.getElementById("output").textContent = "Ready.";
+function loadWorkflowCommand(id){
+  showPage("command");
+  setTimeout(()=>{ inputEl().value = workflowCommands[id] || workflowCommands.run_command; inputEl().focus(); }, 50);
 }
+
+function clearOutput(){ outputEl().textContent = "Ready."; }
 
 async function runEngine(){
-  const output = document.getElementById("output");
-  const input = document.getElementById("input").value.trim();
-  if(!input){
-    output.textContent = "Enter a command first.";
-    return;
-  }
-  output.textContent = "Running...";
+  const input = inputEl().value.trim();
+  if(!input){ outputEl().textContent = "Enter a command first."; return; }
+  outputEl().textContent = "Running...";
   try{
     const res = await fetch(API + "/run", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ input, mode: "execution" })
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input, mode:"execution"})
     });
     const data = await res.json();
-    output.textContent = JSON.stringify(data, null, 2);
+    outputEl().textContent = JSON.stringify(data, null, 2);
   }catch(err){
-    output.textContent = "Run failed. Open /diagnostic and /system-test from Test Links. Error: " + err.message;
+    outputEl().textContent = "Run failed. Open /test-report and paste the report into ChatGPT. Error: " + err.message;
   }
 }
 
-renderTestLinks();
+async function loadCockpit(){
+  const box = document.getElementById("cockpitOutput");
+  box.textContent = "Loading cockpit...";
+  try{
+    const res = await fetch(API + "/executive-cockpit", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){
+    box.textContent = "Cockpit load failed: " + err.message;
+  }
+}
+
+async function loadWorkflowState(){
+  const box = document.getElementById("progressOutput");
+  box.textContent = "Loading workflow state...";
+  try{
+    const res = await fetch(API + "/workflow-state", {cache:"no-store"});
+    const data = await res.json();
+    const local = JSON.parse(localStorage.getItem("eeos_workflow_progress") || "{}");
+    box.textContent = JSON.stringify({backend:data, local_progress:local}, null, 2);
+  }catch(err){ box.textContent = "Workflow state failed: " + err.message; }
+}
+function saveLocalWorkflowStep(step){
+  const data = JSON.parse(localStorage.getItem("eeos_workflow_progress") || "{}");
+  data.last_step = step;
+  data.updated_at = new Date().toISOString();
+  localStorage.setItem("eeos_workflow_progress", JSON.stringify(data));
+}
+function resetLocalProgress(){
+  localStorage.removeItem("eeos_workflow_progress");
+  loadWorkflowState();
+}
+
+
+async function loadIntelligenceBoard(){
+  const box = document.getElementById("intelligenceOutput");
+  box.textContent = "Loading intelligence board...";
+  try{
+    const res = await fetch(API + "/intelligence-board", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Intelligence Board failed: " + err.message; }
+}
+
+
+async function loadOperatorConsole(){
+  const box = document.getElementById("operatorOutput");
+  box.textContent = "Loading operator console...";
+  try{
+    const res = await fetch(API + "/operator-console", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Operator Console failed: " + err.message; }
+}
+async function loadCommandPalette(){
+  const box = document.getElementById("operatorOutput");
+  box.textContent = "Loading command palette...";
+  try{
+    const res = await fetch(API + "/operator/command-palette", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Command Palette failed: " + err.message; }
+}
+
+
+async function loadCandidateStatus(){
+  const box = document.getElementById("candidateOutput");
+  box.textContent = "Loading product candidate status...";
+  try{
+    const res = await fetch(API + "/product-candidate-status", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Candidate Status failed: " + err.message; }
+}
+
 </script>
 </body>
 </html>
