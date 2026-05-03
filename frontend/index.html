@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V2075</title>
+  <title>Executive Engine OS — V3000</title>
   <style>
     :root{
       --bg:#f5f7fb;--panel:#fff;--ink:#071226;--muted:#64748b;--line:#dbe5f1;
       --blue:#0f63ff;--blue2:#0b4ed0;--orange:#ff6a00;--green:#10b981;--red:#ef4444;--nav:#071226;
-      --shadow:0 18px 45px rgba(7,18,38,.08);--radius:20px;
+      --purple:#7c3aed;--shadow:0 20px 50px rgba(7,18,38,.10);--radius:22px;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:650}
     button,a,textarea,input,select{font:inherit}
-    .app{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}
-    .sidebar{background:linear-gradient(180deg,var(--nav),#07101f);color:#fff;padding:18px 16px;height:100vh;position:sticky;top:0;overflow:auto}
+    .app{display:grid;grid-template-columns:278px minmax(0,1fr);min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,#071226,#07101f);color:#fff;padding:18px 16px;height:100vh;position:sticky;top:0;overflow:auto}
     .brand{display:flex;gap:11px;align-items:center;padding:8px 8px 20px;cursor:pointer}
     .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#0f63ff,#ff6a00);display:grid;place-items:center;font-weight:950;letter-spacing:-.08em;box-shadow:0 14px 24px rgba(15,99,255,.25)}
     .brand h1{font-size:15px;line-height:1.03;margin:0;font-weight:950;letter-spacing:-.03em}
@@ -30,206 +30,202 @@
     .topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 26px;position:sticky;top:0;z-index:20}
     .topbar strong{font-size:14px;letter-spacing:-.02em}
     .version-badge{color:#0f63ff;background:#eff6ff;border:1px solid #bfdbfe;padding:8px 11px;border-radius:999px;font-size:12px;font-weight:950;white-space:nowrap}
-    .content{max-width:1500px;width:100%;margin:0 auto;padding:24px}
+    .content{max-width:1540px;width:100%;margin:0 auto;padding:24px}
     .page{display:none}.page.active{display:block}
-    .stable-panel{border:1px solid #bbf7d0;background:linear-gradient(180deg,#ecfdf5,#f8fffb);border-radius:18px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .stable-panel strong{display:block;color:#047857;font-size:14px;margin-bottom:4px}.stable-panel span{display:block;color:#065f46;font-size:12px;line-height:1.4}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.22fr) 390px;gap:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+    .soft{box-shadow:0 10px 28px rgba(7,18,38,.05)}
     .eyebrow{font-size:11px;color:#0f63ff;text-transform:uppercase;letter-spacing:.14em;font-weight:950;margin-bottom:8px}
-    h2,h3{letter-spacing:-.035em;margin:0 0 8px}h2{font-size:30px;line-height:1.08}h3{font-size:18px;line-height:1.15}
+    h2,h3{letter-spacing:-.045em;margin:0 0 8px}h2{font-size:36px;line-height:1.02}h3{font-size:19px;line-height:1.15}
     p{margin:0 0 12px;color:var(--muted);line-height:1.55;font-size:13px}
-    label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:950;color:#475569;margin:12px 0 6px}
-    input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:11px 12px;background:#fff;color:var(--ink);outline:none;font-size:13px;font-weight:650}
-    textarea{min-height:92px;resize:vertical;line-height:1.45}
-    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
+    textarea{width:100%;min-height:185px;border:1px solid #cbd5e1;border-radius:18px;padding:15px;color:var(--ink);background:#fff;outline:none;resize:vertical;font-size:14px;line-height:1.55;font-weight:650}
+    textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .btn{border:1px solid var(--line);background:#fff;color:#334155;border-radius:13px;padding:10px 13px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px}
     .btn:hover{background:#eff6ff;border-color:#93c5fd}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn.dark{background:#071226;border-color:#071226;color:#fff}.btn.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.btn.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
-    .checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-    .checkitem{border:1px solid var(--line);background:#f8fbff;border-radius:12px;padding:9px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#334155}
-    .checkitem input{width:auto;margin:0;box-shadow:none}
-    .output{background:#071226;color:#dbeafe;border-radius:18px;padding:15px;font-size:12px;line-height:1.5;white-space:pre-wrap;overflow:auto;min-height:260px;max-height:640px}
-    .metric{border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:14px;min-height:88px}
+    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+    .quick{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px;cursor:pointer;min-height:82px}
+    .quick:hover{background:#eff6ff;border-color:#93c5fd}
+    .quick b{display:block;font-size:13px;margin-bottom:4px}.quick span{font-size:12px;color:#64748b;line-height:1.35;display:block}
+    .metric{border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:14px;min-height:86px}
     .metric small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;font-size:10px;font-weight:950;margin-bottom:6px}
     .metric strong{font-size:15px;line-height:1.25;display:block}
-    .callout{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:16px;padding:13px;font-size:13px;font-weight:800;line-height:1.45}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+    .result-block{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(7,18,38,.04)}
+    .result-block.major{grid-column:1 / -1;border-left:6px solid var(--blue);background:#f8fbff}
+    .result-block.money{border-left:6px solid var(--green);background:#ecfdf5}
+    .result-block.cut{border-left:6px solid var(--orange);background:#fff7ed}
+    .result-block.risk{border-left:6px solid var(--red);background:#fffafa}
+    .result-block.win{border-left:6px solid var(--purple);background:#fbf8ff}
+    .result-block h4{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#64748b}
+    .result-block div{font-size:14px;line-height:1.5;color:#071226}
+    .actions-list{margin:0;padding-left:18px}.actions-list li{margin:6px 0;font-size:14px;line-height:1.45}
+    .output{background:#071226;color:#dbeafe;border-radius:18px;padding:15px;font-size:12px;line-height:1.5;white-space:pre-wrap;overflow:auto;min-height:120px;max-height:500px}
+    .copy-row{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fbff;margin-top:10px}
+    .copy-row code{font-size:12px;color:#071226;white-space:normal;word-break:break-word}
     .link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
     .link-grid a{text-decoration:none;border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:12px;color:#0f63ff;font-weight:900;font-size:13px;word-break:break-word}
     .link-grid a:hover{border-color:#93c5fd;background:#eff6ff}
-    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.grid,.grid-3,.checkgrid,.link-grid{grid-template-columns:1fr}.topbar{position:relative}.content{padding:16px}}
+    .callout{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:16px;padding:13px;font-size:13px;font-weight:800;line-height:1.45}
+    @media(max-width:1180px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.grid,.grid-3,.grid-4,.quick-grid,.result-grid,.link-grid{grid-template-columns:1fr}.result-block.major{grid-column:auto}.topbar{position:relative}.content{padding:16px}}
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand" onclick="showPage('build-command')">
+    <div class="brand" onclick="showPage('command')">
       <div class="logo">ƎE</div>
-      <div><h1>Executive<br>Engine OS</h1><span>Build Factory</span></div>
+      <div><h1>Executive<br>Engine OS</h1><span>Revenue Command</span></div>
     </div>
 
-    <div class="nav-section">Build Factory</div>
-    <button class="nav-btn active" data-page="build-command" onclick="showPage('build-command')">Build Command <span class="pill">New</span></button>
-    <button class="nav-btn" data-page="factory" onclick="showPage('factory')">Factory Status</button>
-    <button class="nav-btn" data-page="protocol" onclick="showPage('protocol')">Protocol</button>
+    <div class="nav-section">Revenue</div>
+    <button class="nav-btn active" data-page="command" onclick="showPage('command')">Command <span class="pill">Win</span></button>
+    <button class="nav-btn" data-page="assets" onclick="showPage('assets')">Assets</button>
+    <button class="nav-btn" data-page="wins" onclick="showPage('wins')">Wins</button>
+
+    <div class="nav-section">Execution</div>
+    <button class="nav-btn" data-page="decisions" onclick="showPage('decisions')">Decisions</button>
+    <button class="nav-btn" data-page="reduce" onclick="showPage('reduce')">Reduce Work</button>
 
     <div class="nav-section">System</div>
+    <button class="nav-btn" data-page="build-factory" onclick="showPage('build-factory')">Build Factory <span class="pill">Admin</span></button>
     <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report</button>
-    <button class="nav-btn" data-page="settings" onclick="showPage('settings')">Settings</button>
 
     <div class="side-card">
-      <small>Stable Checkpoint</small>
-      <strong>V2075 Build Command Center</strong>
+      <small>Current Version</small>
+      <strong>V3000 Revenue Execution Shell</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V2075 Build Command Center · V2075 Backend</div>
+      <div class="version-badge">V3000 Revenue Execution Shell · V3000 Backend</div>
     </div>
 
     <section class="content">
-      <div class="stable-panel">
-        <div>
-          <strong>V2075 Build Command Center</strong>
-          <span>Internal tool for generating complete build commands from our protocol. Built to scale team execution and reduce forgotten details.</span>
-        </div>
-        <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
-      </div>
-
-      <div id="page-build-command" class="page active">
-        <div class="grid">
+      <div id="page-command" class="page active">
+        <div class="hero-grid">
           <div class="card">
-            <div class="eyebrow">Build Setup</div>
-            <h2>Generate a complete build command.</h2>
-            <p>Fill the fields. Click Generate. Copy the result into ChatGPT. This forces discipline without making you remember every rule.</p>
-
-            <div class="grid">
-              <div>
-                <label>Build Version</label>
-                <input id="buildVersion" value="V3000">
-              </div>
-              <div>
-                <label>Build Name</label>
-                <input id="buildName" value="Revenue Execution Shell">
-              </div>
-              <div>
-                <label>Build Type</label>
-                <select id="buildType">
-                  <option>Revenue Build</option>
-                  <option>Product Build</option>
-                  <option>Stability Build</option>
-                  <option>Lab Build</option>
-                  <option>Promotion Build</option>
-                  <option>Internal Build Factory Tool</option>
-                </select>
-              </div>
-              <div>
-                <label>Start From</label>
-                <input id="startFrom" value="V2075">
-              </div>
-              <div>
-                <label>Rollback Target</label>
-                <input id="rollbackTarget" value="V2050 / V2000 ZIP backup">
-              </div>
-              <div>
-                <label>Strategic Target</label>
-                <input id="strategicTarget" value="V10000 Executive Revenue Operating Platform">
-              </div>
-            </div>
-
-            <label>Goal</label>
-            <textarea id="goal">Transform the frontend into a revenue-first executive command center.</textarea>
-
-            <label>User-Facing Value</label>
-            <textarea id="userValue">Executives can turn messy intent into revenue-ready next moves and assets.</textarea>
-
-            <label>Revenue Value</label>
-            <textarea id="revenueValue">Helps create proposals, pitch outlines, sales emails, follow-ups, and close plans that move deals forward.</textarea>
-
-            <label>Time-Saving Value</label>
-            <textarea id="timeValue">Reduces thinking, writing, coordination, and asset creation time.</textarea>
-
-            <label>Friction Reduction</label>
-            <textarea id="frictionValue">Lets the executive do less work and rely on fewer people.</textarea>
-
-            <label>Executive Control / Ego / Win Value</label>
-            <textarea id="winValue">Shows wins, control, money moves, progress, and what got done today.</textarea>
-          </div>
-
-          <div class="card">
-            <div class="eyebrow">Guardrails + Output</div>
-            <h2>Stability discipline.</h2>
-            <p>These checklists stay preselected. They protect the core while we move fast.</p>
-
-            <label>Preserve</label>
-            <div id="preserveChecks" class="checkgrid"></div>
-
-            <label>Do Not Touch</label>
-            <div id="dontTouchChecks" class="checkgrid"></div>
-
-            <label>Frontend Changes</label>
-            <textarea id="frontendChanges">Revenue-first dashboard; What are you trying to win today? input; quick actions; executive scoreboard; today’s wins; next money move.</textarea>
-
-            <label>Backend Routes</label>
-            <textarea id="backendRoutes">/revenue-shell-status, /revenue-command-templates, /executive-scoreboard, /v3000-milestone</textarea>
-
-            <label>Prompt Changes</label>
-            <textarea id="promptChanges">Orient /run toward revenue, deal execution, asset creation, what to cut, next power move, and executive wins.</textarea>
-
-            <label>Test Routes</label>
-            <textarea id="testRoutes">/health, /revenue-shell-status, /revenue-command-templates, /executive-scoreboard, /test-report, /v3000-milestone</textarea>
-
-            <label>Risk</label>
-            <textarea id="risk">Risk: making the UI look like an internal tool instead of an executive revenue command center.</textarea>
-
-            <label>Success Criteria</label>
-            <textarea id="successCriteria">An impatient executive understands the value in 5 seconds and can create a revenue-related asset or next move with minimal work.</textarea>
-
+            <div class="eyebrow">Revenue Command Center</div>
+            <h2>What are you trying to win today?</h2>
+            <p>Turn executive intent into revenue-ready assets, next moves, and visible wins. Make money. Save time. Feel in control.</p>
+            <textarea id="input" placeholder="Example: I need to pitch a $50k consulting package to a hesitant client and move them toward a yes.">I need to pitch a $50k consulting package to a hesitant client and move them toward a yes.</textarea>
             <div class="toolbar">
-              <button class="btn primary" onclick="generateCommand()">Generate Build Command</button>
-              <button class="btn dark" onclick="copyGenerated()">Copy Command</button>
-              <button class="btn" onclick="generateTestPlan()">Generate Test Plan</button>
-              <button class="btn" onclick="generateRollbackPlan()">Generate Rollback Plan</button>
-              <button class="btn orange" onclick="resetDefaults()">Reset Defaults</button>
+              <button class="btn primary" onclick="runEngine()">Run Engine</button>
+              <button class="btn" onclick="loadTemplate('proposal')">Build Proposal</button>
+              <button class="btn" onclick="loadTemplate('pitch_deck')">Pitch Deck</button>
+              <button class="btn" onclick="loadTemplate('sales_email')">Sales Email</button>
+              <button class="btn" onclick="loadTemplate('follow_up')">Follow-Up</button>
+              <button class="btn" onclick="loadTemplate('close_plan')">Close Plan</button>
+            </div>
+
+            <div class="quick-grid">
+              <div class="quick" onclick="loadTemplate('proposal')"><b>Build Proposal</b><span>Client-ready offer.</span></div>
+              <div class="quick" onclick="loadTemplate('pitch_deck')"><b>Build Pitch</b><span>Slide-by-slide outline.</span></div>
+              <div class="quick" onclick="loadTemplate('sales_email')"><b>Sales Email</b><span>Send-ready outreach.</span></div>
+              <div class="quick" onclick="loadTemplate('close_plan')"><b>Close Deal</b><span>Next power move.</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card soft">
+              <div class="eyebrow">Executive Scoreboard</div>
+              <h3>Today’s Wins</h3>
+              <div class="grid">
+                <div class="metric"><small>Revenue Moves</small><strong>3</strong></div>
+                <div class="metric"><small>Decisions Made</small><strong>4</strong></div>
+                <div class="metric"><small>Work Cut</small><strong>3 items</strong></div>
+                <div class="metric"><small>Next Money Move</small><strong>Build proposal</strong></div>
+              </div>
+              <div class="copy-row">
+                <code id="recommendedCommandBox">Run a command to generate the next recommended command.</code>
+                <button class="btn dark" onclick="copyTextById('recommendedCommandBox')">Copy</button>
+              </div>
+            </div>
+
+            <div class="card soft" style="margin-top:16px">
+              <div class="eyebrow">Product Rule</div>
+              <h3>Hide the machinery. Surface leverage.</h3>
+              <p>Executives care about money, speed, control, convenience, fewer people, and visible wins.</p>
             </div>
           </div>
         </div>
 
-        <div class="card" style="margin-top:16px">
-          <div class="eyebrow">Generated Output</div>
-          <h2>Copy/Paste Command</h2>
-          <div id="generatedOutput" class="output">Click Generate Build Command.</div>
+        <div id="resultCards" class="result-grid"></div>
+        <div class="card" style="margin-top:16px"><h3>Raw Output</h3><div id="output" class="output">Ready. Run a revenue command.</div></div>
+      </div>
+
+      <div id="page-assets" class="page">
+        <div class="card">
+          <div class="eyebrow">Client Assets</div>
+          <h2>Build assets that move money.</h2>
+          <p>Use these workflows to create client-ready business development assets.</p>
+          <div class="quick-grid">
+            <div class="quick" onclick="loadTemplate('proposal')"><b>Proposal</b><span>Executive summary, offer, scope, value, next steps.</span></div>
+            <div class="quick" onclick="loadTemplate('pitch_deck')"><b>Pitch Deck Outline</b><span>Story, slides, proof, offer, close.</span></div>
+            <div class="quick" onclick="loadTemplate('sales_email')"><b>Sales Email</b><span>Subject, body, CTA, follow-up.</span></div>
+            <div class="quick" onclick="loadTemplate('follow_up')"><b>Follow-Up Sequence</b><span>Three touches and objection handling.</span></div>
+            <div class="quick" onclick="loadTemplate('close_plan')"><b>Close Plan</b><span>Decision maker, pain, objections, next move.</span></div>
+            <div class="quick" onclick="loadTemplate('decision')"><b>Make Decision</b><span>Tradeoffs, risk, what to cut.</span></div>
+            <div class="quick" onclick="loadTemplate('reduce_work')"><b>Reduce Work</b><span>Cut, defer, automate, delegate.</span></div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" onclick="openBackend('/client-asset-workflows')">Raw Asset Workflows</button>
+            <button class="btn" onclick="openBackend('/revenue-command-templates')">Raw Templates</button>
+          </div>
         </div>
       </div>
 
-      <div id="page-factory" class="page">
+      <div id="page-wins" class="page">
         <div class="card">
-          <div class="eyebrow">Build Factory Status</div>
-          <h2>Internal acceleration layer.</h2>
-          <p>Loads the Build Factory, stability dashboard, product review, revenue workflow test, lab scorecard, and promotion review.</p>
+          <div class="eyebrow">Wins</div>
+          <h2>Executive Scoreboard</h2>
+          <p>Wins, revenue moves, work cut, and the next money move.</p>
           <div class="toolbar">
-            <button class="btn primary" onclick="loadFactory()">Load Factory</button>
-            <button class="btn" onclick="openBackend('/build-command-center-status')">Command Center Status</button>
-            <button class="btn" onclick="openBackend('/build-command-template')">Command Template</button>
-            <button class="btn" onclick="openBackend('/v2075-milestone')">V2075 Milestone</button>
+            <button class="btn primary" onclick="loadScoreboard()">Load Scoreboard</button>
+            <button class="btn" onclick="openBackend('/executive-scoreboard')">Raw Scoreboard</button>
           </div>
-          <div id="factoryOutput" class="output" style="margin-top:12px">Factory not loaded.</div>
+          <div id="scoreboardOutput" class="output" style="margin-top:12px">Scoreboard not loaded.</div>
         </div>
       </div>
 
-      <div id="page-protocol" class="page">
+      <div id="page-decisions" class="page">
         <div class="card">
-          <div class="eyebrow">Build Protocol</div>
-          <h2>Our operating agreement.</h2>
-          <p>Ask/respond sequence, build types, preserve rules, decision classification, and version path.</p>
+          <div class="eyebrow">Decision</div>
+          <h2>Make the call.</h2>
+          <p>Force a decision, next power move, risk, and what to cut.</p>
           <div class="toolbar">
-            <button class="btn primary" onclick="loadProtocol()">Load Protocol</button>
-            <button class="btn" onclick="openBackend('/build-protocol')">Raw Protocol</button>
+            <button class="btn primary" onclick="loadTemplate('decision')">Load Decision Command</button>
           </div>
-          <div id="protocolOutput" class="output" style="margin-top:12px">Protocol not loaded.</div>
+        </div>
+      </div>
+
+      <div id="page-reduce" class="page">
+        <div class="card">
+          <div class="eyebrow">Reduce Work</div>
+          <h2>Less work. More leverage.</h2>
+          <p>Cut, defer, automate, delegate, and focus on the next money move.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadTemplate('reduce_work')">Load Reduce Work Command</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-build-factory" class="page">
+        <div class="card">
+          <div class="eyebrow">Admin / Build Factory</div>
+          <h2>Internal system hidden from users.</h2>
+          <p>Use this only for building, testing, protocol, and promotion review.</p>
+          <div class="toolbar">
+            <button class="btn" onclick="openBackend('/build-factory-status')">Build Factory</button>
+            <button class="btn" onclick="openBackend('/build-command-center-status')">Build Command Center</button>
+            <button class="btn" onclick="openBackend('/build-protocol')">Build Protocol</button>
+            <button class="btn" onclick="openBackend('/promotion-review')">Promotion Review</button>
+            <button class="btn" onclick="openBackend('/v3000-milestone')">V3000 Milestone</button>
+          </div>
+          <div class="callout" style="margin-top:12px">Do not expose build factory/admin pages to executive end users.</div>
         </div>
       </div>
 
@@ -238,39 +234,23 @@
           <div class="card">
             <div class="eyebrow">Testing</div>
             <h2>Copy/Paste Test Report</h2>
-            <p>Primary deploy validation page. Run report, copy all results, paste into ChatGPT.</p>
+            <p>Run report, copy all results, paste into ChatGPT.</p>
             <div class="toolbar">
-              <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
+              <button class="btn primary" onclick="openBackend('/test-report')">Open Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v2075-milestone')">V2075 Milestone</button>
+              <button class="btn" onclick="openBackend('/v3000-milestone')">V3000 Milestone</button>
             </div>
           </div>
           <div class="card">
             <h3>Direct Test Links</h3>
             <div class="link-grid">
               <a href="#" onclick="openBackend('/health');return false;">Health</a>
-              <a href="#" onclick="openBackend('/build-command-center-status');return false;">Build Command Status</a>
-              <a href="#" onclick="openBackend('/build-command-template');return false;">Build Command Template</a>
-              <a href="#" onclick="openBackend('/build-protocol');return false;">Build Protocol</a>
+              <a href="#" onclick="openBackend('/revenue-shell-status');return false;">Revenue Status</a>
+              <a href="#" onclick="openBackend('/revenue-command-templates');return false;">Templates</a>
+              <a href="#" onclick="openBackend('/executive-scoreboard');return false;">Scoreboard</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v2075-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v3000-milestone');return false;">Milestone</a>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="page-settings" class="page">
-        <div class="card">
-          <div class="eyebrow">Settings</div>
-          <h2>System Controls</h2>
-          <p>Preserved diagnostic routes may still show old milestone labels by design.</p>
-          <div class="link-grid">
-            <a href="#" onclick="openBackend('/health');return false;">Health</a>
-            <a href="#" onclick="openBackend('/diagnostic');return false;">Diagnostic</a>
-            <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
-            <a href="#" onclick="openBackend('/build-factory-status');return false;">Build Factory</a>
-            <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-            <a href="#" onclick="openBackend('/v2075-milestone');return false;">V2075 Milestone</a>
           </div>
         </div>
       </div>
@@ -281,27 +261,15 @@
 <script>
 const API = "https://executive-engine-os.onrender.com";
 
-const preserveDefaults = [
-  "/health",
-  "/run",
-  "/test-report",
-  "/test-report-json",
-  "manual execution only",
-  "auto-loop off",
-  "legacy routes preserved",
-  "V2050 Build Factory preserved"
-];
-
-const dontTouchDefaults = [
-  "Supabase schema",
-  "OAuth activation",
-  "external writes",
-  "diagnostic routes",
-  "deployment structure",
-  "/run unless required",
-  "legacy routes",
-  "test report flow"
-];
+const templates = {
+  proposal: "Build a client-ready proposal for this opportunity. Include revenue objective, client context, offer angle, draft proposal, what to cut, risk, close plan, executive win, and follow-up command.",
+  pitch_deck: "Build a pitch deck outline for this opportunity. Include slide titles, core story, offer angle, proof points, close slide, risk, and next power move.",
+  sales_email: "Write a high-converting sales email for this opportunity. Include positioning, subject line, email body, follow-up angle, risk, and next command.",
+  follow_up: "Create a follow-up sequence for this client or opportunity. Include message 1, message 2, message 3, objection handling, and next power move.",
+  close_plan: "Create a close plan for this deal. Include decision maker, pain, offer, objections, next move, risk, what to cut, and follow-up command.",
+  decision: "Make the executive decision. Include revenue objective, current constraint, what to cut, risk, next power move, actions, and executive win.",
+  reduce_work: "Reduce my workload. Tell me what to cut, defer, automate, delegate, and the single next power move that creates the most value."
+};
 
 function showPage(page){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -313,217 +281,72 @@ function showPage(page){
 }
 
 function openBackend(route){ window.open(API + route, "_blank", "noopener,noreferrer"); }
+function inputEl(){ return document.getElementById("input"); }
+function outputEl(){ return document.getElementById("output"); }
+function safe(v){ return (v === undefined || v === null || v === "") ? "—" : String(v); }
 
-function renderChecks(){
-  document.getElementById("preserveChecks").innerHTML = preserveDefaults.map((x,i)=>`
-    <label class="checkitem"><input type="checkbox" checked data-group="preserve" value="${x}">${x}</label>
-  `).join("");
-  document.getElementById("dontTouchChecks").innerHTML = dontTouchDefaults.map((x,i)=>`
-    <label class="checkitem"><input type="checkbox" checked data-group="donttouch" value="${x}">${x}</label>
-  `).join("");
+function copyTextById(id){
+  const text = document.getElementById(id)?.textContent || "";
+  if(text) navigator.clipboard.writeText(text);
 }
 
-function checkedValues(group){
-  return Array.from(document.querySelectorAll(`input[data-group="${group}"]:checked`)).map(x=>x.value);
+function loadTemplate(type){
+  showPage("command");
+  setTimeout(()=>{ inputEl().value = templates[type] || templates.proposal; inputEl().focus(); }, 50);
 }
 
-function field(id){ return document.getElementById(id).value.trim(); }
-function listLines(text){ return text.split(",").map(x=>x.trim()).filter(Boolean); }
+function renderCards(data){
+  const box = document.getElementById("resultCards");
+  const actions = Array.isArray(data.actions) ? data.actions : [];
+  const rec = safe(data.recommended_command);
+  document.getElementById("recommendedCommandBox").textContent = rec;
 
-function bulletList(items){
-  return items.map(x=>`- ${x}`).join("\n");
+  box.innerHTML = `
+    <div class="result-block major"><h4>Next Power Move</h4><div>${safe(data.next_power_move || data.next_move)}</div></div>
+    <div class="result-block money"><h4>Revenue Objective</h4><div>${safe(data.revenue_objective)}</div></div>
+    <div class="result-block"><h4>Deal / Client Context</h4><div>${safe(data.deal_client_context)}</div></div>
+    <div class="result-block"><h4>Offer Angle</h4><div>${safe(data.offer_angle)}</div></div>
+    <div class="result-block"><h4>Asset To Create</h4><div>${safe(data.asset_to_create)}</div></div>
+    <div class="result-block major"><h4>Draft Output</h4><div>${safe(data.draft_output)}</div></div>
+    <div class="result-block cut"><h4>What To Cut</h4><div>${safe(data.what_to_cut)}</div></div>
+    <div class="result-block"><h4>Actions</h4><div><ol class="actions-list">${actions.map(a=>`<li>${safe(a)}</li>`).join("") || "<li>—</li>"}</ol></div></div>
+    <div class="result-block risk"><h4>Risk</h4><div>${safe(data.risk)}</div></div>
+    <div class="result-block"><h4>Priority</h4><div>${safe(data.priority)}</div></div>
+    <div class="result-block win"><h4>Executive Win</h4><div>${safe(data.executive_win)}</div></div>
+    <div class="result-block money"><h4>Revenue Signal</h4><div>${safe(data.revenue_signal)}</div></div>
+    <div class="result-block"><h4>Time Saved</h4><div>${safe(data.time_saved)}</div></div>
+    <div class="result-block major"><h4>Follow-Up Command</h4><div>${rec}</div><div class="toolbar"><button class="btn dark" onclick="copyTextById('recommendedCommandBox')">Copy Follow-Up Command</button></div></div>
+  `;
 }
 
-function generateCommand(){
-  const version = field("buildVersion");
-  const name = field("buildName");
-  const buildType = field("buildType");
-  const startFrom = field("startFrom");
-  const rollback = field("rollbackTarget");
-  const testRoutes = listLines(field("testRoutes"));
-  const backendRoutes = listLines(field("backendRoutes"));
-
-  const command = `BUILD ${version} — ${name}
-
-BUILD TYPE:
-${buildType}
-
-START FROM:
-${startFrom}
-
-ROLLBACK TARGET:
-${rollback}
-
-STRATEGIC TARGET:
-${field("strategicTarget")}
-
-GOAL:
-${field("goal")}
-
-USER-FACING VALUE:
-${field("userValue")}
-
-REVENUE VALUE:
-${field("revenueValue")}
-
-TIME-SAVING VALUE:
-${field("timeValue")}
-
-FRICTION REDUCTION:
-${field("frictionValue")}
-
-EXECUTIVE CONTROL / EGO / WIN VALUE:
-${field("winValue")}
-
-PRESERVE:
-${bulletList(checkedValues("preserve"))}
-
-DO NOT:
-${bulletList(checkedValues("donttouch"))}
-
-ADD / CHANGE:
-
-Frontend:
-${field("frontendChanges")}
-
-Backend routes:
-${bulletList(backendRoutes)}
-
-Prompt changes:
-${field("promptChanges")}
-
-RISK:
-${field("risk")}
-
-SUCCESS CRITERIA:
-${field("successCriteria")}
-
-TEST:
-${bulletList(testRoutes)}
-
-INCLUDE:
-- all files in ZIP
-- backend compile check
-- routes added
-- routes preserved
-- upload steps
-- expected frontend badge
-- rollback target`;
-
-  document.getElementById("generatedOutput").textContent = command;
-}
-
-async function copyGenerated(){
-  const text = document.getElementById("generatedOutput").textContent;
-  if(!text || text.includes("Click Generate")) return;
-  await navigator.clipboard.writeText(text);
-}
-
-function generateTestPlan(){
-  const version = field("buildVersion");
-  const routes = listLines(field("testRoutes"));
-  const plan = `TEST PLAN — ${version}
-
-1. Deploy backend with clear build cache.
-2. Wait until backend is live.
-3. Deploy frontend.
-4. Hard refresh browser.
-5. Open /test-report.
-6. Click Run Report.
-7. Copy All Results.
-8. Paste into ChatGPT.
-9. Classify result: HOLD / FIX / PROMOTE / PIVOT / ROLLBACK.
-
-Routes:
-${bulletList(routes)}
-
-Required pass:
-- /health returns current version
-- /test-report works
-- new milestone route works
-- manual execution only remains true
-- auto-loop remains false
-- OAuth remains inactive
-- external writes remain blocked`;
-
-  document.getElementById("generatedOutput").textContent = plan;
-}
-
-function generateRollbackPlan(){
-  const plan = `ROLLBACK PLAN
-
-Rollback target:
-${field("rollbackTarget")}
-
-Rollback trigger:
-- /health fails
-- /run fails
-- /test-report fails
-- new route causes backend crash
-- OAuth accidentally activates
-- external writes accidentally enable
-- frontend becomes unusable
-
-Steps:
-1. Stop building new changes.
-2. Redeploy rollback ZIP.
-3. Run /health.
-4. Run /test-report.
-5. Confirm stable checkpoint.
-6. Classify result as ROLLBACK COMPLETE or FIX REQUIRED.`;
-
-  document.getElementById("generatedOutput").textContent = plan;
-}
-
-function resetDefaults(){
-  document.getElementById("buildVersion").value = "V3000";
-  document.getElementById("buildName").value = "Revenue Execution Shell";
-  document.getElementById("buildType").value = "Revenue Build";
-  document.getElementById("startFrom").value = "V2075";
-  document.getElementById("rollbackTarget").value = "V2050 / V2000 ZIP backup";
-  document.getElementById("strategicTarget").value = "V10000 Executive Revenue Operating Platform";
-  document.getElementById("goal").value = "Transform the frontend into a revenue-first executive command center.";
-  document.getElementById("userValue").value = "Executives can turn messy intent into revenue-ready next moves and assets.";
-  document.getElementById("revenueValue").value = "Helps create proposals, pitch outlines, sales emails, follow-ups, and close plans that move deals forward.";
-  document.getElementById("timeValue").value = "Reduces thinking, writing, coordination, and asset creation time.";
-  document.getElementById("frictionValue").value = "Lets the executive do less work and rely on fewer people.";
-  document.getElementById("winValue").value = "Shows wins, control, money moves, progress, and what got done today.";
-  document.getElementById("frontendChanges").value = "Revenue-first dashboard; What are you trying to win today? input; quick actions; executive scoreboard; today’s wins; next money move.";
-  document.getElementById("backendRoutes").value = "/revenue-shell-status, /revenue-command-templates, /executive-scoreboard, /v3000-milestone";
-  document.getElementById("promptChanges").value = "Orient /run toward revenue, deal execution, asset creation, what to cut, next power move, and executive wins.";
-  document.getElementById("testRoutes").value = "/health, /revenue-shell-status, /revenue-command-templates, /executive-scoreboard, /test-report, /v3000-milestone";
-  document.getElementById("risk").value = "Risk: making the UI look like an internal tool instead of an executive revenue command center.";
-  document.getElementById("successCriteria").value = "An impatient executive understands the value in 5 seconds and can create a revenue-related asset or next move with minimal work.";
-  renderChecks();
-  generateCommand();
-}
-
-async function loadFactory(){
-  const box = document.getElementById("factoryOutput");
-  box.textContent = "Loading Factory...";
+async function runEngine(){
+  const input = inputEl().value.trim();
+  if(!input){ outputEl().textContent = "Enter a revenue command first."; return; }
+  outputEl().textContent = "Running revenue command...";
+  document.getElementById("resultCards").innerHTML = "";
   try{
-    const [a,b,c,d] = await Promise.all([
-      fetch(API + "/build-factory-status", {cache:"no-store"}).then(r=>r.json()),
-      fetch(API + "/build-command-center-status", {cache:"no-store"}).then(r=>r.json()),
-      fetch(API + "/stability-dashboard", {cache:"no-store"}).then(r=>r.json()),
-      fetch(API + "/promotion-review", {cache:"no-store"}).then(r=>r.json())
-    ]);
-    box.textContent = JSON.stringify({factory:a, build_command_center:b, stability:c, promotion:d}, null, 2);
-  }catch(err){ box.textContent = "Factory load failed: " + err.message; }
+    const res = await fetch(API + "/run", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input, mode:"execution"})
+    });
+    const data = await res.json();
+    renderCards(data);
+    outputEl().textContent = JSON.stringify(data, null, 2);
+  }catch(err){
+    outputEl().textContent = "Run failed. Open /test-report and paste the report into ChatGPT. Error: " + err.message;
+  }
 }
 
-async function loadProtocol(){
-  const box = document.getElementById("protocolOutput");
-  box.textContent = "Loading Protocol...";
+async function loadScoreboard(){
+  const box = document.getElementById("scoreboardOutput");
+  box.textContent = "Loading scoreboard...";
   try{
-    const res = await fetch(API + "/build-protocol", {cache:"no-store"});
+    const res = await fetch(API + "/executive-scoreboard", {cache:"no-store"});
     const data = await res.json();
     box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Protocol load failed: " + err.message; }
+  }catch(err){ box.textContent = "Scoreboard failed: " + err.message; }
 }
-
-renderChecks();
-generateCommand();
 </script>
 </body>
 </html>

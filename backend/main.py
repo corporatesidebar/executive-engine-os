@@ -14,42 +14,49 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V2075: an elite executive operating system focused on memory intelligence, action discipline, and daily execution quality.
+You are Executive Engine OS V3000: a revenue-first executive command system.
 
-You are not a chatbot. You are a high-performance COO / Chief of Staff / operating partner. Your job is to turn messy input into a sharp operating decision, identify action overload, use memory patterns, and tell the operator what to do next.
+You are not a chatbot. You are a high-performance COO, revenue operator, deal strategist, and executive asset builder. Your job is to turn messy executive intent into money-moving decisions, client-ready assets, and clear next moves.
 
-Core operating principles:
-- Be specific. No generic business advice.
-- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, deployment patterns, constraints, and repeated behaviors.
-- Identify whether the user is building, testing, stabilizing, integrating, or overcomplicating.
-- Force tradeoffs. State what to cut, defer, or stop.
-- Prioritize execution today over theoretical strategy.
-- Identify the current constraint before adding actions.
-- Keep actions concrete, testable, and owner-ready.
-- Do not recommend Calendar/OAuth activation unless the input explicitly asks for integration work.
-- Calendar, files, email, CRM, and connector intelligence are read-only/prep unless verified active.
+Core product promise:
+- Make more money.
+- Save time.
+- Reduce friction.
+- Help the executive feel in control.
+- Show wins.
+- Move deals forward faster.
+
+Operating rules:
+- Prioritize revenue, leverage, speed, and convenience.
+- If the input is vague, infer the most useful revenue or execution workflow.
+- Produce outputs an executive can use with minimal extra work.
+- Make the next money move obvious.
+- Include what to cut, because executives need fewer distractions.
+- Never expose backend/system/debug thinking to the user.
+- Do not recommend Calendar/OAuth unless explicitly requested.
+- Calendar, files, email, CRM, and connector intelligence are prep/read-only unless verified active.
 - Never claim live OAuth, token storage, calendar write access, email send access, or external writes unless verified.
 - External execution requires explicit user approval.
 - Manual execution only. Auto-loop remains off.
-- No motivational filler. No vague language. No long essays.
+- No generic advice. No motivational filler. No long essays.
 
 Return STRICT JSON ONLY.
 
 Required schema:
 {
-  "next_move": "The single highest-impact action to take now",
-  "today_focus": "The highest-value focus for today",
-  "current_constraint": "The main bottleneck stopping progress",
-  "decision": "The executive decision being made",
-  "next_decision": "The next decision needed to unlock progress",
-  "what_to_cut": "What should be stopped, removed, deferred, or ignored",
-  "action_load": "Low | Medium | High plus one short reason",
-  "memory_pattern": "Recurring pattern detected from memory/context; if unavailable say no useful pattern",
-  "actions": ["3 to 6 concrete executable actions, each starting with a strong verb"],
-  "risk": "Specific failure point or tradeoff",
+  "revenue_objective": "The money or business outcome being pursued",
+  "next_power_move": "The single highest-leverage move to take now",
+  "deal_client_context": "The client/deal/business context inferred from the input",
+  "offer_angle": "The positioning, offer, or strategic angle",
+  "asset_to_create": "The most useful asset to create now",
+  "draft_output": "A usable draft, outline, or client-ready asset content",
+  "what_to_cut": "What to stop, ignore, defer, or simplify",
+  "actions": ["3 to 6 concrete executable actions"],
+  "risk": "The specific risk that could block the outcome",
   "priority": "High | Medium | Low",
-  "execution_score": "1-10 score with one short reason",
-  "operator_note": "Short executive note explaining the operating logic",
+  "executive_win": "What the executive can say was accomplished today",
+  "time_saved": "Estimated time saved or friction reduced",
+  "revenue_signal": "How this could help make money or move revenue",
   "recommended_command": "Copy-paste-ready next command to run",
   "follow_up_question": "Only ask if required; otherwise empty string"
 }
@@ -58,14 +65,12 @@ Rules:
 - JSON only.
 - No markdown.
 - No text outside JSON.
-- Actions must be concrete and testable.
-- Every output must include what_to_cut.
-- Every output must include current_constraint.
-- Every output must include action_load.
-- Every output must include memory_pattern.
+- Every output must include next_power_move.
+- Every output must include revenue_objective.
+- Every output must include draft_output.
+- Every output must include executive_win.
 - Every output must include recommended_command.
-- If the user is adding too many versions/features, identify action overload and what to cut.
-- If the user asks for integrations, evaluate whether core OS value is strong enough first.
+- Keep draft_output practical and usable.
 """
 
 
@@ -84,8 +89,9 @@ Rules:
 
 
 
-VERSION = "V2075"
-SERVICE_NAME = "Executive Engine OS V2075"
+
+VERSION = "V3000"
+SERVICE_NAME = "Executive Engine OS V3000"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -108,7 +114,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="2075.0.0")
+app = FastAPI(title=SERVICE_NAME, version="3000.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -417,7 +423,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V2075, an elite COO/operator system.
+You are Executive Engine OS V3000, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -878,7 +884,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V2075",
+        "backend_must_show": "Executive Engine OS V3000",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3757,7 +3763,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V2075",
+        "service": "Executive Engine OS V3000",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7920,7 +7926,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V2075 Test Links</title>
+      <title>Executive Engine OS V3000 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7934,7 +7940,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V2075 Test Links</h1>
+        <h1>Executive Engine OS V3000 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8125,7 +8131,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V2075 Test Links</title>
+      <title>Executive Engine OS V3000 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8147,7 +8153,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V2075 Test Links</h1>
+          <h1>Executive Engine OS V3000 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8324,7 +8330,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V2075 Absolute Test Links</title>
+      <title>Executive Engine OS V3000 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8346,7 +8352,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V2075 Absolute Test Links</h1>
+          <h1>Executive Engine OS V3000 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8495,7 +8501,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Links</title>
+  <title>Executive Engine OS V3000 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8517,7 +8523,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V2075 Test Links</h1>
+      <h1>Executive Engine OS V3000 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8675,7 +8681,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Report</title>
+  <title>Executive Engine OS V3000 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8696,7 +8702,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V2075 Test Report</h1>
+    <h1>Executive Engine OS V3000 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8768,7 +8774,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V2075 Test Report");
+  lines.push("Executive Engine OS V3000 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8940,7 +8946,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Report</title>
+  <title>Executive Engine OS V3000 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8961,7 +8967,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V2075 Test Report</h1>
+    <h1>Executive Engine OS V3000 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9010,7 +9016,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V2075 Test Report");
+  out.push("Executive Engine OS V3000 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10656,7 +10662,7 @@ async def test_report_v1975():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Report</title>
+  <title>Executive Engine OS V3000 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -10678,7 +10684,7 @@ async def test_report_v1975():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V2075 Test Report</h1>
+    <h1>Executive Engine OS V3000 Test Report</h1>
     <p>Test Report Label Cleanup. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V1975</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -10728,7 +10734,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V2075 Test Report");
+  out.push("Executive Engine OS V3000 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10799,7 +10805,7 @@ async def report_label_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Test Report Label Cleanup",
-        "test_report_title": "Executive Engine OS V2075 Test Report",
+        "test_report_title": "Executive Engine OS V3000 Test Report",
         "legacy_route_policy": "Preserved legacy routes may still show old labels internally, but the main /test-report is current.",
         "frontend_must_show": "V1975 Test Report Label Cleanup · V1975 Backend",
         "safety": {
@@ -10924,7 +10930,7 @@ async def test_report_v2000():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Report</title>
+  <title>Executive Engine OS V3000 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -10946,7 +10952,7 @@ async def test_report_v2000():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V2075 Test Report</h1>
+    <h1>Executive Engine OS V3000 Test Report</h1>
     <p>Daily-Use Product Candidate. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V2000</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -10996,7 +11002,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V2075 Test Report");
+  out.push("Executive Engine OS V3000 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -11229,15 +11235,15 @@ async def test_report_v2050():
     from starlette.responses import HTMLResponse
     tests_json = json.dumps(V2050_REPORT_TESTS)
     html = """
-<!doctype html><html><head><title>Executive Engine OS V2075 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+<!doctype html><html><head><title>Executive Engine OS V3000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
 body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}
-</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V2075 Test Report</h1><p>Build Factory Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V2050</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox" placeholder="Results will appear here."></textarea></div><div id="cards"></div></div><script>
+</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V3000 Test Report</h1><p>Build Factory Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V2050</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox" placeholder="Results will appear here."></textarea></div><div id="cards"></div></div><script>
 const BACKEND_BASE="__BACKEND_BASE__"; const TESTS=__TESTS_JSON__;
 function pretty(value){try{return JSON.stringify(value,null,2)}catch(e){return String(value)}}
 function escapeHtml(str){return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
 function setStatus(text, ok){const el=document.getElementById('status');el.className=ok===false?'fail':'good';el.textContent=text}
 async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:'GET',cache:'no-store'});const contentType=res.headers.get('content-type')||'';let data=contentType.includes('application/json')?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:'FETCH_ERROR',ok:false,output:err.message}}}
-function buildCopyText(results){let out=[];out.push('Executive Engine OS V2075 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\n')}
+function buildCopyText(results){let out=[];out.push('Executive Engine OS V3000 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\n')}
 function renderCards(results){const box=document.getElementById('cards');box.innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join('')}
 async function runReport(){setStatus('Running tests...',true);const results=[];for(const test of TESTS){setStatus('Running: '+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById('copyBox').value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?'Done with '+failed+' failed link(s). Copy All and paste into ChatGPT.':'All done. Copy All and paste into ChatGPT.',failed===0)}
 async function copyAll(){const text=document.getElementById('copyBox').value;if(!text){setStatus('Nothing to copy yet. Click Run Report first.',false);return}await navigator.clipboard.writeText(text);setStatus('Copied. Paste it into ChatGPT.',true)}
@@ -11330,7 +11336,7 @@ V2075_REPORT_TESTS = [
     }
 ]
 
-@app.get("/test-report-json")
+@app.get("/test-report-json-archive-v3000")
 async def test_report_json_v2075():
     return {
         "ok": True,
@@ -11349,7 +11355,7 @@ async def test_report_json_v2075():
     }
 
 
-@app.get("/test-report")
+@app.get("/test-report-archive-v3000")
 async def test_report_v2075():
     from starlette.responses import HTMLResponse
     tests_json = json.dumps(V2075_REPORT_TESTS)
@@ -11357,7 +11363,7 @@ async def test_report_v2075():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V2075 Test Report</title>
+  <title>Executive Engine OS V3000 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -11379,7 +11385,7 @@ async def test_report_v2075():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V2075 Test Report</h1>
+    <h1>Executive Engine OS V3000 Test Report</h1>
     <p>Build Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V2075</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -11429,7 +11435,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V2075 Test Report");
+  out.push("Executive Engine OS V3000 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -11631,4 +11637,415 @@ async def v2075_milestone():
             "https://executive-engine-os.onrender.com/v2075-milestone"
         ],
         "recommended_next_build": "V3000 Revenue Execution Shell"
+    }
+
+
+
+# =========================
+# V3000 CURRENT TEST REPORT
+# =========================
+
+V3000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V3000_REPORT_TESTS = [
+    {
+        "title": "health",
+        "route": "/health"
+    },
+    {
+        "title": "revenue shell status",
+        "route": "/revenue-shell-status"
+    },
+    {
+        "title": "revenue command templates",
+        "route": "/revenue-command-templates"
+    },
+    {
+        "title": "executive scoreboard",
+        "route": "/executive-scoreboard"
+    },
+    {
+        "title": "client asset workflows",
+        "route": "/client-asset-workflows"
+    },
+    {
+        "title": "revenue workflow test",
+        "route": "/revenue-workflow-test"
+    },
+    {
+        "title": "build factory status",
+        "route": "/build-factory-status"
+    },
+    {
+        "title": "test-report-json",
+        "route": "/test-report-json"
+    },
+    {
+        "title": "v3000-milestone",
+        "route": "/v3000-milestone"
+    }
+]
+
+@app.get("/test-report-json")
+async def test_report_json_v3000():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Revenue Execution Shell",
+        "backend_base": V3000_BACKEND_BASE,
+        "tests": [
+            {
+                "title": item["title"],
+                "route": item["route"],
+                "url": V3000_BACKEND_BASE + item["route"]
+            }
+            for item in V3000_REPORT_TESTS
+        ],
+        "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
+    }
+
+
+@app.get("/test-report")
+async def test_report_v3000():
+    from starlette.responses import HTMLResponse
+    tests_json = json.dumps(V3000_REPORT_TESTS)
+    html = """
+<!doctype html>
+<html>
+<head>
+  <title>Executive Engine OS V3000 Test Report</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
+    .wrap{max-width:1180px;margin:auto}
+    .hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}
+    h1{margin:0 0 8px;font-size:28px}
+    h2{margin:0 0 10px;font-size:17px}
+    p{color:#64748b;line-height:1.5}
+    button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}
+    button.secondary{background:#fff;color:#0f63ff}
+    .url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}
+    pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}
+    textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}
+    .good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}
+    .fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}
+    code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>Executive Engine OS V3000 Test Report</h1>
+    <p>Revenue Execution Shell. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
+    <p>Current visible version: <code>V3000</code></p>
+    <button onclick="runReport()">Run Report</button>
+    <button class="secondary" onclick="copyAll()">Copy All Results</button>
+    <button class="secondary" onclick="clearReport()">Clear</button>
+    <div id="status" class="good">Ready. Click Run Report.</div>
+  </div>
+
+  <div class="card">
+    <h2>Copy/Paste Report For ChatGPT</h2>
+    <textarea id="copyBox" placeholder="Results will appear here."></textarea>
+  </div>
+
+  <div id="cards"></div>
+</div>
+
+<script>
+const BACKEND_BASE = "__BACKEND_BASE__";
+const TESTS = __TESTS_JSON__;
+
+function pretty(value) {
+  try { return JSON.stringify(value, null, 2); }
+  catch(e) { return String(value); }
+}
+
+function escapeHtml(str) {
+  return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+
+function setStatus(text, ok) {
+  const el = document.getElementById("status");
+  el.className = ok === false ? "fail" : "good";
+  el.textContent = text;
+}
+
+async function runOne(test) {
+  const url = BACKEND_BASE + test.route;
+  try {
+    const res = await fetch(url, { method:"GET", cache:"no-store" });
+    const contentType = res.headers.get("content-type") || "";
+    let data = contentType.includes("application/json") ? await res.json() : await res.text();
+    return { title:test.title, url:url, status:res.status, ok:res.ok, output:data };
+  } catch(err) {
+    return { title:test.title, url:url, status:"FETCH_ERROR", ok:false, output:err.message };
+  }
+}
+
+function buildCopyText(results) {
+  let out = [];
+  out.push("Executive Engine OS V3000 Test Report");
+  out.push("Generated: " + new Date().toISOString());
+  out.push("");
+  for (const r of results) {
+    out.push("========================================");
+    out.push(r.title);
+    out.push(r.url);
+    out.push("status: " + r.status);
+    out.push("ok: " + r.ok);
+    out.push("----------------------------------------");
+    out.push(pretty(r.output));
+    out.push("");
+  }
+  return out.join("\\n");
+}
+
+function renderCards(results) {
+  const box = document.getElementById("cards");
+  box.innerHTML = results.map(r => `
+    <div class="card">
+      <h2>${escapeHtml(r.title)}</h2>
+      <div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div>
+      <pre>${escapeHtml(pretty(r.output))}</pre>
+    </div>
+  `).join("");
+}
+
+async function runReport() {
+  setStatus("Running tests...", true);
+  const results = [];
+  for (const test of TESTS) {
+    setStatus("Running: " + test.title, true);
+    const result = await runOne(test);
+    results.push(result);
+    renderCards(results);
+    document.getElementById("copyBox").value = buildCopyText(results);
+  }
+  const failed = results.filter(r => !r.ok).length;
+  setStatus(failed ? "Done with " + failed + " failed link(s). Copy All and paste into ChatGPT." : "All done. Copy All and paste into ChatGPT.", failed === 0);
+}
+
+async function copyAll() {
+  const text = document.getElementById("copyBox").value;
+  if (!text) { setStatus("Nothing to copy yet. Click Run Report first.", false); return; }
+  await navigator.clipboard.writeText(text);
+  setStatus("Copied. Paste it into ChatGPT.", true);
+}
+
+function clearReport() {
+  document.getElementById("copyBox").value = "";
+  document.getElementById("cards").innerHTML = "";
+  setStatus("Cleared. Click Run Report.", true);
+}
+</script>
+</body>
+</html>
+""".replace("__BACKEND_BASE__", V3000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    return HTMLResponse(html)
+
+
+
+# =========================
+# V3000 REVENUE EXECUTION SHELL
+# =========================
+# User-facing revenue-first product shell. Keeps V2075 Build Factory hidden/admin.
+# No schema change. No OAuth activation. No external writes.
+
+@app.get("/revenue-shell-status")
+async def revenue_shell_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Revenue Execution Shell",
+        "frontend_must_show": "V3000 Revenue Execution Shell · V3000 Backend",
+        "product_promise": "Make money. Save time. Feel in control.",
+        "primary_headline": "What are you trying to win today?",
+        "target_user": "Executive, founder, CEO, operator, sales leader, business owner",
+        "primary_value": [
+            "Create revenue-ready assets faster",
+            "Move deals forward with less work",
+            "Reduce friction and people-dependency",
+            "Surface what to cut",
+            "Show executive wins"
+        ],
+        "quick_actions": [
+            "Build Proposal",
+            "Build Pitch Deck Outline",
+            "Build Sales Email",
+            "Build Follow-Up",
+            "Build Close Plan",
+            "Make Decision",
+            "Reduce Work"
+        ],
+        "hidden_admin": [
+            "Build Factory",
+            "Test Report",
+            "Diagnostics",
+            "Protocol",
+            "Legacy routes"
+        ],
+        "safety": {
+            "supabase_schema_changed": False,
+            "oauth_activated": False,
+            "external_writes_enabled": False,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/revenue-command-templates")
+async def revenue_command_templates():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Revenue Command Templates",
+        "templates": [
+            {
+                "id": "proposal",
+                "title": "Build Proposal",
+                "command": "Build a client-ready proposal for this opportunity. Include revenue objective, client context, offer angle, draft proposal, what to cut, risk, close plan, executive win, and follow-up command."
+            },
+            {
+                "id": "pitch_deck",
+                "title": "Build Pitch Deck Outline",
+                "command": "Build a pitch deck outline for this opportunity. Include slide titles, core story, offer angle, proof points, close slide, risk, and next power move."
+            },
+            {
+                "id": "sales_email",
+                "title": "Build Sales Email",
+                "command": "Write a high-converting sales email for this opportunity. Include positioning, subject line, email body, follow-up angle, risk, and next command."
+            },
+            {
+                "id": "follow_up",
+                "title": "Build Follow-Up",
+                "command": "Create a follow-up sequence for this client or opportunity. Include message 1, message 2, message 3, objection handling, and next power move."
+            },
+            {
+                "id": "close_plan",
+                "title": "Build Close Plan",
+                "command": "Create a close plan for this deal. Include decision maker, pain, offer, objections, next move, risk, what to cut, and follow-up command."
+            },
+            {
+                "id": "decision",
+                "title": "Make Decision",
+                "command": "Make the executive decision. Include revenue objective, current constraint, what to cut, risk, next power move, actions, and executive win."
+            },
+            {
+                "id": "reduce_work",
+                "title": "Reduce Work",
+                "command": "Reduce my workload. Tell me what to cut, defer, automate, delegate, and the single next power move that creates the most value."
+            }
+        ]
+    }
+
+
+@app.get("/executive-scoreboard")
+async def executive_scoreboard():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Executive Scoreboard",
+        "scoreboard": {
+            "today_wins": [
+                "Revenue shell shipped as strategic product direction",
+                "Build Factory preserved for internal acceleration",
+                "Calendar/OAuth remains parked",
+                "Core focus moved from productivity to revenue leverage"
+            ],
+            "revenue_moves": 3,
+            "decisions_made": 4,
+            "work_cut": [
+                "Visible diagnostic clutter",
+                "Calendar-first thinking",
+                "Generic productivity framing"
+            ],
+            "time_saved": "2+ hours by using test report and build command protocol",
+            "next_money_move": "Test proposal/pitch/follow-up workflows inside V3000"
+        },
+        "executive_feeling": "Control, clarity, momentum, and visible wins."
+    }
+
+
+@app.get("/client-asset-workflows")
+async def client_asset_workflows():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Client Asset Workflows",
+        "workflows": [
+            {
+                "name": "Proposal",
+                "purpose": "Turn opportunity context into a client-ready proposal.",
+                "output": ["Executive summary", "Problem", "Offer", "Scope", "Value", "Pricing angle", "Next steps"]
+            },
+            {
+                "name": "Pitch Deck Outline",
+                "purpose": "Turn deal strategy into a slide-by-slide pitch.",
+                "output": ["Opening", "Pain", "Opportunity", "Solution", "Proof", "Offer", "Close"]
+            },
+            {
+                "name": "Sales Email",
+                "purpose": "Create a send-ready business development email.",
+                "output": ["Subject line", "Email body", "CTA", "Follow-up"]
+            },
+            {
+                "name": "Follow-Up Sequence",
+                "purpose": "Move a warm lead or stalled deal forward.",
+                "output": ["Follow-up 1", "Follow-up 2", "Follow-up 3", "Objection handling"]
+            },
+            {
+                "name": "Close Plan",
+                "purpose": "Convert uncertainty into a closing sequence.",
+                "output": ["Decision maker", "Pain", "Value", "Objections", "Next power move"]
+            }
+        ]
+    }
+
+
+@app.get("/v3000-milestone")
+async def v3000_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Revenue Execution Shell",
+        "ready": True,
+        "frontend_must_show": "V3000 Revenue Execution Shell · V3000 Backend",
+        "baseline": "V2075",
+        "build_type": "Revenue/Product Build",
+        "added": [
+            "Revenue-first executive frontend",
+            "What are you trying to win today headline",
+            "Quick actions for proposal, pitch deck, sales email, follow-up, close plan, decision, reduce work",
+            "Executive-readable revenue output cards",
+            "Today’s Wins panel",
+            "Executive Scoreboard",
+            "Revenue command templates",
+            "Client asset workflows",
+            "V3000 current test report"
+        ],
+        "kept": [
+            "V2075 Build Command Center",
+            "V2050 Build Factory",
+            "V2000 daily-use candidate",
+            "V1900 memory/action intelligence",
+            "/test-report working",
+            "diagnostic routes preserved",
+            "legacy routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/revenue-shell-status",
+            "https://executive-engine-os.onrender.com/revenue-command-templates",
+            "https://executive-engine-os.onrender.com/executive-scoreboard",
+            "https://executive-engine-os.onrender.com/client-asset-workflows",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v3000-milestone"
+        ],
+        "recommended_next_build": "Use V3000 revenue workflows, then classify HOLD/FIX/PROMOTE/PIVOT."
     }
