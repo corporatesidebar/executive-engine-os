@@ -3,21 +3,12 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V1800</title>
+  <title>Executive Engine OS — V1850</title>
   <style>
     :root{
-      --bg:#f5f7fb;
-      --panel:#ffffff;
-      --ink:#071226;
-      --muted:#64748b;
-      --line:#dbe5f1;
-      --blue:#0f63ff;
-      --orange:#ff6a00;
-      --green:#10b981;
-      --red:#ef4444;
-      --nav:#071226;
-      --shadow:0 18px 45px rgba(7,18,38,.08);
-      --radius:20px;
+      --bg:#f5f7fb;--panel:#fff;--ink:#071226;--muted:#64748b;--line:#dbe5f1;
+      --blue:#0f63ff;--orange:#ff6a00;--green:#10b981;--red:#ef4444;--nav:#071226;
+      --shadow:0 18px 45px rgba(7,18,38,.08);--radius:20px;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
@@ -43,14 +34,14 @@
     .page{display:none}.page.active{display:block}
     .stable-panel{border:1px solid #bbf7d0;background:linear-gradient(180deg,#ecfdf5,#f8fffb);border-radius:18px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
     .stable-panel strong{display:block;color:#047857;font-size:14px;margin-bottom:4px}.stable-panel span{display:block;color:#065f46;font-size:12px;line-height:1.4}
-    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-bottom:16px}
+    .hero-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:16px;margin-bottom:16px}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
     .card.soft{box-shadow:0 10px 28px rgba(7,18,38,.05)}
     .eyebrow{font-size:11px;color:#0f63ff;text-transform:uppercase;letter-spacing:.14em;font-weight:950;margin-bottom:8px}
     h2,h3{letter-spacing:-.035em;margin:0 0 8px}h2{font-size:30px;line-height:1.08}h3{font-size:18px;line-height:1.15}
     p{margin:0 0 12px;color:var(--muted);line-height:1.55;font-size:13px}
-    textarea{width:100%;min-height:168px;border:1px solid #cbd5e1;border-radius:18px;padding:15px;color:var(--ink);background:#fff;outline:none;resize:vertical;font-size:14px;line-height:1.55;font-weight:600}
+    textarea{width:100%;min-height:170px;border:1px solid #cbd5e1;border-radius:18px;padding:15px;color:var(--ink);background:#fff;outline:none;resize:vertical;font-size:14px;line-height:1.55;font-weight:600}
     textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .btn{border:1px solid var(--line);background:#fff;color:#334155;border-radius:13px;padding:10px 13px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px}
@@ -63,7 +54,15 @@
     .workflow-card{border:1px solid var(--line);background:#fff;border-left:5px solid var(--blue);border-radius:18px;padding:15px;cursor:pointer}.workflow-card:hover{background:#eff6ff;border-color:#93c5fd}.workflow-card b{display:block;margin-bottom:5px}.workflow-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
     .link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.link-grid a{text-decoration:none;border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:12px;color:#0f63ff;font-weight:900;font-size:13px;word-break:break-word}.link-grid a:hover{border-color:#93c5fd;background:#eff6ff}
     .callout{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:16px;padding:13px;font-size:13px;font-weight:800;line-height:1.45}
-    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.two-col,.three-col,.four-col,.link-grid{grid-template-columns:1fr}.topbar{position:relative}.content{padding:16px}}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .result-block{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(7,18,38,.04)}
+    .result-block.major{grid-column:1 / -1;border-left:6px solid var(--blue);background:#f8fbff}
+    .result-block.cut{border-left:6px solid var(--orange);background:#fff7ed}
+    .result-block.risk{border-left:6px solid var(--red);background:#fffafa}
+    .result-block h4{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#64748b}
+    .result-block div{font-size:14px;line-height:1.5;color:#071226}
+    .actions-list{margin:0;padding-left:18px}.actions-list li{margin:6px 0;font-size:14px;line-height:1.45}
+    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.two-col,.three-col,.four-col,.link-grid,.result-grid{grid-template-columns:1fr}.result-block.major{grid-column:auto}.topbar{position:relative}.content{padding:16px}}
   </style>
 </head>
 <body>
@@ -75,32 +74,14 @@
     </div>
 
     <div class="nav-section">Operate</div>
-    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">Product Dashboard <span class="pill">New</span></button>
-    <button class="nav-btn" data-page="operator" onclick="showPage('operator')">Operator Console <span class="pill">Control</span></button>
+    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">Core Dashboard <span class="pill">V1850</span></button>
     <button class="nav-btn" data-page="command" onclick="showPage('command')">Command Center</button>
-    <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Workflows</button>
+    <button class="nav-btn" data-page="quality" onclick="showPage('quality')">Core Quality <span class="pill">New</span></button>
+    <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Execution Loop</button>
 
     <div class="nav-section">Intelligence</div>
     <button class="nav-btn" data-page="cockpit" onclick="showPage('cockpit')">Executive Cockpit</button>
-    <button class="nav-btn" data-page="intelligence" onclick="showPage('intelligence')">Intelligence Board <span class="pill">Signals</span></button>
-    <button class="nav-btn" data-page="calendar" onclick="showPage('calendar')">Calendar Prep</button>
-    <button class="nav-btn" data-page="connectors" onclick="showPage('connectors')">Connectors</button>
-
-    <div class="nav-section">Workflow</div>
-    <button class="nav-btn" data-page="progress" onclick="showPage('progress')">Progress <span class="pill">Local</span></button>
-
-    <button class="nav-btn" data-page="candidate" onclick="showPage('candidate')">Candidate Status <span class="pill">V1800</span></button>
-    <button class="nav-btn" data-page="qa" onclick="showPage('qa')">QA Status <span class="pill">Pass</span></button>
-
-    <button class="nav-btn" data-page="calendar-env" onclick="showPage('calendar-env')">Calendar Env <span class="pill">Prep</span></button>
-
-    <button class="nav-btn" data-page="calendar-safety" onclick="showPage('calendar-safety')">Calendar Safety <span class="pill">Gate</span></button>
-
-    <button class="nav-btn" data-page="token-plan" onclick="showPage('token-plan')">Token Plan <span class="pill">Preview</span></button>
-
-    <button class="nav-btn" data-page="calendar-ready" onclick="showPage('calendar-ready')">Calendar Ready <span class="pill">0/6</span></button>
-
-    <button class="nav-btn" data-page="integration-prep" onclick="showPage('integration-prep')">Integration Prep <span class="pill">Stable</span></button>
+    <button class="nav-btn" data-page="integration-prep" onclick="showPage('integration-prep')">Integration Prep</button>
 
     <div class="nav-section">System</div>
     <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report <span class="pill">Copy</span></button>
@@ -108,21 +89,21 @@
 
     <div class="side-card">
       <small>Stable Checkpoint</small>
-      <strong>V1800 Stable Integration Prep</strong>
+      <strong>V1850 Core OS Quality</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V1800 Stable Integration Prep · V1800 Backend</div>
+      <div class="version-badge">V1850 Core OS Quality · V1850 Backend</div>
     </div>
 
     <section class="content">
       <div class="stable-panel">
         <div>
-          <strong>Stable Version: V1800</strong>
-          <span>Built from V1250. Product dashboard + real workflows. /test-report preserved. OAuth inactive. External writes blocked.</span>
+          <strong>Stable Version: V1850</strong>
+          <span>Core output quality upgrade. /test-report preserved. OAuth inactive. External writes blocked. Manual execution only.</span>
         </div>
         <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
       </div>
@@ -130,37 +111,37 @@
       <div id="page-dashboard" class="page active">
         <div class="hero-grid">
           <div class="card">
-            <div class="eyebrow">Product Dashboard</div>
-            <h2>Run the OS from one stable dashboard.</h2>
-            <p>V1800 is the stable product candidate rollup: dashboard, workflows, intelligence, operator console, and testing.</p>
+            <div class="eyebrow">Core OS Quality</div>
+            <h2>Make the OS useful every morning.</h2>
+            <p>V1850 prioritizes core output quality over integrations: sharper next moves, current constraints, what to cut, next decisions, and recommended commands.</p>
             <div class="four-col">
-              <div class="metric"><small>Backend</small><strong>V1800</strong></div>
-              <div class="metric"><small>Execution</small><strong class="green">Manual</strong></div>
+              <div class="metric"><small>Backend</small><strong>V1850</strong></div>
+              <div class="metric"><small>Priority</small><strong class="green">Core Output</strong></div>
               <div class="metric"><small>OAuth</small><strong>Inactive</strong></div>
               <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
             </div>
             <div class="toolbar">
               <button class="btn primary" onclick="showPage('command')">Run Command</button>
-              <button class="btn" onclick="showPage('workflow')">Open Workflows</button>
-              <button class="btn" onclick="openBackend('/product-dashboard')">Raw Dashboard</button>
+              <button class="btn" onclick="showPage('quality')">Core Quality</button>
+              <button class="btn" onclick="openBackend('/core-quality-status')">Quality Status</button>
             </div>
           </div>
 
           <div class="card soft">
-            <div class="eyebrow">Next Move</div>
-            <h3>Use the daily operating loop.</h3>
-            <p>Start day, run command, review queue, review risks, then end day summary.</p>
+            <div class="eyebrow">Operating Decision</div>
+            <h3>Calendar stays parked. Core OS gets sharper.</h3>
+            <p>The OS must first become excellent at decisions, actions, what to cut, and daily execution.</p>
             <div class="list">
-              <div class="item"><b>Current Constraint</b><span>Action load is high. OAuth is not ready because env vars are not set.</span></div>
-              <div class="item"><b>Recommended Command</b><span>Review V1800 dashboard and choose the next product workflow.</span></div>
+              <div class="item"><b>Current Constraint</b><span>Product value depends on output quality, not more integrations.</span></div>
+              <div class="item"><b>Recommended Command</b><span>Review the core OS and tell me what to cut, improve, and execute next.</span></div>
             </div>
           </div>
         </div>
 
         <div class="three-col">
-          <div class="workflow-card" onclick="loadWorkflowCommand('start_day')"><b>Start Day</b><span>Set focus, constraint, next decision, and priority.</span></div>
-          <div class="workflow-card" onclick="loadWorkflowCommand('review_queue')"><b>Review Queue</b><span>Complete, cut, or defer open actions.</span></div>
-          <div class="workflow-card" onclick="loadWorkflowCommand('end_day')"><b>End Day</b><span>Close the loop and set tomorrow’s start.</span></div>
+          <div class="workflow-card" onclick="loadTemplate('daily')"><b>Daily Brief</b><span>Generate next move, constraint, what to cut, and actions.</span></div>
+          <div class="workflow-card" onclick="loadTemplate('cut')"><b>Cut Complexity</b><span>Force what to stop, defer, or simplify.</span></div>
+          <div class="workflow-card" onclick="loadTemplate('quality')"><b>Quality Review</b><span>Review the OS and identify the next upgrade.</span></div>
         </div>
       </div>
 
@@ -169,46 +150,60 @@
           <div class="card">
             <div class="eyebrow">Executive Command</div>
             <h2>Command Center</h2>
-            <p>Run decisions, actions, daily focus, constraints, risk, and next moves.</p>
-            <textarea id="input" placeholder="Enter command...">Review V1800 dashboard and identify the single highest-impact product workflow to improve next.</textarea>
+            <p>Output now renders as executive-readable cards instead of raw JSON.</p>
+            <textarea id="input" placeholder="Enter command...">Review the current Executive Engine OS. Tell me the next move, current constraint, next decision, what to cut, actions, risk, execution score, and recommended command.</textarea>
             <div class="toolbar">
               <button class="btn primary" onclick="runEngine()">Run Engine</button>
               <button class="btn" onclick="loadTemplate('daily')">Daily Brief</button>
+              <button class="btn" onclick="loadTemplate('cut')">What to Cut</button>
               <button class="btn" onclick="loadTemplate('actions')">Reduce Actions</button>
-              <button class="btn" onclick="loadTemplate('calendar')">Calendar Review</button>
+              <button class="btn" onclick="loadTemplate('quality')">Quality Review</button>
               <button class="btn" onclick="clearOutput()">Clear</button>
             </div>
           </div>
           <div class="card soft">
-            <div class="eyebrow">Stable Controls</div>
-            <h3>V1800 status</h3>
-            <p>Frontend hides old checkpoint labels. Backend diagnostic routes remain preserved.</p>
+            <div class="eyebrow">Required Output</div>
+            <h3>V1850 contract</h3>
+            <p>Every strong output should include next move, current constraint, next decision, what to cut, risk, execution score, and recommended command.</p>
             <div class="toolbar">
-              <button class="btn dark" onclick="openBackend('/stable-version')">Stable Version</button>
-              <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-              <button class="btn" onclick="openBackend('/product-dashboard')">Product Dashboard</button>
+              <button class="btn dark" onclick="openBackend('/core-output-contract')">Output Contract</button>
+              <button class="btn" onclick="openBackend('/core-command-templates')">Templates</button>
+              <button class="btn" onclick="openBackend('/v1850-milestone')">V1850 Milestone</button>
             </div>
           </div>
         </div>
-        <div class="card"><h3>Output</h3><div id="output" class="output">Ready. Choose a workflow or run a command.</div></div>
+        <div id="resultCards" class="result-grid"></div>
+        <div class="card" style="margin-top:16px"><h3>Raw Output</h3><div id="output" class="output">Ready. Choose a workflow or run a command.</div></div>
+      </div>
+
+      <div id="page-quality" class="page">
+        <div class="card">
+          <div class="eyebrow">Core Quality</div>
+          <h2>Quality Contract</h2>
+          <p>Review the output contract and core command templates.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCoreQuality()">Load Core Quality</button>
+            <button class="btn" onclick="openBackend('/execution-loop')">Execution Loop</button>
+            <button class="btn" onclick="openBackend('/core-command-templates')">Command Templates</button>
+          </div>
+          <div id="qualityOutput" class="output" style="margin-top:12px">Core quality not loaded.</div>
+        </div>
       </div>
 
       <div id="page-workflow" class="page">
         <div class="card">
-          <div class="eyebrow">Workflow Dashboard</div>
-          <h2>Daily Operating Workflow</h2>
-          <p>Click a workflow to load the command. Run it manually from Command Center.</p>
+          <div class="eyebrow">Execution Loop</div>
+          <h2>Core Execution Loop</h2>
+          <p>Run the OS like a daily command loop, not a pile of pages.</p>
           <div class="three-col">
-            <div class="workflow-card" onclick="loadWorkflowCommand('start_day')"><b>1. Start Day</b><span>Set focus and operating constraint.</span></div>
-            <div class="workflow-card" onclick="loadWorkflowCommand('daily_brief')"><b>2. Daily Brief</b><span>Build the day’s execution brief.</span></div>
-            <div class="workflow-card" onclick="loadWorkflowCommand('run_command')"><b>3. Run Command</b><span>Convert input into decisions/actions.</span></div>
-            <div class="workflow-card" onclick="loadWorkflowCommand('review_queue')"><b>4. Review Queue</b><span>Cut, defer, complete actions.</span></div>
-            <div class="workflow-card" onclick="loadWorkflowCommand('review_risks')"><b>5. Review Risks</b><span>Surface recurring risks.</span></div>
-            <div class="workflow-card" onclick="loadWorkflowCommand('end_day')"><b>6. End Day</b><span>Close the loop.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('start_day')"><b>1. Start Day</b><span>Focus, constraint, next decision, what to cut.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('run_command')"><b>2. Run Command</b><span>Decision, next move, action plan, risk.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('reduce_queue')"><b>3. Reduce Queue</b><span>Complete, cut, or defer.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('review_risk')"><b>4. Review Risk</b><span>Surface the bottleneck.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('end_day')"><b>5. End Day</b><span>Close loops and set tomorrow.</span></div>
           </div>
           <div class="toolbar">
-            <button class="btn" onclick="openBackend('/workflow-dashboard')">Raw Workflow Dashboard</button>
-            <button class="btn" onclick="openBackend('/product-navigation-map')">Navigation Map</button>
+            <button class="btn" onclick="openBackend('/execution-loop')">Raw Execution Loop</button>
           </div>
         </div>
       </div>
@@ -226,35 +221,17 @@
         </div>
       </div>
 
-      <div id="page-calendar" class="page">
-        <div class="two-col">
-          <div class="card">
-            <div class="eyebrow">Calendar Prep</div>
-            <h2>Calendar Candidate</h2>
-            <p>Read-only candidate only. Google env vars are not set. OAuth remains inactive.</p>
-            <div class="toolbar">
-              <button class="btn primary" onclick="openBackend('/calendar/connect-status')">Connect Status</button>
-              <button class="btn" onclick="openBackend('/calendar/auth-url')">Auth URL</button>
-              <button class="btn" onclick="openBackend('/oauth/live-gates')">OAuth Gates</button>
-            </div>
-          </div>
-          <div class="card"><h3>Activation Blocked</h3><div class="callout">Do not activate OAuth until Google env vars, token storage, and disconnect/revoke flows are ready.</div></div>
-        </div>
-      </div>
-
-      <div id="page-connectors" class="page">
+      <div id="page-integration-prep" class="page">
         <div class="card">
-          <div class="eyebrow">Connector Control</div>
-          <h2>Connectors</h2>
-          <p>Calendar, files, email, and CRM remain read-only prep or draft-only future.</p>
-          <div class="link-grid">
-            <a href="#" onclick="openBackend('/connector-command-center');return false;">Connector Command Center</a>
-            <a href="#" onclick="openBackend('/approval-queue');return false;">Approval Queue</a>
-            <a href="#" onclick="openBackend('/security-gates');return false;">Security Gates</a>
-            <a href="#" onclick="openBackend('/files/status');return false;">Files Status</a>
-            <a href="#" onclick="openBackend('/google/connector-blueprint');return false;">Google Blueprint</a>
-            <a href="#" onclick="openBackend('/tokens/storage-health');return false;">Token Storage Health</a>
+          <div class="eyebrow">Integration Prep</div>
+          <h2>V1800 Integration Prep Preserved</h2>
+          <p>Calendar/OAuth remains parked. Integration prep is preserved but not activated.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="openBackend('/integration-prep-status')">Integration Prep Status</button>
+            <button class="btn" onclick="openBackend('/calendar/readiness-dashboard')">Calendar Readiness</button>
+            <button class="btn" onclick="openBackend('/oauth/live-gates')">OAuth Gates</button>
           </div>
+          <div class="callout">Do not activate OAuth until the core OS output is excellent and Google env/token storage are ready.</div>
         </div>
       </div>
 
@@ -267,170 +244,20 @@
             <div class="toolbar">
               <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1850-milestone')">V1850 Milestone</button>
             </div>
           </div>
           <div class="card">
             <h3>Direct Test Links</h3>
             <div class="link-grid">
               <a href="#" onclick="openBackend('/health');return false;">Health</a>
-              <a href="#" onclick="openBackend('/stable-version');return false;">Stable Version</a>
-              <a href="#" onclick="openBackend('/product-dashboard');return false;">Product Dashboard</a>
-              <a href="#" onclick="openBackend('/workflow-dashboard');return false;">Workflow Dashboard</a>
+              <a href="#" onclick="openBackend('/core-quality-status');return false;">Quality Status</a>
+              <a href="#" onclick="openBackend('/core-output-contract');return false;">Output Contract</a>
+              <a href="#" onclick="openBackend('/execution-loop');return false;">Execution Loop</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v1800-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v1850-milestone');return false;">Milestone</a>
             </div>
           </div>
-        </div>
-      </div>
-
-      
-      <div id="page-progress" class="page">
-        <div class="card">
-          <div class="eyebrow">Workflow Persistence</div>
-          <h2>Workflow Progress</h2>
-          <p>V1800 tracks workflow progress locally in the browser. No Supabase schema change.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadWorkflowState()">Load Workflow State</button>
-            <button class="btn" onclick="resetLocalProgress()">Reset Local Progress</button>
-            <button class="btn" onclick="openBackend('/workflow/checkpoints')">Raw Checkpoints</button>
-          </div>
-          <div id="progressOutput" class="output" style="margin-top:12px">Progress not loaded.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-intelligence" class="page">
-        <div class="card">
-          <div class="eyebrow">Intelligence Board</div>
-          <h2>Execution Signals</h2>
-          <p>V1800 surfaces product signals and recommended commands. No automation loop.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadIntelligenceBoard()">Load Intelligence Board</button>
-            <button class="btn" onclick="openBackend('/intelligence/recommended-commands')">Recommended Commands</button>
-          </div>
-          <div id="intelligenceOutput" class="output" style="margin-top:12px">Intelligence Board not loaded. Click Load Intelligence Board to review execution signals.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-operator" class="page">
-        <div class="card">
-          <div class="eyebrow">Operator Console</div>
-          <h2>Manual Command Control</h2>
-          <p>V1800 clarifies safe actions, blocked actions, and command palette control.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadOperatorConsole()">Load Operator Console</button>
-            <button class="btn" onclick="loadCommandPalette()">Load Command Palette</button>
-            <button class="btn" onclick="openBackend('/operator-console')">Raw Console</button>
-          </div>
-          <div id="operatorOutput" class="output" style="margin-top:12px">Operator Console not loaded. Click Load Operator Console or Command Palette.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-candidate" class="page">
-        <div class="card">
-          <div class="eyebrow">Product Candidate Stable</div>
-          <h2>V1800 Candidate Status</h2>
-          <p>Stable rollup: dashboard, workflows, intelligence board, operator console, and test report.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadCandidateStatus()">Load Candidate Status</button>
-            <button class="btn" onclick="openBackend('/product-candidate/checklist')">Checklist</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="candidateOutput" class="output" style="margin-top:12px">Candidate status not loaded. Click Load Candidate Status.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-qa" class="page">
-        <div class="card">
-          <div class="eyebrow">Stable Integration Prep</div>
-          <h2>V1800 QA Status</h2>
-          <p>Checks frontend navigation, workflow routes, stable labels, test report link, and safety gates.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadQaStatus()">Load QA Status</button>
-            <button class="btn" onclick="openBackend('/workflow-qa-check')">Workflow QA Check</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="qaOutput" class="output" style="margin-top:12px">QA status not loaded.</div>
-        </div>
-      </div>
-
-
-      
-      <div id="page-calendar-env" class="page">
-        <div class="card">
-          <div class="eyebrow">Calendar Environment Setup</div>
-          <h2>V1800 Calendar Env Prep</h2>
-          <p>Prep only. No live OAuth activation, token exchange, or external writes.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadCalendarEnvPrep()">Load Env Prep</button>
-            <button class="btn" onclick="openBackend('/calendar/env-checklist')">Env Checklist</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="calendarEnvOutput" class="output" style="margin-top:12px">Calendar env prep not loaded.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-calendar-safety" class="page">
-        <div class="card">
-          <div class="eyebrow">Stable Integration Prep</div>
-          <h2>V1800 Safety Gate</h2>
-          <p>Approval gates for future Calendar OAuth. No activation in this build.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadCalendarSafety()">Load Safety Gate</button>
-            <button class="btn" onclick="openBackend('/calendar/activation-readiness')">Activation Readiness</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="calendarSafetyOutput" class="output" style="margin-top:12px">Calendar safety not loaded.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-token-plan" class="page">
-        <div class="card">
-          <div class="eyebrow">Stable Integration Prep</div>
-          <h2>V1800 Migration Plan</h2>
-          <p>Preview only. No Supabase schema change or token storage activation.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadTokenPlan()">Load Token Plan</button>
-            <button class="btn" onclick="openBackend('/tokens/migration-sql-preview')">SQL Preview</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="tokenPlanOutput" class="output" style="margin-top:12px">Token plan not loaded.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-calendar-ready" class="page">
-        <div class="card">
-          <div class="eyebrow">Stable Integration Prep</div>
-          <h2>V1800 Readiness Dashboard</h2>
-          <p>Shows what is missing before live Calendar activation. Activation remains blocked.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadCalendarReadiness()">Load Readiness</button>
-            <button class="btn" onclick="openBackend('/calendar/activation-command')">Activation Command</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="calendarReadyOutput" class="output" style="margin-top:12px">Calendar readiness not loaded.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-integration-prep" class="page">
-        <div class="card">
-          <div class="eyebrow">Stable Integration Prep</div>
-          <h2>V1800 Integration Prep</h2>
-          <p>Rollup of Calendar env setup, safety gate, token plan, and readiness dashboard. OAuth remains inactive.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadIntegrationPrep()">Load Integration Prep</button>
-            <button class="btn" onclick="openBackend('/integration-prep/checklist')">Checklist</button>
-            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
-          </div>
-          <div id="integrationPrepOutput" class="output" style="margin-top:12px">Integration prep not loaded.</div>
         </div>
       </div>
 
@@ -443,9 +270,9 @@
             <a href="#" onclick="openBackend('/health');return false;">Health</a>
             <a href="#" onclick="openBackend('/diagnostic');return false;">Diagnostic</a>
             <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
-            <a href="#" onclick="openBackend('/stable-version');return false;">Stable Version</a>
-            <a href="#" onclick="openBackend('/frontend-polish-status');return false;">Frontend Polish Status</a>
-            <a href="#" onclick="openBackend('/v1800-milestone');return false;">V1800 Milestone</a>
+            <a href="#" onclick="openBackend('/core-quality-status');return false;">Core Quality</a>
+            <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
+            <a href="#" onclick="openBackend('/v1850-milestone');return false;">V1850 Milestone</a>
           </div>
         </div>
       </div>
@@ -456,13 +283,19 @@
 <script>
 const API = "https://executive-engine-os.onrender.com";
 
-const workflowCommands = {
-  start_day: "Start my day. Identify today's focus, current constraint, next decision, highest-impact action, risk, priority, and recommended command.",
-  daily_brief: "Create my daily operating brief with focus, decisions, risks, actions, priority, and next command.",
-  run_command: "Turn this into a decision, next move, action plan, risk, and priority.",
-  review_queue: "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.",
-  review_risks: "Review current execution risks, recurring constraints, and mitigation actions.",
-  end_day: "Create my end-day summary. What was decided, what remains open, what risk remains, and what starts tomorrow?"
+const templates = {
+  daily: "Create my executive daily brief. Give me next move, today focus, current constraint, decision, next decision, what to cut, actions, risk, priority, execution score, and recommended command.",
+  cut: "Review what I am building and tell me what to cut, defer, simplify, or stop so the core OS becomes more useful.",
+  quality: "Review the current Executive Engine OS. Identify the weakest part of the core output, what to improve next, what to cut, and the next command.",
+  actions: "Reduce my action load. Tell me the top 3 actions, what to cut, what to defer, and the single next move."
+};
+
+const loopCommands = {
+  start_day: "Start my day. Identify focus, constraint, next decision, what to cut, and next move.",
+  run_command: "Turn this input into a decision, next move, current constraint, what to cut, actions, risk, and recommended command.",
+  reduce_queue: "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.",
+  review_risk: "Review the current execution risk and the constraint most likely to slow progress.",
+  end_day: "Create my end-day summary with decisions made, open loops, what to cut tomorrow, and starting command."
 };
 
 function showPage(page){
@@ -479,27 +312,47 @@ function inputEl(){ return document.getElementById("input"); }
 function outputEl(){ return document.getElementById("output"); }
 
 function loadTemplate(type){
-  const templates = {
-    daily: workflowCommands.daily_brief,
-    actions: workflowCommands.review_queue,
-    calendar: "Review calendar readiness and connector gates. Confirm what is safe, what is blocked, and the next step before real OAuth activation.",
-    polish: "Review V1800 product dashboard and real workflows. Identify UX improvements, route stability, and next milestone."
-  };
   showPage("command");
   setTimeout(()=>{ inputEl().value = templates[type] || templates.daily; inputEl().focus(); }, 50);
 }
 
-function loadWorkflowCommand(id){
+function loadLoopCommand(type){
   showPage("command");
-  setTimeout(()=>{ inputEl().value = workflowCommands[id] || workflowCommands.run_command; inputEl().focus(); }, 50);
+  setTimeout(()=>{ inputEl().value = loopCommands[type] || loopCommands.run_command; inputEl().focus(); }, 50);
 }
 
-function clearOutput(){ outputEl().textContent = "Ready. Choose a workflow or run a command."; }
+function clearOutput(){
+  outputEl().textContent = "Ready. Choose a workflow or run a command.";
+  document.getElementById("resultCards").innerHTML = "";
+}
+
+function safe(v){ return (v === undefined || v === null || v === "") ? "—" : String(v); }
+
+function renderExecutiveCards(data){
+  const box = document.getElementById("resultCards");
+  if(!box) return;
+  const actions = Array.isArray(data.actions) ? data.actions : [];
+  box.innerHTML = `
+    <div class="result-block major"><h4>Next Move</h4><div>${safe(data.next_move || data.what_to_do_now)}</div></div>
+    <div class="result-block"><h4>Today's Focus</h4><div>${safe(data.today_focus)}</div></div>
+    <div class="result-block"><h4>Current Constraint</h4><div>${safe(data.current_constraint)}</div></div>
+    <div class="result-block"><h4>Decision</h4><div>${safe(data.decision)}</div></div>
+    <div class="result-block"><h4>Next Decision</h4><div>${safe(data.next_decision)}</div></div>
+    <div class="result-block cut"><h4>What To Cut</h4><div>${safe(data.what_to_cut)}</div></div>
+    <div class="result-block"><h4>Actions</h4><div><ol class="actions-list">${actions.map(a=>`<li>${safe(a)}</li>`).join("") || "<li>—</li>"}</ol></div></div>
+    <div class="result-block risk"><h4>Risk</h4><div>${safe(data.risk)}</div></div>
+    <div class="result-block"><h4>Priority</h4><div>${safe(data.priority)}</div></div>
+    <div class="result-block"><h4>Execution Score</h4><div>${safe(data.execution_score)}</div></div>
+    <div class="result-block"><h4>Memory Signal</h4><div>${safe(data.memory_signal)}</div></div>
+    <div class="result-block major"><h4>Recommended Command</h4><div>${safe(data.recommended_command)}</div></div>
+  `;
+}
 
 async function runEngine(){
   const input = inputEl().value.trim();
   if(!input){ outputEl().textContent = "Enter a command first."; return; }
   outputEl().textContent = "Running...";
+  document.getElementById("resultCards").innerHTML = "";
   try{
     const res = await fetch(API + "/run", {
       method:"POST",
@@ -507,10 +360,23 @@ async function runEngine(){
       body:JSON.stringify({input, mode:"execution"})
     });
     const data = await res.json();
+    renderExecutiveCards(data);
     outputEl().textContent = JSON.stringify(data, null, 2);
   }catch(err){
     outputEl().textContent = "Run failed. Open /test-report and paste the report into ChatGPT. Error: " + err.message;
   }
+}
+
+async function loadCoreQuality(){
+  const box = document.getElementById("qualityOutput");
+  box.textContent = "Loading core quality...";
+  try{
+    const [a,b] = await Promise.all([
+      fetch(API + "/core-quality-status", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/core-output-contract", {cache:"no-store"}).then(r=>r.json())
+    ]);
+    box.textContent = JSON.stringify({quality:a, contract:b}, null, 2);
+  }catch(err){ box.textContent = "Core quality failed: " + err.message; }
 }
 
 async function loadCockpit(){
@@ -520,140 +386,8 @@ async function loadCockpit(){
     const res = await fetch(API + "/executive-cockpit", {cache:"no-store"});
     const data = await res.json();
     box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){
-    box.textContent = "Cockpit load failed: " + err.message;
-  }
+  }catch(err){ box.textContent = "Cockpit load failed: " + err.message; }
 }
-
-async function loadWorkflowState(){
-  const box = document.getElementById("progressOutput");
-  box.textContent = "Loading workflow state...";
-  try{
-    const res = await fetch(API + "/workflow-state", {cache:"no-store"});
-    const data = await res.json();
-    const local = JSON.parse(localStorage.getItem("eeos_workflow_progress") || "{}");
-    box.textContent = JSON.stringify({backend:data, local_progress:local}, null, 2);
-  }catch(err){ box.textContent = "Workflow state failed: " + err.message; }
-}
-function saveLocalWorkflowStep(step){
-  const data = JSON.parse(localStorage.getItem("eeos_workflow_progress") || "{}");
-  data.last_step = step;
-  data.updated_at = new Date().toISOString();
-  localStorage.setItem("eeos_workflow_progress", JSON.stringify(data));
-}
-function resetLocalProgress(){
-  localStorage.removeItem("eeos_workflow_progress");
-  loadWorkflowState();
-}
-
-
-async function loadIntelligenceBoard(){
-  const box = document.getElementById("intelligenceOutput");
-  box.textContent = "Loading intelligence board...";
-  try{
-    const res = await fetch(API + "/intelligence-board", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Intelligence Board failed: " + err.message; }
-}
-
-
-async function loadOperatorConsole(){
-  const box = document.getElementById("operatorOutput");
-  box.textContent = "Loading operator console...";
-  try{
-    const res = await fetch(API + "/operator-console", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Operator Console failed: " + err.message; }
-}
-async function loadCommandPalette(){
-  const box = document.getElementById("operatorOutput");
-  box.textContent = "Loading command palette...";
-  try{
-    const res = await fetch(API + "/operator/command-palette", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Command Palette failed: " + err.message; }
-}
-
-
-async function loadCandidateStatus(){
-  const box = document.getElementById("candidateOutput");
-  box.textContent = "Loading product candidate status...";
-  try{
-    const res = await fetch(API + "/product-candidate-status", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Candidate Status failed: " + err.message; }
-}
-
-
-async function loadQaStatus(){
-  const box = document.getElementById("qaOutput");
-  box.textContent = "Loading QA status...";
-  try{
-    const res = await fetch(API + "/ui-qa-status", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "QA Status failed: " + err.message; }
-}
-
-
-async function loadCalendarEnvPrep(){
-  const box = document.getElementById("calendarEnvOutput");
-  box.textContent = "Loading calendar env prep...";
-  try{
-    const res = await fetch(API + "/calendar/env-setup-prep", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Calendar env prep failed: " + err.message; }
-}
-
-
-async function loadCalendarSafety(){
-  const box = document.getElementById("calendarSafetyOutput");
-  box.textContent = "Loading safety gate...";
-  try{
-    const res = await fetch(API + "/calendar/safety-gate", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Calendar safety failed: " + err.message; }
-}
-
-
-async function loadTokenPlan(){
-  const box = document.getElementById("tokenPlanOutput");
-  box.textContent = "Loading token migration plan...";
-  try{
-    const res = await fetch(API + "/tokens/migration-plan", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Token plan failed: " + err.message; }
-}
-
-
-async function loadCalendarReadiness(){
-  const box = document.getElementById("calendarReadyOutput");
-  box.textContent = "Loading calendar readiness...";
-  try{
-    const res = await fetch(API + "/calendar/readiness-dashboard", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Calendar readiness failed: " + err.message; }
-}
-
-
-async function loadIntegrationPrep(){
-  const box = document.getElementById("integrationPrepOutput");
-  box.textContent = "Loading integration prep...";
-  try{
-    const res = await fetch(API + "/integration-prep-status", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Integration prep failed: " + err.message; }
-}
-
 </script>
 </body>
 </html>

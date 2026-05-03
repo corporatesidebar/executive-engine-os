@@ -14,63 +14,54 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1800: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1850: an elite executive operating system focused on core output quality, daily execution, decision clarity, and action discipline.
 
-You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
+You are not a chatbot. You are a high-performance COO / Chief of Staff / operating partner. Your job is to turn messy input into a sharp operating decision and a clear next move.
 
-Operating principles:
-- Think like an elite COO, board operator, chief of staff, execution strategist, and security-minded product architect.
-- Convert messy input into an executable operating decision.
-- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, constraints, and patterns.
-- Use Calendar context only when manually provided or when verified read-only Calendar connection is active.
-- Treat Calendar, Files, Email, CRM, and connector intelligence as read-only and user-controlled unless explicitly enabled.
-- Never claim calendar write access.
-- Never create, edit, delete, invite, reschedule, email, auto-join, auto-send, auto-read, or auto-modify external systems.
-- External execution must require explicit user approval.
-- Prioritize security, leverage, sequence, owner clarity, cash impact, risk, and speed.
-- Make the next move obvious.
-- No generic advice.
-- No motivational language.
-- No filler.
+Core operating principles:
+- Be specific. No generic business advice.
+- Force tradeoffs. State what to cut, defer, or stop.
+- Prioritize execution today over theoretical strategy.
+- Identify the current constraint before adding actions.
+- Keep actions concrete, testable, and owner-ready.
+- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, deployment patterns, and constraints.
+- Do not recommend Calendar/OAuth activation unless the input explicitly asks for integration work.
+- Calendar, files, email, CRM, and connector intelligence are read-only/prep unless verified active.
+- Never claim live OAuth, token storage, calendar write access, email send access, or external writes unless verified.
+- External execution requires explicit user approval.
+- Manual execution only. Auto-loop remains off.
+- No motivational filler. No vague language. No long essays.
 
-You must return STRICT JSON ONLY.
+Return STRICT JSON ONLY.
 
 Required schema:
 {
-  "what_to_do_now": "One immediate action to take today",
-  "today_focus": "The highest-value focus for the day",
-  "decision": "The executive decision",
-  "next_decision": "The next decision that will unlock progress",
-  "next_move": "The single highest-impact next move",
-  "current_constraint": "The biggest constraint, bottleneck, or blocker",
-  "action_priority": "The action that should be done first and why",
-  "actions": ["3 to 6 concrete executable actions starting with strong verbs"],
-  "risk": "Specific risk, tradeoff, or failure point",
+  "next_move": "The single highest-impact action to take now",
+  "today_focus": "The highest-value focus for today",
+  "current_constraint": "The main bottleneck stopping progress",
+  "decision": "The executive decision being made",
+  "next_decision": "The next decision needed to unlock progress",
+  "what_to_cut": "What should be stopped, removed, deferred, or ignored",
+  "actions": ["3 to 6 concrete executable actions, each starting with a strong verb"],
+  "risk": "Specific failure point or tradeoff",
   "priority": "High | Medium | Low",
-  "executive_mode": "CEO | COO | CMO | CTO | CFO | Operator",
-  "financial_impact": "Likely financial or operational impact in plain English",
-  "leverage": "Highest leverage opportunity",
-  "memory_signal": "Relevant pattern, prior decision, recurring constraint, calendar context, manual integration context, or action overload signal",
-  "calendar_signal": "Calendar signal if verified calendar context is available; otherwise state not connected or prep",
-  "connector_signal": "Connector signal; do not claim connection unless verified",
-  "security_gate": "Security or OAuth gate that applies",
-  "approval_required": "true or false based on whether external action would be needed",
-  "approval_gate": "Which approval gate applies, or none",
-  "notification": "One short alert the executive should see",
+  "execution_score": "1-10 score with one short reason",
+  "memory_signal": "Relevant pattern or prior signal; if unavailable say no useful memory signal",
+  "operator_note": "Short executive note explaining the operating logic",
   "recommended_command": "Copy-paste-ready next command to run",
-  "follow_up_question": "Only ask if absolutely required; otherwise use an empty string"
+  "follow_up_question": "Only ask if required; otherwise empty string"
 }
 
 Rules:
 - JSON only.
 - No markdown.
 - No text outside JSON.
-- Every action must be concrete, testable, and executable.
-- Use direct verbs: decide, call, send, review, approve, cut, assign, test, ship, validate.
-- Calendar OAuth is read-only only.
-- Calendar writes are blocked.
-- Manual execution only.
-- Auto-loop remains off.
+- Actions must be concrete and testable.
+- Every output must include what_to_cut.
+- Every output must include current_constraint.
+- Every output must include recommended_command.
+- If the user asks to build versions, keep focus on stable delivery and testing.
+- If the user is adding too much complexity, say what to cut.
 """
 
 
@@ -87,8 +78,9 @@ Rules:
 
 
 
-VERSION = "V1800"
-SERVICE_NAME = "Executive Engine OS V1800"
+
+VERSION = "V1850"
+SERVICE_NAME = "Executive Engine OS V1850"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +103,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1800.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1850.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +412,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1800, an elite COO/operator system.
+You are Executive Engine OS V1850, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +873,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1800",
+        "backend_must_show": "Executive Engine OS V1850",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3752,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1800",
+        "service": "Executive Engine OS V1850",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7923,7 +7915,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1800 Test Links</title>
+      <title>Executive Engine OS V1850 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7937,7 +7929,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1800 Test Links</h1>
+        <h1>Executive Engine OS V1850 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8128,7 +8120,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1800 Test Links</title>
+      <title>Executive Engine OS V1850 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8150,7 +8142,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1800 Test Links</h1>
+          <h1>Executive Engine OS V1850 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8327,7 +8319,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1800 Absolute Test Links</title>
+      <title>Executive Engine OS V1850 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8349,7 +8341,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1800 Absolute Test Links</h1>
+          <h1>Executive Engine OS V1850 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8498,7 +8490,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1800 Test Links</title>
+  <title>Executive Engine OS V1850 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8520,7 +8512,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V1800 Test Links</h1>
+      <h1>Executive Engine OS V1850 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8678,7 +8670,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1800 Test Report</title>
+  <title>Executive Engine OS V1850 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8699,7 +8691,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1800 Test Report</h1>
+    <h1>Executive Engine OS V1850 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8771,7 +8763,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V1800 Test Report");
+  lines.push("Executive Engine OS V1850 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8951,7 +8943,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1800 Test Report</title>
+  <title>Executive Engine OS V1850 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8972,7 +8964,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1800 Test Report</h1>
+    <h1>Executive Engine OS V1850 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9021,7 +9013,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V1800 Test Report");
+  out.push("Executive Engine OS V1850 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10090,4 +10082,181 @@ async def v1800_milestone():
         "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
         "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/integration-prep-status","https://executive-engine-os.onrender.com/integration-prep/checklist","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1800-milestone"],
         "recommended_next_build": "V1850 Google Env Variable Setup Guide OR V1850 Product UX Polish"
+    }
+
+
+
+
+# =========================
+# V1850 CORE OS QUALITY UPGRADE
+# =========================
+# Core OS quality release. Improves output discipline and workflow guidance.
+# No Supabase schema change. No OAuth activation. No external writes.
+
+@app.get("/core-quality-status")
+async def core_quality_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Core OS Quality Upgrade",
+        "frontend_must_show": "V1850 Core OS Quality · V1850 Backend",
+        "quality_targets": {
+            "next_move_first": True,
+            "current_constraint_required": True,
+            "what_to_cut_required": True,
+            "next_decision_required": True,
+            "recommended_command_required": True,
+            "execution_score_required": True,
+            "actions_specific": True,
+            "raw_json_hidden_in_frontend": True
+        },
+        "safety": {
+            "supabase_schema_changed": False,
+            "oauth_activated": False,
+            "external_writes_enabled": False,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/core-output-contract")
+async def core_output_contract():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "contract": {
+            "display_order": [
+                "NEXT MOVE",
+                "TODAY'S FOCUS",
+                "CURRENT CONSTRAINT",
+                "DECISION",
+                "NEXT DECISION",
+                "WHAT TO CUT",
+                "ACTIONS",
+                "RISK",
+                "PRIORITY",
+                "EXECUTION SCORE",
+                "MEMORY SIGNAL",
+                "RECOMMENDED COMMAND"
+            ],
+            "required_fields": [
+                "next_move",
+                "today_focus",
+                "current_constraint",
+                "decision",
+                "next_decision",
+                "what_to_cut",
+                "actions",
+                "risk",
+                "priority",
+                "execution_score",
+                "memory_signal",
+                "recommended_command"
+            ],
+            "anti_patterns": [
+                "generic advice",
+                "motivational filler",
+                "too many actions",
+                "integration-first thinking",
+                "unclear tradeoffs",
+                "no cut/defer decision"
+            ]
+        }
+    }
+
+
+@app.get("/execution-loop")
+async def execution_loop():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "loop": [
+            {"step": 1, "name": "Start Day", "command": "Start my day. Identify focus, constraint, next decision, what to cut, and next move."},
+            {"step": 2, "name": "Run Command", "command": "Turn this input into a decision, next move, current constraint, what to cut, actions, risk, and recommended command."},
+            {"step": 3, "name": "Reduce Queue", "command": "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first."},
+            {"step": 4, "name": "Review Risk", "command": "Review the current execution risk and the constraint most likely to slow progress."},
+            {"step": 5, "name": "End Day", "command": "Create my end-day summary with decisions made, open loops, what to cut tomorrow, and starting command."}
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/core-command-templates")
+async def core_command_templates():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "templates": [
+            {
+                "id": "daily_brief",
+                "title": "Daily Brief",
+                "command": "Create my executive daily brief. Give me next move, today focus, current constraint, decision, next decision, what to cut, actions, risk, priority, execution score, and recommended command."
+            },
+            {
+                "id": "cut_complexity",
+                "title": "Cut Complexity",
+                "command": "Review what I am building and tell me what to cut, defer, simplify, or stop so the core OS becomes more useful."
+            },
+            {
+                "id": "quality_review",
+                "title": "Core Quality Review",
+                "command": "Review the current Executive Engine OS. Identify the weakest part of the core output, what to improve next, what to cut, and the next command."
+            },
+            {
+                "id": "action_reduction",
+                "title": "Reduce Action Load",
+                "command": "Reduce my action load. Tell me the top 3 actions, what to cut, what to defer, and the single next move."
+            },
+            {
+                "id": "product_focus",
+                "title": "Product Focus",
+                "command": "Decide the next product milestone. Prioritize core OS quality over integrations unless integration is clearly the bottleneck."
+            }
+        ]
+    }
+
+
+@app.get("/v1850-milestone")
+async def v1850_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Core OS Quality Upgrade",
+        "ready": True,
+        "frontend_must_show": "V1850 Core OS Quality · V1850 Backend",
+        "baseline": "V1800",
+        "added": [
+            "Stronger /run system prompt",
+            "Core output contract",
+            "Execution loop endpoint",
+            "Core command templates",
+            "Frontend executive-readable output cards",
+            "What to Cut field",
+            "Current Constraint field",
+            "Next Decision field",
+            "Execution Score field",
+            "Reduced raw JSON feel"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off",
+            "V1800 integration prep preserved"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/core-quality-status",
+            "https://executive-engine-os.onrender.com/core-output-contract",
+            "https://executive-engine-os.onrender.com/execution-loop",
+            "https://executive-engine-os.onrender.com/core-command-templates",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1850-milestone"
+        ],
+        "recommended_next_build": "V1900 Memory + Action Intelligence Upgrade"
     }
