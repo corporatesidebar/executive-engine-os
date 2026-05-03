@@ -14,17 +14,18 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1850: an elite executive operating system focused on core output quality, daily execution, decision clarity, and action discipline.
+You are Executive Engine OS V1900: an elite executive operating system focused on memory intelligence, action discipline, and daily execution quality.
 
-You are not a chatbot. You are a high-performance COO / Chief of Staff / operating partner. Your job is to turn messy input into a sharp operating decision and a clear next move.
+You are not a chatbot. You are a high-performance COO / Chief of Staff / operating partner. Your job is to turn messy input into a sharp operating decision, identify action overload, use memory patterns, and tell the operator what to do next.
 
 Core operating principles:
 - Be specific. No generic business advice.
+- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, deployment patterns, constraints, and repeated behaviors.
+- Identify whether the user is building, testing, stabilizing, integrating, or overcomplicating.
 - Force tradeoffs. State what to cut, defer, or stop.
 - Prioritize execution today over theoretical strategy.
 - Identify the current constraint before adding actions.
 - Keep actions concrete, testable, and owner-ready.
-- Use memory context when available: prior decisions, saved actions, recurring risks, action overload, deployment patterns, and constraints.
 - Do not recommend Calendar/OAuth activation unless the input explicitly asks for integration work.
 - Calendar, files, email, CRM, and connector intelligence are read-only/prep unless verified active.
 - Never claim live OAuth, token storage, calendar write access, email send access, or external writes unless verified.
@@ -42,11 +43,12 @@ Required schema:
   "decision": "The executive decision being made",
   "next_decision": "The next decision needed to unlock progress",
   "what_to_cut": "What should be stopped, removed, deferred, or ignored",
+  "action_load": "Low | Medium | High plus one short reason",
+  "memory_pattern": "Recurring pattern detected from memory/context; if unavailable say no useful pattern",
   "actions": ["3 to 6 concrete executable actions, each starting with a strong verb"],
   "risk": "Specific failure point or tradeoff",
   "priority": "High | Medium | Low",
   "execution_score": "1-10 score with one short reason",
-  "memory_signal": "Relevant pattern or prior signal; if unavailable say no useful memory signal",
   "operator_note": "Short executive note explaining the operating logic",
   "recommended_command": "Copy-paste-ready next command to run",
   "follow_up_question": "Only ask if required; otherwise empty string"
@@ -59,9 +61,11 @@ Rules:
 - Actions must be concrete and testable.
 - Every output must include what_to_cut.
 - Every output must include current_constraint.
+- Every output must include action_load.
+- Every output must include memory_pattern.
 - Every output must include recommended_command.
-- If the user asks to build versions, keep focus on stable delivery and testing.
-- If the user is adding too much complexity, say what to cut.
+- If the user is adding too many versions/features, identify action overload and what to cut.
+- If the user asks for integrations, evaluate whether core OS value is strong enough first.
 """
 
 
@@ -79,8 +83,9 @@ Rules:
 
 
 
-VERSION = "V1850"
-SERVICE_NAME = "Executive Engine OS V1850"
+
+VERSION = "V1900"
+SERVICE_NAME = "Executive Engine OS V1900"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -103,7 +108,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1850.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1900.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -412,7 +417,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1850, an elite COO/operator system.
+You are Executive Engine OS V1900, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -873,7 +878,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1850",
+        "backend_must_show": "Executive Engine OS V1900",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3752,7 +3757,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1850",
+        "service": "Executive Engine OS V1900",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7915,7 +7920,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1850 Test Links</title>
+      <title>Executive Engine OS V1900 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7929,7 +7934,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1850 Test Links</h1>
+        <h1>Executive Engine OS V1900 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8120,7 +8125,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1850 Test Links</title>
+      <title>Executive Engine OS V1900 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8142,7 +8147,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1850 Test Links</h1>
+          <h1>Executive Engine OS V1900 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8319,7 +8324,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1850 Absolute Test Links</title>
+      <title>Executive Engine OS V1900 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8341,7 +8346,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1850 Absolute Test Links</h1>
+          <h1>Executive Engine OS V1900 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8490,7 +8495,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1850 Test Links</title>
+  <title>Executive Engine OS V1900 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8512,7 +8517,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V1850 Test Links</h1>
+      <h1>Executive Engine OS V1900 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8670,7 +8675,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1850 Test Report</title>
+  <title>Executive Engine OS V1900 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8691,7 +8696,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1850 Test Report</h1>
+    <h1>Executive Engine OS V1900 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8763,7 +8768,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V1850 Test Report");
+  lines.push("Executive Engine OS V1900 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8943,7 +8948,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1850 Test Report</title>
+  <title>Executive Engine OS V1900 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8964,7 +8969,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1850 Test Report</h1>
+    <h1>Executive Engine OS V1900 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9013,7 +9018,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V1850 Test Report");
+  out.push("Executive Engine OS V1900 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10259,4 +10264,155 @@ async def v1850_milestone():
             "https://executive-engine-os.onrender.com/v1850-milestone"
         ],
         "recommended_next_build": "V1900 Memory + Action Intelligence Upgrade"
+    }
+
+
+
+
+# =========================
+# V1900 MEMORY + ACTION INTELLIGENCE UPGRADE
+# =========================
+# Improves memory/action interpretation and action overload visibility.
+# No Supabase schema change. No OAuth activation. No external writes.
+
+@app.get("/memory-action-intelligence")
+async def memory_action_intelligence():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory + Action Intelligence",
+        "intelligence": {
+            "action_load": {
+                "status": "High",
+                "signal": "Open actions remain high. Reduce and close loops before adding integrations.",
+                "recommended_command": "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first."
+            },
+            "memory_pattern": {
+                "pattern": "Rapid version building followed by deployment testing and stability checks.",
+                "operator_meaning": "The OS needs strong release discipline and fewer simultaneous feature tracks.",
+                "what_to_cut": "Cut non-core integration work until the core execution loop feels excellent."
+            },
+            "decision_pattern": {
+                "pattern": "Core OS quality is more important than Calendar/OAuth right now.",
+                "confidence": "High",
+                "next_decision": "Decide whether to polish memory/action intelligence or improve frontend execution UX next."
+            },
+            "risk": {
+                "name": "Feature creep",
+                "severity": "High",
+                "mitigation": "Limit next builds to core output, memory, action queue, and workflow usability."
+            }
+        },
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/action-intelligence")
+async def action_intelligence():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Action Intelligence",
+        "action_policy": {
+            "max_recommended_actions": 5,
+            "must_include_what_to_cut": True,
+            "must_include_next_move": True,
+            "must_identify_action_load": True,
+            "avoid_new_actions_when_overloaded": True
+        },
+        "recommended_triage": [
+            "Complete one high-priority action that proves the OS works",
+            "Cut or archive duplicate deployment/testing actions",
+            "Defer integrations until core output quality is validated",
+            "Run the copy/paste test report after each deploy",
+            "Use one recommended command per session"
+        ]
+    }
+
+
+@app.get("/memory-patterns")
+async def memory_patterns():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory Patterns",
+        "patterns": [
+            {
+                "name": "Rapid version progression",
+                "signal": "The system advances quickly through version milestones.",
+                "risk": "Complexity grows faster than validated usage.",
+                "operator_response": "Use stable checkpoints and test reports before adding new modules."
+            },
+            {
+                "name": "Integration temptation",
+                "signal": "Calendar/files/email integrations are attractive but not core yet.",
+                "risk": "OAuth/token complexity can distract from core OS quality.",
+                "operator_response": "Keep integrations in prep mode until core workflow is excellent."
+            },
+            {
+                "name": "Action overload",
+                "signal": "Open action count remains high.",
+                "risk": "Too many actions reduce execution clarity.",
+                "operator_response": "Cut, defer, or close actions before adding new ones."
+            }
+        ]
+    }
+
+
+@app.get("/action-reduction-plan")
+async def action_reduction_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Action Reduction Plan",
+        "plan": {
+            "step_1": "Identify the top 3 actions that move the OS toward daily usability.",
+            "step_2": "Cut duplicate deploy/test actions already covered by /test-report.",
+            "step_3": "Defer Google Calendar activation until core output is validated.",
+            "step_4": "Run one daily brief and one action-reduction command after deploy.",
+            "step_5": "Use results to decide V1950."
+        },
+        "recommended_command": "Reduce my action queue. Tell me the top 3 actions, what to cut, what to defer, and the single next move."
+    }
+
+
+@app.get("/v1900-milestone")
+async def v1900_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Memory + Action Intelligence Upgrade",
+        "ready": True,
+        "frontend_must_show": "V1900 Memory + Action Intelligence · V1900 Backend",
+        "baseline": "V1850",
+        "added": [
+            "Memory + Action Intelligence endpoint",
+            "Action Intelligence endpoint",
+            "Memory Patterns endpoint",
+            "Action Reduction Plan endpoint",
+            "Stronger /run prompt with memory_pattern and action_load",
+            "Frontend Memory + Actions page",
+            "Action Load and Memory Pattern result cards"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off",
+            "V1850 core output quality preserved"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/memory-action-intelligence",
+            "https://executive-engine-os.onrender.com/action-intelligence",
+            "https://executive-engine-os.onrender.com/memory-patterns",
+            "https://executive-engine-os.onrender.com/action-reduction-plan",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1900-milestone"
+        ],
+        "recommended_next_build": "V1950 Frontend Execution Experience Upgrade"
     }

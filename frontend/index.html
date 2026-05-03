@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V1850</title>
+  <title>Executive Engine OS — V1900</title>
   <style>
     :root{
       --bg:#f5f7fb;--panel:#fff;--ink:#071226;--muted:#64748b;--line:#dbe5f1;
@@ -78,6 +78,7 @@
     <button class="nav-btn" data-page="command" onclick="showPage('command')">Command Center</button>
     <button class="nav-btn" data-page="quality" onclick="showPage('quality')">Core Quality <span class="pill">New</span></button>
     <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Execution Loop</button>
+    <button class="nav-btn" data-page="memory-actions" onclick="showPage('memory-actions')">Memory + Actions <span class="pill">New</span></button>
 
     <div class="nav-section">Intelligence</div>
     <button class="nav-btn" data-page="cockpit" onclick="showPage('cockpit')">Executive Cockpit</button>
@@ -89,21 +90,21 @@
 
     <div class="side-card">
       <small>Stable Checkpoint</small>
-      <strong>V1850 Core OS Quality</strong>
+      <strong>V1900 Memory + Action Intelligence</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V1850 Core OS Quality · V1850 Backend</div>
+      <div class="version-badge">V1900 Memory + Action Intelligence · V1900 Backend</div>
     </div>
 
     <section class="content">
       <div class="stable-panel">
         <div>
-          <strong>Stable Version: V1850</strong>
-          <span>Core output quality upgrade. /test-report preserved. OAuth inactive. External writes blocked. Manual execution only.</span>
+          <strong>Stable Version: V1900</strong>
+          <span>Memory + action intelligence upgrade. /test-report preserved. OAuth inactive. External writes blocked. Manual execution only.</span>
         </div>
         <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
       </div>
@@ -111,9 +112,9 @@
       <div id="page-dashboard" class="page active">
         <div class="hero-grid">
           <div class="card">
-            <div class="eyebrow">Core OS Quality</div>
+            <div class="eyebrow">Memory + Action Intelligence</div>
             <h2>Make the OS useful every morning.</h2>
-            <p>V1850 prioritizes core output quality over integrations: sharper next moves, current constraints, what to cut, next decisions, and recommended commands.</p>
+            <p>V1900 adds memory and action intelligence: action load, recurring patterns, what to cut, and sharper daily execution.</p>
             <div class="four-col">
               <div class="metric"><small>Backend</small><strong>V1850</strong></div>
               <div class="metric"><small>Priority</small><strong class="green">Core Output</strong></div>
@@ -129,11 +130,11 @@
 
           <div class="card soft">
             <div class="eyebrow">Operating Decision</div>
-            <h3>Calendar stays parked. Core OS gets sharper.</h3>
-            <p>The OS must first become excellent at decisions, actions, what to cut, and daily execution.</p>
+            <h3>Action overload gets surfaced. Memory becomes useful.</h3>
+            <p>The OS now watches for recurring build patterns, feature creep, and action overload before recommending more work.</p>
             <div class="list">
-              <div class="item"><b>Current Constraint</b><span>Product value depends on output quality, not more integrations.</span></div>
-              <div class="item"><b>Recommended Command</b><span>Review the core OS and tell me what to cut, improve, and execute next.</span></div>
+              <div class="item"><b>Current Constraint</b><span>Open action load and rapid version building can create complexity faster than value.</span></div>
+              <div class="item"><b>Recommended Command</b><span>Reduce my action queue and identify what to cut, defer, or complete first.</span></div>
             </div>
           </div>
         </div>
@@ -168,7 +169,7 @@
             <div class="toolbar">
               <button class="btn dark" onclick="openBackend('/core-output-contract')">Output Contract</button>
               <button class="btn" onclick="openBackend('/core-command-templates')">Templates</button>
-              <button class="btn" onclick="openBackend('/v1850-milestone')">V1850 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1900-milestone')">V1850 Milestone</button>
             </div>
           </div>
         </div>
@@ -235,6 +236,23 @@
         </div>
       </div>
 
+      
+      <div id="page-memory-actions" class="page">
+        <div class="card">
+          <div class="eyebrow">Memory + Action Intelligence</div>
+          <h2>V1900 Action Discipline</h2>
+          <p>Detects action overload, recurring memory patterns, and what to cut before adding complexity.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadMemoryActions()">Load Memory + Actions</button>
+            <button class="btn" onclick="openBackend('/action-reduction-plan')">Action Reduction Plan</button>
+            <button class="btn" onclick="openBackend('/memory-patterns')">Memory Patterns</button>
+            <button class="btn" onclick="openBackend('/v1900-milestone')">V1900 Milestone</button>
+          </div>
+          <div id="memoryActionsOutput" class="output" style="margin-top:12px">Memory + Action Intelligence not loaded.</div>
+        </div>
+      </div>
+
+
       <div id="page-tests" class="page">
         <div class="two-col">
           <div class="card">
@@ -244,7 +262,7 @@
             <div class="toolbar">
               <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v1850-milestone')">V1850 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1900-milestone')">V1850 Milestone</button>
             </div>
           </div>
           <div class="card">
@@ -255,7 +273,7 @@
               <a href="#" onclick="openBackend('/core-output-contract');return false;">Output Contract</a>
               <a href="#" onclick="openBackend('/execution-loop');return false;">Execution Loop</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v1850-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v1900-milestone');return false;">Milestone</a>
             </div>
           </div>
         </div>
@@ -272,7 +290,7 @@
             <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
             <a href="#" onclick="openBackend('/core-quality-status');return false;">Core Quality</a>
             <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-            <a href="#" onclick="openBackend('/v1850-milestone');return false;">V1850 Milestone</a>
+            <a href="#" onclick="openBackend('/v1900-milestone');return false;">V1850 Milestone</a>
           </div>
         </div>
       </div>
@@ -342,8 +360,9 @@ function renderExecutiveCards(data){
     <div class="result-block"><h4>Actions</h4><div><ol class="actions-list">${actions.map(a=>`<li>${safe(a)}</li>`).join("") || "<li>—</li>"}</ol></div></div>
     <div class="result-block risk"><h4>Risk</h4><div>${safe(data.risk)}</div></div>
     <div class="result-block"><h4>Priority</h4><div>${safe(data.priority)}</div></div>
+    <div class="result-block"><h4>Action Load</h4><div>${safe(data.action_load)}</div></div>
+    <div class="result-block"><h4>Memory Pattern</h4><div>${safe(data.memory_pattern || data.memory_pattern)}</div></div>
     <div class="result-block"><h4>Execution Score</h4><div>${safe(data.execution_score)}</div></div>
-    <div class="result-block"><h4>Memory Signal</h4><div>${safe(data.memory_signal)}</div></div>
     <div class="result-block major"><h4>Recommended Command</h4><div>${safe(data.recommended_command)}</div></div>
   `;
 }
@@ -388,6 +407,20 @@ async function loadCockpit(){
     box.textContent = JSON.stringify(data, null, 2);
   }catch(err){ box.textContent = "Cockpit load failed: " + err.message; }
 }
+
+async function loadMemoryActions(){
+  const box = document.getElementById("memoryActionsOutput");
+  box.textContent = "Loading memory + action intelligence...";
+  try{
+    const [a,b,c] = await Promise.all([
+      fetch(API + "/memory-action-intelligence", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/action-intelligence", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/memory-patterns", {cache:"no-store"}).then(r=>r.json())
+    ]);
+    box.textContent = JSON.stringify({memory_action_intelligence:a, action_intelligence:b, memory_patterns:c}, null, 2);
+  }catch(err){ box.textContent = "Memory + Action Intelligence failed: " + err.message; }
+}
+
 </script>
 </body>
 </html>
