@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1900: an elite executive operating system focused on memory intelligence, action discipline, and daily execution quality.
+You are Executive Engine OS V1950: an elite executive operating system focused on memory intelligence, action discipline, and daily execution quality.
 
 You are not a chatbot. You are a high-performance COO / Chief of Staff / operating partner. Your job is to turn messy input into a sharp operating decision, identify action overload, use memory patterns, and tell the operator what to do next.
 
@@ -84,8 +84,8 @@ Rules:
 
 
 
-VERSION = "V1900"
-SERVICE_NAME = "Executive Engine OS V1900"
+VERSION = "V1950"
+SERVICE_NAME = "Executive Engine OS V1950"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -108,7 +108,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1900.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1950.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -417,7 +417,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1900, an elite COO/operator system.
+You are Executive Engine OS V1950, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -878,7 +878,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1900",
+        "backend_must_show": "Executive Engine OS V1950",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3757,7 +3757,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1900",
+        "service": "Executive Engine OS V1950",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7920,7 +7920,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1900 Test Links</title>
+      <title>Executive Engine OS V1950 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7934,7 +7934,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1900 Test Links</h1>
+        <h1>Executive Engine OS V1950 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8125,7 +8125,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1900 Test Links</title>
+      <title>Executive Engine OS V1950 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8147,7 +8147,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1900 Test Links</h1>
+          <h1>Executive Engine OS V1950 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8324,7 +8324,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1900 Absolute Test Links</title>
+      <title>Executive Engine OS V1950 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8346,7 +8346,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1900 Absolute Test Links</h1>
+          <h1>Executive Engine OS V1950 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8495,7 +8495,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1900 Test Links</title>
+  <title>Executive Engine OS V1950 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8517,7 +8517,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V1900 Test Links</h1>
+      <h1>Executive Engine OS V1950 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8675,7 +8675,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1900 Test Report</title>
+  <title>Executive Engine OS V1950 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8696,7 +8696,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1900 Test Report</h1>
+    <h1>Executive Engine OS V1950 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8768,7 +8768,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V1900 Test Report");
+  lines.push("Executive Engine OS V1950 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8861,63 +8861,55 @@ async def v1206_milestone():
 # V1207 TEST REPORT RUNTIME FIX
 # =========================
 
-V1207_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V1207_REPORT_TESTS = [
+V1950_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V1950_REPORT_TESTS = [
     {
         "title": "health",
         "route": "/health"
     },
     {
-        "title": "diagnostic",
-        "route": "/diagnostic"
+        "title": "core quality status",
+        "route": "/core-quality-status"
     },
     {
-        "title": "system-test",
-        "route": "/system-test"
+        "title": "memory action intelligence",
+        "route": "/memory-action-intelligence"
+    },
+    {
+        "title": "action intelligence",
+        "route": "/action-intelligence"
+    },
+    {
+        "title": "memory patterns",
+        "route": "/memory-patterns"
+    },
+    {
+        "title": "frontend execution status",
+        "route": "/frontend-execution-status"
+    },
+    {
+        "title": "command template library",
+        "route": "/command-template-library"
+    },
+    {
+        "title": "recommended command kit",
+        "route": "/recommended-command-kit"
     },
     {
         "title": "test-report-json",
         "route": "/test-report-json"
     },
     {
-        "title": "v1207-milestone",
-        "route": "/v1207-milestone"
-    },
-    {
-        "title": "beta system score",
-        "route": "/beta/system-score"
-    },
-    {
-        "title": "beta operating brief",
-        "route": "/beta/operating-brief"
-    },
-    {
-        "title": "calendar connect status",
-        "route": "/calendar/connect-status"
-    },
-    {
-        "title": "calendar auth url",
-        "route": "/calendar/auth-url"
-    },
-    {
-        "title": "oauth live gates",
-        "route": "/oauth/live-gates"
-    },
-    {
-        "title": "token storage health",
-        "route": "/tokens/storage-health"
-    },
-    {
-        "title": "connector command center",
-        "route": "/connector-command-center"
-    },
-    {
-        "title": "files status",
-        "route": "/files/status"
+        "title": "v1950-milestone",
+        "route": "/v1950-milestone"
     },
     {
         "title": "executive cockpit",
         "route": "/executive-cockpit"
+    },
+    {
+        "title": "integration prep status",
+        "route": "/integration-prep-status"
     }
 ]
 
@@ -8927,14 +8919,14 @@ async def test_report_json():
         "ok": True,
         "version": VERSION,
         "milestone": "Test Report Runtime Fix",
-        "backend_base": V1207_BACKEND_BASE,
+        "backend_base": V1950_BACKEND_BASE,
         "tests": [
             {
                 "title": item["title"],
                 "route": item["route"],
-                "url": V1207_BACKEND_BASE + item["route"]
+                "url": V1950_BACKEND_BASE + item["route"]
             }
-            for item in V1207_REPORT_TESTS
+            for item in V1950_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -8943,12 +8935,12 @@ async def test_report_json():
 @app.get("/test-report")
 async def test_report():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V1207_REPORT_TESTS)
+    tests_json = json.dumps(V1950_REPORT_TESTS)
     html = """
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1900 Test Report</title>
+  <title>Executive Engine OS V1950 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8969,7 +8961,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1900 Test Report</h1>
+    <h1>Executive Engine OS V1950 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9018,7 +9010,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V1900 Test Report");
+  out.push("Executive Engine OS V1950 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -9074,7 +9066,7 @@ function clearReport() {
 </script>
 </body>
 </html>
-""".replace("__BACKEND_BASE__", V1207_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+""".replace("__BACKEND_BASE__", V1950_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 
@@ -9085,7 +9077,7 @@ async def v1207_milestone():
         "version": VERSION,
         "milestone": "Test Report Runtime Fix",
         "ready": True,
-        "frontend_must_show": "V1207 Test Report Runtime Fix · V1207 Backend",
+        "frontend_must_show": "V1950 Test Report Runtime Fix · V1207 Backend",
         "fixed": [
             "Renamed previous broken /test-report route",
             "Rebuilt /test-report with local Starlette HTMLResponse import",
@@ -10415,4 +10407,170 @@ async def v1900_milestone():
             "https://executive-engine-os.onrender.com/v1900-milestone"
         ],
         "recommended_next_build": "V1950 Frontend Execution Experience Upgrade"
+    }
+
+
+
+
+# =========================
+# V1950 FRONTEND EXECUTION EXPERIENCE UPGRADE — FIXED ROUTES
+# =========================
+# Frontend execution polish. Keeps V1900 as stable baseline.
+# No Supabase schema change. No OAuth activation. No external writes.
+
+@app.get("/frontend-execution-status")
+async def frontend_execution_status_v1950():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Frontend Execution Experience Upgrade",
+        "frontend_must_show": "V1950 Frontend Execution Experience · V1950 Backend",
+        "baseline": "V1900",
+        "improvements": {
+            "old_test_report_titles_fixed": True,
+            "result_cards_improved": True,
+            "command_input_improved": True,
+            "one_click_templates": True,
+            "action_load_display": True,
+            "memory_pattern_display": True,
+            "recommended_command_copy": True,
+            "raw_json_reduced": True,
+            "empty_states_improved": True,
+            "calendar_oauth_parked": True
+        },
+        "safety": {
+            "supabase_schema_changed": False,
+            "oauth_activated": False,
+            "external_writes_enabled": False,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/command-template-library")
+async def command_template_library_v1950():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Command Template Library",
+        "templates": [
+            {
+                "id": "daily_brief",
+                "title": "Daily Brief",
+                "category": "Operate",
+                "command": "Create my executive daily brief. Give me next move, today focus, current constraint, decision, next decision, what to cut, action load, memory pattern, actions, risk, priority, execution score, and recommended command."
+            },
+            {
+                "id": "cut_complexity",
+                "title": "Cut Complexity",
+                "category": "Discipline",
+                "command": "Review what I am building and tell me what to cut, defer, simplify, or stop so the core OS becomes more useful."
+            },
+            {
+                "id": "reduce_actions",
+                "title": "Reduce Action Load",
+                "category": "Execution",
+                "command": "Reduce my action load. Tell me the top 3 actions, what to cut, what to defer, the action load, and the single next move."
+            },
+            {
+                "id": "memory_pattern",
+                "title": "Find Memory Pattern",
+                "category": "Intelligence",
+                "command": "Review my recent pattern. Tell me what I keep repeating, what it means, what to cut, and the next decision."
+            },
+            {
+                "id": "product_focus",
+                "title": "Product Focus",
+                "category": "Product",
+                "command": "Decide the next product milestone. Prioritize core OS quality over integrations unless integration is clearly the bottleneck."
+            },
+            {
+                "id": "end_day",
+                "title": "End Day Summary",
+                "category": "Operate",
+                "command": "Create my end-day summary. What was decided, what remains open, what should be cut tomorrow, and what command should I start with?"
+            }
+        ]
+    }
+
+
+@app.get("/recommended-command-kit")
+async def recommended_command_kit_v1950():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Recommended Command Kit",
+        "copyable_commands": [
+            "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.",
+            "Review the current Executive Engine OS and identify the weakest part of the core output.",
+            "Tell me what to cut from this project so it becomes more useful and less complex.",
+            "Create my daily brief with next move, current constraint, what to cut, and recommended command.",
+            "Review my memory pattern and tell me the recurring risk I should address today."
+        ],
+        "next_best_command": "Reduce my action queue. Tell me what to complete, cut, defer, and what to do first."
+    }
+
+
+@app.get("/frontend-label-map")
+async def frontend_label_map_v1950():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Frontend Label Map",
+        "current_visible_label": "V1950 Frontend Execution Experience · V1950 Backend",
+        "legacy_label_policy": {
+            "diagnostic": "Legacy preserved route; may show V270 internally.",
+            "system_test": "Legacy preserved route; may show V270 internally.",
+            "calendar_connect_status": "Legacy preserved route; may show V1000 internally.",
+            "oauth_live_gates": "Legacy preserved route; may show V1050 internally.",
+            "files_status": "Legacy preserved route; may show V650 internally.",
+            "test_report": "Visible title updated to V1950."
+        },
+        "frontend_rule": "Show current stable labels in the OS. Keep legacy labels only in raw backend diagnostics."
+    }
+
+
+@app.get("/v1950-milestone")
+async def v1950_milestone_fixed():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Frontend Execution Experience Upgrade",
+        "ready": True,
+        "frontend_must_show": "V1950 Frontend Execution Experience · V1950 Backend",
+        "baseline": "V1900",
+        "fixed": [
+            "Old test report title/labels updated",
+            "Result cards improved",
+            "Command input experience improved",
+            "One-click command templates added",
+            "Action-load display improved",
+            "Memory-pattern display improved",
+            "Recommended command copy button added",
+            "Raw JSON feel reduced",
+            "Frontend empty states improved",
+            "Missing V1950 route definitions repaired"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "legacy routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off",
+            "V1900 memory/action intelligence preserved"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/frontend-execution-status",
+            "https://executive-engine-os.onrender.com/command-template-library",
+            "https://executive-engine-os.onrender.com/recommended-command-kit",
+            "https://executive-engine-os.onrender.com/frontend-label-map",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1950-milestone"
+        ],
+        "recommended_next_build": "V2000 Serious Daily-Use Product Candidate"
     }

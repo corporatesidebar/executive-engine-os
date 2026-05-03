@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V1900</title>
+  <title>Executive Engine OS — V1950</title>
   <style>
     :root{
       --bg:#f5f7fb;--panel:#fff;--ink:#071226;--muted:#64748b;--line:#dbe5f1;
-      --blue:#0f63ff;--orange:#ff6a00;--green:#10b981;--red:#ef4444;--nav:#071226;
+      --blue:#0f63ff;--blue2:#0b4ed0;--orange:#ff6a00;--green:#10b981;--red:#ef4444;--nav:#071226;
       --shadow:0 18px 45px rgba(7,18,38,.08);--radius:20px;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
-    button,a,textarea{font:inherit}
-    .app{display:grid;grid-template-columns:286px minmax(0,1fr);min-height:100vh}
+    button,a,textarea,input,select{font:inherit}
+    .app{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}
     .sidebar{background:linear-gradient(180deg,var(--nav),#07101f);color:#fff;padding:18px 16px;height:100vh;position:sticky;top:0;overflow:auto}
     .brand{display:flex;gap:11px;align-items:center;padding:8px 8px 20px;cursor:pointer}
     .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#0f63ff,#ff6a00);display:grid;place-items:center;font-weight:950;letter-spacing:-.08em;box-shadow:0 14px 24px rgba(15,99,255,.25)}
@@ -30,11 +30,11 @@
     .topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 26px;position:sticky;top:0;z-index:20}
     .topbar strong{font-size:14px;letter-spacing:-.02em}
     .version-badge{color:#0f63ff;background:#eff6ff;border:1px solid #bfdbfe;padding:8px 11px;border-radius:999px;font-size:12px;font-weight:950;white-space:nowrap}
-    .content{max-width:1450px;width:100%;margin:0 auto;padding:24px}
+    .content{max-width:1480px;width:100%;margin:0 auto;padding:24px}
     .page{display:none}.page.active{display:block}
     .stable-panel{border:1px solid #bbf7d0;background:linear-gradient(180deg,#ecfdf5,#f8fffb);border-radius:18px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
     .stable-panel strong{display:block;color:#047857;font-size:14px;margin-bottom:4px}.stable-panel span{display:block;color:#065f46;font-size:12px;line-height:1.4}
-    .hero-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:16px;margin-bottom:16px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-bottom:16px}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
     .card.soft{box-shadow:0 10px 28px rgba(7,18,38,.05)}
@@ -45,13 +45,17 @@
     textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,99,255,.12)}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .btn{border:1px solid var(--line);background:#fff;color:#334155;border-radius:13px;padding:10px 13px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px}
-    .btn:hover{background:#eff6ff;border-color:#93c5fd}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.dark{background:#071226;border-color:#071226;color:#fff}.btn.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.btn.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .btn:hover{background:#eff6ff;border-color:#93c5fd}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn.dark{background:#071226;border-color:#071226;color:#fff}.btn.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}.btn.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
     .metric{border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:14px;min-height:90px}
     .metric small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.10em;font-size:10px;font-weight:950;margin-bottom:6px}
     .metric strong{font-size:15px;line-height:1.25;display:block}.green{color:#047857}.orange{color:#c2410c}.blue{color:#0f63ff}
     .output{background:#071226;color:#dbeafe;border-radius:18px;padding:15px;font-size:12px;line-height:1.5;white-space:pre-wrap;overflow:auto;min-height:72px;max-height:500px}
     .list{display:grid;gap:10px;margin-top:10px}.item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
     .workflow-card{border:1px solid var(--line);background:#fff;border-left:5px solid var(--blue);border-radius:18px;padding:15px;cursor:pointer}.workflow-card:hover{background:#eff6ff;border-color:#93c5fd}.workflow-card b{display:block;margin-bottom:5px}.workflow-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+    .template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .template-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:13px;cursor:pointer}
+    .template-card:hover{border-color:#93c5fd;background:#eff6ff}
+    .template-card b{display:block;font-size:13px;margin-bottom:4px}.template-card span{font-size:12px;color:#64748b;line-height:1.35;display:block}
     .link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.link-grid a{text-decoration:none;border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:12px;color:#0f63ff;font-weight:900;font-size:13px;word-break:break-word}.link-grid a:hover{border-color:#93c5fd;background:#eff6ff}
     .callout{border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:16px;padding:13px;font-size:13px;font-weight:800;line-height:1.45}
     .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -59,10 +63,14 @@
     .result-block.major{grid-column:1 / -1;border-left:6px solid var(--blue);background:#f8fbff}
     .result-block.cut{border-left:6px solid var(--orange);background:#fff7ed}
     .result-block.risk{border-left:6px solid var(--red);background:#fffafa}
+    .result-block.memory{border-left:6px solid #7c3aed;background:#fbf8ff}
+    .result-block.action{border-left:6px solid #0f766e;background:#f0fdfa}
     .result-block h4{margin:0 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#64748b}
     .result-block div{font-size:14px;line-height:1.5;color:#071226}
     .actions-list{margin:0;padding-left:18px}.actions-list li{margin:6px 0;font-size:14px;line-height:1.45}
-    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.two-col,.three-col,.four-col,.link-grid,.result-grid{grid-template-columns:1fr}.result-block.major{grid-column:auto}.topbar{position:relative}.content{padding:16px}}
+    .copy-row{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fbff;margin-top:10px}
+    .copy-row code{font-size:12px;color:#071226;white-space:normal;word-break:break-word}
+    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero-grid,.two-col,.three-col,.four-col,.link-grid,.result-grid,.template-grid{grid-template-columns:1fr}.result-block.major{grid-column:auto}.topbar{position:relative}.content{padding:16px}}
   </style>
 </head>
 <body>
@@ -74,37 +82,37 @@
     </div>
 
     <div class="nav-section">Operate</div>
-    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">Core Dashboard <span class="pill">V1850</span></button>
+    <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard')">Execution Dashboard <span class="pill">V1950</span></button>
     <button class="nav-btn" data-page="command" onclick="showPage('command')">Command Center</button>
-    <button class="nav-btn" data-page="quality" onclick="showPage('quality')">Core Quality <span class="pill">New</span></button>
-    <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Execution Loop</button>
-    <button class="nav-btn" data-page="memory-actions" onclick="showPage('memory-actions')">Memory + Actions <span class="pill">New</span></button>
+    <button class="nav-btn" data-page="templates" onclick="showPage('templates')">Templates <span class="pill">Copy</span></button>
+    <button class="nav-btn" data-page="memory-actions" onclick="showPage('memory-actions')">Memory + Actions</button>
 
-    <div class="nav-section">Intelligence</div>
-    <button class="nav-btn" data-page="cockpit" onclick="showPage('cockpit')">Executive Cockpit</button>
-    <button class="nav-btn" data-page="integration-prep" onclick="showPage('integration-prep')">Integration Prep</button>
+    <div class="nav-section">Quality</div>
+    <button class="nav-btn" data-page="quality" onclick="showPage('quality')">Core Quality</button>
+    <button class="nav-btn" data-page="workflow" onclick="showPage('workflow')">Execution Loop</button>
+    <button class="nav-btn" data-page="labels" onclick="showPage('labels')">Label Map</button>
 
     <div class="nav-section">System</div>
-    <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report <span class="pill">Copy</span></button>
+    <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report</button>
     <button class="nav-btn" data-page="settings" onclick="showPage('settings')">Settings</button>
 
     <div class="side-card">
       <small>Stable Checkpoint</small>
-      <strong>V1900 Memory + Action Intelligence</strong>
+      <strong>V1950 Frontend Execution</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V1900 Memory + Action Intelligence · V1900 Backend</div>
+      <div class="version-badge">V1950 Frontend Execution Experience · V1950 Backend</div>
     </div>
 
     <section class="content">
       <div class="stable-panel">
         <div>
-          <strong>Stable Version: V1900</strong>
-          <span>Memory + action intelligence upgrade. /test-report preserved. OAuth inactive. External writes blocked. Manual execution only.</span>
+          <strong>Stable Version: V1950</strong>
+          <span>Frontend execution upgrade. V1900 preserved. /test-report works. OAuth inactive. External writes blocked.</span>
         </div>
         <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
       </div>
@@ -112,37 +120,37 @@
       <div id="page-dashboard" class="page active">
         <div class="hero-grid">
           <div class="card">
-            <div class="eyebrow">Memory + Action Intelligence</div>
-            <h2>Make the OS useful every morning.</h2>
-            <p>V1900 adds memory and action intelligence: action load, recurring patterns, what to cut, and sharper daily execution.</p>
+            <div class="eyebrow">Execution Experience</div>
+            <h2>Make the OS easier to run daily.</h2>
+            <p>V1950 improves the command experience: cleaner result cards, copyable recommended commands, better templates, action-load display, and memory-pattern display.</p>
             <div class="four-col">
-              <div class="metric"><small>Backend</small><strong>V1850</strong></div>
-              <div class="metric"><small>Priority</small><strong class="green">Core Output</strong></div>
-              <div class="metric"><small>OAuth</small><strong>Inactive</strong></div>
-              <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
+              <div class="metric"><small>Backend</small><strong>V1950</strong></div>
+              <div class="metric"><small>Priority</small><strong class="green">Execution UX</strong></div>
+              <div class="metric"><small>Baseline</small><strong>V1900</strong></div>
+              <div class="metric"><small>OAuth</small><strong>Parked</strong></div>
             </div>
             <div class="toolbar">
               <button class="btn primary" onclick="showPage('command')">Run Command</button>
-              <button class="btn" onclick="showPage('quality')">Core Quality</button>
-              <button class="btn" onclick="openBackend('/core-quality-status')">Quality Status</button>
+              <button class="btn" onclick="showPage('templates')">Open Templates</button>
+              <button class="btn" onclick="openBackend('/frontend-execution-status')">Execution Status</button>
             </div>
           </div>
 
           <div class="card soft">
-            <div class="eyebrow">Operating Decision</div>
-            <h3>Action overload gets surfaced. Memory becomes useful.</h3>
-            <p>The OS now watches for recurring build patterns, feature creep, and action overload before recommending more work.</p>
-            <div class="list">
-              <div class="item"><b>Current Constraint</b><span>Open action load and rapid version building can create complexity faster than value.</span></div>
-              <div class="item"><b>Recommended Command</b><span>Reduce my action queue and identify what to cut, defer, or complete first.</span></div>
+            <div class="eyebrow">Next Move</div>
+            <h3>Use fewer commands, better outputs.</h3>
+            <p>Run one high-quality command, copy the recommended next command, and reduce action load before adding more features.</p>
+            <div class="copy-row">
+              <code id="dashRecommended">Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.</code>
+              <button class="btn dark" onclick="copyTextById('dashRecommended')">Copy</button>
             </div>
           </div>
         </div>
 
-        <div class="three-col">
-          <div class="workflow-card" onclick="loadTemplate('daily')"><b>Daily Brief</b><span>Generate next move, constraint, what to cut, and actions.</span></div>
-          <div class="workflow-card" onclick="loadTemplate('cut')"><b>Cut Complexity</b><span>Force what to stop, defer, or simplify.</span></div>
-          <div class="workflow-card" onclick="loadTemplate('quality')"><b>Quality Review</b><span>Review the OS and identify the next upgrade.</span></div>
+        <div class="template-grid">
+          <div class="template-card" onclick="loadTemplate('daily')"><b>Daily Brief</b><span>Run the daily execution brief.</span></div>
+          <div class="template-card" onclick="loadTemplate('cut')"><b>Cut Complexity</b><span>Force what to stop or defer.</span></div>
+          <div class="template-card" onclick="loadTemplate('actions')"><b>Reduce Actions</b><span>Lower action overload.</span></div>
         </div>
       </div>
 
@@ -151,41 +159,67 @@
           <div class="card">
             <div class="eyebrow">Executive Command</div>
             <h2>Command Center</h2>
-            <p>Output now renders as executive-readable cards instead of raw JSON.</p>
-            <textarea id="input" placeholder="Enter command...">Review the current Executive Engine OS. Tell me the next move, current constraint, next decision, what to cut, actions, risk, execution score, and recommended command.</textarea>
+            <p>Run one command. Review cards. Copy the recommended next command.</p>
+            <textarea id="input" placeholder="Enter command...">Reduce my action queue. Tell me what to complete, cut, defer, and what to do first.</textarea>
             <div class="toolbar">
               <button class="btn primary" onclick="runEngine()">Run Engine</button>
               <button class="btn" onclick="loadTemplate('daily')">Daily Brief</button>
               <button class="btn" onclick="loadTemplate('cut')">What to Cut</button>
+              <button class="btn" onclick="loadTemplate('memory')">Memory Pattern</button>
               <button class="btn" onclick="loadTemplate('actions')">Reduce Actions</button>
-              <button class="btn" onclick="loadTemplate('quality')">Quality Review</button>
               <button class="btn" onclick="clearOutput()">Clear</button>
             </div>
           </div>
           <div class="card soft">
-            <div class="eyebrow">Required Output</div>
-            <h3>V1850 contract</h3>
-            <p>Every strong output should include next move, current constraint, next decision, what to cut, risk, execution score, and recommended command.</p>
-            <div class="toolbar">
-              <button class="btn dark" onclick="openBackend('/core-output-contract')">Output Contract</button>
-              <button class="btn" onclick="openBackend('/core-command-templates')">Templates</button>
-              <button class="btn" onclick="openBackend('/v1900-milestone')">V1850 Milestone</button>
+            <div class="eyebrow">Recommended Command</div>
+            <h3>Copy next command</h3>
+            <p>The recommended command from the last run appears here for fast follow-up.</p>
+            <div class="copy-row">
+              <code id="recommendedCommandBox">Run a command to generate the next recommended command.</code>
+              <button class="btn dark" onclick="copyTextById('recommendedCommandBox')">Copy</button>
             </div>
           </div>
         </div>
         <div id="resultCards" class="result-grid"></div>
-        <div class="card" style="margin-top:16px"><h3>Raw Output</h3><div id="output" class="output">Ready. Choose a workflow or run a command.</div></div>
+        <div class="card" style="margin-top:16px"><h3>Raw Output</h3><div id="output" class="output">Ready. Choose a template or run a command.</div></div>
+      </div>
+
+      <div id="page-templates" class="page">
+        <div class="card">
+          <div class="eyebrow">Command Templates</div>
+          <h2>One-click command library</h2>
+          <p>Load a template into Command Center, then run manually.</p>
+          <div class="template-grid" id="templateGrid"></div>
+          <div class="toolbar">
+            <button class="btn" onclick="openBackend('/command-template-library')">Raw Template Library</button>
+            <button class="btn" onclick="openBackend('/recommended-command-kit')">Recommended Kit</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-memory-actions" class="page">
+        <div class="card">
+          <div class="eyebrow">Memory + Actions</div>
+          <h2>Action Load + Memory Pattern</h2>
+          <p>Review overload, repeating patterns, and what to cut before adding more work.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadMemoryActions()">Load Memory + Actions</button>
+            <button class="btn" onclick="openBackend('/action-reduction-plan')">Action Reduction Plan</button>
+            <button class="btn" onclick="openBackend('/memory-patterns')">Memory Patterns</button>
+          </div>
+          <div id="memoryActionsOutput" class="output" style="margin-top:12px">Memory + Action Intelligence not loaded.</div>
+        </div>
       </div>
 
       <div id="page-quality" class="page">
         <div class="card">
           <div class="eyebrow">Core Quality</div>
           <h2>Quality Contract</h2>
-          <p>Review the output contract and core command templates.</p>
+          <p>Review output contract, core command templates, and frontend execution status.</p>
           <div class="toolbar">
             <button class="btn primary" onclick="loadCoreQuality()">Load Core Quality</button>
-            <button class="btn" onclick="openBackend('/execution-loop')">Execution Loop</button>
-            <button class="btn" onclick="openBackend('/core-command-templates')">Command Templates</button>
+            <button class="btn" onclick="openBackend('/frontend-execution-status')">Frontend Execution Status</button>
+            <button class="btn" onclick="openBackend('/core-output-contract')">Output Contract</button>
           </div>
           <div id="qualityOutput" class="output" style="margin-top:12px">Core quality not loaded.</div>
         </div>
@@ -194,64 +228,30 @@
       <div id="page-workflow" class="page">
         <div class="card">
           <div class="eyebrow">Execution Loop</div>
-          <h2>Core Execution Loop</h2>
-          <p>Run the OS like a daily command loop, not a pile of pages.</p>
+          <h2>Daily Execution Loop</h2>
+          <p>Run one step at a time. Do not add more work until the current constraint is clear.</p>
           <div class="three-col">
             <div class="workflow-card" onclick="loadLoopCommand('start_day')"><b>1. Start Day</b><span>Focus, constraint, next decision, what to cut.</span></div>
-            <div class="workflow-card" onclick="loadLoopCommand('run_command')"><b>2. Run Command</b><span>Decision, next move, action plan, risk.</span></div>
-            <div class="workflow-card" onclick="loadLoopCommand('reduce_queue')"><b>3. Reduce Queue</b><span>Complete, cut, or defer.</span></div>
-            <div class="workflow-card" onclick="loadLoopCommand('review_risk')"><b>4. Review Risk</b><span>Surface the bottleneck.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('run_command')"><b>2. Run Command</b><span>Decision, next move, actions, risk.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('reduce_queue')"><b>3. Reduce Queue</b><span>Complete, cut, defer.</span></div>
+            <div class="workflow-card" onclick="loadLoopCommand('review_risk')"><b>4. Review Risk</b><span>Surface bottleneck.</span></div>
             <div class="workflow-card" onclick="loadLoopCommand('end_day')"><b>5. End Day</b><span>Close loops and set tomorrow.</span></div>
           </div>
-          <div class="toolbar">
-            <button class="btn" onclick="openBackend('/execution-loop')">Raw Execution Loop</button>
-          </div>
         </div>
       </div>
 
-      <div id="page-cockpit" class="page">
+      <div id="page-labels" class="page">
         <div class="card">
-          <div class="eyebrow">Executive Cockpit</div>
-          <h2>Cockpit</h2>
-          <p>Review action overload, recurring risk, decision pattern, and recommended command.</p>
+          <div class="eyebrow">Label Map</div>
+          <h2>Legacy labels clarified</h2>
+          <p>Frontend shows V1950. Raw backend diagnostic routes may preserve old labels intentionally.</p>
           <div class="toolbar">
-            <button class="btn primary" onclick="loadCockpit()">Load Cockpit</button>
-            <button class="btn" onclick="openBackend('/executive-cockpit')">Open Raw Cockpit</button>
+            <button class="btn primary" onclick="loadLabelMap()">Load Label Map</button>
+            <button class="btn" onclick="openBackend('/frontend-label-map')">Raw Label Map</button>
           </div>
-          <div id="cockpitOutput" class="output" style="margin-top:12px">Cockpit not loaded. Click Load Cockpit to review action load and risks.</div>
+          <div id="labelOutput" class="output" style="margin-top:12px">Label map not loaded.</div>
         </div>
       </div>
-
-      <div id="page-integration-prep" class="page">
-        <div class="card">
-          <div class="eyebrow">Integration Prep</div>
-          <h2>V1800 Integration Prep Preserved</h2>
-          <p>Calendar/OAuth remains parked. Integration prep is preserved but not activated.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="openBackend('/integration-prep-status')">Integration Prep Status</button>
-            <button class="btn" onclick="openBackend('/calendar/readiness-dashboard')">Calendar Readiness</button>
-            <button class="btn" onclick="openBackend('/oauth/live-gates')">OAuth Gates</button>
-          </div>
-          <div class="callout">Do not activate OAuth until the core OS output is excellent and Google env/token storage are ready.</div>
-        </div>
-      </div>
-
-      
-      <div id="page-memory-actions" class="page">
-        <div class="card">
-          <div class="eyebrow">Memory + Action Intelligence</div>
-          <h2>V1900 Action Discipline</h2>
-          <p>Detects action overload, recurring memory patterns, and what to cut before adding complexity.</p>
-          <div class="toolbar">
-            <button class="btn primary" onclick="loadMemoryActions()">Load Memory + Actions</button>
-            <button class="btn" onclick="openBackend('/action-reduction-plan')">Action Reduction Plan</button>
-            <button class="btn" onclick="openBackend('/memory-patterns')">Memory Patterns</button>
-            <button class="btn" onclick="openBackend('/v1900-milestone')">V1900 Milestone</button>
-          </div>
-          <div id="memoryActionsOutput" class="output" style="margin-top:12px">Memory + Action Intelligence not loaded.</div>
-        </div>
-      </div>
-
 
       <div id="page-tests" class="page">
         <div class="two-col">
@@ -262,18 +262,18 @@
             <div class="toolbar">
               <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v1900-milestone')">V1850 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1950-milestone')">V1950 Milestone</button>
             </div>
           </div>
           <div class="card">
             <h3>Direct Test Links</h3>
             <div class="link-grid">
               <a href="#" onclick="openBackend('/health');return false;">Health</a>
-              <a href="#" onclick="openBackend('/core-quality-status');return false;">Quality Status</a>
-              <a href="#" onclick="openBackend('/core-output-contract');return false;">Output Contract</a>
-              <a href="#" onclick="openBackend('/execution-loop');return false;">Execution Loop</a>
+              <a href="#" onclick="openBackend('/frontend-execution-status');return false;">Frontend Execution Status</a>
+              <a href="#" onclick="openBackend('/command-template-library');return false;">Template Library</a>
+              <a href="#" onclick="openBackend('/recommended-command-kit');return false;">Recommended Command Kit</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v1900-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v1950-milestone');return false;">Milestone</a>
             </div>
           </div>
         </div>
@@ -288,9 +288,9 @@
             <a href="#" onclick="openBackend('/health');return false;">Health</a>
             <a href="#" onclick="openBackend('/diagnostic');return false;">Diagnostic</a>
             <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
-            <a href="#" onclick="openBackend('/core-quality-status');return false;">Core Quality</a>
+            <a href="#" onclick="openBackend('/frontend-execution-status');return false;">Frontend Execution</a>
             <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-            <a href="#" onclick="openBackend('/v1900-milestone');return false;">V1850 Milestone</a>
+            <a href="#" onclick="openBackend('/v1950-milestone');return false;">V1950 Milestone</a>
           </div>
         </div>
       </div>
@@ -302,10 +302,36 @@
 const API = "https://executive-engine-os.onrender.com";
 
 const templates = {
-  daily: "Create my executive daily brief. Give me next move, today focus, current constraint, decision, next decision, what to cut, actions, risk, priority, execution score, and recommended command.",
-  cut: "Review what I am building and tell me what to cut, defer, simplify, or stop so the core OS becomes more useful.",
-  quality: "Review the current Executive Engine OS. Identify the weakest part of the core output, what to improve next, what to cut, and the next command.",
-  actions: "Reduce my action load. Tell me the top 3 actions, what to cut, what to defer, and the single next move."
+  daily: {
+    title: "Daily Brief",
+    category: "Operate",
+    command: "Create my executive daily brief. Give me next move, today focus, current constraint, decision, next decision, what to cut, action load, memory pattern, actions, risk, priority, execution score, and recommended command."
+  },
+  cut: {
+    title: "Cut Complexity",
+    category: "Discipline",
+    command: "Review what I am building and tell me what to cut, defer, simplify, or stop so the core OS becomes more useful."
+  },
+  actions: {
+    title: "Reduce Action Load",
+    category: "Execution",
+    command: "Reduce my action load. Tell me the top 3 actions, what to cut, what to defer, the action load, and the single next move."
+  },
+  memory: {
+    title: "Find Memory Pattern",
+    category: "Intelligence",
+    command: "Review my recent pattern. Tell me what I keep repeating, what it means, what to cut, and the next decision."
+  },
+  product: {
+    title: "Product Focus",
+    category: "Product",
+    command: "Decide the next product milestone. Prioritize core OS quality over integrations unless integration is clearly the bottleneck."
+  },
+  end_day: {
+    title: "End Day Summary",
+    category: "Operate",
+    command: "Create my end-day summary. What was decided, what remains open, what should be cut tomorrow, and what command should I start with?"
+  }
 };
 
 const loopCommands = {
@@ -328,10 +354,17 @@ function showPage(page){
 function openBackend(route){ window.open(API + route, "_blank", "noopener,noreferrer"); }
 function inputEl(){ return document.getElementById("input"); }
 function outputEl(){ return document.getElementById("output"); }
+function safe(v){ return (v === undefined || v === null || v === "") ? "—" : String(v); }
+
+function copyTextById(id){
+  const text = document.getElementById(id)?.textContent || "";
+  if(!text) return;
+  navigator.clipboard.writeText(text);
+}
 
 function loadTemplate(type){
   showPage("command");
-  setTimeout(()=>{ inputEl().value = templates[type] || templates.daily; inputEl().focus(); }, 50);
+  setTimeout(()=>{ inputEl().value = (templates[type] || templates.daily).command; inputEl().focus(); }, 50);
 }
 
 function loadLoopCommand(type){
@@ -340,18 +373,32 @@ function loadLoopCommand(type){
 }
 
 function clearOutput(){
-  outputEl().textContent = "Ready. Choose a workflow or run a command.";
+  outputEl().textContent = "Ready. Choose a template or run a command.";
   document.getElementById("resultCards").innerHTML = "";
+  document.getElementById("recommendedCommandBox").textContent = "Run a command to generate the next recommended command.";
 }
 
-function safe(v){ return (v === undefined || v === null || v === "") ? "—" : String(v); }
+function renderTemplates(){
+  const box = document.getElementById("templateGrid");
+  if(!box) return;
+  box.innerHTML = Object.entries(templates).map(([key,t]) => `
+    <div class="template-card" onclick="loadTemplate('${key}')">
+      <b>${t.title}</b>
+      <span>${t.category} · ${t.command.slice(0, 92)}...</span>
+    </div>
+  `).join("");
+}
 
 function renderExecutiveCards(data){
   const box = document.getElementById("resultCards");
   if(!box) return;
   const actions = Array.isArray(data.actions) ? data.actions : [];
+  const rec = safe(data.recommended_command);
+  document.getElementById("recommendedCommandBox").textContent = rec;
   box.innerHTML = `
     <div class="result-block major"><h4>Next Move</h4><div>${safe(data.next_move || data.what_to_do_now)}</div></div>
+    <div class="result-block action"><h4>Action Load</h4><div>${safe(data.action_load)}</div></div>
+    <div class="result-block memory"><h4>Memory Pattern</h4><div>${safe(data.memory_pattern || data.memory_signal)}</div></div>
     <div class="result-block"><h4>Today's Focus</h4><div>${safe(data.today_focus)}</div></div>
     <div class="result-block"><h4>Current Constraint</h4><div>${safe(data.current_constraint)}</div></div>
     <div class="result-block"><h4>Decision</h4><div>${safe(data.decision)}</div></div>
@@ -360,10 +407,8 @@ function renderExecutiveCards(data){
     <div class="result-block"><h4>Actions</h4><div><ol class="actions-list">${actions.map(a=>`<li>${safe(a)}</li>`).join("") || "<li>—</li>"}</ol></div></div>
     <div class="result-block risk"><h4>Risk</h4><div>${safe(data.risk)}</div></div>
     <div class="result-block"><h4>Priority</h4><div>${safe(data.priority)}</div></div>
-    <div class="result-block"><h4>Action Load</h4><div>${safe(data.action_load)}</div></div>
-    <div class="result-block"><h4>Memory Pattern</h4><div>${safe(data.memory_pattern || data.memory_pattern)}</div></div>
     <div class="result-block"><h4>Execution Score</h4><div>${safe(data.execution_score)}</div></div>
-    <div class="result-block major"><h4>Recommended Command</h4><div>${safe(data.recommended_command)}</div></div>
+    <div class="result-block major"><h4>Recommended Command</h4><div>${rec}</div><div class="toolbar"><button class="btn dark" onclick="copyTextById('recommendedCommandBox')">Copy Recommended Command</button></div></div>
   `;
 }
 
@@ -386,41 +431,44 @@ async function runEngine(){
   }
 }
 
-async function loadCoreQuality(){
-  const box = document.getElementById("qualityOutput");
-  box.textContent = "Loading core quality...";
-  try{
-    const [a,b] = await Promise.all([
-      fetch(API + "/core-quality-status", {cache:"no-store"}).then(r=>r.json()),
-      fetch(API + "/core-output-contract", {cache:"no-store"}).then(r=>r.json())
-    ]);
-    box.textContent = JSON.stringify({quality:a, contract:b}, null, 2);
-  }catch(err){ box.textContent = "Core quality failed: " + err.message; }
-}
-
-async function loadCockpit(){
-  const box = document.getElementById("cockpitOutput");
-  box.textContent = "Loading cockpit...";
-  try{
-    const res = await fetch(API + "/executive-cockpit", {cache:"no-store"});
-    const data = await res.json();
-    box.textContent = JSON.stringify(data, null, 2);
-  }catch(err){ box.textContent = "Cockpit load failed: " + err.message; }
-}
-
 async function loadMemoryActions(){
   const box = document.getElementById("memoryActionsOutput");
   box.textContent = "Loading memory + action intelligence...";
   try{
-    const [a,b,c] = await Promise.all([
+    const [a,b,c,d] = await Promise.all([
       fetch(API + "/memory-action-intelligence", {cache:"no-store"}).then(r=>r.json()),
       fetch(API + "/action-intelligence", {cache:"no-store"}).then(r=>r.json()),
-      fetch(API + "/memory-patterns", {cache:"no-store"}).then(r=>r.json())
+      fetch(API + "/memory-patterns", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/action-reduction-plan", {cache:"no-store"}).then(r=>r.json())
     ]);
-    box.textContent = JSON.stringify({memory_action_intelligence:a, action_intelligence:b, memory_patterns:c}, null, 2);
+    box.textContent = JSON.stringify({memory_action_intelligence:a, action_intelligence:b, memory_patterns:c, action_reduction_plan:d}, null, 2);
   }catch(err){ box.textContent = "Memory + Action Intelligence failed: " + err.message; }
 }
 
+async function loadCoreQuality(){
+  const box = document.getElementById("qualityOutput");
+  box.textContent = "Loading core quality...";
+  try{
+    const [a,b,c] = await Promise.all([
+      fetch(API + "/frontend-execution-status", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/core-output-contract", {cache:"no-store"}).then(r=>r.json()),
+      fetch(API + "/core-quality-status", {cache:"no-store"}).then(r=>r.json())
+    ]);
+    box.textContent = JSON.stringify({frontend_execution:a, output_contract:b, core_quality:c}, null, 2);
+  }catch(err){ box.textContent = "Core quality failed: " + err.message; }
+}
+
+async function loadLabelMap(){
+  const box = document.getElementById("labelOutput");
+  box.textContent = "Loading label map...";
+  try{
+    const res = await fetch(API + "/frontend-label-map", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Label map failed: " + err.message; }
+}
+
+renderTemplates();
 </script>
 </body>
 </html>
