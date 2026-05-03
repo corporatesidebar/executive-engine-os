@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V3000</title>
+  <title>Executive Engine OS — V3001</title>
   <style>
     :root{
       --bg:#f5f7fb;--panel:#fff;--ink:#071226;--muted:#64748b;--line:#dbe5f1;
@@ -94,14 +94,14 @@
 
     <div class="side-card">
       <small>Current Version</small>
-      <strong>V3000 Revenue Execution Shell</strong>
+      <strong>V3001 Revenue Output Fix</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V3000 Revenue Execution Shell · V3000 Backend</div>
+      <div class="version-badge">V3001 Revenue Output Fix · V3001 Backend</div>
     </div>
 
     <section class="content">
@@ -111,7 +111,7 @@
             <div class="eyebrow">Revenue Command Center</div>
             <h2>What are you trying to win today?</h2>
             <p>Turn executive intent into revenue-ready assets, next moves, and visible wins. Make money. Save time. Feel in control.</p>
-            <textarea id="input" placeholder="Example: I need to pitch a $50k consulting package to a hesitant client and move them toward a yes.">I need to pitch a $50k consulting package to a hesitant client and move them toward a yes.</textarea>
+            <textarea id="input" placeholder="Example: I need to pitch a $50k consulting package to a hesitant client. Build a client-ready proposal, pitch angle, sales email, follow-up sequence, objection handling, and close plan.">I need to pitch a $50k consulting package to a hesitant client. Build a client-ready proposal, pitch angle, sales email, follow-up sequence, objection handling, and close plan.</textarea>
             <div class="toolbar">
               <button class="btn primary" onclick="runEngine()">Run Engine</button>
               <button class="btn" onclick="loadTemplate('proposal')">Build Proposal</button>
@@ -223,7 +223,7 @@
             <button class="btn" onclick="openBackend('/build-command-center-status')">Build Command Center</button>
             <button class="btn" onclick="openBackend('/build-protocol')">Build Protocol</button>
             <button class="btn" onclick="openBackend('/promotion-review')">Promotion Review</button>
-            <button class="btn" onclick="openBackend('/v3000-milestone')">V3000 Milestone</button>
+            <button class="btn" onclick="openBackend('/v3001-milestone')">V3001 Milestone</button>
           </div>
           <div class="callout" style="margin-top:12px">Do not expose build factory/admin pages to executive end users.</div>
         </div>
@@ -238,7 +238,7 @@
             <div class="toolbar">
               <button class="btn primary" onclick="openBackend('/test-report')">Open Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v3000-milestone')">V3000 Milestone</button>
+              <button class="btn" onclick="openBackend('/v3001-milestone')">V3001 Milestone</button>
             </div>
           </div>
           <div class="card">
@@ -249,7 +249,7 @@
               <a href="#" onclick="openBackend('/revenue-command-templates');return false;">Templates</a>
               <a href="#" onclick="openBackend('/executive-scoreboard');return false;">Scoreboard</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v3000-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v3001-milestone');return false;">Milestone</a>
             </div>
           </div>
         </div>
@@ -295,26 +295,65 @@ function loadTemplate(type){
   setTimeout(()=>{ inputEl().value = templates[type] || templates.proposal; inputEl().focus(); }, 50);
 }
 
-function renderCards(data){
-  const box = document.getElementById("resultCards");
+
+function firstUseful(data, keys, fallback){
+  for(const key of keys){
+    const value = data && data[key];
+    if(value !== undefined && value !== null && String(value).trim() !== ""){
+      if(Array.isArray(value)) return value.join("; ");
+      return String(value);
+    }
+  }
+  return fallback || "Not specified. Run the follow-up command to sharpen this section.";
+}
+
+function normalizeRevenueOutput(data){
   const actions = Array.isArray(data.actions) ? data.actions : [];
-  const rec = safe(data.recommended_command);
+  const nextPowerMove = firstUseful(data, ["next_power_move","next_move","what_to_do_now"], "Take the highest-leverage next step from the action list.");
+  const decision = firstUseful(data, ["decision"], "");
+  return {
+    revenue_objective: firstUseful(data, ["revenue_objective","today_focus"], decision || "Move the business opportunity forward toward revenue."),
+    next_power_move: nextPowerMove,
+    deal_client_context: firstUseful(data, ["deal_client_context","current_constraint","memory_pattern"], "Context not provided. Add client, deal size, buyer problem, and desired outcome."),
+    offer_angle: firstUseful(data, ["offer_angle","next_decision"], decision || "Position the offer around speed, ROI, risk reduction, and executive convenience."),
+    asset_to_create: firstUseful(data, ["asset_to_create"], "Client-ready proposal, pitch outline, sales email, follow-up sequence, and close plan."),
+    draft_output: firstUseful(data, ["draft_output","operator_note"], decision || nextPowerMove || "Draft output was not returned. Run the recommended command to generate the full asset."),
+    what_to_cut: firstUseful(data, ["what_to_cut"], "Cut anything that does not move the deal, reduce friction, or create revenue."),
+    actions: actions.length ? actions : [
+      "Clarify the client problem and desired outcome.",
+      "Package the offer into a simple proposal.",
+      "Send a direct follow-up with one clear next step."
+    ],
+    risk: firstUseful(data, ["risk"], "The offer may be too vague or not tied clearly enough to ROI."),
+    priority: firstUseful(data, ["priority"], "High"),
+    executive_win: firstUseful(data, ["executive_win","execution_score"], "You moved a revenue opportunity forward and created a clearer next move."),
+    revenue_signal: firstUseful(data, ["revenue_signal","memory_pattern"], "This can create revenue if it becomes a client-ready asset and drives a follow-up conversation."),
+    time_saved: firstUseful(data, ["time_saved","action_load"], "Saved time by turning messy intent into a structured revenue workflow."),
+    recommended_command: firstUseful(data, ["recommended_command"], "Sharpen this into a client-ready revenue asset with proposal, pitch angle, follow-up, risk, and close plan.")
+  };
+}
+
+function renderCards(data){
+  const normalized = normalizeRevenueOutput(data || {});
+  const box = document.getElementById("resultCards");
+  const actions = normalized.actions;
+  const rec = safe(normalized.recommended_command);
   document.getElementById("recommendedCommandBox").textContent = rec;
 
   box.innerHTML = `
-    <div class="result-block major"><h4>Next Power Move</h4><div>${safe(data.next_power_move || data.next_move)}</div></div>
-    <div class="result-block money"><h4>Revenue Objective</h4><div>${safe(data.revenue_objective)}</div></div>
-    <div class="result-block"><h4>Deal / Client Context</h4><div>${safe(data.deal_client_context)}</div></div>
-    <div class="result-block"><h4>Offer Angle</h4><div>${safe(data.offer_angle)}</div></div>
-    <div class="result-block"><h4>Asset To Create</h4><div>${safe(data.asset_to_create)}</div></div>
-    <div class="result-block major"><h4>Draft Output</h4><div>${safe(data.draft_output)}</div></div>
-    <div class="result-block cut"><h4>What To Cut</h4><div>${safe(data.what_to_cut)}</div></div>
+    <div class="result-block major"><h4>Next Power Move</h4><div>${safe(normalized.next_power_move)}</div></div>
+    <div class="result-block money"><h4>Revenue Objective</h4><div>${safe(normalized.revenue_objective)}</div></div>
+    <div class="result-block"><h4>Deal / Client Context</h4><div>${safe(normalized.deal_client_context)}</div></div>
+    <div class="result-block"><h4>Offer Angle</h4><div>${safe(normalized.offer_angle)}</div></div>
+    <div class="result-block"><h4>Asset To Create</h4><div>${safe(normalized.asset_to_create)}</div></div>
+    <div class="result-block major"><h4>Draft Output</h4><div>${safe(normalized.draft_output)}</div></div>
+    <div class="result-block cut"><h4>What To Cut</h4><div>${safe(normalized.what_to_cut)}</div></div>
     <div class="result-block"><h4>Actions</h4><div><ol class="actions-list">${actions.map(a=>`<li>${safe(a)}</li>`).join("") || "<li>—</li>"}</ol></div></div>
-    <div class="result-block risk"><h4>Risk</h4><div>${safe(data.risk)}</div></div>
-    <div class="result-block"><h4>Priority</h4><div>${safe(data.priority)}</div></div>
-    <div class="result-block win"><h4>Executive Win</h4><div>${safe(data.executive_win)}</div></div>
-    <div class="result-block money"><h4>Revenue Signal</h4><div>${safe(data.revenue_signal)}</div></div>
-    <div class="result-block"><h4>Time Saved</h4><div>${safe(data.time_saved)}</div></div>
+    <div class="result-block risk"><h4>Risk</h4><div>${safe(normalized.risk)}</div></div>
+    <div class="result-block"><h4>Priority</h4><div>${safe(normalized.priority)}</div></div>
+    <div class="result-block win"><h4>Executive Win</h4><div>${safe(normalized.executive_win)}</div></div>
+    <div class="result-block money"><h4>Revenue Signal</h4><div>${safe(normalized.revenue_signal)}</div></div>
+    <div class="result-block"><h4>Time Saved</h4><div>${safe(normalized.time_saved)}</div></div>
     <div class="result-block major"><h4>Follow-Up Command</h4><div>${rec}</div><div class="toolbar"><button class="btn dark" onclick="copyTextById('recommendedCommandBox')">Copy Follow-Up Command</button></div></div>
   `;
 }
