@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Executive Engine OS — V1206</title>
+  <title>Executive Engine OS — V1207</title>
   <style>
     :root{
       --bg:#f8fbff;
@@ -231,11 +231,11 @@
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version">V1206 Copy/Paste Test Report · V1206 Backend</div>
+      <div class="version">V1207 Test Report Runtime Fix · V1207 Backend</div>
     </div>
 
     <section class="content">
-      <div class="notice">V1206 fixes /test-links Internal Server Error by using plain HTML response headers. <button onclick="openBackend(\'/test-links\')" style="margin-left:8px">Open Copy/Paste Test Report</button></div>
+      <div class="notice">V1207 fixes /test-links Internal Server Error by using plain HTML response headers. <button onclick="openBackend(\'/test-links\')" style="margin-left:8px">Open Copy/Paste Test Report</button></div>
 
       <div id="page-command" class="page active">
         <div class="grid">
@@ -254,7 +254,7 @@
 
           <div class="card">
             <h3>Executive Cockpit</h3>
-            <p>Stable V1206 shell. If links failed before, use the Test Links page.</p>
+            <p>Stable V1207 shell. If links failed before, use the Test Links page.</p>
             <div class="metric-grid">
               <div class="metric"><small>Status</small><strong>Frontend Fixed</strong></div>
               <div class="metric"><small>Manual</small><strong>On</strong></div>
@@ -322,12 +322,12 @@
       <div id="page-beta" class="page">
         <div class="card">
           <h2>Beta Status</h2>
-          <p>V1206 keeps the V1200 beta routes and adds frontend click stability.</p>
+          <p>V1207 keeps the V1200 beta routes and adds frontend click stability.</p>
           <div class="actions">
             <button class="primary" onclick="openBackend('/beta/system-score')">Beta System Score</button>
             <button onclick="openBackend('/beta/operating-brief')">Operating Brief</button>
             <button onclick="openBackend('/beta/launch-checklist')">Launch Checklist</button>
-            <button onclick="openBackend('/v1206-milestone')">V1206 Milestone</button>
+            <button onclick="openBackend('/v1207-milestone')">V1207 Milestone</button>
           </div>
         </div>
       </div>
@@ -355,7 +355,7 @@ const TEST_ROUTES = [
   "/health",
   "/test-report",
   "/test-report-json",
-  "/v1206-milestone",
+  "/v1207-milestone",
   "/diagnostic",
   "/system-test",
   "/test-links",
@@ -386,7 +386,7 @@ function loadTemplate(type){
   const templates = {
     daily: "Create my executive daily brief. Tell me today's focus, current constraint, next decision, actions, risk, priority, and recommended command.",
     calendar: "Review Calendar OAuth candidate status, connector readiness, manual execution policy, and next safest build. Keep writes blocked.",
-    beta: "Review V1206 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
+    beta: "Review V1207 frontend click fix and V1200 beta readiness. Identify what works, what is broken, the next move, risks, and test order."
   };
   input.value = templates[type] || templates.daily;
 }
