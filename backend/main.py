@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V1500: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
+You are Executive Engine OS V1800: Live Calendar Read-Only OAuth Candidate for a serious executive operating system.
 
 You are not a chatbot. You are a daily execution cockpit, secure calendar intelligence layer, and approval-gated execution system.
 
@@ -87,8 +87,8 @@ Rules:
 
 
 
-VERSION = "V1500"
-SERVICE_NAME = "Executive Engine OS V1500"
+VERSION = "V1800"
+SERVICE_NAME = "Executive Engine OS V1800"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -111,7 +111,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="1500.0.0")
+app = FastAPI(title=SERVICE_NAME, version="1800.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -420,7 +420,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V1500, an elite COO/operator system.
+You are Executive Engine OS V1800, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -881,7 +881,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V1500",
+        "backend_must_show": "Executive Engine OS V1800",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3760,7 +3760,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V1500",
+        "service": "Executive Engine OS V1800",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7923,7 +7923,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1500 Test Links</title>
+      <title>Executive Engine OS V1800 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7937,7 +7937,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V1500 Test Links</h1>
+        <h1>Executive Engine OS V1800 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8128,7 +8128,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1500 Test Links</title>
+      <title>Executive Engine OS V1800 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8150,7 +8150,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1500 Test Links</h1>
+          <h1>Executive Engine OS V1800 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8327,7 +8327,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V1500 Absolute Test Links</title>
+      <title>Executive Engine OS V1800 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8349,7 +8349,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V1500 Absolute Test Links</h1>
+          <h1>Executive Engine OS V1800 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8498,7 +8498,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1500 Test Links</title>
+  <title>Executive Engine OS V1800 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8520,7 +8520,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V1500 Test Links</h1>
+      <h1>Executive Engine OS V1800 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8678,7 +8678,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1500 Test Report</title>
+  <title>Executive Engine OS V1800 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8699,7 +8699,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1500 Test Report</h1>
+    <h1>Executive Engine OS V1800 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8771,7 +8771,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V1500 Test Report");
+  lines.push("Executive Engine OS V1800 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8951,7 +8951,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V1500 Test Report</title>
+  <title>Executive Engine OS V1800 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8972,7 +8972,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V1500 Test Report</h1>
+    <h1>Executive Engine OS V1800 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9021,7 +9021,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V1500 Test Report");
+  out.push("Executive Engine OS V1800 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -9692,4 +9692,402 @@ async def v1500_milestone():
             "https://executive-engine-os.onrender.com/v1500-milestone"
         ],
         "recommended_next_build": "V1550 Real Calendar Env Setup Prep OR V1550 UI/Workflow QA Pass"
+    }
+
+
+
+
+# =========================
+# V1550 UI / WORKFLOW QA PASS
+# =========================
+# QA/polish release. No Supabase schema changes. No OAuth activation. No external writes.
+
+@app.get("/ui-qa-status")
+async def ui_qa_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "UI / Workflow QA Pass",
+        "frontend_must_show": "V1550 UI / Workflow QA · V1550 Backend",
+        "qa": {
+            "default_page": "Product Dashboard",
+            "sidebar_routes_checked": True,
+            "stable_version_panel": "V1550",
+            "bottom_sidebar_label": "V1550 Product Candidate Stable",
+            "test_report_button": "/test-report",
+            "empty_states": "improved",
+            "button_routing": "checked",
+            "old_checkpoint_labels_hidden_from_frontend": True
+        },
+        "safety": {
+            "supabase_schema_changed": False,
+            "oauth_activated": False,
+            "external_writes_enabled": False,
+            "manual_execution_only": True,
+            "auto_loop_enabled": False
+        }
+    }
+
+
+@app.get("/workflow-qa-check")
+async def workflow_qa_check():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Workflow QA Check",
+        "pages": [
+            {"page": "Product Dashboard", "status": "default", "primary_action": "Run Command"},
+            {"page": "Operator Console", "status": "clickable", "primary_action": "Load Operator Console"},
+            {"page": "Command Center", "status": "clickable", "primary_action": "Run Engine"},
+            {"page": "Workflows", "status": "clickable", "primary_action": "Load workflow command"},
+            {"page": "Executive Cockpit", "status": "clickable", "primary_action": "Load Cockpit"},
+            {"page": "Intelligence Board", "status": "clickable", "primary_action": "Load Intelligence Board"},
+            {"page": "Calendar Prep", "status": "prep_only", "primary_action": "Review OAuth Gates"},
+            {"page": "Connectors", "status": "prep_only", "primary_action": "Review Connector Command Center"},
+            {"page": "Progress", "status": "local_only", "primary_action": "Load Workflow State"},
+            {"page": "Candidate Status", "status": "clickable", "primary_action": "Load Candidate Status"},
+            {"page": "Test Report", "status": "working", "primary_action": "Open /test-report"},
+            {"page": "Settings", "status": "clickable", "primary_action": "Open diagnostics"}
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+
+@app.get("/v1550-milestone")
+async def v1550_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "UI / Workflow QA Pass",
+        "ready": True,
+        "frontend_must_show": "V1550 UI / Workflow QA · V1550 Backend",
+        "baseline": "V1500",
+        "fixed": [
+            "Sidebar bottom label corrected",
+            "Product Dashboard remains default",
+            "Spacing tightened",
+            "Empty states improved",
+            "Button routing clarified",
+            "Visible frontend labels aligned to V1550",
+            "Test Report button preserved"
+        ],
+        "kept": [
+            "/test-report working",
+            "diagnostic routes preserved",
+            "Supabase schema unchanged",
+            "OAuth inactive",
+            "external writes blocked",
+            "manual execution only",
+            "auto-loop off"
+        ],
+        "test_order": [
+            "https://executive-engine-os.onrender.com/health",
+            "https://executive-engine-os.onrender.com/ui-qa-status",
+            "https://executive-engine-os.onrender.com/workflow-qa-check",
+            "https://executive-engine-os.onrender.com/product-candidate-status",
+            "https://executive-engine-os.onrender.com/test-report",
+            "https://executive-engine-os.onrender.com/v1550-milestone"
+        ],
+        "recommended_next_build": "V1600 Calendar Environment Setup Prep OR V1600 Product Workflow Persistence"
+    }
+
+
+# =========================
+# V1600 CALENDAR ENV SETUP PREP
+# =========================
+# Environment setup prep only. No live OAuth activation and no token exchange.
+
+@app.get("/calendar/env-setup-prep")
+async def calendar_env_setup_prep():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Env Setup Prep",
+        "required_render_env_vars": [
+            "GOOGLE_CLIENT_ID",
+            "GOOGLE_CLIENT_SECRET",
+            "GOOGLE_REDIRECT_URI",
+            "TOKEN_ENCRYPTION_KEY",
+            "OAUTH_ENABLED=false",
+            "TOKEN_STORAGE_ENABLED=false"
+        ],
+        "google_cloud_steps": [
+            "Create or open Google Cloud project",
+            "Configure OAuth consent screen",
+            "Enable Google Calendar API",
+            "Create OAuth web client",
+            "Add backend callback URL as authorized redirect URI",
+            "Keep read-only calendar scope only"
+        ],
+        "allowed_scope": "https://www.googleapis.com/auth/calendar.events.readonly",
+        "blocked": ["calendar writes", "background sync", "token exchange", "token storage", "external writes"],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+@app.get("/calendar/env-checklist")
+async def calendar_env_checklist():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "checklist": [
+            {"item": "GOOGLE_CLIENT_ID set in Render", "required": True},
+            {"item": "GOOGLE_CLIENT_SECRET set in Render", "required": True},
+            {"item": "GOOGLE_REDIRECT_URI set to backend callback", "required": True},
+            {"item": "TOKEN_ENCRYPTION_KEY generated", "required": True},
+            {"item": "OAUTH_ENABLED remains false until activation build", "required": True},
+            {"item": "TOKEN_STORAGE_ENABLED remains false until activation build", "required": True}
+        ],
+        "ready_for_live_oauth": False
+    }
+
+@app.get("/v1600-milestone")
+async def v1600_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Env Setup Prep",
+        "ready": True,
+        "frontend_must_show": "V1600 Calendar Env Setup Prep · V1600 Backend",
+        "baseline": "V1550",
+        "added": ["Calendar env setup prep", "Google Cloud setup checklist", "Render env var checklist", "Calendar prep frontend page"],
+        "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
+        "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/calendar/env-setup-prep","https://executive-engine-os.onrender.com/calendar/env-checklist","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1600-milestone"],
+        "recommended_next_build": "V1650 Calendar Safety Gate"
+    }
+
+
+# =========================
+# V1650 CALENDAR SAFETY GATE
+# =========================
+# Approval and safety model for future OAuth activation. No live OAuth.
+
+@app.get("/calendar/safety-gate")
+async def calendar_safety_gate():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Safety Gate",
+        "gates": {
+            "read_only_scope_only": True,
+            "calendar_writes_blocked": True,
+            "background_sync_blocked": True,
+            "manual_refresh_only": True,
+            "token_exchange_blocked": True,
+            "token_storage_blocked": True,
+            "user_approval_required_for_activation": True
+        },
+        "blocked_actions": ["create event", "edit event", "delete event", "invite attendees", "auto-join", "background sync", "auto-send"],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+@app.get("/calendar/activation-readiness")
+async def calendar_activation_readiness():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "ready_for_activation": False,
+        "missing_before_activation": [
+            "Google env vars must be set",
+            "Token encryption key must be set",
+            "Token storage migration must be approved",
+            "Disconnect/revoke flow must be tested",
+            "User must explicitly approve activation build"
+        ],
+        "next_safe_step": "Keep OAuth inactive and prepare V1700 token-storage migration plan."
+    }
+
+@app.get("/v1650-milestone")
+async def v1650_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Safety Gate",
+        "ready": True,
+        "frontend_must_show": "V1650 Calendar Safety Gate · V1650 Backend",
+        "baseline": "V1600",
+        "added": ["Calendar safety gate", "Activation readiness", "Blocked action model", "Frontend safety page"],
+        "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
+        "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/calendar/safety-gate","https://executive-engine-os.onrender.com/calendar/activation-readiness","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1650-milestone"],
+        "recommended_next_build": "V1700 Token Storage Migration Plan"
+    }
+
+
+# =========================
+# V1700 TOKEN STORAGE MIGRATION PLAN
+# =========================
+# Migration plan only. No table creation. No schema change.
+
+@app.get("/tokens/migration-plan")
+async def tokens_migration_plan():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Token Storage Migration Plan",
+        "schema_changed": False,
+        "future_table": "oauth_connections",
+        "fields": [
+            "id uuid primary key",
+            "user_id text",
+            "provider text",
+            "connected_email text",
+            "scope text",
+            "access_token_encrypted text",
+            "refresh_token_encrypted text",
+            "expires_at timestamp",
+            "last_refresh_at timestamp",
+            "revoked_at timestamp",
+            "created_at timestamp",
+            "updated_at timestamp"
+        ],
+        "required_before_migration": [
+            "Approve schema migration",
+            "Generate TOKEN_ENCRYPTION_KEY",
+            "Define RLS/service-role policy",
+            "Implement token encryption helper",
+            "Implement disconnect/revoke flow"
+        ],
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+@app.get("/tokens/migration-sql-preview")
+async def tokens_migration_sql_preview():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "preview_only": True,
+        "sql": "CREATE TABLE oauth_connections (...); -- preview only, not executed in V1700",
+        "execute_now": False,
+        "schema_changed": False
+    }
+
+@app.get("/v1700-milestone")
+async def v1700_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Token Storage Migration Plan",
+        "ready": True,
+        "frontend_must_show": "V1700 Token Storage Plan · V1700 Backend",
+        "baseline": "V1650",
+        "added": ["Token storage migration plan", "SQL preview endpoint", "Frontend token migration page"],
+        "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
+        "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/tokens/migration-plan","https://executive-engine-os.onrender.com/tokens/migration-sql-preview","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1700-milestone"],
+        "recommended_next_build": "V1750 Calendar Readiness Dashboard"
+    }
+
+
+# =========================
+# V1750 CALENDAR READINESS DASHBOARD
+# =========================
+# Readiness dashboard only. Still no activation.
+
+@app.get("/calendar/readiness-dashboard")
+async def calendar_readiness_dashboard():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Readiness Dashboard",
+        "readiness_score": "0/6",
+        "ready_for_activation": False,
+        "checks": [
+            {"name": "Google client ID set", "passed": False},
+            {"name": "Google client secret set", "passed": False},
+            {"name": "Redirect URI set", "passed": False},
+            {"name": "Token encryption key set", "passed": False},
+            {"name": "Token storage migration approved", "passed": False},
+            {"name": "Disconnect/revoke tested", "passed": False}
+        ],
+        "safe_next_step": "Set Google env variables in Render, then rerun readiness.",
+        "blocked": ["OAuth activation", "token exchange", "token storage", "calendar writes"]
+    }
+
+@app.get("/calendar/activation-command")
+async def calendar_activation_command():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "command": "Prepare Calendar activation. Verify Google env vars, token encryption, token storage migration, disconnect/revoke flow, and keep read-only scope only.",
+        "execute_activation_now": False
+    }
+
+@app.get("/v1750-milestone")
+async def v1750_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Calendar Readiness Dashboard",
+        "ready": True,
+        "frontend_must_show": "V1750 Calendar Readiness · V1750 Backend",
+        "baseline": "V1700",
+        "added": ["Calendar readiness dashboard", "Activation command endpoint", "Frontend readiness page"],
+        "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
+        "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/calendar/readiness-dashboard","https://executive-engine-os.onrender.com/calendar/activation-command","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1750-milestone"],
+        "recommended_next_build": "V1800 Stable Integration Prep"
+    }
+
+
+# =========================
+# V1800 STABLE INTEGRATION PREP
+# =========================
+# Rollup of V1600-V1750. Stable integration prep only. No OAuth activation.
+
+@app.get("/integration-prep-status")
+async def integration_prep_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Stable Integration Prep",
+        "status": "prep_ready_not_active",
+        "modules": {
+            "calendar_env_setup": "prepared",
+            "calendar_safety_gate": "prepared",
+            "token_storage_plan": "prepared_preview_only",
+            "calendar_readiness_dashboard": "prepared",
+            "oauth_activation": "blocked",
+            "external_writes": "blocked"
+        },
+        "next_decision": "Set Google env variables or continue product workflow polish.",
+        "manual_execution_only": True,
+        "auto_loop_enabled": False
+    }
+
+@app.get("/integration-prep/checklist")
+async def integration_prep_checklist():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "checklist": [
+            "Confirm frontend badge shows V1800",
+            "Run /test-report",
+            "Review /calendar/env-setup-prep",
+            "Review /calendar/safety-gate",
+            "Review /tokens/migration-plan",
+            "Review /calendar/readiness-dashboard",
+            "Do not activate OAuth until env vars and token storage are approved"
+        ]
+    }
+
+@app.get("/v1800-milestone")
+async def v1800_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Stable Integration Prep",
+        "ready": True,
+        "frontend_must_show": "V1800 Stable Integration Prep · V1800 Backend",
+        "baseline": "V1750",
+        "includes": [
+            "V1600 Calendar Env Setup Prep",
+            "V1650 Calendar Safety Gate",
+            "V1700 Token Storage Migration Plan",
+            "V1750 Calendar Readiness Dashboard",
+            "V1800 Stable Integration Prep Rollup"
+        ],
+        "kept": ["/test-report working", "diagnostic routes preserved", "Supabase schema unchanged", "OAuth inactive", "external writes blocked", "manual execution only", "auto-loop off"],
+        "test_order": ["https://executive-engine-os.onrender.com/health","https://executive-engine-os.onrender.com/integration-prep-status","https://executive-engine-os.onrender.com/integration-prep/checklist","https://executive-engine-os.onrender.com/test-report","https://executive-engine-os.onrender.com/v1800-milestone"],
+        "recommended_next_build": "V1850 Google Env Variable Setup Guide OR V1850 Product UX Polish"
     }

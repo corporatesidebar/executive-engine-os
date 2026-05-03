@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Executive Engine OS — V1500</title>
+  <title>Executive Engine OS — V1800</title>
   <style>
     :root{
       --bg:#f5f7fb;
@@ -89,7 +89,18 @@
     <div class="nav-section">Workflow</div>
     <button class="nav-btn" data-page="progress" onclick="showPage('progress')">Progress <span class="pill">Local</span></button>
 
-    <button class="nav-btn" data-page="candidate" onclick="showPage('candidate')">Candidate Status <span class="pill">V1500</span></button>
+    <button class="nav-btn" data-page="candidate" onclick="showPage('candidate')">Candidate Status <span class="pill">V1800</span></button>
+    <button class="nav-btn" data-page="qa" onclick="showPage('qa')">QA Status <span class="pill">Pass</span></button>
+
+    <button class="nav-btn" data-page="calendar-env" onclick="showPage('calendar-env')">Calendar Env <span class="pill">Prep</span></button>
+
+    <button class="nav-btn" data-page="calendar-safety" onclick="showPage('calendar-safety')">Calendar Safety <span class="pill">Gate</span></button>
+
+    <button class="nav-btn" data-page="token-plan" onclick="showPage('token-plan')">Token Plan <span class="pill">Preview</span></button>
+
+    <button class="nav-btn" data-page="calendar-ready" onclick="showPage('calendar-ready')">Calendar Ready <span class="pill">0/6</span></button>
+
+    <button class="nav-btn" data-page="integration-prep" onclick="showPage('integration-prep')">Integration Prep <span class="pill">Stable</span></button>
 
     <div class="nav-section">System</div>
     <button class="nav-btn" data-page="tests" onclick="showPage('tests')">Test Report <span class="pill">Copy</span></button>
@@ -97,20 +108,20 @@
 
     <div class="side-card">
       <small>Stable Checkpoint</small>
-      <strong>V1500 Workflow Persistence</strong>
+      <strong>V1800 Stable Integration Prep</strong>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <strong>Executive Engine OS</strong>
-      <div class="version-badge">V1500 Product Candidate Stable · V1500 Backend</div>
+      <div class="version-badge">V1800 Stable Integration Prep · V1800 Backend</div>
     </div>
 
     <section class="content">
       <div class="stable-panel">
         <div>
-          <strong>Stable Version: V1500</strong>
+          <strong>Stable Version: V1800</strong>
           <span>Built from V1250. Product dashboard + real workflows. /test-report preserved. OAuth inactive. External writes blocked.</span>
         </div>
         <button class="btn green" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
@@ -121,9 +132,9 @@
           <div class="card">
             <div class="eyebrow">Product Dashboard</div>
             <h2>Run the OS from one stable dashboard.</h2>
-            <p>V1500 is the stable product candidate rollup: dashboard, workflows, intelligence, operator console, and testing.</p>
+            <p>V1800 is the stable product candidate rollup: dashboard, workflows, intelligence, operator console, and testing.</p>
             <div class="four-col">
-              <div class="metric"><small>Backend</small><strong>V1500</strong></div>
+              <div class="metric"><small>Backend</small><strong>V1800</strong></div>
               <div class="metric"><small>Execution</small><strong class="green">Manual</strong></div>
               <div class="metric"><small>OAuth</small><strong>Inactive</strong></div>
               <div class="metric"><small>Writes</small><strong>Blocked</strong></div>
@@ -141,7 +152,7 @@
             <p>Start day, run command, review queue, review risks, then end day summary.</p>
             <div class="list">
               <div class="item"><b>Current Constraint</b><span>Action load is high. OAuth is not ready because env vars are not set.</span></div>
-              <div class="item"><b>Recommended Command</b><span>Review V1500 dashboard and choose the next product workflow.</span></div>
+              <div class="item"><b>Recommended Command</b><span>Review V1800 dashboard and choose the next product workflow.</span></div>
             </div>
           </div>
         </div>
@@ -159,7 +170,7 @@
             <div class="eyebrow">Executive Command</div>
             <h2>Command Center</h2>
             <p>Run decisions, actions, daily focus, constraints, risk, and next moves.</p>
-            <textarea id="input" placeholder="Enter command...">Review V1500 dashboard and identify the single highest-impact product workflow to improve next.</textarea>
+            <textarea id="input" placeholder="Enter command...">Review V1800 dashboard and identify the single highest-impact product workflow to improve next.</textarea>
             <div class="toolbar">
               <button class="btn primary" onclick="runEngine()">Run Engine</button>
               <button class="btn" onclick="loadTemplate('daily')">Daily Brief</button>
@@ -170,16 +181,16 @@
           </div>
           <div class="card soft">
             <div class="eyebrow">Stable Controls</div>
-            <h3>V1500 status</h3>
+            <h3>V1800 status</h3>
             <p>Frontend hides old checkpoint labels. Backend diagnostic routes remain preserved.</p>
             <div class="toolbar">
               <button class="btn dark" onclick="openBackend('/stable-version')">Stable Version</button>
-              <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
               <button class="btn" onclick="openBackend('/product-dashboard')">Product Dashboard</button>
             </div>
           </div>
         </div>
-        <div class="card"><h3>Output</h3><div id="output" class="output">Ready.</div></div>
+        <div class="card"><h3>Output</h3><div id="output" class="output">Ready. Choose a workflow or run a command.</div></div>
       </div>
 
       <div id="page-workflow" class="page">
@@ -211,7 +222,7 @@
             <button class="btn primary" onclick="loadCockpit()">Load Cockpit</button>
             <button class="btn" onclick="openBackend('/executive-cockpit')">Open Raw Cockpit</button>
           </div>
-          <div id="cockpitOutput" class="output" style="margin-top:12px">Cockpit not loaded.</div>
+          <div id="cockpitOutput" class="output" style="margin-top:12px">Cockpit not loaded. Click Load Cockpit to review action load and risks.</div>
         </div>
       </div>
 
@@ -256,7 +267,7 @@
             <div class="toolbar">
               <button class="btn primary" onclick="openBackend('/test-report')">Open Copy/Paste Test Report</button>
               <button class="btn" onclick="openBackend('/test-report-json')">Report JSON</button>
-              <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+              <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
             </div>
           </div>
           <div class="card">
@@ -267,7 +278,7 @@
               <a href="#" onclick="openBackend('/product-dashboard');return false;">Product Dashboard</a>
               <a href="#" onclick="openBackend('/workflow-dashboard');return false;">Workflow Dashboard</a>
               <a href="#" onclick="openBackend('/test-report');return false;">Test Report</a>
-              <a href="#" onclick="openBackend('/v1500-milestone');return false;">Milestone</a>
+              <a href="#" onclick="openBackend('/v1800-milestone');return false;">Milestone</a>
             </div>
           </div>
         </div>
@@ -278,7 +289,7 @@
         <div class="card">
           <div class="eyebrow">Workflow Persistence</div>
           <h2>Workflow Progress</h2>
-          <p>V1500 tracks workflow progress locally in the browser. No Supabase schema change.</p>
+          <p>V1800 tracks workflow progress locally in the browser. No Supabase schema change.</p>
           <div class="toolbar">
             <button class="btn primary" onclick="loadWorkflowState()">Load Workflow State</button>
             <button class="btn" onclick="resetLocalProgress()">Reset Local Progress</button>
@@ -293,12 +304,12 @@
         <div class="card">
           <div class="eyebrow">Intelligence Board</div>
           <h2>Execution Signals</h2>
-          <p>V1500 surfaces product signals and recommended commands. No automation loop.</p>
+          <p>V1800 surfaces product signals and recommended commands. No automation loop.</p>
           <div class="toolbar">
             <button class="btn primary" onclick="loadIntelligenceBoard()">Load Intelligence Board</button>
             <button class="btn" onclick="openBackend('/intelligence/recommended-commands')">Recommended Commands</button>
           </div>
-          <div id="intelligenceOutput" class="output" style="margin-top:12px">Intelligence Board not loaded.</div>
+          <div id="intelligenceOutput" class="output" style="margin-top:12px">Intelligence Board not loaded. Click Load Intelligence Board to review execution signals.</div>
         </div>
       </div>
 
@@ -307,13 +318,13 @@
         <div class="card">
           <div class="eyebrow">Operator Console</div>
           <h2>Manual Command Control</h2>
-          <p>V1500 clarifies safe actions, blocked actions, and command palette control.</p>
+          <p>V1800 clarifies safe actions, blocked actions, and command palette control.</p>
           <div class="toolbar">
             <button class="btn primary" onclick="loadOperatorConsole()">Load Operator Console</button>
             <button class="btn" onclick="loadCommandPalette()">Load Command Palette</button>
             <button class="btn" onclick="openBackend('/operator-console')">Raw Console</button>
           </div>
-          <div id="operatorOutput" class="output" style="margin-top:12px">Operator Console not loaded.</div>
+          <div id="operatorOutput" class="output" style="margin-top:12px">Operator Console not loaded. Click Load Operator Console or Command Palette.</div>
         </div>
       </div>
 
@@ -321,14 +332,105 @@
       <div id="page-candidate" class="page">
         <div class="card">
           <div class="eyebrow">Product Candidate Stable</div>
-          <h2>V1500 Candidate Status</h2>
+          <h2>V1800 Candidate Status</h2>
           <p>Stable rollup: dashboard, workflows, intelligence board, operator console, and test report.</p>
           <div class="toolbar">
             <button class="btn primary" onclick="loadCandidateStatus()">Load Candidate Status</button>
             <button class="btn" onclick="openBackend('/product-candidate/checklist')">Checklist</button>
-            <button class="btn" onclick="openBackend('/v1500-milestone')">V1500 Milestone</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
           </div>
-          <div id="candidateOutput" class="output" style="margin-top:12px">Candidate status not loaded.</div>
+          <div id="candidateOutput" class="output" style="margin-top:12px">Candidate status not loaded. Click Load Candidate Status.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-qa" class="page">
+        <div class="card">
+          <div class="eyebrow">Stable Integration Prep</div>
+          <h2>V1800 QA Status</h2>
+          <p>Checks frontend navigation, workflow routes, stable labels, test report link, and safety gates.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadQaStatus()">Load QA Status</button>
+            <button class="btn" onclick="openBackend('/workflow-qa-check')">Workflow QA Check</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="qaOutput" class="output" style="margin-top:12px">QA status not loaded.</div>
+        </div>
+      </div>
+
+
+      
+      <div id="page-calendar-env" class="page">
+        <div class="card">
+          <div class="eyebrow">Calendar Environment Setup</div>
+          <h2>V1800 Calendar Env Prep</h2>
+          <p>Prep only. No live OAuth activation, token exchange, or external writes.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCalendarEnvPrep()">Load Env Prep</button>
+            <button class="btn" onclick="openBackend('/calendar/env-checklist')">Env Checklist</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="calendarEnvOutput" class="output" style="margin-top:12px">Calendar env prep not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-calendar-safety" class="page">
+        <div class="card">
+          <div class="eyebrow">Stable Integration Prep</div>
+          <h2>V1800 Safety Gate</h2>
+          <p>Approval gates for future Calendar OAuth. No activation in this build.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCalendarSafety()">Load Safety Gate</button>
+            <button class="btn" onclick="openBackend('/calendar/activation-readiness')">Activation Readiness</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="calendarSafetyOutput" class="output" style="margin-top:12px">Calendar safety not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-token-plan" class="page">
+        <div class="card">
+          <div class="eyebrow">Stable Integration Prep</div>
+          <h2>V1800 Migration Plan</h2>
+          <p>Preview only. No Supabase schema change or token storage activation.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadTokenPlan()">Load Token Plan</button>
+            <button class="btn" onclick="openBackend('/tokens/migration-sql-preview')">SQL Preview</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="tokenPlanOutput" class="output" style="margin-top:12px">Token plan not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-calendar-ready" class="page">
+        <div class="card">
+          <div class="eyebrow">Stable Integration Prep</div>
+          <h2>V1800 Readiness Dashboard</h2>
+          <p>Shows what is missing before live Calendar activation. Activation remains blocked.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadCalendarReadiness()">Load Readiness</button>
+            <button class="btn" onclick="openBackend('/calendar/activation-command')">Activation Command</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="calendarReadyOutput" class="output" style="margin-top:12px">Calendar readiness not loaded.</div>
+        </div>
+      </div>
+
+      
+      <div id="page-integration-prep" class="page">
+        <div class="card">
+          <div class="eyebrow">Stable Integration Prep</div>
+          <h2>V1800 Integration Prep</h2>
+          <p>Rollup of Calendar env setup, safety gate, token plan, and readiness dashboard. OAuth remains inactive.</p>
+          <div class="toolbar">
+            <button class="btn primary" onclick="loadIntegrationPrep()">Load Integration Prep</button>
+            <button class="btn" onclick="openBackend('/integration-prep/checklist')">Checklist</button>
+            <button class="btn" onclick="openBackend('/v1800-milestone')">V1800 Milestone</button>
+          </div>
+          <div id="integrationPrepOutput" class="output" style="margin-top:12px">Integration prep not loaded.</div>
         </div>
       </div>
 
@@ -343,7 +445,7 @@
             <a href="#" onclick="openBackend('/system-test');return false;">System Test</a>
             <a href="#" onclick="openBackend('/stable-version');return false;">Stable Version</a>
             <a href="#" onclick="openBackend('/frontend-polish-status');return false;">Frontend Polish Status</a>
-            <a href="#" onclick="openBackend('/v1500-milestone');return false;">V1500 Milestone</a>
+            <a href="#" onclick="openBackend('/v1800-milestone');return false;">V1800 Milestone</a>
           </div>
         </div>
       </div>
@@ -381,7 +483,7 @@ function loadTemplate(type){
     daily: workflowCommands.daily_brief,
     actions: workflowCommands.review_queue,
     calendar: "Review calendar readiness and connector gates. Confirm what is safe, what is blocked, and the next step before real OAuth activation.",
-    polish: "Review V1500 product dashboard and real workflows. Identify UX improvements, route stability, and next milestone."
+    polish: "Review V1800 product dashboard and real workflows. Identify UX improvements, route stability, and next milestone."
   };
   showPage("command");
   setTimeout(()=>{ inputEl().value = templates[type] || templates.daily; inputEl().focus(); }, 50);
@@ -392,7 +494,7 @@ function loadWorkflowCommand(id){
   setTimeout(()=>{ inputEl().value = workflowCommands[id] || workflowCommands.run_command; inputEl().focus(); }, 50);
 }
 
-function clearOutput(){ outputEl().textContent = "Ready."; }
+function clearOutput(){ outputEl().textContent = "Ready. Choose a workflow or run a command."; }
 
 async function runEngine(){
   const input = inputEl().value.trim();
@@ -484,6 +586,72 @@ async function loadCandidateStatus(){
     const data = await res.json();
     box.textContent = JSON.stringify(data, null, 2);
   }catch(err){ box.textContent = "Candidate Status failed: " + err.message; }
+}
+
+
+async function loadQaStatus(){
+  const box = document.getElementById("qaOutput");
+  box.textContent = "Loading QA status...";
+  try{
+    const res = await fetch(API + "/ui-qa-status", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "QA Status failed: " + err.message; }
+}
+
+
+async function loadCalendarEnvPrep(){
+  const box = document.getElementById("calendarEnvOutput");
+  box.textContent = "Loading calendar env prep...";
+  try{
+    const res = await fetch(API + "/calendar/env-setup-prep", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Calendar env prep failed: " + err.message; }
+}
+
+
+async function loadCalendarSafety(){
+  const box = document.getElementById("calendarSafetyOutput");
+  box.textContent = "Loading safety gate...";
+  try{
+    const res = await fetch(API + "/calendar/safety-gate", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Calendar safety failed: " + err.message; }
+}
+
+
+async function loadTokenPlan(){
+  const box = document.getElementById("tokenPlanOutput");
+  box.textContent = "Loading token migration plan...";
+  try{
+    const res = await fetch(API + "/tokens/migration-plan", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Token plan failed: " + err.message; }
+}
+
+
+async function loadCalendarReadiness(){
+  const box = document.getElementById("calendarReadyOutput");
+  box.textContent = "Loading calendar readiness...";
+  try{
+    const res = await fetch(API + "/calendar/readiness-dashboard", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Calendar readiness failed: " + err.message; }
+}
+
+
+async function loadIntegrationPrep(){
+  const box = document.getElementById("integrationPrepOutput");
+  box.textContent = "Loading integration prep...";
+  try{
+    const res = await fetch(API + "/integration-prep-status", {cache:"no-store"});
+    const data = await res.json();
+    box.textContent = JSON.stringify(data, null, 2);
+  }catch(err){ box.textContent = "Integration prep failed: " + err.message; }
 }
 
 </script>
