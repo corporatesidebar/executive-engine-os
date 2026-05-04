@@ -1,0 +1,31 @@
+EXECUTIVE ENGINE BUILD PROTOCOL — V2050
+
+GOAL COMPASS
+Executive Engine is the executive's Red Bull: clarity, control, leverage, momentum, money, less friction.
+
+ASK / RESPONSE SEQUENCE
+1. User gives strategic intent or build command.
+2. Assistant builds complete ZIP.
+3. User deploys.
+4. User runs /test-report.
+5. User pastes results.
+6. Assistant classifies: HOLD, FIX, PROMOTE, PIVOT, or ROLLBACK.
+7. Only then build next version.
+
+BUILD TYPES
+STABILITY, PRODUCT, REVENUE, LAB, PROMOTION.
+
+STABILITY RULES
+Preserve /health, /run, /test-report, /test-report-json, manual execution, auto-loop off, OAuth inactive unless approved, external writes blocked unless approved, Supabase schema unchanged unless approved, legacy routes preserved.
+
+VERSION PATH
+V2000 = Daily-use candidate
+V2050 = Build Factory Command Center
+V3000 = Revenue Execution Shell
+V4000 = Client Asset Builder
+V5000 = Pitch Deck / Proposal Engine
+V6000 = Executive Scoreboard + Wins
+V7000 = Deal Memory + Client Intelligence
+V8000 = Multi-Asset Studio
+V9000 = Controlled Integrations
+V10000 = Executive Revenue Operating Platform
