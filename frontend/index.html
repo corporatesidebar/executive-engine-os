@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Executive Engine OS — V6000</title>
+<style>
+:root{--nav:#061224;--blue:#0f63ff;--orange:#ff5a1f;--green:#10b981;--red:#ef4444;--purple:#7c3aed;--ink:#071226;--muted:#667085;--line:#dfe7f2;--bg:#f5f7fb;--panel:#fff;--shadow:0 16px 45px rgba(7,18,38,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:650}button,textarea,input,a,select{font:inherit}
+.app{display:grid;grid-template-columns:296px minmax(0,1fr);min-height:100vh}.sidebar{background:radial-gradient(circle at 60% 0,#0b326a 0,#061224 42%,#04101f 100%);color:#fff;padding:22px 18px;height:100vh;position:sticky;top:0;overflow:auto}.brand{display:flex;align-items:center;gap:13px;margin-bottom:20px}.logo{width:58px;height:58px;border-radius:15px;background:linear-gradient(135deg,#2388ff,#004dff);display:grid;place-items:center;font-size:28px;font-weight:950;letter-spacing:-.08em;box-shadow:0 16px 34px rgba(15,99,255,.32)}.brand h1{font-size:24px;line-height:.98;margin:0;letter-spacing:-.05em}.brand span{display:block;color:#a9b8ce;font-size:13px;margin-top:8px}.nav-title{margin:22px 4px 8px;color:#90a0b8;font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:950}.nav{width:100%;border:0;background:transparent;color:#d9e2f2;display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:10px;padding:12px 12px;margin:4px 0;cursor:pointer;text-align:left;font-weight:850;font-size:15px}.nav:hover,.nav.active{background:linear-gradient(135deg,#0b63ff,#0649e8);color:#fff;box-shadow:0 12px 28px rgba(15,99,255,.25)}.badge{font-size:12px;border-radius:10px;padding:5px 8px;background:#0d2d5d;color:#bfdbfe}.badge.orange{background:#7c3505;color:#fed7aa}.status-card{margin-top:26px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);border-radius:16px;padding:16px}.status-card h4{margin:0 0 12px;font-size:13px;color:#cbd5e1;text-transform:uppercase;letter-spacing:.12em}.stat{display:flex;justify-content:space-between;font-size:13px;margin:10px 0}.stat b{color:#22c55e}.bar{height:6px;border-radius:99px;background:#122844;margin-top:14px}.bar span{display:block;height:100%;border-radius:99px;background:#10b981;width:96%}
+.main{min-width:0}.top-capture{background:linear-gradient(180deg,#062d73,#061f52);padding:18px 30px;color:#fff;position:sticky;top:0;z-index:10;box-shadow:0 14px 32px rgba(7,18,38,.18)}.capture-row{display:flex;gap:12px;align-items:center}.capture-input{flex:1;height:48px;border:1px solid rgba(147,197,253,.35);background:rgba(255,255,255,.06);color:#fff;border-radius:15px;padding:0 16px;outline:0}.capture-input::placeholder{color:#bdd2f0}.capture-btn{height:48px;border:0;background:#0f63ff;color:#fff;border-radius:15px;padding:0 18px;font-weight:950;cursor:pointer}.capture-btn.white{background:#fff;color:#0b4ed0}.copy-btn{border:0;background:#071226;color:#fff;border-radius:12px;padding:10px 13px;font-weight:950;cursor:pointer}.capture-note{margin:8px 2px 0;color:#bdd2f0;font-size:12px}
+.content{padding:28px 32px;max-width:1540px;margin:0 auto}.page{display:none}.page.active{display:block}.hello{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}.hello h2{margin:0 0 8px;font-size:38px;letter-spacing:-.06em}.hello p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}.pill-live{background:#dcfce7;color:#16a34a;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:950}.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);gap:18px}.section{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}.section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}.section h3{margin:0;font-size:21px;letter-spacing:-.045em}.section p{margin:4px 0 0;color:var(--muted);font-size:13px}.small-link{color:#0f63ff;font-size:13px;font-weight:950;cursor:pointer}
+.priority-list{display:grid;gap:10px}.task{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:flex-start;cursor:pointer}.task:hover{border-color:#93c5fd;background:#f8fbff}.num{width:34px;height:34px;border-radius:12px;background:#eff6ff;color:#0f63ff;display:grid;place-items:center;font-weight:950}.task b{display:block;font-size:15px;margin-bottom:4px}.task span{display:block;color:var(--muted);font-size:13px;line-height:1.35}.chip{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;background:#f1f5f9;color:#475569}.chip.green{background:#dcfce7;color:#16a34a}.chip.orange{background:#fff7ed;color:#ea580c}.chip.red{background:#fee2e2;color:#dc2626}.chip.blue{background:#eff6ff;color:#0f63ff}.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:15px;min-height:116px;cursor:pointer}.mini-card:hover{border-color:#93c5fd;background:#f8fbff}.mini-card h4{margin:0 0 8px;color:#0f63ff;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.mini-card b{display:block;font-size:16px;margin-bottom:8px}.mini-card span{font-size:13px;color:var(--muted);line-height:1.35}.prepared{border-left:5px solid #0f63ff}.revenue{border-left:5px solid #10b981}.risk{border-left:5px solid #ff5a1f}.people{border-left:5px solid #7c3aed}
+.workspace-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px}.back-btn{border:1px solid var(--line);background:#fff;color:#0f63ff;border-radius:13px;padding:10px 14px;font-weight:950;cursor:pointer}.workspace-shell{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;gap:16px}.workspace-menu,.workspace-main,.workspace-side{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:18px}.workspace-menu button{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;margin:5px 0;text-align:left;font-weight:900;color:#334155;cursor:pointer}.workspace-menu button.active,.workspace-menu button:hover{background:#eff6ff;border-color:#93c5fd;color:#0f63ff}.workspace-main h3{margin:0 0 6px}.workspace-chat{display:grid;gap:10px;margin-top:14px}.chat-msg{border:1px solid var(--line);background:#f8fbff;border-radius:15px;padding:14px;line-height:1.45;font-size:13px}.chat-msg.user{background:#eff6ff;border-color:#bfdbfe}.chat-msg.ai{background:#fff;border-left:5px solid #0f63ff}.workspace-command{border:1px solid var(--line);background:#061224;color:#dbeafe;border-radius:18px;padding:16px;margin-top:14px}.workspace-command textarea{width:100%;min-height:128px;border:1px solid #21456e;background:#0b1b32;color:#dbeafe;border-radius:14px;padding:14px;resize:vertical;outline:0}.asset-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.progress-item{border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:12px;margin-bottom:10px}.progress-item b{display:block;font-size:14px;margin-bottom:5px}.progress-item span{display:block;font-size:12px;color:var(--muted);line-height:1.35}.doc-pill{display:block;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px;margin:8px 0;color:#0f63ff;font-weight:900;font-size:13px;cursor:pointer}.system-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.system-grid a{border:1px solid var(--line);background:#f8fbff;border-radius:14px;padding:13px;text-decoration:none;color:#0f63ff;font-weight:900}.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.qa-card{border:1px solid var(--line);border-left:5px solid #0f63ff;background:#fff;border-radius:15px;padding:14px}.qa-card b{display:block;margin-bottom:5px}.qa-card span{font-size:12px;color:var(--muted);line-height:1.35}
+@media(max-width:1200px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.grid,.card-grid,.workspace-shell,.system-grid,.qa-grid{grid-template-columns:1fr}.top-capture{position:relative}.content{padding:18px}.capture-row{flex-direction:column}.capture-input,.capture-btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">ƎE</div><div><h1>Executive<br>Engine OS</h1><span>Full Linked QA</span></div></div>
+    <div class="nav-title">Flow</div>
+    <button class="nav active" onclick="showDashboard()">Dashboard <span class="badge">Home</span></button>
+    <button class="nav" onclick="openWorkspace('Meetings','Meetings Command Center','All meeting prep, notes, follow-ups, proposals, and decisions live here.','ABC HVAC','SEO + Ads Proposal')">Meetings</button>
+    <button class="nav" onclick="openWorkspace('Revenue','Revenue Command Center','Proposals, deals, close plans, objections, and follow-ups.','ABC HVAC','SEO + Ads Proposal')">Revenue</button>
+    <button class="nav" onclick="openWorkspace('People','People Command Center','Team, contractors, hiring, firing, and awkward conversations.','Sales Team','Offer Alignment')">People</button>
+    <button class="nav" onclick="openWorkspace('Risks','Risk Command Center','Constraints, open loops, and business risk.','ABC HVAC','Budget Hesitation')">Risks <span class="badge orange">3</span></button>
+    <button class="nav" onclick="openWorkspace('Assets','Assets Command Center','Documents, proposals, decks, emails, and briefs created.','ABC HVAC','Prepared Assets')">Assets</button>
+    <button class="nav" onclick="showQA()">QA Panel <span class="badge">V6000</span></button>
+    <div class="nav-title">System</div>
+    <button class="nav" onclick="openSystem()">Admin / Tests</button>
+    <div class="status-card"><h4>System Status</h4><div class="stat"><span>Backend</span><b>Live</b></div><div class="stat"><span>Mode</span><b>Manual</b></div><div class="stat"><span>Links</span><b>Mapped</b></div><div class="stat"><span>Version</span><b>V6000</b></div><div class="bar"><span></span></div></div>
+  </aside>
+
+  <main class="main">
+    <div class="top-capture">
+      <div class="capture-row">
+        <input id="captureInput" class="capture-input" placeholder="What needs to happen? Example: Tomorrow meeting with ABC HVAC about SEO, ads, Instagram, and a proposal."/>
+        <button class="capture-btn white" onclick="captureToWorkspace()">Add to Flow</button>
+      </div>
+      <div class="capture-note">All visible primary links are mapped: dashboard cards open workspaces, workspace tabs switch, system links open diagnostics.</div>
+    </div>
+
+    <section class="content">
+      <div id="dashboardPage" class="page active">
+        <div class="hello">
+          <div><h2>Good morning Will — you’re covered.</h2><p>Here’s today, what’s ready, what needs your decision, and what could slow you down.</p></div>
+          <span class="pill-live">V6000 Full Linked QA</span>
+        </div>
+
+        <div class="grid">
+          <div>
+            <div class="section">
+              <div class="section-head"><div><h3>Today</h3><p>Click any item. It opens a dedicated workspace page.</p></div><span class="small-link" onclick="showQA()">QA this</span></div>
+              <div class="priority-list">
+                <div class="task" onclick="openWorkspace('Meetings','ABC HVAC Meeting Prep','Marketing growth discussion. Proposal angle, questions, and follow-up live here.','ABC HVAC','SEO + Ads Proposal')"><div class="num">1</div><div><b>ABC HVAC meeting — prep ready</b><span>Marketing growth discussion. Proposal angle and questions prepared.</span></div><span class="chip green">Open</span></div>
+                <div class="task" onclick="openWorkspace('Revenue','ABC HVAC Close Package','Proposal, sales email, follow-up, objections, and close plan live here.','ABC HVAC','50K Consulting Proposal')"><div class="num">2</div><div><b>Close package — $50K consulting offer</b><span>Proposal, sales email, follow-up, objections, and close plan.</span></div><span class="chip blue">Open</span></div>
+                <div class="task" onclick="openWorkspace('Decisions','Offer Package Decision','Decide full scope or smaller first milestone.','ABC HVAC','Pricing Decision')"><div class="num">3</div><div><b>Confirm offer/package</b><span>Full scope or first milestone decision.</span></div><span class="chip orange">Decide</span></div>
+                <div class="task" onclick="openWorkspace('People','Sales Team Alignment','Team talk track, offer angle, and objection handling.','Sales Team','Offer Alignment')"><div class="num">4</div><div><b>Sales team alignment</b><span>Use the close-plan talking points before outreach.</span></div><span class="chip blue">People</span></div>
+                <div class="task" onclick="openWorkspace('Risks','Client Hesitation Risk','Budget hesitation and ROI clarity live here.','ABC HVAC','Budget Hesitation')"><div class="num">5</div><div><b>Watch client hesitation</b><span>Lead with ROI, speed, and low operational drag.</span></div><span class="chip red">Risk</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><div><h3>Meetings</h3><p>Section pages, not scroll jumps.</p></div></div>
+              <div class="card-grid">
+                <div class="mini-card prepared" onclick="openWorkspace('Meetings','ABC HVAC Meeting Prep','Everything for this meeting stays in the Meetings workspace.','ABC HVAC','SEO + Ads Proposal')"><h4>Client Meeting</h4><b>ABC HVAC - marketing growth</b><span>Click to open workspace page.</span></div>
+                <div class="mini-card prepared" onclick="openWorkspace('Meetings','Leadership Sync','Operating alignment, agenda, decisions, and risks.','Internal','Leadership Sync')"><h4>Leadership</h4><b>Weekly operating sync</b><span>Agenda and decision list ready.</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><div><h3>Revenue / Deals</h3><p>Money-moving work has its own command center.</p></div></div>
+              <div class="card-grid">
+                <div class="mini-card revenue" onclick="openWorkspace('Revenue','ABC HVAC Close Package','Proposal, deck, email, follow-up, objections, close plan.','ABC HVAC','50K Consulting Proposal')"><h4>Close Package</h4><b>$50K consulting proposal</b><span>Click to open revenue workspace.</span></div>
+                <div class="mini-card revenue" onclick="openWorkspace('Revenue','Warm Client Follow-Up','Follow-up email and next-decision call.','ABC HVAC','Follow-Up')"><h4>Follow-Up</h4><b>Warm client follow-up</b><span>Keep it decision-focused.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section">
+              <div class="section-head"><div><h3>Tomorrow</h3><p>What’s coming and what needs prep.</p></div></div>
+              <div class="priority-list">
+                <div class="task" onclick="openWorkspace('Meetings','Tomorrow Leadership Sync','Agenda, constraints, and decision list.','Internal','Leadership Sync')"><div class="num">1</div><div><b>Leadership sync</b><span>Agenda and decision list ready.</span></div><span class="chip green">Prep</span></div>
+                <div class="task" onclick="openWorkspace('Revenue','Follow-Up Sequence','Follow-up if ABC HVAC does not confirm next step.','ABC HVAC','Follow-Up')"><div class="num">2</div><div><b>Follow-up sequence</b><span>Send if no decision confirmed.</span></div><span class="chip blue">Ready</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><div><h3>Prepared For You</h3><p>Assets ready before you need them.</p></div></div>
+              <div class="card-grid">
+                <div class="mini-card prepared" onclick="openWorkspace('Assets','Meeting Brief','Who, agenda, talking points, questions, risk.','ABC HVAC','Meeting Brief')"><h4>Document</h4><b>Meeting brief</b><span>Click to open asset workspace.</span></div>
+                <div class="mini-card prepared" onclick="openWorkspace('Assets','Proposal Draft','Offer angle draft positioned around ROI, speed, and low drag.','ABC HVAC','Proposal Draft')"><h4>Proposal</h4><b>Offer angle draft</b><span>Click to open asset workspace.</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><div><h3>Proactive Follow-Up</h3><p>Helpful prompts, not hourly spam.</p></div><span class="small-link" onclick="openBackend('/followup-rules')">Rules</span></div>
+              <div class="priority-list">
+                <div class="task" onclick="openWorkspace('Follow-Up','ABC HVAC Follow-Up','12-24 hour follow-up logic and ready message.','ABC HVAC','Follow-Up')"><div class="num">↗</div><div><b>Follow-up will be due</b><span>Send a decision-call note if no next step is confirmed.</span></div><span class="chip orange">12-24h</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="workspacePage" class="page">
+        <div class="workspace-top">
+          <div>
+            <button class="back-btn" onclick="showDashboard()">← Back to Dashboard</button>
+            <h2 id="workspaceTitle" style="margin:6px 0 6px;font-size:36px;letter-spacing:-.06em">Workspace</h2>
+            <p id="workspaceSub">Organization · Project</p>
+          </div>
+          <span class="pill-live" id="workspaceKind">Workspace</span>
+        </div>
+
+        <div class="workspace-shell">
+          <aside class="workspace-menu">
+            <h4 style="margin:0 0 10px">Section Menu</h4>
+            <button class="active" onclick="switchTab('Brief', this)">Brief</button>
+            <button onclick="switchTab('Meeting Prep', this)">Meeting Prep</button>
+            <button onclick="switchTab('Proposal', this)">Proposal</button>
+            <button onclick="switchTab('Sales Email', this)">Sales Email</button>
+            <button onclick="switchTab('Follow-Up', this)">Follow-Up</button>
+            <button onclick="switchTab('Objections', this)">Objections</button>
+            <button onclick="switchTab('Close Plan', this)">Close Plan</button>
+            <button onclick="switchTab('Notes', this)">Notes</button>
+          </aside>
+
+          <main class="workspace-main">
+            <div class="section-head">
+              <div><h3 id="tabTitle">Brief</h3><p id="tabDesc">Add context, generate assets, and keep everything attached to this workspace.</p></div>
+              <span class="small-link" onclick="buildWorkspaceAsset()">Build Asset</span>
+            </div>
+            <div id="workspaceChat" class="workspace-chat"></div>
+            <div class="workspace-command">
+              <p style="color:#bdd2f0;margin:0 0 10px">Work inside this section. This is where ChatGPT-style input belongs.</p>
+              <textarea id="workspaceInput">I need a proposal for ABC HVAC focused on SEO, Google Ads, Instagram, and more leads. They are hesitant on budget, so make it clear and easy to say yes.</textarea>
+              <div class="asset-actions">
+                <button class="capture-btn" onclick="sendWorkspaceMessage()">Send</button>
+                <button class="copy-btn" onclick="buildWorkspaceAsset()">Build Section Asset</button>
+              </div>
+            </div>
+          </main>
+
+          <aside class="workspace-side">
+            <h4 style="margin:0 0 10px">Progress</h4>
+            <div id="progressPanel"></div>
+            <h4 style="margin:18px 0 10px">Documents Created</h4>
+            <div id="docsPanel"></div>
+          </aside>
+        </div>
+      </div>
+
+      <div id="qaPage" class="page">
+        <div class="hello"><div><h2>V6000 QA Panel</h2><p>One large click-through test. Classify results as HOLD / FIX / PROMOTE / PIVOT.</p></div><span class="pill-live">QA Mode</span></div>
+        <div class="section"><div class="qa-grid">
+          <div class="qa-card"><b>1. Dashboard</b><span>Today items open workspace pages.</span></div>
+          <div class="qa-card"><b>2. Sidebar</b><span>Meetings, Revenue, People, Risks, Assets work.</span></div>
+          <div class="qa-card"><b>3. Workspace</b><span>Tabs switch. Send works. Build Asset works.</span></div>
+          <div class="qa-card"><b>4. System</b><span>Admin links open backend routes.</span></div>
+        </div></div>
+        <div class="section"><div class="section-head"><div><h3>Start QA</h3><p>Click below to open a sample workspace.</p></div><span class="small-link" onclick="openBackend('/full-link-map')">Full link map</span></div><button class="capture-btn" onclick="openWorkspace('Meetings','ABC HVAC Meeting Prep','QA sample workspace.','ABC HVAC','SEO + Ads Proposal')">Open Sample Workspace</button></div>
+      </div>
+
+      <div id="systemPage" class="page">
+        <div class="section">
+          <div class="section-head"><div><h3>System / Admin</h3><p>Hidden from the primary executive experience.</p></div></div>
+          <div class="system-grid">
+            <a href="#" onclick="openBackend('/health');return false;">/health</a>
+            <a href="#" onclick="openBackend('/v6000-status');return false;">/v6000-status</a>
+            <a href="#" onclick="openBackend('/full-link-map');return false;">/full-link-map</a>
+            <a href="#" onclick="openBackend('/page-navigation-status');return false;">/page-navigation-status</a>
+            <a href="#" onclick="openBackend('/section-pages-status');return false;">/section-pages-status</a>
+            <a href="#" onclick="openBackend('/v5200-status');return false;">/v5200-status</a>
+            <a href="#" onclick="openBackend('/organization-workspace-status');return false;">/organization-workspace-status</a>
+            <a href="#" onclick="openBackend('/proactive-followup-status');return false;">/proactive-followup-status</a>
+            <a href="#" onclick="openBackend('/followup-rules');return false;">/followup-rules</a>
+            <a href="#" onclick="openBackend('/capture-extraction-contract');return false;">/capture-extraction-contract</a>
+            <a href="#" onclick="openBackend('/test-report');return false;">/test-report</a>
+            <a href="#" onclick="openBackend('/v6000-milestone');return false;">/v6000-milestone</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const API="https://executive-engine-os.onrender.com";
+let activeWorkspace = {kind:"Meetings", title:"ABC HVAC Meeting Prep", org:"ABC HVAC", project:"SEO + Ads Proposal"};
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo({top:0,behavior:"instant"});}
+function setNav(label){document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));[...document.querySelectorAll(".nav")].find(n=>n.textContent.includes(label))?.classList.add("active")}
+function showDashboard(){showPage("dashboardPage");setNav("Dashboard")}
+function showQA(){showPage("qaPage");setNav("QA")}
+function openSystem(){showPage("systemPage");setNav("Admin")}
+function openBackend(route){window.open(API+route,"_blank","noopener,noreferrer")}
+function openWorkspace(kind,title,sub,org,project){
+  activeWorkspace={kind,title,sub,org,project};
+  document.getElementById("workspaceTitle").textContent=title;
+  document.getElementById("workspaceSub").textContent=`${kind} · ${org} · ${project}`;
+  document.getElementById("workspaceKind").textContent=kind;
+  document.getElementById("tabTitle").textContent="Brief";
+  document.getElementById("tabDesc").textContent=sub || "Focused workspace.";
+  document.querySelectorAll(".workspace-menu button").forEach(b=>b.classList.remove("active"));
+  document.querySelector(".workspace-menu button")?.classList.add("active");
+  document.getElementById("workspaceChat").innerHTML=`<div class="chat-msg ai"><b>Executive Engine</b><br>You’re covered. This is the ${esc(kind)} workspace for ${esc(org)}. Keep context, assets, notes, follow-ups, and decisions here instead of creating random chats.</div>`;
+  document.getElementById("progressPanel").innerHTML=`<div class="progress-item"><b>Brief</b><span>Ready to build</span></div><div class="progress-item"><b>Assets</b><span>Proposal / email / follow-up available</span></div><div class="progress-item"><b>Open loop</b><span>${kind==="Risks"?"Risk active":"Follow-up pending"}</span></div>`;
+  document.getElementById("docsPanel").innerHTML=`<span class="doc-pill">${esc(org)} Brief</span><span class="doc-pill">${esc(project)} Notes</span><span class="doc-pill">Follow-Up Draft</span>`;
+  showPage("workspacePage");
+  setNav(kind === "Follow-Up" ? "Revenue" : kind);
+}
+function switchTab(tab,btn){
+  document.querySelectorAll(".workspace-menu button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  document.getElementById("tabTitle").textContent=tab;
+  document.getElementById("tabDesc").textContent=`${tab} for ${activeWorkspace.org}. Add context or build the asset here.`;
+  document.getElementById("workspaceChat").innerHTML += `<div class="chat-msg ai"><b>Executive Engine</b><br>${esc(tab)} opened. This stays inside the ${esc(activeWorkspace.kind)} workspace.</div>`;
+}
+function sendWorkspaceMessage(){
+  const input=document.getElementById("workspaceInput");
+  const text=input.value.trim();
+  if(!text)return;
+  document.getElementById("workspaceChat").innerHTML += `<div class="chat-msg user"><b>You</b><br>${esc(text)}</div><div class="chat-msg ai"><b>Executive Engine</b><br>Got it. I’ll keep this inside ${esc(activeWorkspace.org)} / ${esc(activeWorkspace.project)} and use it for the next asset.</div>`;
+}
+async function buildWorkspaceAsset(){
+  const tab=document.getElementById("tabTitle").textContent;
+  const text=document.getElementById("workspaceInput").value.trim();
+  const chat=document.getElementById("workspaceChat");
+  chat.innerHTML += `<div class="chat-msg ai"><b>Executive Engine</b><br>Building ${esc(tab)} asset...</div>`;
+  try{
+    const prompt=`Build a ${tab} asset for ${activeWorkspace.org}, project ${activeWorkspace.project}. Context: ${text}. Output usable executive copy, next steps, risks, what to cut, and executive win.`;
+    const res=await fetch(API+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:prompt,mode:"execution"})});
+    const data=await res.json();
+    const asset=formatAsset(data);
+    chat.innerHTML += `<div class="chat-msg ai"><b>${esc(tab)} Asset</b><br><pre style="white-space:pre-wrap;font:inherit;margin:8px 0 0">${esc(asset)}</pre></div>`;
+    const docs=document.getElementById("docsPanel"); const pill=document.createElement("span"); pill.className="doc-pill"; pill.textContent=tab+" Asset"; docs.prepend(pill);
+  }catch(e){chat.innerHTML += `<div class="chat-msg ai"><b>Error</b><br>${esc(e.message)}</div>`;}
+}
+function formatAsset(d){
+  const list=x=>Array.isArray(x)?x.map((v,i)=>`${i+1}. ${v}`).join("\n"):(x||"—");
+  return `NEXT MOVE\n${d.next_power_move||d.next_move||"—"}\n\nPROPOSAL / DRAFT\n${d.proposal_draft||d.draft_output||d.decision||"—"}\n\nSALES EMAIL\n${d.sales_email_draft||"—"}\n\nFOLLOW-UP\n${list(d.follow_up_sequence)}\n\nOBJECTIONS\n${list(d.objection_handling)}\n\nCLOSE PLAN\n${list(d.close_plan)}\n\nRISK\n${d.risk||"—"}\n\nEXECUTIVE WIN\n${d.executive_win||"—"}`;
+}
+function captureToWorkspace(){
+  const text=document.getElementById("captureInput").value.trim();
+  if(!text)return;
+  openWorkspace("Capture","New Flow Capture",text,"To Confirm","New Workstream");
+  document.getElementById("workspaceInput").value=text;
+}
+</script>
+</body>
+</html>
