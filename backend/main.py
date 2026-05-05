@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 
 
 SYSTEM_PROMPT = """
-You are Executive Engine OS V20000: a revenue-first executive asset engine.
+You are Executive Engine OS V20010: a revenue-first executive asset engine.
 
 You are not a chatbot and not a generic task assistant. You are a high-performance revenue operator, COO, deal strategist, sales strategist, and executive asset builder.
 
@@ -98,8 +98,8 @@ Rules:
 
 
 
-VERSION = "V20000"
-SERVICE_NAME = "Executive Engine OS V20000"
+VERSION = "V20010"
+SERVICE_NAME = "Executive Engine OS V20010"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -122,7 +122,7 @@ DEFAULT_USER = "local_user"
 SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_SERVICE_KEY)
 client = AsyncOpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
-app = FastAPI(title=SERVICE_NAME, version="20000.0.0")
+app = FastAPI(title=SERVICE_NAME, version="20010.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -431,7 +431,7 @@ def build_prompt(req: RunRequest, memory: Dict[str, Any]) -> str:
     }
 
     return f"""
-You are Executive Engine OS V20000, an elite COO/operator system.
+You are Executive Engine OS V20010, an elite COO/operator system.
 
 User mode: {req.mode}
 Depth: {req.depth}
@@ -892,7 +892,7 @@ async def version_lock():
         "ok": True,
         "version": VERSION,
         "frontend_must_show": "V127 · Stability Lock",
-        "backend_must_show": "Executive Engine OS V20000",
+        "backend_must_show": "Executive Engine OS V20010",
         "do_not_build_next": "Do not build V126 until V127 passes 10 real commands.",
         "locked_paths": {
             "run": "POST /run",
@@ -3771,7 +3771,7 @@ async def diagnostic():
     return {
         "ok": True,
         "version": "V270",
-        "service": "Executive Engine OS V20000",
+        "service": "Executive Engine OS V20010",
         "route": "/diagnostic",
         "message": "Backend is serving the V270 deployed code.",
         "deploy_stack": ["V255 route diagnostics", "V260 Render config", "V265 runtime fingerprint", "V270 stability checkpoint"]
@@ -7934,7 +7934,7 @@ async def v1201_test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V20000 Test Links</title>
+      <title>Executive Engine OS V20010 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body { font-family: Arial, sans-serif; background:#f8fbff; color:#071226; padding:28px; }
@@ -7948,7 +7948,7 @@ async def v1201_test_links():
     </head>
     <body>
       <div class="wrap">
-        <h1>Executive Engine OS V20000 Test Links</h1>
+        <h1>Executive Engine OS V20010 Test Links</h1>
         <p>Use this page after backend deploy. These are backend GET routes only.</p>
         <p>Expected frontend badge: <code>V1201 Test Links Fix · V1201 Backend</code></p>
         <ol>{links}</ol>
@@ -8139,7 +8139,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V20000 Test Links</title>
+      <title>Executive Engine OS V20010 Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8161,7 +8161,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V20000 Test Links</h1>
+          <h1>Executive Engine OS V20010 Test Links</h1>
           <p>Permanent clickable backend test page. Open links in new tabs. POST routes are excluded because they require JSON bodies.</p>
           <p>Expected frontend badge: <code>V1203 Test Links Page · V1203 Backend</code></p>
           <div class="actions">
@@ -8338,7 +8338,7 @@ async def test_links():
     <!doctype html>
     <html>
     <head>
-      <title>Executive Engine OS V20000 Absolute Test Links</title>
+      <title>Executive Engine OS V20010 Absolute Test Links</title>
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <style>
         body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8360,7 +8360,7 @@ async def test_links():
     <body>
       <div class="wrap">
         <div class="hero">
-          <h1>Executive Engine OS V20000 Absolute Test Links</h1>
+          <h1>Executive Engine OS V20010 Absolute Test Links</h1>
           <p>These links point directly to the backend API domain.</p>
           <p>Backend base: <code>__BASE__</code></p>
           <div class="warning">Do not test backend API routes on the frontend static domain. Use the full backend URLs below.</div>
@@ -8509,7 +8509,7 @@ def v1205_build_test_links_html() -> str:
     return """<!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Links</title>
+  <title>Executive Engine OS V20010 Test Links</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:28px}
@@ -8531,7 +8531,7 @@ def v1205_build_test_links_html() -> str:
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>Executive Engine OS V20000 Test Links</h1>
+      <h1>Executive Engine OS V20010 Test Links</h1>
       <p>Fixed page. These links point directly to the backend API domain.</p>
       <p>Backend base: <code>__BASE__</code></p>
       <div class="warning">/test-links no longer depends on HTMLResponse. It returns a plain HTML Response.</div>
@@ -8689,7 +8689,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8710,7 +8710,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>This is the page you wanted: click one button, it runs the main backend tests, then gives you one clean copy/paste report with headers like health, diagnostic, system-test, etc.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -8782,7 +8782,7 @@ function renderCards(results){
 
 function buildCopyText(results){
   const lines = [];
-  lines.push("Executive Engine OS V20000 Test Report");
+  lines.push("Executive Engine OS V20010 Test Report");
   lines.push("Generated: " + new Date().toISOString());
   lines.push("");
   results.forEach(r => {
@@ -8954,7 +8954,7 @@ async def test_report():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -8975,7 +8975,7 @@ async def test_report():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>Click Run Report. Then click Copy All Results and paste into ChatGPT.</p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
@@ -9024,7 +9024,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10670,7 +10670,7 @@ async def test_report_v1975():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -10692,7 +10692,7 @@ async def test_report_v1975():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>Test Report Label Cleanup. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V1975</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -10742,7 +10742,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -10813,7 +10813,7 @@ async def report_label_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Test Report Label Cleanup",
-        "test_report_title": "Executive Engine OS V20000 Test Report",
+        "test_report_title": "Executive Engine OS V20010 Test Report",
         "legacy_route_policy": "Preserved legacy routes may still show old labels internally, but the main /test-report is current.",
         "frontend_must_show": "V1975 Test Report Label Cleanup · V1975 Backend",
         "safety": {
@@ -10938,7 +10938,7 @@ async def test_report_v2000():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -10960,7 +10960,7 @@ async def test_report_v2000():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>Daily-Use Product Candidate. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V2000</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -11010,7 +11010,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -11243,15 +11243,15 @@ async def test_report_v2050():
     from starlette.responses import HTMLResponse
     tests_json = json.dumps(V2050_REPORT_TESTS)
     html = """
-<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
 body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}
-</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Build Factory Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V2050</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox" placeholder="Results will appear here."></textarea></div><div id="cards"></div></div><script>
+</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Build Factory Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V2050</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox" placeholder="Results will appear here."></textarea></div><div id="cards"></div></div><script>
 const BACKEND_BASE="__BACKEND_BASE__"; const TESTS=__TESTS_JSON__;
 function pretty(value){try{return JSON.stringify(value,null,2)}catch(e){return String(value)}}
 function escapeHtml(str){return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
 function setStatus(text, ok){const el=document.getElementById('status');el.className=ok===false?'fail':'good';el.textContent=text}
 async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:'GET',cache:'no-store'});const contentType=res.headers.get('content-type')||'';let data=contentType.includes('application/json')?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:'FETCH_ERROR',ok:false,output:err.message}}}
-function buildCopyText(results){let out=[];out.push('Executive Engine OS V20000 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\n')}
+function buildCopyText(results){let out=[];out.push('Executive Engine OS V20010 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\n')}
 function renderCards(results){const box=document.getElementById('cards');box.innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join('')}
 async function runReport(){setStatus('Running tests...',true);const results=[];for(const test of TESTS){setStatus('Running: '+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById('copyBox').value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?'Done with '+failed+' failed link(s). Copy All and paste into ChatGPT.':'All done. Copy All and paste into ChatGPT.',failed===0)}
 async function copyAll(){const text=document.getElementById('copyBox').value;if(!text){setStatus('Nothing to copy yet. Click Run Report first.',false);return}await navigator.clipboard.writeText(text);setStatus('Copied. Paste it into ChatGPT.',true)}
@@ -11292,7 +11292,7 @@ async def promotion_review():
 
 @app.get("/build-protocol")
 async def build_protocol():
-    return {"ok": True, "version": VERSION, "milestone": "Executive Engine Build Protocol", "ask_response_sequence": ["User defines strategic intent or build command.", "Assistant builds ZIP with complete files.", "User deploys.", "User runs /test-report.", "Assistant classifies result: HOLD, FIX, PROMOTE, PIVOT, or ROLLBACK.", "Only then build the next version."], "mandatory_preserve": ["/health", "/run", "/test-report", "/test-report-json", "manual_execution_only = true", "auto_loop_enabled = false", "OAuth inactive unless approved", "external writes blocked unless approved", "Supabase schema unchanged unless approved", "legacy routes preserved"], "build_types": ["STABILITY BUILD", "PRODUCT BUILD", "REVENUE BUILD", "LAB BUILD", "PROMOTION BUILD"], "version_path": {"V2000":"Daily-use candidate / stable checkpoint", "V2050":"Build Factory Command Center", "V3000":"Revenue Execution Shell", "V20000":"Client Asset Builder", "V20000":"Pitch Deck / Proposal Engine", "V20000":"Executive Scoreboard + Wins", "V7000":"Deal Memory + Client Intelligence", "V8000":"Multi-Asset Studio", "V20000":"Controlled Integrations", "V10000":"Executive Revenue Operating Platform"}}
+    return {"ok": True, "version": VERSION, "milestone": "Executive Engine Build Protocol", "ask_response_sequence": ["User defines strategic intent or build command.", "Assistant builds ZIP with complete files.", "User deploys.", "User runs /test-report.", "Assistant classifies result: HOLD, FIX, PROMOTE, PIVOT, or ROLLBACK.", "Only then build the next version."], "mandatory_preserve": ["/health", "/run", "/test-report", "/test-report-json", "manual_execution_only = true", "auto_loop_enabled = false", "OAuth inactive unless approved", "external writes blocked unless approved", "Supabase schema unchanged unless approved", "legacy routes preserved"], "build_types": ["STABILITY BUILD", "PRODUCT BUILD", "REVENUE BUILD", "LAB BUILD", "PROMOTION BUILD"], "version_path": {"V2000":"Daily-use candidate / stable checkpoint", "V2050":"Build Factory Command Center", "V3000":"Revenue Execution Shell", "V20010":"Client Asset Builder", "V20010":"Pitch Deck / Proposal Engine", "V20010":"Executive Scoreboard + Wins", "V7000":"Deal Memory + Client Intelligence", "V8000":"Multi-Asset Studio", "V20010":"Controlled Integrations", "V10000":"Executive Revenue Operating Platform"}}
 
 @app.get("/v2050-milestone")
 async def v2050_milestone():
@@ -11371,7 +11371,7 @@ async def test_report_v2075():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -11393,7 +11393,7 @@ async def test_report_v2075():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>Build Command Center. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V2075</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -11443,7 +11443,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -11720,7 +11720,7 @@ async def test_report_v3000():
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -11742,7 +11742,7 @@ async def test_report_v3000():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>Revenue Execution Shell. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
     <p>Current visible version: <code>V3000</code></p>
     <button onclick="runReport()">Run Report</button>
@@ -11792,7 +11792,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -11865,7 +11865,7 @@ async def revenue_shell_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Revenue Execution Shell",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "product_promise": "Make money. Save time. Feel in control.",
         "primary_headline": "What are you trying to win today?",
         "target_user": "Executive, founder, CEO, operator, sales leader, business owner",
@@ -12018,7 +12018,7 @@ async def v3000_milestone():
         "version": VERSION,
         "milestone": "Revenue Execution Shell",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V2075",
         "build_type": "Revenue/Product Build",
         "added": [
@@ -12030,7 +12030,7 @@ async def v3000_milestone():
             "Executive Scoreboard",
             "Revenue command templates",
             "Client asset workflows",
-            "V20000 current test report"
+            "V20010 current test report"
         ],
         "kept": [
             "V2075 Build Command Center",
@@ -12055,7 +12055,7 @@ async def v3000_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v3000-milestone"
         ],
-        "recommended_next_build": "Use V20000 revenue workflows, then classify HOLD/FIX/PROMOTE/PIVOT."
+        "recommended_next_build": "Use V20010 revenue workflows, then classify HOLD/FIX/PROMOTE/PIVOT."
     }
 
 
@@ -12069,7 +12069,7 @@ async def revenue_output_compatibility():
         "ok": True,
         "version": VERSION,
         "milestone": "Revenue Output Compatibility Fix",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "Frontend no longer leaves revenue cards blank when /run returns older or partial JSON fields.",
         "fixed": [
             "Frontend normalization layer",
@@ -12093,7 +12093,7 @@ async def v3001_milestone():
         "version": VERSION,
         "milestone": "Revenue Output Compatibility Fix",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V3000",
         "build_type": "Fix Build",
         "fixed": [
@@ -12127,11 +12127,11 @@ async def v3001_milestone():
 
 
 # =========================
-# V20000 CURRENT TEST REPORT
+# V20010 CURRENT TEST REPORT
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [
     {
         "title": "health",
         "route": "/health"
@@ -12184,14 +12184,14 @@ async def test_report_json_v3002():
         "ok": True,
         "version": VERSION,
         "milestone": "V3001 Label + Test Report Cleanup",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
             {
                 "title": item["title"],
                 "route": item["route"],
-                "url": V20000_BACKEND_BASE + item["route"]
+                "url": V20010_BACKEND_BASE + item["route"]
             }
-            for item in V20000_REPORT_TESTS
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -12200,12 +12200,12 @@ async def test_report_json_v3002():
 @app.get("/legacy/test-report-v3002")
 async def test_report_v3002():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
     html = """
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -12227,9 +12227,9 @@ async def test_report_v3002():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>V3001 Label + Test Report Cleanup. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
-    <p>Current visible version: <code>V20000</code></p>
+    <p>Current visible version: <code>V20010</code></p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
     <button class="secondary" onclick="clearReport()">Clear</button>
@@ -12277,7 +12277,7 @@ async function runOne(test) {
 
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -12333,13 +12333,13 @@ function clearReport() {
 </script>
 </body>
 </html>
-""".replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+""".replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 
 
 # =========================
-# V20000 LABEL + TEST REPORT CLEANUP
+# V20010 LABEL + TEST REPORT CLEANUP
 # =========================
 
 @app.get("/legacy/label-cleanup-status")
@@ -12348,13 +12348,13 @@ async def label_cleanup_status():
         "ok": True,
         "version": VERSION,
         "milestone": "V3001 Label + Test Report Cleanup",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "cleanup_targets": [
-            "Rebuild /test-report-json with V20000 current routes",
+            "Rebuild /test-report-json with V20010 current routes",
             "Add /revenue-output-compatibility to report",
             "Add /v3001-milestone to report",
             "Add /v3002-milestone to report",
-            "Update visible backend labels to V20000",
+            "Update visible backend labels to V20010",
             "Move V3000 milestone to /legacy/v3000-milestone",
             "Document cleanup in README and PDF"
         ],
@@ -12376,15 +12376,15 @@ async def v3002_milestone():
         "version": VERSION,
         "milestone": "V3001 Label + Test Report Cleanup",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V3001",
         "build_type": "Stability / Label Cleanup Build",
         "fixed": [
-            "/test-report-json now lists V20000 routes",
+            "/test-report-json now lists V20010 routes",
             "/revenue-output-compatibility included in report",
             "/v3001-milestone included in report",
             "/v3002-milestone added",
-            "Visible backend labels updated to V20000",
+            "Visible backend labels updated to V20010",
             "V3000 milestone preserved as /legacy/v3000-milestone",
             "README and PDF documentation added"
         ],
@@ -12413,15 +12413,15 @@ async def v3002_milestone():
             "https://executive-engine-os.onrender.com/v3001-milestone",
             "https://executive-engine-os.onrender.com/v3002-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then test one real frontend revenue command."
+        "recommended_next_move": "Deploy V20010, run /test-report, then test one real frontend revenue command."
     }
 
 # =========================
-# V20000 CURRENT TEST REPORT
+# V20010 CURRENT TEST REPORT
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [
     {
         "title": "health",
         "route": "/health"
@@ -12466,14 +12466,14 @@ async def test_report_json_v3003():
         "ok": True,
         "version": VERSION,
         "milestone": "Real Revenue Asset Output",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
             {
                 "title": item["title"],
                 "route": item["route"],
-                "url": V20000_BACKEND_BASE + item["route"]
+                "url": V20010_BACKEND_BASE + item["route"]
             }
-            for item in V20000_REPORT_TESTS
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -12481,24 +12481,24 @@ async def test_report_json_v3003():
 @app.get("/legacy/test-report-v3003")
 async def test_report_v3003():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
     html = """
-<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name='viewport' content='width=device-width,initial-scale=1'><style>
+<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name='viewport' content='width=device-width,initial-scale=1'><style>
 body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head>
-<body><div class='wrap'><div class='hero'><h1>Executive Engine OS V20000 Test Report</h1><p>Real Revenue Asset Output. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick='runReport()'>Run Report</button><button class='secondary' onclick='copyAll()'>Copy All Results</button><button class='secondary' onclick='clearReport()'>Clear</button><div id='status' class='good'>Ready. Click Run Report.</div></div><div class='card'><h2>Copy/Paste Report For ChatGPT</h2><textarea id='copyBox' placeholder='Results will appear here.'></textarea></div><div id='cards'></div></div>
+<body><div class='wrap'><div class='hero'><h1>Executive Engine OS V20010 Test Report</h1><p>Real Revenue Asset Output. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick='runReport()'>Run Report</button><button class='secondary' onclick='copyAll()'>Copy All Results</button><button class='secondary' onclick='clearReport()'>Clear</button><div id='status' class='good'>Ready. Click Run Report.</div></div><div class='card'><h2>Copy/Paste Report For ChatGPT</h2><textarea id='copyBox' placeholder='Results will appear here.'></textarea></div><div id='cards'></div></div>
 <script>
 const BACKEND_BASE='__BACKEND_BASE__'; const TESTS=__TESTS_JSON__;
 function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}
 function escapeHtml(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 function setStatus(t,ok){const el=document.getElementById('status');el.className=ok===false?'fail':'good';el.textContent=t}
 async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:'GET',cache:'no-store'});const ct=res.headers.get('content-type')||'';let data=ct.includes('application/json')?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:'FETCH_ERROR',ok:false,output:err.message}}}
-function buildCopyText(results){let out=[];out.push('Executive Engine OS V20000 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\\n')}
+function buildCopyText(results){let out=[];out.push('Executive Engine OS V20010 Test Report');out.push('Generated: '+new Date().toISOString());out.push('');for(const r of results){out.push('========================================');out.push(r.title);out.push(r.url);out.push('status: '+r.status);out.push('ok: '+r.ok);out.push('----------------------------------------');out.push(pretty(r.output));out.push('')}return out.join('\\n')}
 function renderCards(results){document.getElementById('cards').innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join('')}
 async function runReport(){setStatus('Running tests...',true);const results=[];for(const test of TESTS){setStatus('Running: '+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById('copyBox').value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?'Done with '+failed+' failed link(s). Copy All and paste into ChatGPT.':'All done. Copy All and paste into ChatGPT.',failed===0)}
 async function copyAll(){const text=document.getElementById('copyBox').value;if(!text){setStatus('Nothing to copy yet. Click Run Report first.',false);return}await navigator.clipboard.writeText(text);setStatus('Copied. Paste it into ChatGPT.',true)}
 function clearReport(){document.getElementById('copyBox').value='';document.getElementById('cards').innerHTML='';setStatus('Cleared. Click Run Report.',true)}
 </script></body></html>
-""".replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+""".replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/real-revenue-asset-status")
@@ -12507,7 +12507,7 @@ async def real_revenue_asset_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Real Revenue Asset Output",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "The system must now create actual proposal, pitch, email, follow-up, objection handling, and close-plan content instead of generic advice.",
         "good_output_requirement": "Write the actual asset copy.",
         "safety": {
@@ -12550,7 +12550,7 @@ async def v3003_milestone():
         "version": VERSION,
         "milestone": "Real Revenue Asset Output",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V3002",
         "build_type": "Fix / Revenue Output Quality Build",
         "fixed": [
@@ -12587,16 +12587,16 @@ async def v3003_milestone():
             "https://executive-engine-os.onrender.com/v3003-milestone"
         ],
         "frontend_test_command": "I need to pitch a $50k consulting package to a hesitant client. Build a client-ready proposal, pitch angle, sales email, follow-up sequence, objection handling, and close plan.",
-        "recommended_next_move": "Deploy V20000, run /test-report, then test the frontend with the frontend_test_command."
+        "recommended_next_move": "Deploy V20010, run /test-report, then test the frontend with the frontend_test_command."
     }
 
 
 # =========================
-# V20000 V3500 PREMIUM REVENUE MERGE
+# V20010 V3500 PREMIUM REVENUE MERGE
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [
     {
         "title": "health",
         "route": "/health"
@@ -12641,10 +12641,10 @@ async def test_report_json_v3550():
         "ok": True,
         "version": VERSION,
         "milestone": "V3500 Premium Layout + V3003 Revenue Engine Merge",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -12652,12 +12652,12 @@ async def test_report_json_v3550():
 @app.get("/legacy/test-report-v3550")
 async def test_report_v3550():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
     html = """
 <!doctype html>
 <html>
 <head>
-  <title>Executive Engine OS V20000 Test Report</title>
+  <title>Executive Engine OS V20010 Test Report</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}
@@ -12678,9 +12678,9 @@ async def test_report_v3550():
 <body>
 <div class="wrap">
   <div class="hero">
-    <h1>Executive Engine OS V20000 Test Report</h1>
+    <h1>Executive Engine OS V20010 Test Report</h1>
     <p>V3500 Premium Layout + V3003 Revenue Engine Merge. Click Run Report, then Copy All Results and paste into ChatGPT.</p>
-    <p>Current visible version: <code>V20000</code></p>
+    <p>Current visible version: <code>V20010</code></p>
     <button onclick="runReport()">Run Report</button>
     <button class="secondary" onclick="copyAll()">Copy All Results</button>
     <button class="secondary" onclick="clearReport()">Clear</button>
@@ -12706,7 +12706,7 @@ async function runOne(test) {
 }
 function buildCopyText(results) {
   let out = [];
-  out.push("Executive Engine OS V20000 Test Report");
+  out.push("Executive Engine OS V20010 Test Report");
   out.push("Generated: " + new Date().toISOString());
   out.push("");
   for (const r of results) {
@@ -12751,7 +12751,7 @@ function clearReport() {
 </script>
 </body>
 </html>
-""".replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+""".replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/v3500-merge-status")
@@ -12760,7 +12760,7 @@ async def v3500_merge_status():
         "ok": True,
         "version": VERSION,
         "milestone": "V3500 Premium Layout + V3003 Revenue Engine Merge",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "decision": "Use V3500's better visual layout as the frontend baseline while preserving V3003's revenue asset backend.",
         "what_this_preserves": [
             "Premium V3500 visual experience",
@@ -12788,13 +12788,13 @@ async def v3550_milestone():
         "version": VERSION,
         "milestone": "V3500 Premium Layout + V3003 Revenue Engine Merge",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "Frontend from V3500, backend revenue engine from V3003",
         "build_type": "Product / Merge / Stabilization Build",
         "added": [
             "V3500 premium dark executive dashboard preserved",
             "V3003 real revenue backend preserved",
-            "V20000 test report added",
+            "V20010 test report added",
             "V3500/V3003 merge status route added",
             "Frontend output upgraded to show real revenue asset fields"
         ],
@@ -12818,15 +12818,15 @@ async def v3550_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v3550-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then test frontend revenue output and visual engagement."
+        "recommended_next_move": "Deploy V20010, run /test-report, then test frontend revenue output and visual engagement."
     }
 
 # =========================
-# V20000 FIGMA-STYLE EXECUTIVE DASHBOARD
+# V20010 FIGMA-STYLE EXECUTIVE DASHBOARD
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'frontend experience status', 'route': '/frontend-experience-status'}, {'title': 'buyer experience check', 'route': '/buyer-experience-check'}, {'title': 'v3500 merge status', 'route': '/v3500-merge-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3600 milestone', 'route': '/v3600-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'frontend experience status', 'route': '/frontend-experience-status'}, {'title': 'buyer experience check', 'route': '/buyer-experience-check'}, {'title': 'v3500 merge status', 'route': '/v3500-merge-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3600 milestone', 'route': '/v3600-milestone'}]
 
 @app.get("/legacy/test-report-json-v3600")
 async def test_report_json_v3600():
@@ -12834,10 +12834,10 @@ async def test_report_json_v3600():
         "ok": True,
         "version": VERSION,
         "milestone": "Figma-Style Executive Dashboard",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -12845,8 +12845,8 @@ async def test_report_json_v3600():
 @app.get("/legacy/test-report-v3600")
 async def test_report_v3600():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Figma-style executive dashboard. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Figma-style executive dashboard. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/frontend-experience-status")
@@ -12855,7 +12855,7 @@ async def frontend_experience_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Figma-Style Executive Dashboard",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "style_reference": "Dark left sidebar, blue command bar, clean cards, right output preview, system status panel.",
         "buyer_goal": "Make the product feel like a premium paid executive cockpit, not a technical prototype.",
         "safety": {
@@ -12892,8 +12892,8 @@ async def v3600_milestone():
         "version": VERSION,
         "milestone": "Figma-Style Executive Dashboard",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "baseline": "V20000",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "baseline": "V20010",
         "build_type": "Frontend Experience / Buyer Simulation Build",
         "added": [
             "Figma-style dark navy sidebar",
@@ -12907,7 +12907,7 @@ async def v3600_milestone():
             "Admin/test tools hidden under System"
         ],
         "kept": [
-            "V20000 backend",
+            "V20010 backend",
             "V3003 real revenue asset engine",
             "/run unchanged",
             "/test-report working",
@@ -12927,15 +12927,15 @@ async def v3600_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v3600-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then judge the paid CEO buyer experience."
+        "recommended_next_move": "Deploy V20010, run /test-report, then judge the paid CEO buyer experience."
     }
 
 # =========================
-# V20000 EXECUTIVE FLOW DASHBOARD
+# V20010 EXECUTIVE FLOW DASHBOARD
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3700 milestone', 'route': '/v3700-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3700 milestone', 'route': '/v3700-milestone'}]
 
 @app.get("/legacy/test-report-json-v3700")
 async def test_report_json_v3700():
@@ -12943,10 +12943,10 @@ async def test_report_json_v3700():
         "ok": True,
         "version": VERSION,
         "milestone": "Executive Flow Dashboard",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -12954,8 +12954,8 @@ async def test_report_json_v3700():
 @app.get("/legacy/test-report-v3700")
 async def test_report_v3700():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Executive Flow Dashboard. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Executive Flow Dashboard. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/executive-flow-status")
@@ -12964,7 +12964,7 @@ async def executive_flow_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Executive Flow Dashboard",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "product_thesis": "The AI box is not the product. The prepared executive day is the product.",
         "core_shift": "From command-first to push-first.",
         "dashboard_sections": [
@@ -13041,8 +13041,8 @@ async def v3700_milestone():
         "version": VERSION,
         "milestone": "Executive Flow Dashboard",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "baseline": "V20000/V3550",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "baseline": "V20010/V3550",
         "build_type": "Product Direction / Frontend UX Pivot",
         "added": [
             "Push-first Today dashboard",
@@ -13077,15 +13077,15 @@ async def v3700_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v3700-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then use it like a paid CEO for one day."
+        "recommended_next_move": "Deploy V20010, run /test-report, then use it like a paid CEO for one day."
     }
 
 # =========================
-# V20000 CLICKABLE FLOW FIX
+# V20010 CLICKABLE FLOW FIX
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'link routing status', 'route': '/link-routing-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3710 milestone', 'route': '/v3710-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'link routing status', 'route': '/link-routing-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v3710 milestone', 'route': '/v3710-milestone'}]
 
 @app.get("/legacy/test-report-json-v3710")
 async def test_report_json_v3710():
@@ -13093,10 +13093,10 @@ async def test_report_json_v3710():
         "ok": True,
         "version": VERSION,
         "milestone": "Clickable Flow Fix",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13104,8 +13104,8 @@ async def test_report_json_v3710():
 @app.get("/legacy/test-report-v3710")
 async def test_report_v3710():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Clickable Flow Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Clickable Flow Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/link-routing-status")
@@ -13114,7 +13114,7 @@ async def link_routing_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Clickable Flow Fix",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "Primary frontend links/cards/buttons now have actual actions instead of placeholder behavior.",
         "fixed": [
             "Sidebar items scroll to sections",
@@ -13143,8 +13143,8 @@ async def v3710_milestone():
         "version": VERSION,
         "milestone": "Clickable Flow Fix",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "baseline": "V20000",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "baseline": "V20010",
         "build_type": "Frontend Usability / Link Routing Fix",
         "added": [
             "Clickable section routing",
@@ -13154,7 +13154,7 @@ async def v3710_milestone():
             "Improved testability before daily CEO use"
         ],
         "kept": [
-            "V20000 Executive Flow Dashboard",
+            "V20010 Executive Flow Dashboard",
             "V3003 real revenue asset engine",
             "/run unchanged",
             "/test-report working",
@@ -13173,15 +13173,15 @@ async def v3710_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v3710-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then click through the frontend cards and sidebar."
+        "recommended_next_move": "Deploy V20010, run /test-report, then click through the frontend cards and sidebar."
     }
 
 # =========================
-# V20000 CLIENT ASSET BUILDER
+# V20010 CLIENT ASSET BUILDER
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v4000 milestone', 'route': '/v4000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'task capture model', 'route': '/task-capture-model'}, {'title': 'push dashboard check', 'route': '/push-dashboard-check'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'revenue asset contract', 'route': '/revenue-asset-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v4000 milestone', 'route': '/v4000-milestone'}]
 
 @app.get("/legacy/test-report-json-v4000")
 async def test_report_json_v4000():
@@ -13189,10 +13189,10 @@ async def test_report_json_v4000():
         "ok": True,
         "version": VERSION,
         "milestone": "Client Asset Builder",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13200,8 +13200,8 @@ async def test_report_json_v4000():
 @app.get("/legacy/test-report-v4000")
 async def test_report_v4000():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Client Asset Builder. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Client Asset Builder. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/client-asset-builder-status")
@@ -13210,7 +13210,7 @@ async def client_asset_builder_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Client Asset Builder",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "product_thesis": "Executive Engine turns executive flow items into client-ready business assets.",
         "assets": [
             "Meeting Brief",
@@ -13266,7 +13266,7 @@ async def v4000_milestone():
         "version": VERSION,
         "milestone": "Client Asset Builder",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V3710",
         "build_type": "Product Feature / Asset Builder",
         "added": [
@@ -13301,15 +13301,15 @@ async def v4000_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v4000-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then build one real client asset from the dashboard."
+        "recommended_next_move": "Deploy V20010, run /test-report, then build one real client asset from the dashboard."
     }
 
 # =========================
-# V20000 ASSET BUILDER LAYOUT FIX
+# V20010 ASSET BUILDER LAYOUT FIX
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'asset layout status', 'route': '/asset-layout-status'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v4010 milestone', 'route': '/v4010-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'asset layout status', 'route': '/asset-layout-status'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v4010 milestone', 'route': '/v4010-milestone'}]
 
 @app.get("/legacy/test-report-json-v4010")
 async def test_report_json_v4010():
@@ -13317,10 +13317,10 @@ async def test_report_json_v4010():
         "ok": True,
         "version": VERSION,
         "milestone": "Asset Builder Layout Fix",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13328,8 +13328,8 @@ async def test_report_json_v4010():
 @app.get("/legacy/test-report-v4010")
 async def test_report_v4010():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Asset Builder Layout Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Asset Builder Layout Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/asset-layout-status")
@@ -13338,7 +13338,7 @@ async def asset_layout_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Asset Builder Layout Fix",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "Client Asset Builder was squeezed into the right dashboard column and hard to use.",
         "fixed": [
             "Asset Builder moved into full-width workspace",
@@ -13365,8 +13365,8 @@ async def v4010_milestone():
         "version": VERSION,
         "milestone": "Asset Builder Layout Fix",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "baseline": "V20000",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "baseline": "V20010",
         "build_type": "Frontend UX / Layout Fix",
         "added": [
             "Full-width Asset Builder workspace",
@@ -13376,7 +13376,7 @@ async def v4010_milestone():
             "Improved testability of asset creation"
         ],
         "kept": [
-            "V20000 Client Asset Builder",
+            "V20010 Client Asset Builder",
             "V3710 clickable Executive Flow",
             "V3003 real revenue asset engine",
             "/run unchanged",
@@ -13395,15 +13395,15 @@ async def v4010_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v4010-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, then build one Proposal Draft from the full-width Asset Builder."
+        "recommended_next_move": "Deploy V20010, then build one Proposal Draft from the full-width Asset Builder."
     }
 
 # =========================
-# V20000 PRODUCT CANDIDATE QA
+# V20010 PRODUCT CANDIDATE QA
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v5000 status', 'route': '/v5000-status'}, {'title': 'qa checklist', 'route': '/qa-checklist'}, {'title': 'product candidate gates', 'route': '/product-candidate-gates'}, {'title': 'asset layout status', 'route': '/asset-layout-status'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5000 milestone', 'route': '/v5000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v5000 status', 'route': '/v5000-status'}, {'title': 'qa checklist', 'route': '/qa-checklist'}, {'title': 'product candidate gates', 'route': '/product-candidate-gates'}, {'title': 'asset layout status', 'route': '/asset-layout-status'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5000 milestone', 'route': '/v5000-milestone'}]
 
 @app.get("/legacy/test-report-json-v5000")
 async def test_report_json_v5000():
@@ -13411,10 +13411,10 @@ async def test_report_json_v5000():
         "ok": True,
         "version": VERSION,
         "milestone": "Product Candidate QA",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13422,8 +13422,8 @@ async def test_report_json_v5000():
 @app.get("/legacy/test-report-v5000")
 async def test_report_v5000():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Product Candidate QA. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Product Candidate QA. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/v5000-status")
@@ -13432,8 +13432,8 @@ async def v5000_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Product Candidate QA",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "decision": "Promote V20000 to V20000 product-candidate QA baseline.",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "decision": "Promote V20010 to V20010 product-candidate QA baseline.",
         "product_layers": [
             "Executive Flow Dashboard",
             "Push-based Today/Tomorrow flow",
@@ -13515,11 +13515,11 @@ async def v5000_milestone():
         "version": VERSION,
         "milestone": "Product Candidate QA",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "baseline": "V20000",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "baseline": "V20010",
         "build_type": "Product Candidate / QA Baseline",
         "added": [
-            "V20000 product-candidate badge",
+            "V20010 product-candidate badge",
             "QA panel link support",
             "/v5000-status",
             "/qa-checklist",
@@ -13527,7 +13527,7 @@ async def v5000_milestone():
             "/v5000-milestone"
         ],
         "kept": [
-            "V20000 Asset Builder Layout Fix",
+            "V20010 Asset Builder Layout Fix",
             "V4000 Client Asset Builder",
             "V3710 clickable Executive Flow",
             "V3003 real revenue asset engine",
@@ -13548,15 +13548,15 @@ async def v5000_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v5000-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then perform the QA checklist using a real client asset."
+        "recommended_next_move": "Deploy V20010, run /test-report, then perform the QA checklist using a real client asset."
     }
 
 # =========================
-# V20000 PROACTIVE FOLLOW-UP ENGINE
+# V20010 PROACTIVE FOLLOW-UP ENGINE
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'followup rules', 'route': '/followup-rules'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5200 milestone', 'route': '/v5200-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'followup rules', 'route': '/followup-rules'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5200 milestone', 'route': '/v5200-milestone'}]
 
 @app.get("/legacy/test-report-json-v5200")
 async def test_report_json_v5200():
@@ -13564,10 +13564,10 @@ async def test_report_json_v5200():
         "ok": True,
         "version": VERSION,
         "milestone": "Proactive Follow-Up Engine",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13575,8 +13575,8 @@ async def test_report_json_v5200():
 @app.get("/legacy/test-report-v5200")
 async def test_report_v5200():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Proactive Follow-Up Engine. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Proactive Follow-Up Engine. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/v5200-status")
@@ -13585,7 +13585,7 @@ async def v5200_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Proactive Follow-Up Engine",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "decision": "Promote from product candidate to proactive executive operating system baseline.",
         "product_thesis": "Executive Engine is not a chat app. It is a proactive business execution system.",
         "core_layers": [
@@ -13719,7 +13719,7 @@ async def v5200_milestone():
         "version": VERSION,
         "milestone": "Proactive Follow-Up Engine",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V5000",
         "build_type": "Product Architecture / Proactive Logic Simulation",
         "added": [
@@ -13762,15 +13762,15 @@ async def v5200_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v5200-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then test fast capture and follow-up simulation from the frontend."
+        "recommended_next_move": "Deploy V20010, run /test-report, then test fast capture and follow-up simulation from the frontend."
     }
 
 # =========================
-# V20000 INDEPENDENT SECTION PAGES
+# V20010 INDEPENDENT SECTION PAGES
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5210 milestone', 'route': '/v5210-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5210 milestone', 'route': '/v5210-milestone'}]
 
 @app.get("/legacy/test-report-json-v5210")
 async def test_report_json_v5210():
@@ -13778,10 +13778,10 @@ async def test_report_json_v5210():
         "ok": True,
         "version": VERSION,
         "milestone": "Independent Section Pages",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13789,8 +13789,8 @@ async def test_report_json_v5210():
 @app.get("/legacy/test-report-v5210")
 async def test_report_v5210():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Independent Section Pages. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Independent Section Pages. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/section-pages-status")
@@ -13799,7 +13799,7 @@ async def section_pages_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Independent Section Pages",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "Clicking Today/Meeting/Revenue items should open a dedicated section page instead of jumping to the top/detail panel.",
         "section_page_model": [
             "Dashboard remains push-first.",
@@ -13825,7 +13825,7 @@ async def v5210_milestone():
         "version": VERSION,
         "milestone": "Independent Section Pages",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V5200",
         "build_type": "Frontend UX / Section Workspace Fix",
         "added": [
@@ -13862,15 +13862,15 @@ async def v5210_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v5210-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, click ABC HVAC under Today, and confirm it opens a dedicated workspace page."
+        "recommended_next_move": "Deploy V20010, click ABC HVAC under Today, and confirm it opens a dedicated workspace page."
     }
 
 # =========================
-# V20000 REAL PAGE NAVIGATION FIX
+# V20010 REAL PAGE NAVIGATION FIX
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5220 milestone', 'route': '/v5220-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v5220 milestone', 'route': '/v5220-milestone'}]
 
 @app.get("/legacy/test-report-json-v5220")
 async def test_report_json_v5220():
@@ -13878,10 +13878,10 @@ async def test_report_json_v5220():
         "ok": True,
         "version": VERSION,
         "milestone": "Real Page Navigation Fix",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13889,8 +13889,8 @@ async def test_report_json_v5220():
 @app.get("/legacy/test-report-v5220")
 async def test_report_v5220():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Real Page Navigation Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Real Page Navigation Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/page-navigation-status")
@@ -13899,7 +13899,7 @@ async def page_navigation_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Real Page Navigation Fix",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "problem_fixed": "V5210 still scrolled up/down instead of switching to a true independent workspace view.",
         "fixed": [
             "Replaced scroll behavior for dashboard cards",
@@ -13926,7 +13926,7 @@ async def v5220_milestone():
         "version": VERSION,
         "milestone": "Real Page Navigation Fix",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V5210",
         "build_type": "Frontend UX / Real Page Navigation Fix",
         "added": [
@@ -13960,15 +13960,15 @@ async def v5220_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v5220-milestone"
         ],
-        "recommended_next_move": "Deploy V20000. Click ABC HVAC under Today. It should hide dashboard and open a dedicated workspace page."
+        "recommended_next_move": "Deploy V20010. Click ABC HVAC under Today. It should hide dashboard and open a dedicated workspace page."
     }
 
 # =========================
-# V20000 FULL SYSTEM LINKED QA
+# V20010 FULL SYSTEM LINKED QA
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v6000 status', 'route': '/v6000-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'followup rules', 'route': '/followup-rules'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v6000 milestone', 'route': '/v6000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v6000 status', 'route': '/v6000-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'section pages status', 'route': '/section-pages-status'}, {'title': 'v5200 status', 'route': '/v5200-status'}, {'title': 'organization workspace status', 'route': '/organization-workspace-status'}, {'title': 'proactive followup status', 'route': '/proactive-followup-status'}, {'title': 'followup rules', 'route': '/followup-rules'}, {'title': 'capture extraction contract', 'route': '/capture-extraction-contract'}, {'title': 'client asset builder status', 'route': '/client-asset-builder-status'}, {'title': 'asset builder contract', 'route': '/asset-builder-contract'}, {'title': 'executive flow status', 'route': '/executive-flow-status'}, {'title': 'real revenue asset status', 'route': '/real-revenue-asset-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v6000 milestone', 'route': '/v6000-milestone'}]
 
 @app.get("/legacy/test-report-json-v6000")
 async def test_report_json_v6000():
@@ -13976,10 +13976,10 @@ async def test_report_json_v6000():
         "ok": True,
         "version": VERSION,
         "milestone": "Full System Linked QA",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -13987,8 +13987,8 @@ async def test_report_json_v6000():
 @app.get("/legacy/test-report-v6000")
 async def test_report_v6000():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Full System Linked QA. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Full System Linked QA. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/v6000-status")
@@ -13997,8 +13997,8 @@ async def v6000_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Full System Linked QA",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "decision": "Promote V5220 into V20000 large-shot test baseline.",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "decision": "Promote V5220 into V20010 large-shot test baseline.",
         "goal": "Make every primary frontend link/button/card do something testable.",
         "product_layers": [
             "Push-first dashboard",
@@ -14029,7 +14029,7 @@ async def full_link_map():
             "sidebar": ["Dashboard", "Meetings", "Revenue", "People", "Risks", "Assets", "Admin / Tests"],
             "dashboard_cards": ["Today items", "Meetings cards", "Revenue cards", "Tomorrow cards", "Prepared For You cards", "Follow-Up card"],
             "workspace": ["Back to Dashboard", "Brief", "Meeting Prep", "Proposal", "Sales Email", "Follow-Up", "Objections", "Close Plan", "Notes", "Send", "Build Section Asset"],
-            "system": ["Health", "Page Navigation Status", "Section Pages Status", "V5200 Status", "Test Report", "V20000 Milestone"]
+            "system": ["Health", "Page Navigation Status", "Section Pages Status", "V5200 Status", "Test Report", "V20010 Milestone"]
         },
         "pass_condition": "Every visible card/button either opens a page, changes workspace tab, builds an asset, copies text, or opens a backend route."
     }
@@ -14041,11 +14041,11 @@ async def v6000_milestone():
         "version": VERSION,
         "milestone": "Full System Linked QA",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V5220",
         "build_type": "Product Candidate / Full Frontend Link QA",
         "added": [
-            "V20000 full-system QA baseline",
+            "V20010 full-system QA baseline",
             "Clickable link map route",
             "Full system status route",
             "All primary dashboard cards link to workspace pages",
@@ -14079,15 +14079,15 @@ async def v6000_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v6000-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, run /test-report, then perform one full click-through QA pass."
+        "recommended_next_move": "Deploy V20010, run /test-report, then perform one full click-through QA pass."
     }
 
 # =========================
-# V20000 FUNCTIONAL MVP
+# V20010 FUNCTIONAL MVP
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v6100 status', 'route': '/v6100-status'}, {'title': 'functional mvp status', 'route': '/functional-mvp-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'v6000 status', 'route': '/v6000-status'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v6100 milestone', 'route': '/v6100-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v6100 status', 'route': '/v6100-status'}, {'title': 'functional mvp status', 'route': '/functional-mvp-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'v6000 status', 'route': '/v6000-status'}, {'title': 'page navigation status', 'route': '/page-navigation-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v6100 milestone', 'route': '/v6100-milestone'}]
 
 @app.get("/legacy/test-report-json-v6100")
 async def test_report_json_v6100():
@@ -14095,10 +14095,10 @@ async def test_report_json_v6100():
         "ok": True,
         "version": VERSION,
         "milestone": "Functional MVP",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -14106,8 +14106,8 @@ async def test_report_json_v6100():
 @app.get("/legacy/test-report-v6100")
 async def test_report_v6100():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Functional MVP. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Functional MVP. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/functional-mvp-status")
@@ -14116,7 +14116,7 @@ async def functional_mvp_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Functional MVP",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "goal": "Make the system usable day-to-day even before perfect refinement.",
         "frontend_functionality": [
             "Create flow items",
@@ -14130,7 +14130,7 @@ async def functional_mvp_status():
             "Reset local demo data",
             "Run full click-through QA"
         ],
-        "data_note": "V20000 uses browser localStorage for MVP persistence. Supabase schema is unchanged.",
+        "data_note": "V20010 uses browser localStorage for MVP persistence. Supabase schema is unchanged.",
         "safety": {
             "supabase_schema_changed": False,
             "oauth_activated": False,
@@ -14148,7 +14148,7 @@ async def v6100_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Functional MVP",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "decision": "Promote V6000 to a usable MVP baseline.",
         "purpose": "Let the user actually use Executive Engine instead of only testing visual concepts.",
         "status": "Ready for daily use testing with local persistence."
@@ -14161,7 +14161,7 @@ async def v6100_milestone():
         "version": VERSION,
         "milestone": "Functional MVP",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V6000",
         "build_type": "Functional MVP / Usability Baseline",
         "added": [
@@ -14198,15 +14198,15 @@ async def v6100_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v6100-milestone"
         ],
-        "recommended_next_move": "Deploy V20000 and use it for one real work item end-to-end."
+        "recommended_next_move": "Deploy V20010 and use it for one real work item end-to-end."
     }
 
 # =========================
-# V20000 EXECUTIVE FLOW OPERATING SYSTEM
+# V20010 EXECUTIVE FLOW OPERATING SYSTEM
 # =========================
 
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v9000 status', 'route': '/v9000-status'}, {'title': 'workflow os status', 'route': '/workflow-os-status'}, {'title': 'functional mvp status', 'route': '/functional-mvp-status'}, {'title': 'v6100 status', 'route': '/v6100-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v9000 milestone', 'route': '/v9000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v9000 status', 'route': '/v9000-status'}, {'title': 'workflow os status', 'route': '/workflow-os-status'}, {'title': 'functional mvp status', 'route': '/functional-mvp-status'}, {'title': 'v6100 status', 'route': '/v6100-status'}, {'title': 'full link map', 'route': '/full-link-map'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v9000 milestone', 'route': '/v9000-milestone'}]
 
 @app.get("/legacy/test-report-json-v9000")
 async def test_report_json_v9000():
@@ -14214,10 +14214,10 @@ async def test_report_json_v9000():
         "ok": True,
         "version": VERSION,
         "milestone": "Executive Flow Operating System",
-        "backend_base": V20000_BACKEND_BASE,
+        "backend_base": V20010_BACKEND_BASE,
         "tests": [
-            {"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]}
-            for item in V20000_REPORT_TESTS
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
         ],
         "note": "Open /test-report, click Run Report, then Copy All Results and paste into ChatGPT."
     }
@@ -14225,8 +14225,8 @@ async def test_report_json_v9000():
 @app.get("/legacy/test-report-v9000")
 async def test_report_v9000():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Executive Flow Operating System. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20000</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20000 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}code{background:#071226;color:#dbeafe;padding:4px 7px;border-radius:8px}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Executive Flow Operating System. Click Run Report, then Copy All Results and paste into ChatGPT.</p><p>Current visible version: <code>V20010</code></p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE="__BACKEND_BASE__";const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function setStatus(t,ok){const el=document.getElementById("status");el.className=ok===false?"fail":"good";el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:"GET",cache:"no-store"});const ct=res.headers.get("content-type")||"";let data=ct.includes("application/json")?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push("Executive Engine OS V20010 Test Report");out.push("Generated: "+new Date().toISOString());out.push("");for(const r of results){out.push("========================================");out.push(r.title);out.push(r.url);out.push("status: "+r.status);out.push("ok: "+r.ok);out.push("----------------------------------------");out.push(pretty(r.output));out.push("")}return out.join("\\n")}function renderCards(results){document.getElementById("cards").innerHTML=results.map(r=>`<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join("")}async function runReport(){setStatus("Running tests...",true);const results=[];for(const test of TESTS){setStatus("Running: "+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById("copyBox").value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?"Done with "+failed+" failed link(s). Copy All and paste into ChatGPT.":"All done. Copy All and paste into ChatGPT.",failed===0)}async function copyAll(){const text=document.getElementById("copyBox").value;if(!text){setStatus("Nothing to copy yet. Click Run Report first.",false);return}await navigator.clipboard.writeText(text);setStatus("Copied. Paste it into ChatGPT.",true)}function clearReport(){document.getElementById("copyBox").value="";document.getElementById("cards").innerHTML="";setStatus("Cleared. Click Run Report.",true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/workflow-os-status")
@@ -14235,7 +14235,7 @@ async def workflow_os_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Workflow Organization Pass",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "goal": "Reduce disorganization and make the product follow one executive operating loop.",
         "operating_loop": [
             "Capture",
@@ -14269,8 +14269,8 @@ async def v9000_status():
         "ok": True,
         "version": VERSION,
         "milestone": "Executive Flow Operating System",
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
-        "decision": "Fast-track from V6100 functional MVP to V20000 workflow OS baseline.",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
+        "decision": "Fast-track from V6100 functional MVP to V20010 workflow OS baseline.",
         "purpose": "Make the system more organized and usable in one large product pass.",
         "status": "Ready for real daily-use testing."
     }
@@ -14282,7 +14282,7 @@ async def v9000_milestone():
         "version": VERSION,
         "milestone": "Executive Flow Operating System",
         "ready": True,
-        "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend",
+        "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend",
         "baseline": "V6100",
         "build_type": "Workflow OS / Fast-Track Product Pass",
         "added": [
@@ -14319,29 +14319,29 @@ async def v9000_milestone():
             "https://executive-engine-os.onrender.com/test-report",
             "https://executive-engine-os.onrender.com/v9000-milestone"
         ],
-        "recommended_next_move": "Deploy V20000, add one real work item, build one asset, mark progress, and review follow-up."
+        "recommended_next_move": "Deploy V20010, add one real work item, build one asset, mark progress, and review follow-up."
     }
 
 # =========================
-# V20000 RESPONSE QUALITY COMMAND SYSTEM
+# V20010 RESPONSE QUALITY COMMAND SYSTEM
 # =========================
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v15000 status', 'route': '/v15000-status'}, {'title': 'response quality status', 'route': '/response-quality-status'}, {'title': 'command system status', 'route': '/command-system-status'}, {'title': 'workflow os status', 'route': '/workflow-os-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v15000 milestone', 'route': '/v15000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v15000 status', 'route': '/v15000-status'}, {'title': 'response quality status', 'route': '/response-quality-status'}, {'title': 'command system status', 'route': '/command-system-status'}, {'title': 'workflow os status', 'route': '/workflow-os-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v15000 milestone', 'route': '/v15000-milestone'}]
 
 @app.get("/legacy/test-report-json-v15000")
 async def test_report_json_v15000():
-    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "backend_base": V20000_BACKEND_BASE, "tests": [{"title": item["title"], "route": item["route"], "url": V20000_BACKEND_BASE + item["route"]} for item in V20000_REPORT_TESTS]}
+    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "backend_base": V20010_BACKEND_BASE, "tests": [{"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]} for item in V20010_REPORT_TESTS]}
 
 @app.get("/legacy/test-report-v15000")
 async def test_report_v15000():
     from starlette.responses import HTMLResponse
-    tests_json = json.dumps(V20000_REPORT_TESTS)
-    html = '<!doctype html><html><head><title>Executive Engine OS V20000 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20000 Test Report</h1><p>Response Quality Command System. Click Run Report, then Copy All Results and paste into ChatGPT.</p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE=\'__BACKEND_BASE__\';const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll(\'&\',\'&amp;\').replaceAll(\'<\',\'&lt;\').replaceAll(\'>\',\'&gt;\')}function setStatus(t,ok){const el=document.getElementById(\'status\');el.className=ok===false?\'fail\':\'good\';el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:\'GET\',cache:\'no-store\'});const ct=res.headers.get(\'content-type\')||\'\';let data=ct.includes(\'application/json\')?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:\'FETCH_ERROR\',ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push(\'Executive Engine OS V20000 Test Report\');out.push(\'Generated: \'+new Date().toISOString());for(const r of results){out.push(\'\\n========================================\');out.push(r.title);out.push(r.url);out.push(\'status: \'+r.status);out.push(\'ok: \'+r.ok);out.push(\'----------------------------------------\');out.push(pretty(r.output))}return out.join(\'\\n\')}function renderCards(results){document.getElementById(\'cards\').innerHTML=results.map(r=>`<div class=\'card\'><h2>${escapeHtml(r.title)}</h2><div class=\'url\'>${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join(\'\')}async function runReport(){setStatus(\'Running tests...\',true);const results=[];for(const test of TESTS){setStatus(\'Running: \'+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById(\'copyBox\').value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?\'Done with \'+failed+\' failed link(s).\':\'All done. Copy All and paste into ChatGPT.\',failed===0)}async function copyAll(){const text=document.getElementById(\'copyBox\').value;if(!text){setStatus(\'Nothing to copy yet. Click Run Report first.\',false);return}await navigator.clipboard.writeText(text);setStatus(\'Copied. Paste it into ChatGPT.\',true)}function clearReport(){document.getElementById(\'copyBox\').value=\'\';document.getElementById(\'cards\').innerHTML=\'\';setStatus(\'Cleared. Click Run Report.\',true)}</script></body></html>'.replace("__BACKEND_BASE__", V20000_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html><html><head><title>Executive Engine OS V20010 Test Report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1180px;margin:auto}.hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}h1{margin:0 0 8px;font-size:28px}h2{margin:0 0 10px;font-size:17px}p{color:#64748b;line-height:1.5}button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}button.secondary{background:#fff;color:#0f63ff}.url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}.good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}</style></head><body><div class="wrap"><div class="hero"><h1>Executive Engine OS V20010 Test Report</h1><p>Response Quality Command System. Click Run Report, then Copy All Results and paste into ChatGPT.</p><button onclick="runReport()">Run Report</button><button class="secondary" onclick="copyAll()">Copy All Results</button><button class="secondary" onclick="clearReport()">Clear</button><div id="status" class="good">Ready. Click Run Report.</div></div><div class="card"><h2>Copy/Paste Report For ChatGPT</h2><textarea id="copyBox"></textarea></div><div id="cards"></div></div><script>const BACKEND_BASE=\'__BACKEND_BASE__\';const TESTS=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}function escapeHtml(s){return String(s).replaceAll(\'&\',\'&amp;\').replaceAll(\'<\',\'&lt;\').replaceAll(\'>\',\'&gt;\')}function setStatus(t,ok){const el=document.getElementById(\'status\');el.className=ok===false?\'fail\':\'good\';el.textContent=t}async function runOne(test){const url=BACKEND_BASE+test.route;try{const res=await fetch(url,{method:\'GET\',cache:\'no-store\'});const ct=res.headers.get(\'content-type\')||\'\';let data=ct.includes(\'application/json\')?await res.json():await res.text();return {title:test.title,url,status:res.status,ok:res.ok,output:data}}catch(err){return {title:test.title,url,status:\'FETCH_ERROR\',ok:false,output:err.message}}}function buildCopyText(results){let out=[];out.push(\'Executive Engine OS V20010 Test Report\');out.push(\'Generated: \'+new Date().toISOString());for(const r of results){out.push(\'\\n========================================\');out.push(r.title);out.push(r.url);out.push(\'status: \'+r.status);out.push(\'ok: \'+r.ok);out.push(\'----------------------------------------\');out.push(pretty(r.output))}return out.join(\'\\n\')}function renderCards(results){document.getElementById(\'cards\').innerHTML=results.map(r=>`<div class=\'card\'><h2>${escapeHtml(r.title)}</h2><div class=\'url\'>${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`).join(\'\')}async function runReport(){setStatus(\'Running tests...\',true);const results=[];for(const test of TESTS){setStatus(\'Running: \'+test.title,true);const result=await runOne(test);results.push(result);renderCards(results);document.getElementById(\'copyBox\').value=buildCopyText(results)}const failed=results.filter(r=>!r.ok).length;setStatus(failed?\'Done with \'+failed+\' failed link(s).\':\'All done. Copy All and paste into ChatGPT.\',failed===0)}async function copyAll(){const text=document.getElementById(\'copyBox\').value;if(!text){setStatus(\'Nothing to copy yet. Click Run Report first.\',false);return}await navigator.clipboard.writeText(text);setStatus(\'Copied. Paste it into ChatGPT.\',true)}function clearReport(){document.getElementById(\'copyBox\').value=\'\';document.getElementById(\'cards\').innerHTML=\'\';setStatus(\'Cleared. Click Run Report.\',true)}</script></body></html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
     return HTMLResponse(html)
 
 @app.get("/response-quality-status")
 async def response_quality_status():
-    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend", "goal": "Make response testing central because the product only works if the outputs are excellent.", "quality_rules": ["No vague advice", "No long generic responses", "Every output must produce usable executive material", "Every asset must include next move, draft/copy, risks, follow-up, and close logic"]}
+    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend", "goal": "Make response testing central because the product only works if the outputs are excellent.", "quality_rules": ["No vague advice", "No long generic responses", "Every output must produce usable executive material", "Every asset must include next move, draft/copy, risks, follow-up, and close logic"]}
 
 @app.get("/command-system-status")
 async def command_system_status():
@@ -14349,41 +14349,111 @@ async def command_system_status():
 
 @app.get("/v15000-status")
 async def v15000_status():
-    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend", "decision": "Fast-track from V9000 to V20000 to restore stronger functional command testing."}
+    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend", "decision": "Fast-track from V9000 to V20010 to restore stronger functional command testing."}
 
 @app.get("/v15000-milestone")
 async def v15000_milestone():
-    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "ready": True, "frontend_must_show": "V20000 Response Quality Command System · V20000 Backend", "baseline": "V9000", "build_type": "Functional Command + Response Quality Pass", "added": ["Command Center page", "Response Quality Tester", "Preset executive commands", "Output rating panel", "Save best outputs", "Simpler workflow language"], "kept": ["/run unchanged", "/test-report working", "Supabase schema unchanged", "OAuth inactive", "manual execution only", "auto-loop off"]}
+    return {"ok": True, "version": VERSION, "milestone": "Response Quality Command System", "ready": True, "frontend_must_show": "V20010 Response Quality Command System · V20010 Backend", "baseline": "V9000", "build_type": "Functional Command + Response Quality Pass", "added": ["Command Center page", "Response Quality Tester", "Preset executive commands", "Output rating panel", "Save best outputs", "Simpler workflow language"], "kept": ["/run unchanged", "/test-report working", "Supabase schema unchanged", "OAuth inactive", "manual execution only", "auto-loop off"]}
 
 # =========================
-# V20000 FIGMA DESIGN LOCK + FUNCTIONAL OS
+# V20010 FIGMA DESIGN LOCK + FUNCTIONAL OS
 # =========================
-V20000_BACKEND_BASE = "https://executive-engine-os.onrender.com"
-V20000_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v20000 status', 'route': '/v20000-status'}, {'title': 'design lock status', 'route': '/design-lock-status'}, {'title': 'functional os status', 'route': '/functional-os-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v20000 milestone', 'route': '/v20000-milestone'}]
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v20000 status', 'route': '/v20000-status'}, {'title': 'design lock status', 'route': '/design-lock-status'}, {'title': 'functional os status', 'route': '/functional-os-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v20000 milestone', 'route': '/v20000-milestone'}]
 
-@app.get("/test-report-json")
+@app.get("/legacy/test-report-json-v20000")
 async def test_report_json_v20000():
-    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "backend_base": V20000_BACKEND_BASE, "tests": [{"title": i["title"], "route": i["route"], "url": V20000_BACKEND_BASE+i["route"]} for i in V20000_REPORT_TESTS]}
+    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "backend_base": V20010_BACKEND_BASE, "tests": [{"title": i["title"], "route": i["route"], "url": V20010_BACKEND_BASE+i["route"]} for i in V20010_REPORT_TESTS]}
 
-@app.get("/test-report")
+@app.get("/legacy/test-report-v20000")
 async def test_report_v20000():
     from starlette.responses import HTMLResponse
     import json
-    html="<!doctype html><html><head><title>V20000 Test Report</title><meta name='viewport' content='width=device-width,initial-scale=1'><style>body{font-family:Arial;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1100px;margin:auto}.card{background:white;border:1px solid #dbe5f1;border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 16px 40px #07122614}button{background:#0f63ff;color:white;border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer}textarea{width:100%;min-height:360px;border:1px solid #cbd5e1;border-radius:16px;padding:12px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap}.good{background:#ecfdf5;color:#047857;border-radius:12px;padding:12px}</style></head><body><div class='wrap'><div class='card'><h1>Executive Engine OS V20000 Test Report</h1><p>Figma Design Lock + Functional OS.</p><button onclick='runReport()'>Run Report</button> <button onclick='copyAll()'>Copy All</button><div id='status' class='good'>Ready.</div></div><div class='card'><textarea id='box'></textarea></div><div id='cards'></div></div><script>const B='__BACKEND_BASE__';const T=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}async function runReport(){let r=[];for(const t of T){let u=B+t.route;try{let res=await fetch(u,{cache:'no-store'});let ct=res.headers.get('content-type')||'';let data=ct.includes('json')?await res.json():await res.text();r.push({title:t.title,url:u,status:res.status,ok:res.ok,output:data})}catch(e){r.push({title:t.title,url:u,status:'ERR',ok:false,output:e.message})}}document.getElementById('box').value='Executive Engine OS V20000 Test Report\n'+new Date().toISOString()+'\n\n'+r.map(x=>x.title+'\n'+x.url+'\nstatus: '+x.status+'\nok: '+x.ok+'\n'+pretty(x.output)).join('\n\n====================\n\n');document.getElementById('cards').innerHTML=r.map(x=>'<div class=card><h2>'+x.title+'</h2><pre>'+pretty(x.output).replaceAll('<','&lt;')+'</pre></div>').join('');document.getElementById('status').textContent='Done.'}function copyAll(){navigator.clipboard.writeText(document.getElementById('box').value)}</script></body></html>".replace('__BACKEND_BASE__',V20000_BACKEND_BASE).replace('__TESTS_JSON__',json.dumps(V20000_REPORT_TESTS))
+    html="<!doctype html><html><head><title>V20010 Test Report</title><meta name='viewport' content='width=device-width,initial-scale=1'><style>body{font-family:Arial;background:#f8fbff;color:#071226;padding:24px}.wrap{max-width:1100px;margin:auto}.card{background:white;border:1px solid #dbe5f1;border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 16px 40px #07122614}button{background:#0f63ff;color:white;border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer}textarea{width:100%;min-height:360px;border:1px solid #cbd5e1;border-radius:16px;padding:12px}pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap}.good{background:#ecfdf5;color:#047857;border-radius:12px;padding:12px}</style></head><body><div class='wrap'><div class='card'><h1>Executive Engine OS V20010 Test Report</h1><p>Figma Design Lock + Functional OS.</p><button onclick='runReport()'>Run Report</button> <button onclick='copyAll()'>Copy All</button><div id='status' class='good'>Ready.</div></div><div class='card'><textarea id='box'></textarea></div><div id='cards'></div></div><script>const B='__BACKEND_BASE__';const T=__TESTS_JSON__;function pretty(v){try{return JSON.stringify(v,null,2)}catch(e){return String(v)}}async function runReport(){let r=[];for(const t of T){let u=B+t.route;try{let res=await fetch(u,{cache:'no-store'});let ct=res.headers.get('content-type')||'';let data=ct.includes('json')?await res.json():await res.text();r.push({title:t.title,url:u,status:res.status,ok:res.ok,output:data})}catch(e){r.push({title:t.title,url:u,status:'ERR',ok:false,output:e.message})}}document.getElementById('box').value='Executive Engine OS V20010 Test Report\n'+new Date().toISOString()+'\n\n'+r.map(x=>x.title+'\n'+x.url+'\nstatus: '+x.status+'\nok: '+x.ok+'\n'+pretty(x.output)).join('\n\n====================\n\n');document.getElementById('cards').innerHTML=r.map(x=>'<div class=card><h2>'+x.title+'</h2><pre>'+pretty(x.output).replaceAll('<','&lt;')+'</pre></div>').join('');document.getElementById('status').textContent='Done.'}function copyAll(){navigator.clipboard.writeText(document.getElementById('box').value)}</script></body></html>".replace('__BACKEND_BASE__',V20010_BACKEND_BASE).replace('__TESTS_JSON__',json.dumps(V20010_REPORT_TESTS))
     return HTMLResponse(html)
 
 @app.get("/design-lock-status")
 async def design_lock_status():
-    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock", "frontend_must_show": "V20000 Figma Design Lock · Functional OS", "locked": True, "rules": ["Do not change design during backend updates", "Do not change fonts/layout/sidebar/cards/spacing unless explicitly requested", "Inactive sections stay visible", "Feature work happens behind the locked shell"]}
+    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock", "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock", "locked": True, "rules": ["Do not change design during backend updates", "Do not change fonts/layout/sidebar/cards/spacing unless explicitly requested", "Inactive sections stay visible", "Feature work happens behind the locked shell"]}
 
 @app.get("/functional-os-status")
 async def functional_os_status():
-    return {"ok": True, "version": VERSION, "milestone": "Functional OS Integration", "frontend_must_show": "V20000 Figma Design Lock · Functional OS", "functions": ["Thin command capture", "Clickable dashboard cards", "Workspaces", "Build assets through /run", "Save outputs locally", "Admin diagnostics"], "persistence": "Browser localStorage for MVP state. Supabase schema unchanged."}
+    return {"ok": True, "version": VERSION, "milestone": "Functional OS Integration", "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock", "functions": ["Thin command capture", "Clickable dashboard cards", "Workspaces", "Build assets through /run", "Save outputs locally", "Admin diagnostics"], "persistence": "Browser localStorage for MVP state. Supabase schema unchanged."}
 
 @app.get("/v20000-status")
 async def v20000_status():
-    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "frontend_must_show": "V20000 Figma Design Lock · Functional OS", "decision": "Lock the Figma-style design and make backend/features work behind it."}
+    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock", "decision": "Lock the Figma-style design and make backend/features work behind it."}
 
 @app.get("/v20000-milestone")
 async def v20000_milestone():
-    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "ready": True, "frontend_must_show": "V20000 Figma Design Lock · Functional OS", "baseline": "V15000 backend contracts + locked Figma-style frontend", "build_type": "Design Lock / Functional Integration", "kept": ["/run unchanged", "/test-report working", "Supabase schema unchanged", "OAuth inactive", "manual execution only", "auto-loop off"]}
+    return {"ok": True, "version": VERSION, "milestone": "Figma Design Lock + Functional OS", "ready": True, "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock", "baseline": "V15000 backend contracts + locked Figma-style frontend", "build_type": "Design Lock / Functional Integration", "kept": ["/run unchanged", "/test-report working", "Supabase schema unchanged", "OAuth inactive", "manual execution only", "auto-loop off"]}
+
+# =========================
+# V20010 TEST REPORT FIX
+# =========================
+
+V20010_BACKEND_BASE = "https://executive-engine-os.onrender.com"
+V20010_REPORT_TESTS = [{'title': 'health', 'route': '/health'}, {'title': 'v20010 status', 'route': '/v20010-status'}, {'title': 'test report fix status', 'route': '/test-report-fix-status'}, {'title': 'design lock status', 'route': '/design-lock-status'}, {'title': 'functional os status', 'route': '/functional-os-status'}, {'title': 'test-report-json', 'route': '/test-report-json'}, {'title': 'v20010 milestone', 'route': '/v20010-milestone'}]
+
+@app.get("/test-report-json")
+async def test_report_json_v20010():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Report Fix",
+        "backend_base": V20010_BACKEND_BASE,
+        "tests": [
+            {"title": item["title"], "route": item["route"], "url": V20010_BACKEND_BASE + item["route"]}
+            for item in V20010_REPORT_TESTS
+        ],
+        "note": "Open /test-report and click Run Report."
+    }
+
+@app.get("/test-report")
+async def test_report_v20010():
+    from starlette.responses import HTMLResponse
+    tests_json = json.dumps(V20010_REPORT_TESTS)
+    html = '<!doctype html>\n<html>\n<head>\n  <title>Executive Engine OS V20010 Test Report</title>\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <style>\n    body{margin:0;font-family:Arial,sans-serif;background:#f8fbff;color:#071226;padding:24px}\n    .wrap{max-width:1180px;margin:auto}\n    .hero,.card{background:#fff;border:1px solid #dbe5f1;border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(7,18,38,.08);margin-bottom:14px}\n    h1{margin:0 0 8px;font-size:28px} h2{margin:0 0 10px;font-size:17px}\n    p{color:#64748b;line-height:1.5}\n    button{border:1px solid #dbe5f1;border-radius:12px;background:#0f63ff;color:#fff;font-weight:900;padding:11px 14px;cursor:pointer;margin:4px 6px 4px 0}\n    button.secondary{background:#fff;color:#0f63ff}\n    .url{font-size:12px;color:#64748b;word-break:break-all;margin-bottom:8px}\n    pre{background:#071226;color:#dbeafe;border-radius:14px;padding:12px;white-space:pre-wrap;word-break:break-word;min-height:42px;max-height:260px;overflow:auto;font-size:12px;line-height:1.45}\n    textarea{width:100%;min-height:380px;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:12px;line-height:1.45}\n    .good{background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}\n    .fail{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}\n  </style>\n</head>\n<body>\n  <div class="wrap">\n    <div class="hero">\n      <h1>Executive Engine OS V20010 Test Report</h1>\n      <p>Test Report Fix. Click Run Report, then Copy All Results and paste into ChatGPT.</p>\n      <button onclick="runReport()">Run Report</button>\n      <button class="secondary" onclick="copyAll()">Copy All Results</button>\n      <button class="secondary" onclick="clearReport()">Clear</button>\n      <div id="status" class="good">Ready. Click Run Report.</div>\n    </div>\n    <div class="card">\n      <h2>Copy/Paste Report For ChatGPT</h2>\n      <textarea id="copyBox"></textarea>\n    </div>\n    <div id="cards"></div>\n  </div>\n<script>\nconst BACKEND_BASE = "__BACKEND_BASE__";\nconst TESTS = __TESTS_JSON__;\nfunction pretty(v){ try { return JSON.stringify(v,null,2); } catch(e){ return String(v); } }\nfunction escapeHtml(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }\nfunction setStatus(t, ok){ const el=document.getElementById("status"); el.className=ok===false?"fail":"good"; el.textContent=t; }\nasync function runOne(test){\n  const url = BACKEND_BASE + test.route;\n  try{\n    const res = await fetch(url,{method:"GET",cache:"no-store"});\n    const ct = res.headers.get("content-type") || "";\n    let data = ct.includes("application/json") ? await res.json() : await res.text();\n    return {title:test.title,url,status:res.status,ok:res.ok,output:data};\n  }catch(err){\n    return {title:test.title,url,status:"FETCH_ERROR",ok:false,output:err.message};\n  }\n}\nfunction buildCopyText(results){\n  let out=[];\n  out.push("Executive Engine OS V20010 Test Report");\n  out.push("Generated: " + new Date().toISOString());\n  for(const r of results){\n    out.push("\\\\n========================================");\n    out.push(r.title);\n    out.push(r.url);\n    out.push("status: " + r.status);\n    out.push("ok: " + r.ok);\n    out.push("----------------------------------------");\n    out.push(pretty(r.output));\n  }\n  return out.join("\\\\n");\n}\nfunction renderCards(results){\n  document.getElementById("cards").innerHTML = results.map(r =>\n    `<div class="card"><h2>${escapeHtml(r.title)}</h2><div class="url">${escapeHtml(r.url)} · status: ${r.status} · ok: ${r.ok}</div><pre>${escapeHtml(pretty(r.output))}</pre></div>`\n  ).join("");\n}\nasync function runReport(){\n  setStatus("Running tests...", true);\n  const results=[];\n  for(const test of TESTS){\n    setStatus("Running: " + test.title, true);\n    const result = await runOne(test);\n    results.push(result);\n    renderCards(results);\n    document.getElementById("copyBox").value = buildCopyText(results);\n  }\n  const failed = results.filter(r=>!r.ok).length;\n  setStatus(failed ? "Done with " + failed + " failed link(s). Copy All and paste into ChatGPT." : "All done. Copy All and paste into ChatGPT.", failed===0);\n}\nasync function copyAll(){\n  const text=document.getElementById("copyBox").value;\n  if(!text){ setStatus("Nothing to copy yet. Click Run Report first.", false); return; }\n  await navigator.clipboard.writeText(text);\n  setStatus("Copied. Paste it into ChatGPT.", true);\n}\nfunction clearReport(){\n  document.getElementById("copyBox").value="";\n  document.getElementById("cards").innerHTML="";\n  setStatus("Cleared. Click Run Report.", true);\n}\n</script>\n</body>\n</html>'.replace("__BACKEND_BASE__", V20010_BACKEND_BASE).replace("__TESTS_JSON__", tests_json)
+    return HTMLResponse(html)
+
+@app.get("/test-report-fix-status")
+async def test_report_fix_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Report Fix",
+        "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock",
+        "fixed": [
+            "Restored working /test-report route",
+            "Restored working /test-report-json route",
+            "Added /test-report-fix-status",
+            "Kept Figma design lock",
+            "No Supabase schema changes",
+            "No OAuth",
+            "Manual execution only"
+        ]
+    }
+
+@app.get("/v20010-status")
+async def v20010_status():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Report Fix",
+        "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock",
+        "decision": "Patch V20000 without changing design."
+    }
+
+@app.get("/v20010-milestone")
+async def v20010_milestone():
+    return {
+        "ok": True,
+        "version": VERSION,
+        "milestone": "Test Report Fix",
+        "ready": True,
+        "frontend_must_show": "V20010 Test Report Fix · Figma Design Lock",
+        "baseline": "V20000",
+        "build_type": "Backend Route Patch",
+        "added": ["/test-report restored", "/test-report-json restored", "/test-report-fix-status", "/v20010-status", "/v20010-milestone"],
+        "kept": ["Figma design lock", "/run unchanged", "Supabase schema unchanged", "OAuth inactive", "manual execution only", "auto-loop off"]
+    }
