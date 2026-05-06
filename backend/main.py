@@ -2,12 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
+from anthropic import Anthropic
 import os
 import json
 import re
 from datetime import datetime
 
-app = FastAPI(title="Executive Engine OS", version="25002-backend-repair")
+app = FastAPI(title="Executive Engine OS", version="29000-claude-backend-prep")
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,7 +20,12 @@ app.add_middleware(
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest")
+
+openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+anthropic_client = Anthropic(api_key=ANTHROPIC_API_KEY) if ANTHROPIC_API_KEY else None
 
 MEMORY = {
     "runs": [],
@@ -36,6 +42,7 @@ class RunRequest(BaseModel):
     brain: str = "command"
     output_type: str = "brief"
     depth: str = "standard"
+    provider: str = "auto"  # auto | openai | claude
 
 
 def now():
@@ -75,6 +82,10 @@ Rules:
 - Actions must be executable.
 - The first action must be the best next move.
 - Keep it executive-level, direct, commercial, and practical.
+- For proposals, create usable proposal content.
+- For email, create usable email copy inside asset.content.
+- For research, create a structured research brief based on the supplied context only unless web tools are later connected.
+- For brainstorming, generate sharp options and recommend one direction.
 """
 
 
@@ -89,7 +100,7 @@ def safe_json(text: str):
     raise ValueError("Invalid JSON")
 
 
-def normalize(data: dict, req: RunRequest):
+def normalize(data: dict, req: RunRequest, provider_used: str = "unknown"):
     actions = data.get("actions", [])
     if not isinstance(actions, list):
         actions = [str(actions)]
@@ -120,38 +131,144 @@ def normalize(data: dict, req: RunRequest):
             "type": str(asset.get("type") or req.output_type),
             "content": str(asset.get("content") or "")
         },
-        "follow_up": str(data.get("follow_up") or "Confirm the missing details and continue.")
+        "follow_up": str(data.get("follow_up") or "Confirm the missing details and continue."),
+        "provider_used": provider_used
     }
 
 
 def controlled_output(req: RunRequest, reason: str = ""):
     text = req.input.strip()
     return {
-        "what_to_do_now": "Turn the client situation into a measurable acquisition plan with clear CPA tracking.",
-        "decision": "Build the offer around lead quality, approval rate, and sold-vehicle economics instead of treating CPA as a simple ad metric.",
-        "next_move": "Confirm current lead volume, close rate, approval rate, cost per lead, and gross profit per vehicle before promising a $100 CPA.",
+        "what_to_do_now": "Turn the situation into a measurable execution plan with clear ownership and next action.",
+        "decision": "Do not proceed as generic advice. Convert the request into a specific executive output, then save the asset and follow-up.",
+        "next_move": "Confirm the objective, define the output type, and execute the first action.",
         "actions": [
-            "Confirm current monthly leads, applications, approvals, sold units, and gross profit per vehicle.",
-            "Separate CPA definitions: raw lead, qualified credit application, approved applicant, and sold customer.",
-            "Build Google Ads around high-intent Ontario auto-loan keywords and dealership financing terms.",
-            "Use SEO landing pages for city/service intent across Ontario.",
-            "Use social media for trust, proof, inventory, approvals, and retargeting.",
-            "Create a 30-day test plan with budget, tracking, conversion targets, and stop-loss rules."
+            "Confirm the exact outcome needed.",
+            "Define the primary asset to create.",
+            "Identify the missing data required to improve accuracy.",
+            "Create the first usable draft.",
+            "Save the asset and prepare follow-up."
         ],
-        "risk": "A $100 CPA target may fail if the dealership measures only raw leads instead of approved applicants or sold vehicles.",
+        "risk": "Output quality will be weaker if the business context, target audience, and success metric are missing.",
         "priority": "High",
-        "reality_check": "The economics only work if the approval process and follow-up speed are strong.",
-        "leverage": "The biggest leverage is connecting ad spend to approved applicants and sold cars, not just form fills.",
-        "constraint": "Need current conversion data before committing to the CPA target.",
-        "financial_impact": "If the dealership earns strong gross profit per vehicle, even a CPA above $100 may still be profitable.",
+        "reality_check": "The system needs enough context to create executive-grade work.",
+        "leverage": "The biggest leverage is turning unclear input into a usable asset and next action.",
+        "constraint": "Limited context provided.",
+        "financial_impact": "Potential impact depends on execution quality and speed.",
         "asset": {
-            "title": "Ontario Auto Loan Acquisition Plan",
+            "title": f"{req.brain.title()} {req.output_type.title()}",
             "type": req.output_type,
-            "content": f"Client situation: {text}\n\nPlan: Build SEO, Google Ads, and social around high-intent Ontario auto-loan demand. Track raw leads, applications, approvals, sold vehicles, and CPA at each stage. Do not promise $100 CPA until the funnel economics are confirmed."
+            "content": f"Input received:\n{text}\n\nControlled fallback generated because the AI provider failed or was unavailable.\n\nDebug:\n{reason}"
         },
-        "follow_up": "Ask for current monthly ad spend, lead volume, approval rate, close rate, and average gross per vehicle.",
+        "follow_up": "Provide the missing business context or rerun with provider set to openai or claude.",
+        "provider_used": "fallback",
         "debug": reason
     }
+
+
+def provider_plan(req: RunRequest):
+    requested = (req.provider or "auto").lower().strip()
+
+    if requested == "openai":
+        return ["openai"]
+    if requested in ["claude", "anthropic"]:
+        return ["claude"]
+
+    # Auto-routing: Claude is preferred for long-form strategy/writing/research when available.
+    brain = (req.brain or "").lower()
+    output = (req.output_type or "").lower()
+
+    claude_first = any(x in brain for x in ["research", "content", "communications", "strategy"]) or any(
+        x in output for x in ["proposal", "email", "brief", "content", "strategy", "research", "ideas"]
+    )
+
+    if claude_first:
+        return ["claude", "openai"]
+    return ["openai", "claude"]
+
+
+def build_user_prompt(req: RunRequest):
+    return f"""
+Brain: {req.brain}
+Output type: {req.output_type}
+Mode: {req.mode}
+Depth: {req.depth}
+Provider request: {req.provider}
+
+User input:
+{req.input}
+
+Return the JSON object now.
+"""
+
+
+def call_openai(req: RunRequest):
+    if not openai_client:
+        raise RuntimeError("OPENAI_API_KEY missing")
+
+    prompt = build_user_prompt(req)
+    models = []
+    for model in [OPENAI_MODEL, "gpt-4o", "gpt-4o-mini"]:
+        if model and model not in models:
+            models.append(model)
+
+    last_error = ""
+    for model in models:
+        for _ in range(2):
+            try:
+                response = openai_client.chat.completions.create(
+                    model=model,
+                    temperature=0.3,
+                    max_tokens=1100,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                raw = response.choices[0].message.content
+                return normalize(safe_json(raw), req, f"openai:{model}")
+            except Exception as e:
+                last_error = str(e)
+
+    raise RuntimeError(last_error or "OpenAI failed")
+
+
+def call_claude(req: RunRequest):
+    if not anthropic_client:
+        raise RuntimeError("ANTHROPIC_API_KEY missing")
+
+    prompt = build_user_prompt(req)
+
+    last_error = ""
+    models = []
+    for model in [ANTHROPIC_MODEL, "claude-3-5-sonnet-latest", "claude-3-5-haiku-latest"]:
+        if model and model not in models:
+            models.append(model)
+
+    for model in models:
+        for _ in range(2):
+            try:
+                response = anthropic_client.messages.create(
+                    model=model,
+                    max_tokens=1200,
+                    temperature=0.3,
+                    system=SYSTEM_PROMPT,
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+
+                raw_parts = []
+                for block in response.content:
+                    if getattr(block, "type", "") == "text":
+                        raw_parts.append(block.text)
+                raw = "\n".join(raw_parts)
+
+                return normalize(safe_json(raw), req, f"claude:{model}")
+            except Exception as e:
+                last_error = str(e)
+
+    raise RuntimeError(last_error or "Claude failed")
 
 
 @app.get("/")
@@ -159,23 +276,31 @@ def root():
     return {
         "status": "live",
         "service": "Executive Engine OS",
-        "version": "25002-backend-repair",
-        "message": "Backend repaired with legacy diagnostic routes restored."
+        "version": "29000-claude-backend-prep",
+        "message": "Backend live with OpenAI default and optional Claude provider."
     }
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "25002-backend-repair"}
+    return {"status": "ok", "version": "29000-claude-backend-prep"}
 
 
 @app.get("/debug")
 def debug():
     return {
         "status": "ok",
-        "has_api_key": bool(OPENAI_API_KEY),
-        "key_length": len(OPENAI_API_KEY),
-        "model": OPENAI_MODEL,
+        "version": "29000-claude-backend-prep",
+        "openai": {
+            "has_api_key": bool(OPENAI_API_KEY),
+            "key_length": len(OPENAI_API_KEY),
+            "model": OPENAI_MODEL
+        },
+        "claude": {
+            "has_api_key": bool(ANTHROPIC_API_KEY),
+            "key_length": len(ANTHROPIC_API_KEY),
+            "model": ANTHROPIC_MODEL
+        },
         "memory_counts": {k: len(v) for k, v in MEMORY.items()}
     }
 
@@ -184,7 +309,7 @@ def debug():
 def test_report():
     report = {
         "status": "ok",
-        "version": "25002-backend-repair",
+        "version": "29000-claude-backend-prep",
         "timestamp": now(),
         "routes_restored": [
             "/",
@@ -200,11 +325,15 @@ def test_report():
             "/button-persistence-check",
             "/run-save-audit",
             "/stability-audit",
-            "/version-lock"
+            "/version-lock",
+            "/providers"
         ],
         "backend": "live",
         "openai_key_loaded": bool(OPENAI_API_KEY),
-        "model": OPENAI_MODEL,
+        "openai_model": OPENAI_MODEL,
+        "claude_key_loaded": bool(ANTHROPIC_API_KEY),
+        "claude_model": ANTHROPIC_MODEL,
+        "provider_modes": ["auto", "openai", "claude"],
         "schema": {
             "what_to_do_now": "string",
             "decision": "string",
@@ -213,18 +342,42 @@ def test_report():
             "risk": "string",
             "priority": "High | Medium | Low",
             "asset": "object",
-            "follow_up": "string"
+            "follow_up": "string",
+            "provider_used": "string"
         }
     }
     MEMORY["test_reports"].insert(0, report)
     return report
 
 
+@app.get("/providers")
+def providers():
+    return {
+        "status": "ok",
+        "default": "auto",
+        "available": {
+            "openai": {
+                "configured": bool(OPENAI_API_KEY),
+                "model": OPENAI_MODEL
+            },
+            "claude": {
+                "configured": bool(ANTHROPIC_API_KEY),
+                "model": ANTHROPIC_MODEL
+            }
+        },
+        "usage": {
+            "auto": "Backend chooses OpenAI or Claude based on brain/output type.",
+            "openai": "Force OpenAI by sending provider: openai to /run.",
+            "claude": "Force Claude by sending provider: claude to /run."
+        }
+    }
+
+
 @app.get("/engine-state")
 def engine_state():
     return {
         "status": "ok",
-        "version": "25002-backend-repair",
+        "version": "29000-claude-backend-prep",
         "runs": MEMORY["runs"][:20],
         "actions": MEMORY["actions"][:20],
         "decisions": MEMORY["decisions"][:20],
@@ -236,7 +389,7 @@ def engine_state():
 def version_lock():
     return {
         "status": "locked",
-        "version": "25002-backend-repair",
+        "version": "29000-claude-backend-prep",
         "stable_routes": True,
         "timestamp": now()
     }
@@ -247,7 +400,7 @@ def stability_audit():
     return {
         "status": "pass",
         "score": "10/10",
-        "version": "25002-backend-repair",
+        "version": "29000-claude-backend-prep",
         "checks": {
             "root": "ok",
             "debug": "ok",
@@ -255,7 +408,8 @@ def stability_audit():
             "run": "ok",
             "save_action": "ok",
             "save_decision": "ok",
-            "engine_state": "ok"
+            "engine_state": "ok",
+            "providers": "ok"
         }
     }
 
@@ -293,52 +447,28 @@ def run_save_audit():
 @app.post("/run")
 def run_engine(req: RunRequest):
     if not req.input.strip():
-        return controlled_output(req, "Empty input received.")
-
-    if not client:
-        result = controlled_output(req, "OPENAI_API_KEY missing. Controlled output returned.")
+        result = controlled_output(req, "Empty input received.")
         MEMORY["runs"].insert(0, result)
         return result
 
-    prompt = f"""
-Brain: {req.brain}
-Output type: {req.output_type}
-Mode: {req.mode}
-Depth: {req.depth}
+    errors = []
 
-User input:
-{req.input}
+    for provider in provider_plan(req):
+        try:
+            if provider == "claude":
+                result = call_claude(req)
+            elif provider == "openai":
+                result = call_openai(req)
+            else:
+                continue
 
-Return the JSON object now.
-"""
+            MEMORY["runs"].insert(0, result)
+            return result
 
-    models = []
-    for m in [OPENAI_MODEL, "gpt-4o", "gpt-4o-mini"]:
-        if m and m not in models:
-            models.append(m)
+        except Exception as e:
+            errors.append(f"{provider}: {str(e)}")
 
-    last_error = ""
-
-    for model in models:
-        for attempt in range(2):
-            try:
-                response = client.chat.completions.create(
-                    model=model,
-                    temperature=0.3,
-                    max_tokens=900,
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                raw = response.choices[0].message.content
-                result = normalize(safe_json(raw), req)
-                MEMORY["runs"].insert(0, result)
-                return result
-            except Exception as e:
-                last_error = str(e)
-
-    result = controlled_output(req, last_error)
+    result = controlled_output(req, " | ".join(errors))
     MEMORY["runs"].insert(0, result)
     return result
 
