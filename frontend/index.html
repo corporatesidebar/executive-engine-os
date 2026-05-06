@@ -3,114 +3,89 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Executive Engine OS · V27010</title>
+<title>Executive Engine OS · V27020</title>
 <style>
 :root{
-  --nav:#0b1628;--nav2:#111f35;--ink:#0a1020;--muted:#5f6f87;--line:#dfe7f2;
+  --nav:#0b1628;--nav2:#111f35;--ink:#081120;--muted:#62708a;--line:#dfe7f2;
   --bg:#f7f9fc;--card:#fff;--blue:#2563ff;--green:#059669;--orange:#f04405;
-  --purple:#9333ea;--shadow:0 18px 45px rgba(15,23,42,.10);
+  --purple:#9333ea;--red:#d92d20;--shadow:0 18px 45px rgba(15,23,42,.10);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
-button,input,textarea{font:inherit}
-button{cursor:pointer}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
+button,input,textarea{font:inherit}button{cursor:pointer}
 .app{display:grid;grid-template-columns:250px minmax(780px,1fr) 355px;grid-template-rows:64px 1fr;min-height:100vh}
 
 /* TOP */
 .top{grid-column:1/4;grid-row:1;background:#101c30;color:#fff;display:flex;align-items:center;gap:16px;padding:0 28px;box-shadow:0 18px 42px rgba(15,23,42,.25);z-index:20}
-.brand{display:flex;align-items:center;gap:13px;width:250px}
-.logo{width:42px;height:42px;border-radius:14px;background:var(--blue);display:grid;place-items:center;font-weight:950}
+.brand{display:flex;align-items:center;gap:13px;width:250px}.logo{width:42px;height:42px;border-radius:14px;background:var(--blue);display:grid;place-items:center;font-weight:950}
 .brand b{font-size:17px}.brand span{display:block;font-size:11px;color:#9fb1ca;margin-top:2px}
 .newBtn{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:12px 20px;font-weight:950}
 .search{margin-left:auto;width:430px;height:44px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:#17263d;color:#fff;padding:0 16px;outline:none}
-.search::placeholder{color:#7f91aa}
-.pill{display:flex;align-items:center;gap:8px;border:1px solid rgba(16,185,129,.35);background:#073d37;color:#4ade80;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:950}
-.pill.dark{background:#17263d;color:#dce8fb;border-color:rgba(255,255,255,.12)}
-.dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+.search::placeholder{color:#7f91aa}.pill{display:flex;align-items:center;gap:8px;border:1px solid rgba(16,185,129,.35);background:#073d37;color:#4ade80;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:950}
+.pill.dark{background:#17263d;color:#dce8fb;border-color:rgba(255,255,255,.12)}.dot{width:8px;height:8px;border-radius:50%;background:#10b981}
 
 /* SIDEBAR */
 .side{grid-column:1;grid-row:2;background:#0b1628;color:#dbe7f7;padding:22px 14px;overflow:auto}
 .group{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#8da0bc;margin:22px 12px 10px;font-weight:950}
 .nav{width:100%;border:0;background:transparent;color:#cddaf0;padding:12px 13px;border-radius:12px;text-align:left;font-weight:780;margin:4px 0;display:flex;justify-content:space-between;align-items:center}
-.nav:hover,.nav.active{background:#1a2a43;color:#fff}
-.nav .left{display:flex;gap:10px;align-items:center}
-.ico{opacity:.78;width:18px}.mini{font-size:10px;border-radius:999px;background:#ea580c;color:#fff;padding:4px 7px;font-weight:950}
+.nav:hover,.nav.active{background:#1a2a43;color:#fff}.nav .left{display:flex;gap:10px;align-items:center}.ico{opacity:.78;width:18px}.mini{font-size:10px;border-radius:999px;background:#ea580c;color:#fff;padding:4px 7px;font-weight:950}
+.sideHelp{margin:22px 6px 0;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;font-size:12px;line-height:1.45;color:#b9c7db}
+.sideHelp b{color:#fff}
 
 /* MAIN */
 .main{grid-column:2;grid-row:2;padding:36px 42px;overflow:auto;background:#fff}
 .right{grid-column:3;grid-row:2;background:#111f35;color:#fff;padding:32px 28px;overflow:auto}
-.page{display:none}.page.active{display:block}
-.hero h1{font-size:48px;line-height:1.02;letter-spacing:-.075em;margin:0 0 10px}
-.hero p{font-size:19px;color:#4b5f79;margin:0 0 26px}.hero strong{color:var(--blue)}
+.view{display:none}.view.active{display:block}
+.hero h1{font-size:48px;line-height:1.02;letter-spacing:-.075em;margin:0 0 10px}.hero p{font-size:19px;color:#4b5f79;margin:0 0 26px}.hero strong{color:var(--blue)}
 .card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 26px rgba(15,23,42,.06);padding:20px;margin-bottom:22px}
-.label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:950}
-.cardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.cardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:950}
 .card h2{font-size:26px;letter-spacing:-.045em;margin:4px 0}.card p{color:#5e708a;margin:0}
 
-/* DASHBOARD AESTHETIC */
+/* DASHBOARD */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:20px 0 34px}
 .stat{border-radius:16px;color:#fff;padding:22px 24px;min-height:150px;box-shadow:var(--shadow)}
-.stat small{text-transform:uppercase;letter-spacing:.08em;font-weight:950;font-size:13px}
-.stat b{display:block;font-size:44px;margin:18px 0 4px;line-height:1}
-.stat span{font-size:15px}
+.stat small{text-transform:uppercase;letter-spacing:.08em;font-weight:950;font-size:13px}.stat b{display:block;font-size:44px;margin:18px 0 4px;line-height:1}.stat span{font-size:15px}
 .blue{background:#2563ff}.green{background:#059669}.orange{background:#e73800}.purple{background:#9700e6}
-.feed{display:grid;gap:14px}
-.item{border:1px solid var(--line);border-radius:15px;background:#fff;padding:18px 18px;display:grid;grid-template-columns:54px 1fr auto;gap:16px;align-items:center;cursor:pointer;transition:.16s}
-.item:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08);border-color:#c5d6ee}
-.num{width:54px;height:54px;border-radius:13px;background:#0b1628;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:950;box-shadow:0 12px 22px rgba(15,23,42,.18)}
+.feed{display:grid;gap:14px}.item{border:1px solid var(--line);border-radius:15px;background:#fff;padding:18px;display:grid;grid-template-columns:54px 1fr auto;gap:16px;align-items:center;cursor:pointer;transition:.16s}
+.item:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08);border-color:#c5d6ee}.num{width:54px;height:54px;border-radius:13px;background:#0b1628;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:950;box-shadow:0 12px 22px rgba(15,23,42,.18)}
 .item b{display:block;font-size:17px;margin-bottom:5px}.item span{color:#53657e;font-size:14px}
-.chip{border-radius:999px;padding:9px 14px;background:#eaf1ff;color:#155eef;font-size:12px;font-weight:950}
-.chip.green{background:#dffbea;color:#047857}.chip.orange{background:#fff0e6;color:#c2410c}.chip.purple{background:#f2e6ff;color:#7e22ce}
+.chip{border-radius:999px;padding:9px 14px;background:#eaf1ff;color:#155eef;font-size:12px;font-weight:950}.chip.green{background:#dffbea;color:#047857}.chip.orange{background:#fff0e6;color:#c2410c}.chip.purple{background:#f2e6ff;color:#7e22ce}
 
-/* SPECIAL PAGES */
-.splitPage{display:grid;grid-template-columns:minmax(420px,1fr) 320px;gap:34px}
-.feature{border-radius:22px;color:#fff;padding:30px;box-shadow:var(--shadow);margin:22px 0 28px}
-.feature h2{font-size:30px;margin:14px 0 8px;letter-spacing:-.05em}
-.feature p{color:rgba(255,255,255,.92);font-size:17px;line-height:1.5}
-.feature .row{margin-top:22px}
-.panelStack{display:grid;gap:12px}
-.metric{border:1px solid var(--line);border-radius:14px;background:#f8fbff;padding:18px}.metric b{display:block;font-size:32px;color:var(--blue)}.metric span{font-size:14px;color:#55657a}
-.assistant{background:#111f35;color:#fff;border-radius:22px;padding:24px;margin-top:26px;box-shadow:var(--shadow)}
-.assistant label{display:block;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;font-size:12px;margin-bottom:14px}
-.assistant input{width:100%;height:54px;border:1px solid #31435f;border-radius:13px;background:#17263d;color:#fff;padding:0 14px;outline:none}
-.assistant .btn{margin-top:14px}
-
-/* COMMAND / OUTPUT */
+/* FLOW / COMMAND */
+.mission{border:2px solid #bfd0ee;background:linear-gradient(180deg,#fff,#f8fbff);position:relative;overflow:hidden}.mission:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--blue),#06b6d4,var(--green),var(--orange))}
+.missionGrid{display:grid;grid-template-columns:1fr 245px;gap:18px;align-items:center}.missionTitle{font-size:34px;letter-spacing:-.065em;line-height:1.08;margin:0 0 10px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:17px 0 0}.flowStep{border:1px solid var(--line);border-radius:15px;background:#fff;padding:13px}
+.flowStep small{display:block;text-transform:uppercase;letter-spacing:.12em;color:#667085;font-size:10px;font-weight:950}.flowStep b{display:block;margin-top:6px;font-size:14px}.flowStep.active{border-color:#b8ccff;background:#eef4ff}.flowStep.done{border-color:#b7efcf;background:#ecfdf3}
 textarea{width:100%;min-height:138px;border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:16px;outline:none;resize:vertical;line-height:1.5;font-size:16px}
 textarea:focus{border-color:#a8c2ff;box-shadow:0 0 0 4px rgba(37,99,255,.08)}
-.btn{border:0;border-radius:13px;background:var(--blue);color:#fff;font-weight:950;padding:13px 18px}
-.btn.dark{background:#0b1628}.btn.light{background:#eef4ff;color:#155eef}.btn.green{background:var(--green)}.btn.orange{background:var(--orange)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:850}
-.output{display:none}.output.show{display:block}
-.now{background:#0b1628;color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}.now small{display:block;color:#93c5fd;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}.now b{font-size:23px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.obox{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.obox h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a;margin:0 0 8px}.obox p{margin:0;line-height:1.5}
-.obox.blueLine{border-left:5px solid var(--blue)}.obox.greenLine{border-left:5px solid var(--green)}.obox.orangeLine{border-left:5px solid var(--orange)}
-.action{display:flex;gap:10px;border:1px solid var(--line);background:#f8fbff;border-radius:12px;padding:10px;margin:7px 0}.action i{font-style:normal;background:#0b1628;color:#fff;border-radius:8px;width:24px;height:24px;display:grid;place-items:center;font-size:12px}
+.btn{border:0;border-radius:13px;background:var(--blue);color:#fff;font-weight:950;padding:13px 18px}.btn.dark{background:#0b1628}.btn.light{background:#eef4ff;color:#155eef}.btn.green{background:var(--green)}.btn.orange{background:var(--orange)}
+.btn:disabled{opacity:.55;cursor:not-allowed}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:850}
+.output{display:none}.output.show{display:block}.now{background:#0b1628;color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}.now small{display:block;color:#93c5fd;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}.now b{font-size:23px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.obox{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.obox h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a;margin:0 0 8px}.obox p{margin:0;line-height:1.5}
+.obox.blueLine{border-left:5px solid var(--blue)}.obox.greenLine{border-left:5px solid var(--green)}.obox.orangeLine{border-left:5px solid var(--orange)}.action{display:flex;gap:10px;border:1px solid var(--line);background:#f8fbff;border-radius:12px;padding:10px;margin:7px 0}.action i{font-style:normal;background:#0b1628;color:#fff;border-radius:8px;width:24px;height:24px;display:grid;place-items:center;font-size:12px}
 
-/* RIGHT DARK PANEL */
-.rpanel{border-bottom:1px solid rgba(255,255,255,.13);padding:0 0 26px;margin-bottom:26px}
-.rpanel h3{font-size:22px;letter-spacing:-.04em;margin:0 0 16px;color:#fff}
-.rline{border:1px solid #344761;background:#192a43;border-radius:13px;padding:16px;margin:12px 0;cursor:pointer}
-.rline.green{background:#083f35;border-color:#0e8f69}.rline.orange{background:#3f2519;border-color:#f97316}
-.rline b{display:block;font-size:15px;color:#fff}.rline span{display:block;color:#c7d3e5;font-size:13px;margin-top:6px}
-.statusBox{background:#083f35;border:1px solid #0e8f69;border-radius:17px;padding:22px;color:#d9fff0}.statusBox b{display:block;color:#fff;margin-bottom:8px}
-.toast{position:fixed;right:24px;bottom:24px;background:#0b1628;color:#fff;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
+/* MODULE PAGES */
+.splitPage{display:grid;grid-template-columns:minmax(420px,1fr) 320px;gap:34px}.feature{border-radius:22px;color:#fff;padding:30px;box-shadow:var(--shadow);margin:22px 0 28px}
+.feature h2{font-size:30px;margin:14px 0 8px;letter-spacing:-.05em}.feature p{color:rgba(255,255,255,.92);font-size:17px;line-height:1.5}.feature .row{margin-top:22px}.panelStack{display:grid;gap:12px}
+.metric{border:1px solid var(--line);border-radius:14px;background:#f8fbff;padding:18px}.metric b{display:block;font-size:32px;color:var(--blue)}.metric span{font-size:14px;color:#55657a}
+.assistant{background:#111f35;color:#fff;border-radius:22px;padding:24px;margin-top:26px;box-shadow:var(--shadow)}.assistant label{display:block;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;font-size:12px;margin-bottom:14px}.assistant input{width:100%;height:54px;border:1px solid #31435f;border-radius:13px;background:#17263d;color:#fff;padding:0 14px;outline:none}.assistant .btn{margin-top:14px}
+
+/* RIGHT DARK */
+.rpanel{border-bottom:1px solid rgba(255,255,255,.13);padding:0 0 26px;margin-bottom:26px}.rpanel h3{font-size:22px;letter-spacing:-.04em;margin:0 0 16px;color:#fff}
+.rline{border:1px solid #344761;background:#192a43;border-radius:13px;padding:16px;margin:12px 0;cursor:pointer}.rline.green{background:#083f35;border-color:#0e8f69}.rline.orange{background:#3f2519;border-color:#f97316}.rline b{display:block;font-size:15px;color:#fff}.rline span{display:block;color:#c7d3e5;font-size:13px;margin-top:6px}
+.statusBox{background:#083f35;border:1px solid #0e8f69;border-radius:17px;padding:22px;color:#d9fff0}.statusBox b{display:block;color:#fff;margin-bottom:8px}.toast{position:fixed;right:24px;bottom:24px;background:#0b1628;color:#fff;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
 pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14px;padding:14px;margin-top:12px;max-height:420px;overflow:auto}
 
-@media(max-width:1250px){.app{grid-template-columns:220px 1fr}.right{display:none}.stats,.grid2,.grid3,.splitPage{grid-template-columns:1fr}.search{width:260px}}
+@media(max-width:1250px){.app{grid-template-columns:220px 1fr}.right{display:none}.stats,.grid2,.grid3,.splitPage,.missionGrid,.flow{grid-template-columns:1fr}.search{width:260px}}
 @media(max-width:850px){.app{grid-template-columns:1fr}.side{display:none}.top{grid-column:1}.main{grid-column:1;padding:18px}.search{display:none}.hero h1{font-size:34px}.brand{width:auto}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27010 Figma Repair</span></div></div>
-  <button class="newBtn" onclick="openCommand()">+ New</button>
+  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27020 Flow Repair</span></div></div>
+  <button class="newBtn" id="newBtn">+ New</button>
   <input class="search" id="search" placeholder="Search / command…">
   <span class="pill"><span class="dot"></span>Live</span>
   <span class="pill dark">V25002 Backend</span>
@@ -118,22 +93,21 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
 
 <aside class="side">
   <div class="group">Command</div>
-  <button class="nav active" data-page="dashboard"><span class="left"><span class="ico">▦</span>Dashboard</span><span class="mini">Live</span></button>
-  <button class="nav" data-page="meetings"><span class="left"><span class="ico">☷</span>Meetings</span></button>
-  <button class="nav" data-page="revenue"><span class="left"><span class="ico">$</span>Revenue</span></button>
-  <button class="nav" data-page="people"><span class="left"><span class="ico">♙</span>People</span></button>
-  <button class="nav" data-page="risks"><span class="left"><span class="ico">△</span>Risks</span></button>
+  <button class="nav active" data-view="dashboard"><span class="left"><span class="ico">▦</span>Dashboard</span><span class="mini">Live</span></button>
+  <button class="nav" data-view="flow"><span class="left"><span class="ico">▶</span>Guided Flow</span></button>
+  <button class="nav" data-view="meetings"><span class="left"><span class="ico">☷</span>Meetings</span></button>
+  <button class="nav" data-view="revenue"><span class="left"><span class="ico">$</span>Revenue</span></button>
+  <button class="nav" data-view="people"><span class="left"><span class="ico">♙</span>People</span></button>
+  <button class="nav" data-view="risks"><span class="left"><span class="ico">△</span>Risks</span></button>
   <div class="group">Resources</div>
-  <button class="nav" data-page="assets"><span class="left"><span class="ico">▤</span>Assets</span></button>
-  <button class="nav" data-page="admin"><span class="left"><span class="ico">⚙</span>Admin / Tests</span></button>
+  <button class="nav" data-view="assets"><span class="left"><span class="ico">▤</span>Assets</span></button>
+  <button class="nav" data-view="admin"><span class="left"><span class="ico">⚙</span>Admin / Tests</span></button>
+  <div class="sideHelp"><b>Flow rule</b><br>Look and feel stays premium. Layout can change to make the user journey smoother.</div>
 </aside>
 
 <main class="main">
-  <section id="page-dashboard" class="page active">
-    <div class="hero">
-      <h1>Good morning Will — you're covered.</h1>
-      <p>Everything you need. One dashboard. Get it done in <strong>1 hour</strong> instead of 5.</p>
-    </div>
+  <section id="view-dashboard" class="view active">
+    <div class="hero"><h1>Good morning Will — you're covered.</h1><p>Everything you need. One dashboard. Get it done in <strong>1 hour</strong> instead of 5.</p></div>
     <div class="stats">
       <div class="stat blue"><small>Ready Now</small><b id="readyCount">12</b><span>Active items today</span></div>
       <div class="stat green"><small>Revenue</small><b>$2.4M</b><span>MRR +12% this month</span></div>
@@ -141,36 +115,35 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
       <div class="stat purple"><small>Tomorrow</small><b>5</b><span>Prepared for you</span></div>
     </div>
     <div class="card">
-      <div class="cardHead">
-        <div><h2>Today's Command Center</h2><p>12 actions ready. Click any item to execute.</p></div>
-        <button class="btn" onclick="openCommand()">Add Action →</button>
-      </div>
+      <div class="cardHead"><div><h2>Today's Command Center</h2><p>Click any item. The system loads context and opens Guided Flow.</p></div><button class="btn" onclick="openFlow()">Add Action →</button></div>
       <div class="feed" id="feed"></div>
     </div>
-    <div class="card output" id="output"></div>
+    <div class="card output" id="dashboardOutput"></div>
   </section>
 
-  <section id="page-command" class="page">
-    <div class="hero"><h1 id="commandTitle">Command Center</h1><p id="commandSub">Tell the engine what needs to happen. It will route the work.</p></div>
-    <div class="card">
-      <div class="cardHead"><div><div class="label">AI Assistant</div><h2 id="commandQuestion">What do you need?</h2></div><button class="btn dark" id="runBtn">Generate</button></div>
-      <textarea id="input" placeholder="Example: Build proposal for the Ontario auto-loan dealership with SEO, social, Google Ads, and CPA under $100."></textarea>
-      <div class="quick">
-        <button onclick="quick('Build proposal for Ontario auto loan dealership.')">Build proposal</button>
-        <button onclick="quick('Create follow-up email.')">Follow-up</button>
-        <button onclick="quick('Validate CPA risk.')">Risk check</button>
-        <button onclick="quick('Prepare meeting brief.')">Meeting brief</button>
+  <section id="view-flow" class="view">
+    <div class="hero"><h1>Guided Flow</h1><p>Start with context. Generate the output. Save the asset. Create the follow-up.</p></div>
+    <div class="card mission">
+      <div class="missionGrid">
+        <div><div class="label">Recommended Mission</div><h2 class="missionTitle">Build the Ontario auto-loan growth proposal.</h2><p>SEO, social, Google Ads, CPA target under $100.</p></div>
+        <button class="btn dark" style="height:60px" onclick="startMission()">Start This →</button>
       </div>
+      <div class="flow"><div class="flowStep active" id="f1"><small>1</small><b>Load Context</b></div><div class="flowStep" id="f2"><small>2</small><b>Generate</b></div><div class="flowStep" id="f3"><small>3</small><b>Review</b></div><div class="flowStep" id="f4"><small>4</small><b>Save</b></div><div class="flowStep" id="f5"><small>5</small><b>Follow Up</b></div></div>
     </div>
-    <div class="card output" id="commandOutput"></div>
+    <div class="card">
+      <div class="cardHead"><div><div class="label">AI Assistant</div><h2 id="commandQuestion">What needs to happen?</h2></div><button class="btn dark" id="runBtn">Generate</button></div>
+      <textarea id="input" placeholder="Example: Build proposal for the Ontario auto-loan dealership with SEO, social, Google Ads, and CPA under $100."></textarea>
+      <div class="quick"><button onclick="quick('Build proposal.')">Build proposal</button><button onclick="quick('Create follow-up email.')">Follow-up</button><button onclick="quick('Validate CPA risk.')">Risk check</button><button onclick="quick('Prepare meeting brief.')">Meeting brief</button></div>
+    </div>
+    <div class="card output" id="flowOutput"></div>
   </section>
 
-  <section id="page-meetings" class="page"></section>
-  <section id="page-revenue" class="page"></section>
-  <section id="page-people" class="page"></section>
-  <section id="page-risks" class="page"></section>
-  <section id="page-assets" class="page"></section>
-  <section id="page-admin" class="page"></section>
+  <section id="view-meetings" class="view"></section>
+  <section id="view-revenue" class="view"></section>
+  <section id="view-people" class="view"></section>
+  <section id="view-risks" class="view"></section>
+  <section id="view-assets" class="view"></section>
+  <section id="view-admin" class="view"></section>
 </main>
 
 <aside class="right">
@@ -186,9 +159,8 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
 const API_DEFAULT="https://executive-engine-os.onrender.com";
 let API=localStorage.getItem("ee_api")||API_DEFAULT;
 let latest=null, context=null, activeBrain="command";
+const mission={brain:"revenue",title:"Ontario Auto Loan Growth Proposal",sub:"Ontario dealership · SEO + Social + Google Ads · CPA ≤ $100",input:"Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal."};
 let state=load();
-
-const mission={brain:"revenue",title:"ABC HVAC Close Package",sub:"ABC HVAC - $50K Proposal",input:"Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal."};
 
 function starter(){return{assets:[],decisions:[],actions:[],risks:["Budget concern - ABC HVAC needs CEO call"],items:[
  {brain:"people",title:"People Command Center",sub:"Sales Team - Offer Alignment",input:"Create people alignment plan for the sales team."},
@@ -198,22 +170,24 @@ function starter(){return{assets:[],decisions:[],actions:[],risks:["Budget conce
  {brain:"meetings",title:"Meetings Command Center",sub:"ABC HVAC - SEO + Ads Proposal",input:"Prepare meeting brief for ABC HVAC SEO and ads proposal."},
  {brain:"risks",title:"Risk Command Center",sub:"ABC HVAC - Budget Concern",input:"Assess risk and mitigation for ABC HVAC budget concern."}
 ]}}
-function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27010"))||starter()}catch(e){return starter()}}
-function save(){localStorage.setItem("ee_state_v27010",JSON.stringify(state));render()}
+function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27020"))||starter()}catch(e){return starter()}}
+function save(){localStorage.setItem("ee_state_v27020",JSON.stringify(state));render()}
 function esc(s){return String(s??"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}
 function toast(m){let t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
-function show(p){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById("page-"+p).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));let el=document.querySelector(`.nav[data-page="${p}"]`);if(el)el.classList.add("active")}
-function openCommand(prefill="",brain="command"){activeBrain=brain;context=prefill?{input:prefill,brain}:null;show("command");commandTitle.textContent=brain==="command"?"Command Center":brain.charAt(0).toUpperCase()+brain.slice(1)+" Assistant";commandSub.textContent="Generate the next asset, decision, action, or follow-up.";input.value=prefill;input.focus()}
+function show(name){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById("view-"+name).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));let nav=document.querySelector(`.nav[data-view="${name}"]`);if(nav)nav.classList.add("active")}
+function setFlow(n){for(let i=1;i<=5;i++){let el=document.getElementById("f"+i); if(!el)continue; el.className="flowStep"; if(i<n)el.classList.add("done"); if(i===n)el.classList.add("active")}}
+function openFlow(prefill="",brain="command"){activeBrain=brain;context=prefill?{input:prefill,brain}:null;show("flow");input.value=prefill;input.focus();setFlow(prefill?2:1)}
+function startMission(){context=mission;activeBrain="revenue";input.value=mission.input;show("flow");input.focus();setFlow(2);toast("Mission context loaded")}
 function quick(t){input.value=t;input.focus()}
 function autoRoute(t){t=t.toLowerCase();if(/proposal|revenue|seo|ads|cpa|sales|lead|auto loan|dealership|hvac/.test(t))return"revenue";if(/email|follow/.test(t))return"communications";if(/risk|budget|concern/.test(t))return"risks";if(/meeting|agenda|prep/.test(t))return"meetings";if(/people|team|hire/.test(t))return"people";return activeBrain||"command"}
 async function run(){
  let txt=input.value.trim();if(!txt)return toast("Add input first");
  let brain=context?.brain||autoRoute(txt);let finalInput=context&&txt.length<90?context.input+"\\n\\nUser command: "+txt:txt;
- runBtn.disabled=true;runBtn.textContent="Generating…";commandOutput.classList.add("show");commandOutput.innerHTML=`<div class="now"><small>Generating</small><b>Routing to ${esc(brain)} and building output…</b></div>`;
+ runBtn.disabled=true;runBtn.textContent="Generating…";flowOutput.classList.add("show");flowOutput.innerHTML=`<div class="now"><small>Generating</small><b>Routing to ${esc(brain)} and building output…</b></div>`;setFlow(2);
  try{
   let res=await fetch(API+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:finalInput,brain,output_type:"proposal",mode:"guided",depth:"standard"})});
-  let d=await res.json();latest=d;renderOutput(commandOutput,d);state.actions.unshift(d.actions?.[0]||d.next_move);state.decisions.unshift(d);if(d.asset?.content)state.assets.unshift(d.asset);save();toast("Output ready");
- }catch(e){commandOutput.innerHTML=`<div class="obox orangeLine"><h4>Connection failed</h4><p>${esc(e.message)}</p></div>`}
+  let d=await res.json();latest=d;renderOutput(flowOutput,d);state.actions.unshift(d.actions?.[0]||d.next_move);state.decisions.unshift(d);if(d.asset?.content)state.assets.unshift(d.asset);save();setFlow(3);toast("Output ready");
+ }catch(e){flowOutput.innerHTML=`<div class="obox orangeLine"><h4>Connection failed</h4><p>${esc(e.message)}</p></div>`}
  finally{runBtn.disabled=false;runBtn.textContent="Generate"}
 }
 function renderOutput(el,d){
@@ -225,35 +199,36 @@ function renderOutput(el,d){
  <div class="obox" style="margin-top:12px"><h4>${esc(d.asset?.title||"Generated Asset")}</h4><p>${esc(d.asset?.content||"No asset content returned.")}</p></div>
  <div class="row" style="margin-top:12px"><button class="btn green" onclick="saveAsset()">Save Asset</button><button class="btn" onclick="createFollow()">Create Follow-Up</button><button class="btn light" onclick="saveDecision()">Save Decision</button></div>`;
 }
-function saveAsset(){if(!latest?.asset)return toast("Run first");state.assets.unshift(latest.asset);save();fetch(API+"/save-asset",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest.asset)}).catch(()=>{});toast("Asset saved")}
+function saveAsset(){if(!latest?.asset)return toast("Run first");state.assets.unshift(latest.asset);save();fetch(API+"/save-asset",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest.asset)}).catch(()=>{});setFlow(4);toast("Asset saved")}
 function saveDecision(){if(!latest)return toast("Run first");state.decisions.unshift(latest);save();fetch(API+"/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest)}).catch(()=>{});toast("Decision saved")}
-function createFollow(){if(!latest)return toast("Run first");openCommand("Create follow-up email from the generated proposal.","communications");context={brain:"communications",input:`Create follow-up based on: ${latest.asset?.content||latest.decision}`};toast("Follow-up loaded")}
-function openDoc(type,i){show("dashboard");let obj=type==="asset"?state.assets[i]:state.decisions[i];output.classList.add("show");output.innerHTML=`<div class="label">${esc(type)}</div><h2>${esc(obj.title||obj.asset?.title||"Record")}</h2><div class="doc">${esc(obj.content||JSON.stringify(obj,null,2))}</div>`;output.scrollIntoView({behavior:"smooth"})}
+function createFollow(){if(!latest)return toast("Run first");openFlow("Create follow-up email from the generated proposal.","communications");context={brain:"communications",input:`Create follow-up based on: ${latest.asset?.content||latest.decision}`};setFlow(5);toast("Follow-up loaded")}
+function openDoc(type,i){show("dashboard");let obj=type==="asset"?state.assets[i]:state.decisions[i];dashboardOutput.classList.add("show");dashboardOutput.innerHTML=`<div class="label">${esc(type)}</div><h2>${esc(obj.title||obj.asset?.title||"Record")}</h2><div class="doc">${esc(obj.content||JSON.stringify(obj,null,2))}</div>`;dashboardOutput.scrollIntoView({behavior:"smooth"})}
 function render(){
  readyCount.textContent=state.items.length;
- feed.innerHTML=state.items.map((x,i)=>`<div class="item" onclick="openCommand(${JSON.stringify(x.input).replace(/"/g,'&quot;')},'${x.brain}')"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.sub)}</span></div><span class="chip ${x.brain==='revenue'?'green':x.brain==='risks'?'orange':x.brain==='people'?'purple':''}">${esc(x.brain)}</span></div>`).join("");
+ feed.innerHTML=state.items.map((x,i)=>`<div class="item" onclick="openFlow(${JSON.stringify(x.input).replace(/"/g,'&quot;')},'${x.brain}')"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.sub)}</span></div><span class="chip ${x.brain==='revenue'?'green':x.brain==='risks'?'orange':x.brain==='people'?'purple':''}">${esc(x.brain)}</span></div>`).join("");
  tomorrowBox.innerHTML=`<div class="rline"><b>Decision-call follow-up</b><span>ABC HVAC · Prepared</span></div><div class="rline"><b>Q2 Budget Review</b><span>Leadership · Prepared</span></div>`;
  assetBox.innerHTML=state.assets.slice(0,3).map((a,i)=>`<div class="rline" onclick="openDoc('asset',${i})"><b>${esc(a.title)}</b><span>${esc(a.type||"Asset")} · Open</span></div>`).join("")||`<div class="rline"><b>ABC HVAC Proposal</b><span>PDF · ready example</span></div>`;
  riskBox.innerHTML=state.risks.map(r=>`<div class="rline orange"><b>${esc(r)}</b><span>Needs review</span></div>`).join("");
- renderPages();
+ renderViews();
 }
 function featurePage(id,title,sub,color,featureTitle,featureSub,brain){
- document.getElementById("page-"+id).innerHTML=`<div class="splitPage"><div><div class="hero"><h1>${title}</h1><p>${sub}</p></div><div class="feature ${color}"><small style="text-transform:uppercase;font-weight:950;letter-spacing:.1em">Top priority</small><h2>${featureTitle}</h2><p>${featureSub}</p><div class="row"><button class="btn light" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')">Prepare Now</button><button class="btn" style="background:rgba(255,255,255,.15)" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')">View Details</button></div></div><h2>Today</h2><div class="feed"><div class="item" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')"><div class="num">1</div><div><b>${featureTitle}</b><span>${featureSub}</span></div><span class="chip">Open</span></div></div><div class="assistant"><label>AI Assistant</label><input id="${id}Input" placeholder="What do you need?"><button class="btn" onclick="openCommand(document.getElementById('${id}Input').value,'${brain}')">Generate</button></div></div><div class="panelStack"><h2>This Week</h2><div class="metric"><b>8</b><span>Total items</span></div><div class="metric"><b>6</b><span>Prepared</span></div><div class="metric"><b style="color:var(--orange)">2</b><span>Need prep</span></div></div></div>`;
+ document.getElementById("view-"+id).innerHTML=`<div class="splitPage"><div><div class="hero"><h1>${title}</h1><p>${sub}</p></div><div class="feature ${color}"><small style="text-transform:uppercase;font-weight:950;letter-spacing:.1em">Top priority</small><h2>${featureTitle}</h2><p>${featureSub}</p><div class="row"><button class="btn light" onclick="openFlow('${featureSub.replace(/'/g,"\\'")}','${brain}')">Prepare Now</button><button class="btn" style="background:rgba(255,255,255,.15)" onclick="openFlow('${featureSub.replace(/'/g,"\\'")}','${brain}')">View Details</button></div></div><h2>Today</h2><div class="feed"><div class="item" onclick="openFlow('${featureSub.replace(/'/g,"\\'")}','${brain}')"><div class="num">1</div><div><b>${featureTitle}</b><span>${featureSub}</span></div><span class="chip">Open</span></div></div><div class="assistant"><label>AI Assistant</label><input id="${id}Input" placeholder="What do you need?"><button class="btn" onclick="openFlow(document.getElementById('${id}Input').value,'${brain}')">Generate</button></div></div><div class="panelStack"><h2>This Week</h2><div class="metric"><b>8</b><span>Total items</span></div><div class="metric"><b>6</b><span>Prepared</span></div><div class="metric"><b style="color:var(--orange)">2</b><span>Need prep</span></div></div></div>`;
 }
-function renderPages(){
+function renderViews(){
  featurePage("meetings","Meetings","3 today • 2 need prep","orange","ABC HVAC Strategy Meeting","Prepare agenda, talking points, objections, and follow-up.","meetings");
  featurePage("revenue","Revenue","$2.4M MRR • +12% MoM • $700K pipeline closing this week","green","ABC HVAC - $150K Annual","Review deal, prep close plan, build proposal, and follow-up.","revenue");
  featurePage("people","People Command Center","Sales Team • Offer Alignment • Hiring Strategy","purple","Sales Team Alignment","Create alignment plan and execution rhythm for the team.","people");
  featurePage("risks","Risks","Budget concerns • blockers • decision exposure","orange","Budget concern","Assess risk, create mitigation, and define next executive action.","risks");
- pageAssets.innerHTML=`<div class="hero"><h1>Assets</h1><p>Saved proposals, briefs, emails, and generated work.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'Asset')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No assets yet</b><span>Generate and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
- pageAdmin.innerHTML=`<div class="hero"><h1>Admin / Tests</h1><p>Verify backend routes.</p></div><div class="card"><input id="api" value="${esc(API)}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px"><div class="row" style="margin-top:12px"><button class="btn dark" onclick="saveApi()">Save API</button><button class="btn" onclick="testRoute('/test-report')">Test Report</button><button class="btn light" onclick="testRoute('/debug')">Debug</button></div><pre id="adminOut">Ready.</pre></div>`;
+ viewAssets.innerHTML=`<div class="hero"><h1>Assets</h1><p>Saved proposals, briefs, emails, and generated work.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'Asset')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No assets yet</b><span>Generate and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
+ viewAdmin.innerHTML=`<div class="hero"><h1>Admin / Tests</h1><p>Verify backend routes.</p></div><div class="card"><input id="api" value="${esc(API)}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px"><div class="row" style="margin-top:12px"><button class="btn dark" onclick="saveApi()">Save API</button><button class="btn" onclick="testRoute('/test-report')">Test Report</button><button class="btn light" onclick="testRoute('/debug')">Debug</button></div><pre id="adminOut">Ready.</pre></div>`;
 }
 function saveApi(){API=api.value.trim()||API_DEFAULT;localStorage.setItem("ee_api",API);check();toast("API saved")}
 async function testRoute(r){adminOut.textContent="Testing…";try{let res=await fetch(API+r);adminOut.textContent=JSON.stringify(await res.json(),null,2)}catch(e){adminOut.textContent=e.message}}
 async function check(){try{let r=await fetch(API+"/test-report");let j=await r.json();sys.textContent=j.openai_key_loaded?"ALL SYSTEMS GO":"Backend live / key issue";sys2.textContent=`${state.items.length} actions ready • 0 blockers`}catch(e){sys.textContent="Backend not connected";sys2.textContent=e.message}}
-document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>show(b.dataset.page));
+document.querySelectorAll(".nav[data-view]").forEach(b=>b.onclick=()=>show(b.dataset.view));
+newBtn.onclick=()=>openFlow();
 runBtn.onclick=run;
-search.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){openCommand(e.target.value.trim());e.target.value=""}});
+search.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){openFlow(e.target.value.trim());e.target.value=""}});
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();run()}});
 render();check();
 </script>
