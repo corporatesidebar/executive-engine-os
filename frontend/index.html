@@ -3,20 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Executive Engine OS · V27020</title>
+<title>Executive Engine OS · V27030</title>
 <style>
 :root{
-  --nav:#0b1628;--nav2:#111f35;--ink:#081120;--muted:#62708a;--line:#dfe7f2;
-  --bg:#f7f9fc;--card:#fff;--blue:#2563ff;--green:#059669;--orange:#f04405;
-  --purple:#9333ea;--red:#d92d20;--shadow:0 18px 45px rgba(15,23,42,.10);
+  --nav:#0b1628;--ink:#081120;--muted:#62708a;--line:#dfe7f2;
+  --blue:#2563ff;--green:#059669;--orange:#f04405;--purple:#9333ea;--red:#d92d20;
+  --shadow:0 18px 45px rgba(15,23,42,.10);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
 button,input,textarea{font:inherit}button{cursor:pointer}
 .app{display:grid;grid-template-columns:250px minmax(780px,1fr) 355px;grid-template-rows:64px 1fr;min-height:100vh}
-
-/* TOP */
 .top{grid-column:1/4;grid-row:1;background:#101c30;color:#fff;display:flex;align-items:center;gap:16px;padding:0 28px;box-shadow:0 18px 42px rgba(15,23,42,.25);z-index:20}
 .brand{display:flex;align-items:center;gap:13px;width:250px}.logo{width:42px;height:42px;border-radius:14px;background:var(--blue);display:grid;place-items:center;font-weight:950}
 .brand b{font-size:17px}.brand span{display:block;font-size:11px;color:#9fb1ca;margin-top:2px}
@@ -24,16 +22,11 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .search{margin-left:auto;width:430px;height:44px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:#17263d;color:#fff;padding:0 16px;outline:none}
 .search::placeholder{color:#7f91aa}.pill{display:flex;align-items:center;gap:8px;border:1px solid rgba(16,185,129,.35);background:#073d37;color:#4ade80;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:950}
 .pill.dark{background:#17263d;color:#dce8fb;border-color:rgba(255,255,255,.12)}.dot{width:8px;height:8px;border-radius:50%;background:#10b981}
-
-/* SIDEBAR */
 .side{grid-column:1;grid-row:2;background:#0b1628;color:#dbe7f7;padding:22px 14px;overflow:auto}
 .group{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#8da0bc;margin:22px 12px 10px;font-weight:950}
 .nav{width:100%;border:0;background:transparent;color:#cddaf0;padding:12px 13px;border-radius:12px;text-align:left;font-weight:780;margin:4px 0;display:flex;justify-content:space-between;align-items:center}
 .nav:hover,.nav.active{background:#1a2a43;color:#fff}.nav .left{display:flex;gap:10px;align-items:center}.ico{opacity:.78;width:18px}.mini{font-size:10px;border-radius:999px;background:#ea580c;color:#fff;padding:4px 7px;font-weight:950}
-.sideHelp{margin:22px 6px 0;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;font-size:12px;line-height:1.45;color:#b9c7db}
-.sideHelp b{color:#fff}
-
-/* MAIN */
+.sideHelp{margin:22px 6px 0;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;font-size:12px;line-height:1.45;color:#b9c7db}.sideHelp b{color:#fff}
 .main{grid-column:2;grid-row:2;padding:36px 42px;overflow:auto;background:#fff}
 .right{grid-column:3;grid-row:2;background:#111f35;color:#fff;padding:32px 28px;overflow:auto}
 .view{display:none}.view.active{display:block}
@@ -41,8 +34,6 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 26px rgba(15,23,42,.06);padding:20px;margin-bottom:22px}
 .cardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:950}
 .card h2{font-size:26px;letter-spacing:-.045em;margin:4px 0}.card p{color:#5e708a;margin:0}
-
-/* DASHBOARD */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:20px 0 34px}
 .stat{border-radius:16px;color:#fff;padding:22px 24px;min-height:150px;box-shadow:var(--shadow)}
 .stat small{text-transform:uppercase;letter-spacing:.08em;font-weight:950;font-size:13px}.stat b{display:block;font-size:44px;margin:18px 0 4px;line-height:1}.stat span{font-size:15px}
@@ -51,8 +42,6 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .item:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08);border-color:#c5d6ee}.num{width:54px;height:54px;border-radius:13px;background:#0b1628;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:950;box-shadow:0 12px 22px rgba(15,23,42,.18)}
 .item b{display:block;font-size:17px;margin-bottom:5px}.item span{color:#53657e;font-size:14px}
 .chip{border-radius:999px;padding:9px 14px;background:#eaf1ff;color:#155eef;font-size:12px;font-weight:950}.chip.green{background:#dffbea;color:#047857}.chip.orange{background:#fff0e6;color:#c2410c}.chip.purple{background:#f2e6ff;color:#7e22ce}
-
-/* FLOW / COMMAND */
 .mission{border:2px solid #bfd0ee;background:linear-gradient(180deg,#fff,#f8fbff);position:relative;overflow:hidden}.mission:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--blue),#06b6d4,var(--green),var(--orange))}
 .missionGrid{display:grid;grid-template-columns:1fr 245px;gap:18px;align-items:center}.missionTitle{font-size:34px;letter-spacing:-.065em;line-height:1.08;margin:0 0 10px}
 .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:17px 0 0}.flowStep{border:1px solid var(--line);border-radius:15px;background:#fff;padding:13px}
@@ -64,19 +53,16 @@ textarea:focus{border-color:#a8c2ff;box-shadow:0 0 0 4px rgba(37,99,255,.08)}
 .output{display:none}.output.show{display:block}.now{background:#0b1628;color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}.now small{display:block;color:#93c5fd;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}.now b{font-size:23px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.obox{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.obox h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a;margin:0 0 8px}.obox p{margin:0;line-height:1.5}
 .obox.blueLine{border-left:5px solid var(--blue)}.obox.greenLine{border-left:5px solid var(--green)}.obox.orangeLine{border-left:5px solid var(--orange)}.action{display:flex;gap:10px;border:1px solid var(--line);background:#f8fbff;border-radius:12px;padding:10px;margin:7px 0}.action i{font-style:normal;background:#0b1628;color:#fff;border-radius:8px;width:24px;height:24px;display:grid;place-items:center;font-size:12px}
-
-/* MODULE PAGES */
 .splitPage{display:grid;grid-template-columns:minmax(420px,1fr) 320px;gap:34px}.feature{border-radius:22px;color:#fff;padding:30px;box-shadow:var(--shadow);margin:22px 0 28px}
 .feature h2{font-size:30px;margin:14px 0 8px;letter-spacing:-.05em}.feature p{color:rgba(255,255,255,.92);font-size:17px;line-height:1.5}.feature .row{margin-top:22px}.panelStack{display:grid;gap:12px}
 .metric{border:1px solid var(--line);border-radius:14px;background:#f8fbff;padding:18px}.metric b{display:block;font-size:32px;color:var(--blue)}.metric span{font-size:14px;color:#55657a}
 .assistant{background:#111f35;color:#fff;border-radius:22px;padding:24px;margin-top:26px;box-shadow:var(--shadow)}.assistant label{display:block;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;font-size:12px;margin-bottom:14px}.assistant input{width:100%;height:54px;border:1px solid #31435f;border-radius:13px;background:#17263d;color:#fff;padding:0 14px;outline:none}.assistant .btn{margin-top:14px}
-
-/* RIGHT DARK */
 .rpanel{border-bottom:1px solid rgba(255,255,255,.13);padding:0 0 26px;margin-bottom:26px}.rpanel h3{font-size:22px;letter-spacing:-.04em;margin:0 0 16px;color:#fff}
-.rline{border:1px solid #344761;background:#192a43;border-radius:13px;padding:16px;margin:12px 0;cursor:pointer}.rline.green{background:#083f35;border-color:#0e8f69}.rline.orange{background:#3f2519;border-color:#f97316}.rline b{display:block;font-size:15px;color:#fff}.rline span{display:block;color:#c7d3e5;font-size:13px;margin-top:6px}
-.statusBox{background:#083f35;border:1px solid #0e8f69;border-radius:17px;padding:22px;color:#d9fff0}.statusBox b{display:block;color:#fff;margin-bottom:8px}.toast{position:fixed;right:24px;bottom:24px;background:#0b1628;color:#fff;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
+.rline,.statusBox{border:1px solid #344761;background:#192a43;border-radius:13px;padding:16px;margin:12px 0;cursor:pointer;transition:.15s}.rline:hover,.statusBox:hover{transform:translateY(-1px);border-color:#60a5fa;box-shadow:0 12px 24px rgba(0,0,0,.18)}
+.rline.green,.statusBox{background:#083f35;border-color:#0e8f69}.rline.orange{background:#3f2519;border-color:#f97316}.rline b,.statusBox b{display:block;font-size:15px;color:#fff}.rline span,.statusBox span{display:block;color:#c7d3e5;font-size:13px;margin-top:6px}
+.rAction{float:right;color:#60a5fa;font-size:13px;cursor:pointer}.toast{position:fixed;right:24px;bottom:24px;background:#0b1628;color:#fff;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
 pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14px;padding:14px;margin-top:12px;max-height:420px;overflow:auto}
-
+.empty{padding:30px;border:1px dashed var(--line);border-radius:16px;color:#53657e;background:#f8fbff}
 @media(max-width:1250px){.app{grid-template-columns:220px 1fr}.right{display:none}.stats,.grid2,.grid3,.splitPage,.missionGrid,.flow{grid-template-columns:1fr}.search{width:260px}}
 @media(max-width:850px){.app{grid-template-columns:1fr}.side{display:none}.top{grid-column:1}.main{grid-column:1;padding:18px}.search{display:none}.hero h1{font-size:34px}.brand{width:auto}}
 </style>
@@ -84,7 +70,7 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27020 Flow Repair</span></div></div>
+  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27030 Right Rail</span></div></div>
   <button class="newBtn" id="newBtn">+ New</button>
   <input class="search" id="search" placeholder="Search / command…">
   <span class="pill"><span class="dot"></span>Live</span>
@@ -102,7 +88,7 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
   <div class="group">Resources</div>
   <button class="nav" data-view="assets"><span class="left"><span class="ico">▤</span>Assets</span></button>
   <button class="nav" data-view="admin"><span class="left"><span class="ico">⚙</span>Admin / Tests</span></button>
-  <div class="sideHelp"><b>Flow rule</b><br>Look and feel stays premium. Layout can change to make the user journey smoother.</div>
+  <div class="sideHelp"><b>Flow rule</b><br>Anything that looks clickable must work. Right rail now opens workspaces.</div>
 </aside>
 
 <main class="main">
@@ -131,7 +117,7 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
       <div class="flow"><div class="flowStep active" id="f1"><small>1</small><b>Load Context</b></div><div class="flowStep" id="f2"><small>2</small><b>Generate</b></div><div class="flowStep" id="f3"><small>3</small><b>Review</b></div><div class="flowStep" id="f4"><small>4</small><b>Save</b></div><div class="flowStep" id="f5"><small>5</small><b>Follow Up</b></div></div>
     </div>
     <div class="card">
-      <div class="cardHead"><div><div class="label">AI Assistant</div><h2 id="commandQuestion">What needs to happen?</h2></div><button class="btn dark" id="runBtn">Generate</button></div>
+      <div class="cardHead"><div><div class="label">AI Assistant</div><h2>What needs to happen?</h2></div><button class="btn dark" id="runBtn">Generate</button></div>
       <textarea id="input" placeholder="Example: Build proposal for the Ontario auto-loan dealership with SEO, social, Google Ads, and CPA under $100."></textarea>
       <div class="quick"><button onclick="quick('Build proposal.')">Build proposal</button><button onclick="quick('Create follow-up email.')">Follow-up</button><button onclick="quick('Validate CPA risk.')">Risk check</button><button onclick="quick('Prepare meeting brief.')">Meeting brief</button></div>
     </div>
@@ -144,12 +130,13 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
   <section id="view-risks" class="view"></section>
   <section id="view-assets" class="view"></section>
   <section id="view-admin" class="view"></section>
+  <section id="view-workspace" class="view"></section>
 </main>
 
 <aside class="right">
-  <div class="rpanel"><h3>System Status</h3><div class="statusBox"><b id="sys">Checking…</b><span id="sys2">Backend connection</span></div></div>
+  <div class="rpanel"><h3>System Status</h3><div class="statusBox" onclick="openSystemStatus()"><b id="sys">Checking…</b><span id="sys2">Click for diagnostics</span></div></div>
   <div class="rpanel"><h3>Tomorrow <span class="chip purple" style="float:right">5 ready</span></h3><div id="tomorrowBox"></div></div>
-  <div class="rpanel"><h3>Ready Assets <span onclick="show('assets')" style="float:right;color:#60a5fa;font-size:13px;cursor:pointer">View All</span></h3><div id="assetBox"></div></div>
+  <div class="rpanel"><h3>Ready Assets <span class="rAction" onclick="show('assets')">View All</span></h3><div id="assetBox"></div></div>
   <div class="rpanel"><h3>Active Risks</h3><div id="riskBox"></div></div>
 </aside>
 </div>
@@ -158,20 +145,28 @@ pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14p
 <script>
 const API_DEFAULT="https://executive-engine-os.onrender.com";
 let API=localStorage.getItem("ee_api")||API_DEFAULT;
-let latest=null, context=null, activeBrain="command";
+let latest=null, context=null, activeBrain="command", lastStatus=null;
 const mission={brain:"revenue",title:"Ontario Auto Loan Growth Proposal",sub:"Ontario dealership · SEO + Social + Google Ads · CPA ≤ $100",input:"Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal."};
 let state=load();
 
-function starter(){return{assets:[],decisions:[],actions:[],risks:["Budget concern - ABC HVAC needs CEO call"],items:[
- {brain:"people",title:"People Command Center",sub:"Sales Team - Offer Alignment",input:"Create people alignment plan for the sales team."},
- {brain:"revenue",title:"Revenue Command Center",sub:"ABC HVAC - $50K Proposal",input:mission.input},
- {brain:"revenue",title:"Tomorrow meeting with ABC HVAC about SEO, Google Ads",sub:"ABC HVAC - SEO + Ads Proposal",input:mission.input},
- {brain:"revenue",title:"ABC HVAC Close Package",sub:"ABC HVAC - $50K Proposal",input:mission.input},
- {brain:"meetings",title:"Meetings Command Center",sub:"ABC HVAC - SEO + Ads Proposal",input:"Prepare meeting brief for ABC HVAC SEO and ads proposal."},
- {brain:"risks",title:"Risk Command Center",sub:"ABC HVAC - Budget Concern",input:"Assess risk and mitigation for ABC HVAC budget concern."}
+function starter(){return{
+ assets:[{title:"ABC HVAC Proposal",type:"PDF",content:"Ready example asset. Generate and save real assets from Guided Flow."}],
+ decisions:[],actions:[],
+ risks:[{title:"Budget concern - ABC HVAC needs CEO call",level:"High",owner:"Will",recommendation:"Call CEO before proposal scope expands.",next:"Open mitigation plan."}],
+ tomorrow:[
+  {title:"Decision-call follow-up",sub:"ABC HVAC · Prepared",brain:"communications",input:"Create a decision-call follow-up for ABC HVAC."},
+  {title:"Q2 Budget Review",sub:"Leadership · Prepared",brain:"meetings",input:"Prepare Q2 budget review talking points and decision list."}
+ ],
+ items:[
+  {brain:"people",title:"People Command Center",sub:"Sales Team - Offer Alignment",input:"Create people alignment plan for the sales team."},
+  {brain:"revenue",title:"Revenue Command Center",sub:"ABC HVAC - $50K Proposal",input:mission.input},
+  {brain:"revenue",title:"Tomorrow meeting with ABC HVAC about SEO, Google Ads",sub:"ABC HVAC - SEO + Ads Proposal",input:mission.input},
+  {brain:"revenue",title:"ABC HVAC Close Package",sub:"ABC HVAC - $50K Proposal",input:mission.input},
+  {brain:"meetings",title:"Meetings Command Center",sub:"ABC HVAC - SEO + Ads Proposal",input:"Prepare meeting brief for ABC HVAC SEO and ads proposal."},
+  {brain:"risks",title:"Risk Command Center",sub:"ABC HVAC - Budget Concern",input:"Assess risk and mitigation for ABC HVAC budget concern."}
 ]}}
-function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27020"))||starter()}catch(e){return starter()}}
-function save(){localStorage.setItem("ee_state_v27020",JSON.stringify(state));render()}
+function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27030"))||starter()}catch(e){return starter()}}
+function save(){localStorage.setItem("ee_state_v27030",JSON.stringify(state));render()}
 function esc(s){return String(s??"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}
 function toast(m){let t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
 function show(name){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById("view-"+name).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));let nav=document.querySelector(`.nav[data-view="${name}"]`);if(nav)nav.classList.add("active")}
@@ -202,13 +197,54 @@ function renderOutput(el,d){
 function saveAsset(){if(!latest?.asset)return toast("Run first");state.assets.unshift(latest.asset);save();fetch(API+"/save-asset",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest.asset)}).catch(()=>{});setFlow(4);toast("Asset saved")}
 function saveDecision(){if(!latest)return toast("Run first");state.decisions.unshift(latest);save();fetch(API+"/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest)}).catch(()=>{});toast("Decision saved")}
 function createFollow(){if(!latest)return toast("Run first");openFlow("Create follow-up email from the generated proposal.","communications");context={brain:"communications",input:`Create follow-up based on: ${latest.asset?.content||latest.decision}`};setFlow(5);toast("Follow-up loaded")}
-function openDoc(type,i){show("dashboard");let obj=type==="asset"?state.assets[i]:state.decisions[i];dashboardOutput.classList.add("show");dashboardOutput.innerHTML=`<div class="label">${esc(type)}</div><h2>${esc(obj.title||obj.asset?.title||"Record")}</h2><div class="doc">${esc(obj.content||JSON.stringify(obj,null,2))}</div>`;dashboardOutput.scrollIntoView({behavior:"smooth"})}
+function openDoc(type,i){let obj=type==="asset"?state.assets[i]:state.decisions[i];openWorkspace(type,obj.title||obj.asset?.title||"Record",obj.content||JSON.stringify(obj,null,2),[{label:"Back to Assets",action:"show('assets')"}])}
+function openWorkspace(type,title,body,buttons=[]){
+ show("workspace");
+ const btns=buttons.map(b=>`<button class="btn light" onclick="${b.action}">${b.label}</button>`).join("");
+ document.getElementById("view-workspace").innerHTML=`<div class="hero"><h1>${esc(title)}</h1><p>${esc(type)} workspace. Review, act, or continue the flow.</p></div><div class="card"><div class="doc">${esc(body)}</div><div class="row" style="margin-top:14px">${btns}<button class="btn dark" onclick="show('flow')">Open Guided Flow</button></div></div>`;
+}
+function openSystemStatus(){
+ const body=`API Base: ${API}
+Backend status: ${lastStatus?.backend||"checking"}
+OpenAI key loaded: ${lastStatus?.openai_key_loaded}
+Model: ${lastStatus?.model||"unknown"}
+Version: ${lastStatus?.version||"unknown"}
+Routes restored: ${(lastStatus?.routes_restored||[]).join(", ")}
+
+Frontend: V27030 Interactive Right Rail
+Last local actions: ${state.actions.length}
+Saved assets: ${state.assets.length}
+Saved decisions: ${state.decisions.length}`;
+ openWorkspace("diagnostics","System Diagnostics",body,[{label:"Run Test Report",action:"testReportWorkspace()"}]);
+}
+async function testReportWorkspace(){try{let r=await fetch(API+"/test-report");let j=await r.json();lastStatus=j;openWorkspace("diagnostics","System Diagnostics",JSON.stringify(j,null,2),[])}catch(e){openWorkspace("diagnostics","System Diagnostics",e.message,[])}}
+function openTomorrow(i){let item=state.tomorrow[i];openWorkspace("tomorrow prep",item.title,`${item.sub}
+
+Recommended prep:
+1. Confirm meeting objective.
+2. Generate talking points.
+3. Prepare decision options.
+4. Draft follow-up before the meeting.`,[{label:"Prepare Now",action:`openFlow(${JSON.stringify(item.input)},'${item.brain}')`}])}
+function openRisk(i){let r=state.risks[i];openWorkspace("risk mitigation",r.title,`Risk Level: ${r.level}
+Owner: ${r.owner}
+
+Recommendation:
+${r.recommendation}
+
+Next Move:
+${r.next}
+
+Mitigation:
+1. Identify commercial exposure.
+2. Decide owner.
+3. Create CEO/client follow-up.
+4. Add deadline.`,[{label:"Build Mitigation",action:`openFlow('Build mitigation plan for ${r.title}','risks')`}])}
 function render(){
  readyCount.textContent=state.items.length;
  feed.innerHTML=state.items.map((x,i)=>`<div class="item" onclick="openFlow(${JSON.stringify(x.input).replace(/"/g,'&quot;')},'${x.brain}')"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.sub)}</span></div><span class="chip ${x.brain==='revenue'?'green':x.brain==='risks'?'orange':x.brain==='people'?'purple':''}">${esc(x.brain)}</span></div>`).join("");
- tomorrowBox.innerHTML=`<div class="rline"><b>Decision-call follow-up</b><span>ABC HVAC · Prepared</span></div><div class="rline"><b>Q2 Budget Review</b><span>Leadership · Prepared</span></div>`;
- assetBox.innerHTML=state.assets.slice(0,3).map((a,i)=>`<div class="rline" onclick="openDoc('asset',${i})"><b>${esc(a.title)}</b><span>${esc(a.type||"Asset")} · Open</span></div>`).join("")||`<div class="rline"><b>ABC HVAC Proposal</b><span>PDF · ready example</span></div>`;
- riskBox.innerHTML=state.risks.map(r=>`<div class="rline orange"><b>${esc(r)}</b><span>Needs review</span></div>`).join("");
+ tomorrowBox.innerHTML=state.tomorrow.map((t,i)=>`<div class="rline" onclick="openTomorrow(${i})"><b>${esc(t.title)}</b><span>${esc(t.sub)} · Open prep</span></div>`).join("");
+ assetBox.innerHTML=state.assets.slice(0,3).map((a,i)=>`<div class="rline" onclick="openDoc('asset',${i})"><b>${esc(a.title)}</b><span>${esc(a.type||"Asset")} · Open</span></div>`).join("")||`<div class="rline"><b>No assets yet</b><span>Generate and save one.</span></div>`;
+ riskBox.innerHTML=state.risks.map((r,i)=>`<div class="rline orange" onclick="openRisk(${i})"><b>${esc(r.title)}</b><span>${esc(r.level)} · Open mitigation</span></div>`).join("");
  renderViews();
 }
 function featurePage(id,title,sub,color,featureTitle,featureSub,brain){
@@ -219,12 +255,12 @@ function renderViews(){
  featurePage("revenue","Revenue","$2.4M MRR • +12% MoM • $700K pipeline closing this week","green","ABC HVAC - $150K Annual","Review deal, prep close plan, build proposal, and follow-up.","revenue");
  featurePage("people","People Command Center","Sales Team • Offer Alignment • Hiring Strategy","purple","Sales Team Alignment","Create alignment plan and execution rhythm for the team.","people");
  featurePage("risks","Risks","Budget concerns • blockers • decision exposure","orange","Budget concern","Assess risk, create mitigation, and define next executive action.","risks");
- viewAssets.innerHTML=`<div class="hero"><h1>Assets</h1><p>Saved proposals, briefs, emails, and generated work.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'Asset')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No assets yet</b><span>Generate and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
+ viewAssets.innerHTML=`<div class="hero"><h1>Assets</h1><p>Saved proposals, briefs, emails, and generated work.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'Asset')}</span></div>`).join(""):`<div class="empty">No assets yet. Generate and save one from Guided Flow.</div>`}</div></div>`;
  viewAdmin.innerHTML=`<div class="hero"><h1>Admin / Tests</h1><p>Verify backend routes.</p></div><div class="card"><input id="api" value="${esc(API)}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px"><div class="row" style="margin-top:12px"><button class="btn dark" onclick="saveApi()">Save API</button><button class="btn" onclick="testRoute('/test-report')">Test Report</button><button class="btn light" onclick="testRoute('/debug')">Debug</button></div><pre id="adminOut">Ready.</pre></div>`;
 }
 function saveApi(){API=api.value.trim()||API_DEFAULT;localStorage.setItem("ee_api",API);check();toast("API saved")}
 async function testRoute(r){adminOut.textContent="Testing…";try{let res=await fetch(API+r);adminOut.textContent=JSON.stringify(await res.json(),null,2)}catch(e){adminOut.textContent=e.message}}
-async function check(){try{let r=await fetch(API+"/test-report");let j=await r.json();sys.textContent=j.openai_key_loaded?"ALL SYSTEMS GO":"Backend live / key issue";sys2.textContent=`${state.items.length} actions ready • 0 blockers`}catch(e){sys.textContent="Backend not connected";sys2.textContent=e.message}}
+async function check(){try{let r=await fetch(API+"/test-report");let j=await r.json();lastStatus=j;sys.textContent=j.openai_key_loaded?"ALL SYSTEMS GO":"Backend live / key issue";sys2.textContent=`${state.items.length} actions ready • click for diagnostics`}catch(e){sys.textContent="Backend not connected";sys2.textContent=e.message}}
 document.querySelectorAll(".nav[data-view]").forEach(b=>b.onclick=()=>show(b.dataset.view));
 newBtn.onclick=()=>openFlow();
 runBtn.onclick=run;
