@@ -3,198 +3,181 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Executive Engine OS · V27000</title>
+<title>Executive Engine OS · V27010</title>
 <style>
 :root{
-  --ink:#07111f;--muted:#667085;--soft:#f5f7fb;--card:#fff;--line:#dbe5f2;
-  --nav:#071426;--nav2:#0b1a31;--blue:#155eef;--blue2:#0f4bd8;--green:#079455;
-  --orange:#f05a28;--red:#d92d20;--cyan:#0891b2;--shadow:0 18px 48px rgba(15,23,42,.08);
+  --nav:#0b1628;--nav2:#111f35;--ink:#0a1020;--muted:#5f6f87;--line:#dfe7f2;
+  --bg:#f7f9fc;--card:#fff;--blue:#2563ff;--green:#059669;--orange:#f04405;
+  --purple:#9333ea;--shadow:0 18px 45px rgba(15,23,42,.10);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:linear-gradient(180deg,#f7f9fd,#eef3f9);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);font-weight:600}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:600}
 button,input,textarea{font:inherit}
 button{cursor:pointer}
-.app{display:grid;grid-template-columns:216px minmax(770px,1fr) 342px;grid-template-rows:64px 1fr;min-height:100vh}
+.app{display:grid;grid-template-columns:250px minmax(780px,1fr) 355px;grid-template-rows:64px 1fr;min-height:100vh}
 
 /* TOP */
-.top{grid-column:1/4;grid-row:1;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:20}
-.brand{display:flex;align-items:center;gap:12px;width:218px}
-.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--blue),#0ea5e9);color:#fff;display:grid;place-items:center;font-weight:950;box-shadow:0 12px 24px rgba(21,94,239,.22)}
-.brand b{font-size:15px;letter-spacing:-.035em}.brand span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.newBtn{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:11px 17px;font-weight:950}
-.search{margin-left:auto;width:430px;height:42px;border:1px solid var(--line);border-radius:14px;padding:0 14px;outline:0;background:#f8fbff}
-.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #b7efcf;background:#ecfdf3;color:#067647;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:950}
-.pill.dark{background:#fff;color:#0b1220;border-color:var(--line)}
-.dot{width:8px;height:8px;border-radius:99px;background:#10b981}
+.top{grid-column:1/4;grid-row:1;background:#101c30;color:#fff;display:flex;align-items:center;gap:16px;padding:0 28px;box-shadow:0 18px 42px rgba(15,23,42,.25);z-index:20}
+.brand{display:flex;align-items:center;gap:13px;width:250px}
+.logo{width:42px;height:42px;border-radius:14px;background:var(--blue);display:grid;place-items:center;font-weight:950}
+.brand b{font-size:17px}.brand span{display:block;font-size:11px;color:#9fb1ca;margin-top:2px}
+.newBtn{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:12px 20px;font-weight:950}
+.search{margin-left:auto;width:430px;height:44px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:#17263d;color:#fff;padding:0 16px;outline:none}
+.search::placeholder{color:#7f91aa}
+.pill{display:flex;align-items:center;gap:8px;border:1px solid rgba(16,185,129,.35);background:#073d37;color:#4ade80;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:950}
+.pill.dark{background:#17263d;color:#dce8fb;border-color:rgba(255,255,255,.12)}
+.dot{width:8px;height:8px;border-radius:50%;background:#10b981}
 
 /* SIDEBAR */
-.side{grid-column:1;grid-row:2;background:linear-gradient(180deg,var(--nav),#06101f);color:#fff;padding:18px 14px;overflow:auto}
-.group{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8ea0ba;margin:20px 9px 8px;font-weight:950}
-.nav{width:100%;border:0;background:transparent;color:#dbe7f7;padding:12px;border-radius:13px;text-align:left;font-weight:800;margin:4px 0;display:flex;justify-content:space-between;align-items:center}
-.nav:hover,.nav.active{background:#15253d;color:#fff}.mini{font-size:10px;border-radius:99px;background:#19365e;color:#c8dcff;padding:4px 7px;font-weight:950}
-.sideNote{margin-top:22px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;color:#cbd7eb;font-size:12px;line-height:1.45}.sideNote b{color:#fff}
+.side{grid-column:1;grid-row:2;background:#0b1628;color:#dbe7f7;padding:22px 14px;overflow:auto}
+.group{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#8da0bc;margin:22px 12px 10px;font-weight:950}
+.nav{width:100%;border:0;background:transparent;color:#cddaf0;padding:12px 13px;border-radius:12px;text-align:left;font-weight:780;margin:4px 0;display:flex;justify-content:space-between;align-items:center}
+.nav:hover,.nav.active{background:#1a2a43;color:#fff}
+.nav .left{display:flex;gap:10px;align-items:center}
+.ico{opacity:.78;width:18px}.mini{font-size:10px;border-radius:999px;background:#ea580c;color:#fff;padding:4px 7px;font-weight:950}
 
 /* MAIN */
-.main{grid-column:2;grid-row:2;padding:26px 34px;overflow:auto}
-.right{grid-column:3;grid-row:2;background:#edf2f8;border-left:1px solid var(--line);padding:22px;overflow:auto}
+.main{grid-column:2;grid-row:2;padding:36px 42px;overflow:auto;background:#fff}
+.right{grid-column:3;grid-row:2;background:#111f35;color:#fff;padding:32px 28px;overflow:auto}
 .page{display:none}.page.active{display:block}
-.hero{margin-bottom:18px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:950;margin-bottom:8px}
-.hero h1{font-size:44px;line-height:1.02;letter-spacing:-.07em;margin:0 0 10px}.hero p{font-size:17px;line-height:1.42;color:#344054;margin:0}
-.card{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.hero h1{font-size:48px;line-height:1.02;letter-spacing:-.075em;margin:0 0 10px}
+.hero p{font-size:19px;color:#4b5f79;margin:0 0 26px}.hero strong{color:var(--blue)}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 26px rgba(15,23,42,.06);padding:20px;margin-bottom:22px}
 .label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--blue);font-weight:950}
-.card h2{font-size:24px;letter-spacing:-.045em;margin:4px 0 0}.card p{color:var(--muted);margin:4px 0 0;line-height:1.45}
-.cardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
+.cardHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.card h2{font-size:26px;letter-spacing:-.045em;margin:4px 0}.card p{color:#5e708a;margin:0}
 
-/* MISSION CONTROL */
-.mission{border:2px solid #b9ccef;background:linear-gradient(180deg,#fff,#f8fbff);position:relative;overflow:hidden}
-.mission:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--blue),#06b6d4,var(--green),var(--orange))}
-.missionGrid{display:grid;grid-template-columns:1fr 250px;gap:18px;align-items:center}
-.missionTitle{font-size:34px;letter-spacing:-.065em;line-height:1.08;margin:0 0 10px}
-.missionMeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-.chip{border-radius:999px;padding:8px 11px;background:#eef4ff;color:var(--blue);font-size:12px;font-weight:950}
-.chip.green{background:#ecfdf3;color:#067647}.chip.orange{background:#fff1e8;color:#c2410c}.chip.red{background:#fff1f2;color:#be123c}.chip.dark{background:#0b1220;color:#fff}
-.bigBtn{width:100%;min-height:64px;border:0;border-radius:17px;background:#0b1220;color:#fff;font-weight:950;font-size:16px;box-shadow:0 16px 32px rgba(15,23,42,.20)}
-.bigBtn:hover{transform:translateY(-1px)}
-.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:17px 0 0}
-.flowStep{border:1px solid var(--line);border-radius:17px;background:#fff;padding:13px;position:relative}
-.flowStep small{display:block;text-transform:uppercase;letter-spacing:.12em;color:#667085;font-size:10px;font-weight:950}.flowStep b{display:block;margin-top:6px;font-size:14px}
-.flowStep.active{border-color:#b8ccff;background:#eef4ff}.flowStep.done{border-color:#b7efcf;background:#ecfdf3}
+/* DASHBOARD AESTHETIC */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:20px 0 34px}
+.stat{border-radius:16px;color:#fff;padding:22px 24px;min-height:150px;box-shadow:var(--shadow)}
+.stat small{text-transform:uppercase;letter-spacing:.08em;font-weight:950;font-size:13px}
+.stat b{display:block;font-size:44px;margin:18px 0 4px;line-height:1}
+.stat span{font-size:15px}
+.blue{background:#2563ff}.green{background:#059669}.orange{background:#e73800}.purple{background:#9700e6}
+.feed{display:grid;gap:14px}
+.item{border:1px solid var(--line);border-radius:15px;background:#fff;padding:18px 18px;display:grid;grid-template-columns:54px 1fr auto;gap:16px;align-items:center;cursor:pointer;transition:.16s}
+.item:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08);border-color:#c5d6ee}
+.num{width:54px;height:54px;border-radius:13px;background:#0b1628;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:950;box-shadow:0 12px 22px rgba(15,23,42,.18)}
+.item b{display:block;font-size:17px;margin-bottom:5px}.item span{color:#53657e;font-size:14px}
+.chip{border-radius:999px;padding:9px 14px;background:#eaf1ff;color:#155eef;font-size:12px;font-weight:950}
+.chip.green{background:#dffbea;color:#047857}.chip.orange{background:#fff0e6;color:#c2410c}.chip.purple{background:#f2e6ff;color:#7e22ce}
 
-/* EXECUTE */
-.execute{border:2px solid #c9d7ec}
-textarea{width:100%;min-height:118px;border:1px solid var(--line);background:#f8fbff;border-radius:18px;padding:16px;font-size:16px;line-height:1.5;outline:0;resize:vertical}
-textarea:focus{border-color:#9bbcff;box-shadow:0 0 0 4px rgba(21,94,239,.08)}
-.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:950;background:var(--blue);color:#fff}
-.btn.dark{background:#0b1220}.btn.light{background:#eef4ff;color:var(--blue)}.btn.green{background:var(--green)}.btn.orange{background:var(--orange)}.btn.red{background:var(--red)}
+/* SPECIAL PAGES */
+.splitPage{display:grid;grid-template-columns:minmax(420px,1fr) 320px;gap:34px}
+.feature{border-radius:22px;color:#fff;padding:30px;box-shadow:var(--shadow);margin:22px 0 28px}
+.feature h2{font-size:30px;margin:14px 0 8px;letter-spacing:-.05em}
+.feature p{color:rgba(255,255,255,.92);font-size:17px;line-height:1.5}
+.feature .row{margin-top:22px}
+.panelStack{display:grid;gap:12px}
+.metric{border:1px solid var(--line);border-radius:14px;background:#f8fbff;padding:18px}.metric b{display:block;font-size:32px;color:var(--blue)}.metric span{font-size:14px;color:#55657a}
+.assistant{background:#111f35;color:#fff;border-radius:22px;padding:24px;margin-top:26px;box-shadow:var(--shadow)}
+.assistant label{display:block;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;font-size:12px;margin-bottom:14px}
+.assistant input{width:100%;height:54px;border:1px solid #31435f;border-radius:13px;background:#17263d;color:#fff;padding:0 14px;outline:none}
+.assistant .btn{margin-top:14px}
+
+/* COMMAND / OUTPUT */
+textarea{width:100%;min-height:138px;border:1px solid var(--line);background:#f8fbff;border-radius:16px;padding:16px;outline:none;resize:vertical;line-height:1.5;font-size:16px}
+textarea:focus{border-color:#a8c2ff;box-shadow:0 0 0 4px rgba(37,99,255,.08)}
+.btn{border:0;border-radius:13px;background:var(--blue);color:#fff;font-weight:950;padding:13px 18px}
+.btn.dark{background:#0b1628}.btn.light{background:#eef4ff;color:#155eef}.btn.green{background:var(--green)}.btn.orange{background:var(--orange)}
 .btn:disabled{opacity:.55;cursor:not-allowed}
-.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:13px;font-weight:850}.quick button:hover{border-color:#b9ccff;background:#f8fbff}
-.helpBox{margin-top:12px;border:1px solid #cfe0ff;background:#f7faff;border-radius:18px;padding:13px 14px;color:#344054;font-size:14px;line-height:1.45}.helpBox b{color:#0b1220}
-
-/* OUTPUT WORKSPACE */
-.workspace{display:none}.workspace.show{display:block}
-.wsShell{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
-.now{background:#0b1220;color:#fff;border-radius:18px;padding:18px;margin-bottom:12px}.now small{display:block;color:#93c5fd;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px;font-weight:950}.now b{font-size:22px;line-height:1.3}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:850}
+.output{display:none}.output.show{display:block}
+.now{background:#0b1628;color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}.now small{display:block;color:#93c5fd;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}.now b{font-size:23px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.obox{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff}.obox h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a;margin:0 0 8px}.obox p{margin:0;line-height:1.5;color:#172033}
-.obox.blue{border-left:5px solid var(--blue)}.obox.orange{border-left:5px solid var(--orange)}.obox.green{border-left:5px solid var(--green)}
-.actions{display:grid;gap:8px}.action{display:flex;gap:10px;padding:10px;border:1px solid var(--line);background:#f8fbff;border-radius:14px}.action i{font-style:normal;min-width:24px;height:24px;background:#0b1220;color:#fff;border-radius:8px;display:grid;place-items:center;font-size:12px}
-.actionBar{display:grid;gap:9px}.actionBar .btn{width:100%;text-align:center}
-.nextGuide{border:1px solid #fed7aa;background:#fff7ed;border-radius:18px;padding:14px;margin-top:12px}.nextGuide h4{margin:0 0 8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#c2410c}.nextGuide p{margin:0;color:#431407}
-.assetPreview{white-space:pre-wrap;max-height:300px;overflow:auto}
+.obox{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.obox h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a;margin:0 0 8px}.obox p{margin:0;line-height:1.5}
+.obox.blueLine{border-left:5px solid var(--blue)}.obox.greenLine{border-left:5px solid var(--green)}.obox.orangeLine{border-left:5px solid var(--orange)}
+.action{display:flex;gap:10px;border:1px solid var(--line);background:#f8fbff;border-radius:12px;padding:10px;margin:7px 0}.action i{font-style:normal;background:#0b1628;color:#fff;border-radius:8px;width:24px;height:24px;display:grid;place-items:center;font-size:12px}
 
-/* LISTS */
-.feed{display:grid;gap:12px}.item{border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;display:grid;grid-template-columns:44px 1fr auto;gap:13px;align-items:center;cursor:pointer;transition:.16s}
-.item:hover{border-color:#b9ccff;box-shadow:0 12px 25px rgba(15,23,42,.07);transform:translateY(-1px)}
-.num{width:44px;height:44px;border-radius:14px;background:#0b1220;color:#fff;display:grid;place-items:center;font-weight:950}.item b{display:block;font-size:16px;margin-bottom:4px}.item span{display:block;font-size:13px;color:#475569}
+/* RIGHT DARK PANEL */
+.rpanel{border-bottom:1px solid rgba(255,255,255,.13);padding:0 0 26px;margin-bottom:26px}
+.rpanel h3{font-size:22px;letter-spacing:-.04em;margin:0 0 16px;color:#fff}
+.rline{border:1px solid #344761;background:#192a43;border-radius:13px;padding:16px;margin:12px 0;cursor:pointer}
+.rline.green{background:#083f35;border-color:#0e8f69}.rline.orange{background:#3f2519;border-color:#f97316}
+.rline b{display:block;font-size:15px;color:#fff}.rline span{display:block;color:#c7d3e5;font-size:13px;margin-top:6px}
+.statusBox{background:#083f35;border:1px solid #0e8f69;border-radius:17px;padding:22px;color:#d9fff0}.statusBox b{display:block;color:#fff;margin-bottom:8px}
+.toast{position:fixed;right:24px;bottom:24px;background:#0b1628;color:#fff;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
+pre,.doc{white-space:pre-wrap;background:#0b1628;color:#dbeafe;border-radius:14px;padding:14px;margin-top:12px;max-height:420px;overflow:auto}
 
-/* DETAIL */
-.detailTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-.doc{white-space:pre-wrap;background:#0b1220;color:#dbeafe;border-radius:18px;padding:16px;line-height:1.55;font-family:ui-monospace,Menlo,monospace;font-size:13px;max-height:560px;overflow:auto}
-
-/* RIGHT */
-.rpanel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px;margin-bottom:14px;box-shadow:0 9px 22px rgba(15,23,42,.05)}.rpanel h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#53627a}
-.rline{border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:13px;padding:10px;margin:8px 0;background:#fff;cursor:pointer}.rline.orange{border-left-color:var(--orange)}.rline.green{border-left-color:var(--green)}.rline.red{border-left-color:var(--red)}
-.rline b{display:block;font-size:14px}.rline span{font-size:12px;color:var(--muted)}
-.toast{position:fixed;right:24px;bottom:24px;background:#0b1220;color:white;border-radius:14px;padding:12px 15px;display:none;z-index:99}.toast.show{display:block}
-pre{white-space:pre-wrap;background:#0b1220;color:#dbeafe;border-radius:14px;padding:14px;margin-top:12px;max-height:420px;overflow:auto}
-
-@media(max-width:1220px){.app{grid-template-columns:210px 1fr}.right{display:none}.missionGrid,.wsShell,.grid2,.grid3,.flow{grid-template-columns:1fr}.search{width:260px}}
-@media(max-width:840px){.app{grid-template-columns:1fr}.side{display:none}.top{grid-column:1}.main{grid-column:1;padding:18px}.search{display:none}.hero h1{font-size:34px}}
+@media(max-width:1250px){.app{grid-template-columns:220px 1fr}.right{display:none}.stats,.grid2,.grid3,.splitPage{grid-template-columns:1fr}.search{width:260px}}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{display:none}.top{grid-column:1}.main{grid-column:1;padding:18px}.search{display:none}.hero h1{font-size:34px}.brand{width:auto}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27000 Mission Flow</span></div></div>
-  <button class="newBtn" id="newBtn">+ New</button>
-  <input class="search" id="search" placeholder="Search or command…">
+  <div class="brand"><div class="logo">EE</div><div><b>Executive Engine OS</b><span>V27010 Figma Repair</span></div></div>
+  <button class="newBtn" onclick="openCommand()">+ New</button>
+  <input class="search" id="search" placeholder="Search / command…">
   <span class="pill"><span class="dot"></span>Live</span>
-  <span class="pill dark">Frontend only</span>
+  <span class="pill dark">V25002 Backend</span>
 </header>
 
 <aside class="side">
-  <div class="group">Mission Control</div>
-  <button class="nav active" data-page="today">Today <span class="mini">Start</span></button>
-  <button class="nav" data-page="assets">Assets</button>
-  <button class="nav" data-page="decisions">Decisions</button>
-  <button class="nav" data-page="meetings">Meetings</button>
-  <div class="group">Auto Routing</div>
-  <button class="nav" onclick="loadBrain('revenue')">Revenue</button>
-  <button class="nav" onclick="loadBrain('communications')">Communications</button>
-  <button class="nav" onclick="loadBrain('risks')">Risk</button>
-  <button class="nav" onclick="loadBrain('legal')">Legal</button>
-  <div class="group">System</div>
-  <button class="nav" data-page="admin">Admin / Tests</button>
-  <div class="sideNote"><b>Workflow</b><br>Today → Start This → Output → Save Asset → Create Follow-Up → Done</div>
+  <div class="group">Command</div>
+  <button class="nav active" data-page="dashboard"><span class="left"><span class="ico">▦</span>Dashboard</span><span class="mini">Live</span></button>
+  <button class="nav" data-page="meetings"><span class="left"><span class="ico">☷</span>Meetings</span></button>
+  <button class="nav" data-page="revenue"><span class="left"><span class="ico">$</span>Revenue</span></button>
+  <button class="nav" data-page="people"><span class="left"><span class="ico">♙</span>People</span></button>
+  <button class="nav" data-page="risks"><span class="left"><span class="ico">△</span>Risks</span></button>
+  <div class="group">Resources</div>
+  <button class="nav" data-page="assets"><span class="left"><span class="ico">▤</span>Assets</span></button>
+  <button class="nav" data-page="admin"><span class="left"><span class="ico">⚙</span>Admin / Tests</span></button>
 </aside>
 
 <main class="main">
-  <section id="page-today" class="page active">
+  <section id="page-dashboard" class="page active">
     <div class="hero">
-      <div class="eyebrow">Today</div>
-      <h1>Start here. The system guides the rest.</h1>
-      <p>One priority, one command, one next move. No module hunting.</p>
+      <h1>Good morning Will — you're covered.</h1>
+      <p>Everything you need. One dashboard. Get it done in <strong>1 hour</strong> instead of 5.</p>
     </div>
-
-    <div class="card mission">
-      <div class="missionGrid">
-        <div>
-          <div class="label">Recommended Mission</div>
-          <h2 class="missionTitle">Build the Ontario auto-loan growth proposal.</h2>
-          <p>Client needs SEO, social, and Google Ads management with CPA target under $100.</p>
-          <div class="missionMeta">
-            <span class="chip orange">Highest leverage</span>
-            <span class="chip">Auto-routes to Revenue</span>
-            <span class="chip green">Asset + follow-up needed</span>
-          </div>
-        </div>
-        <button class="bigBtn" onclick="startMission()">Start This →</button>
-      </div>
-      <div class="flow">
-        <div class="flowStep active" id="f1"><small>1</small><b>Load Context</b></div>
-        <div class="flowStep" id="f2"><small>2</small><b>Generate</b></div>
-        <div class="flowStep" id="f3"><small>3</small><b>Review</b></div>
-        <div class="flowStep" id="f4"><small>4</small><b>Save</b></div>
-        <div class="flowStep" id="f5"><small>5</small><b>Follow Up</b></div>
-      </div>
+    <div class="stats">
+      <div class="stat blue"><small>Ready Now</small><b id="readyCount">12</b><span>Active items today</span></div>
+      <div class="stat green"><small>Revenue</small><b>$2.4M</b><span>MRR +12% this month</span></div>
+      <div class="stat orange"><small>Urgent</small><b>2</b><span>Need prep in 2 hours</span></div>
+      <div class="stat purple"><small>Tomorrow</small><b>5</b><span>Prepared for you</span></div>
     </div>
-
-    <div class="card execute">
-      <div class="cardHead">
-        <div><div class="label">Quick Execute</div><h2>What needs to happen?</h2><p>Type naturally. The OS packages context and routes the work.</p></div>
-        <button class="btn dark" id="runBtn">Run Engine</button>
-      </div>
-      <textarea id="input" placeholder="Example: Build the auto-loan dealership proposal for SEO, social, and Google Ads with CPA target $100 or less."></textarea>
-      <div class="quick">
-        <button onclick="quick('Build the proposal.')">Build proposal</button>
-        <button onclick="quick('Create the follow-up email.')">Create follow-up</button>
-        <button onclick="quick('Validate CPA risk.')">Validate CPA risk</button>
-        <button onclick="quick('Prepare meeting brief.')">Prep meeting</button>
-      </div>
-      <div class="helpBox"><b>Guidance:</b> short commands now carry forward selected context. “Build proposal” works after you click Start This.</div>
-    </div>
-
-    <div class="card workspace" id="workspace"></div>
-
     <div class="card">
-      <div class="cardHead"><div><div class="label">Next Up</div><h2>Work waiting for you</h2><p>Clicking an item loads the context instead of making you think through routing.</p></div></div>
+      <div class="cardHead">
+        <div><h2>Today's Command Center</h2><p>12 actions ready. Click any item to execute.</p></div>
+        <button class="btn" onclick="openCommand()">Add Action →</button>
+      </div>
       <div class="feed" id="feed"></div>
     </div>
+    <div class="card output" id="output"></div>
   </section>
 
-  <section id="page-assets" class="page"></section>
-  <section id="page-decisions" class="page"></section>
+  <section id="page-command" class="page">
+    <div class="hero"><h1 id="commandTitle">Command Center</h1><p id="commandSub">Tell the engine what needs to happen. It will route the work.</p></div>
+    <div class="card">
+      <div class="cardHead"><div><div class="label">AI Assistant</div><h2 id="commandQuestion">What do you need?</h2></div><button class="btn dark" id="runBtn">Generate</button></div>
+      <textarea id="input" placeholder="Example: Build proposal for the Ontario auto-loan dealership with SEO, social, Google Ads, and CPA under $100."></textarea>
+      <div class="quick">
+        <button onclick="quick('Build proposal for Ontario auto loan dealership.')">Build proposal</button>
+        <button onclick="quick('Create follow-up email.')">Follow-up</button>
+        <button onclick="quick('Validate CPA risk.')">Risk check</button>
+        <button onclick="quick('Prepare meeting brief.')">Meeting brief</button>
+      </div>
+    </div>
+    <div class="card output" id="commandOutput"></div>
+  </section>
+
   <section id="page-meetings" class="page"></section>
+  <section id="page-revenue" class="page"></section>
+  <section id="page-people" class="page"></section>
+  <section id="page-risks" class="page"></section>
+  <section id="page-assets" class="page"></section>
   <section id="page-admin" class="page"></section>
 </main>
 
 <aside class="right">
-  <div class="rpanel"><h3>What’s Next</h3><div id="nextBox"></div></div>
-  <div class="rpanel"><h3>Ready Assets</h3><div id="assetBox"></div></div>
-  <div class="rpanel"><h3>Follow-Ups</h3><div id="followBox"></div></div>
-  <div class="rpanel"><h3>Decisions</h3><div id="decisionBox"></div></div>
-  <div class="rpanel"><h3>System</h3><div class="rline green"><b id="sys">Checking…</b><span id="sys2">Backend connection</span></div></div>
+  <div class="rpanel"><h3>System Status</h3><div class="statusBox"><b id="sys">Checking…</b><span id="sys2">Backend connection</span></div></div>
+  <div class="rpanel"><h3>Tomorrow <span class="chip purple" style="float:right">5 ready</span></h3><div id="tomorrowBox"></div></div>
+  <div class="rpanel"><h3>Ready Assets <span onclick="show('assets')" style="float:right;color:#60a5fa;font-size:13px;cursor:pointer">View All</span></h3><div id="assetBox"></div></div>
+  <div class="rpanel"><h3>Active Risks</h3><div id="riskBox"></div></div>
 </aside>
 </div>
 <div id="toast" class="toast"></div>
@@ -202,87 +185,75 @@ pre{white-space:pre-wrap;background:#0b1220;color:#dbeafe;border-radius:14px;pad
 <script>
 const API_DEFAULT="https://executive-engine-os.onrender.com";
 let API=localStorage.getItem("ee_api")||API_DEFAULT;
-let context=null, latest=null;
+let latest=null, context=null, activeBrain="command";
 let state=load();
 
-const mission={
-  brain:"revenue", output_type:"proposal", title:"Ontario Auto Loan Growth Proposal",
-  input:"Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal."
-};
+const mission={brain:"revenue",title:"ABC HVAC Close Package",sub:"ABC HVAC - $50K Proposal",input:"Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal."};
 
-function starter(){return{assets:[],decisions:[],followups:[],actions:[],items:[
-  mission,
-  {brain:"communications",output_type:"follow-up",title:"Follow-up email",input:"Create follow-up email for the Ontario auto-loan dealership proposal."},
-  {brain:"risks",output_type:"brief",title:"CPA risk review",input:"Validate risk of promising $100 CPA for Ontario auto-loan dealership."},
-  {brain:"meetings",output_type:"brief",title:"Meeting prep",input:"Prepare meeting brief for Ontario auto-loan dealership proposal."}
+function starter(){return{assets:[],decisions:[],actions:[],risks:["Budget concern - ABC HVAC needs CEO call"],items:[
+ {brain:"people",title:"People Command Center",sub:"Sales Team - Offer Alignment",input:"Create people alignment plan for the sales team."},
+ {brain:"revenue",title:"Revenue Command Center",sub:"ABC HVAC - $50K Proposal",input:mission.input},
+ {brain:"revenue",title:"Tomorrow meeting with ABC HVAC about SEO, Google Ads",sub:"ABC HVAC - SEO + Ads Proposal",input:mission.input},
+ {brain:"revenue",title:"ABC HVAC Close Package",sub:"ABC HVAC - $50K Proposal",input:mission.input},
+ {brain:"meetings",title:"Meetings Command Center",sub:"ABC HVAC - SEO + Ads Proposal",input:"Prepare meeting brief for ABC HVAC SEO and ads proposal."},
+ {brain:"risks",title:"Risk Command Center",sub:"ABC HVAC - Budget Concern",input:"Assess risk and mitigation for ABC HVAC budget concern."}
 ]}}
-function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27000"))||starter()}catch(e){return starter()}}
-function save(){localStorage.setItem("ee_state_v27000",JSON.stringify(state));render()}
+function load(){try{return JSON.parse(localStorage.getItem("ee_state_v27010"))||starter()}catch(e){return starter()}}
+function save(){localStorage.setItem("ee_state_v27010",JSON.stringify(state));render()}
 function esc(s){return String(s??"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}
 function toast(m){let t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
-function setFlow(n){for(let i=1;i<=5;i++){let el=document.getElementById("f"+i);el.className="flowStep";if(i<n)el.classList.add("done");if(i===n)el.classList.add("active")}}
-function startMission(){context=mission;input.value=mission.input;input.focus();setFlow(2);toast("Mission context loaded")}
-function quick(t){if(context){input.value=t}else{input.value=t;context={brain:autoRoute(t),output_type:typeRoute(t),input:t,title:t}}input.focus();setFlow(2)}
-function autoRoute(t){t=t.toLowerCase();if(/proposal|revenue|seo|ads|cpa|sales|lead|auto loan|dealership/.test(t))return"revenue";if(/email|follow/.test(t))return"communications";if(/risk|legal|contract/.test(t))return"risks";if(/meeting|agenda/.test(t))return"meetings";return"command"}
-function typeRoute(t){t=t.toLowerCase();if(/proposal/.test(t))return"proposal";if(/email|follow/.test(t))return"follow-up";return"brief"}
-async function run(){
-  let txt=input.value.trim(); if(!txt)return toast("Add input first");
-  let brain=context&&txt.length<90?context.brain:autoRoute(txt);
-  let output_type=context&&txt.length<90?context.output_type:typeRoute(txt);
-  let finalInput=context&&txt.length<90?context.input+"\\n\\nUser command: "+txt:txt;
-  runBtn.disabled=true;runBtn.textContent="Running…";setFlow(2);
-  workspace.classList.add("show");workspace.innerHTML=`<div class="now"><small>Generating</small><b>Routing to ${esc(brain)} and building ${esc(output_type)}…</b></div>`;
-  try{
-    const res=await fetch(API+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:finalInput,brain,output_type,mode:"guided",depth:"standard"})});
-    const d=await res.json(); latest={...d,brain,output_type}; renderOutput(latest); setFlow(3);
-    if(d.actions?.[0])state.actions.unshift(d.actions[0]); if(d.decision)state.decisions.unshift(d); if(d.follow_up)state.followups.unshift(d.follow_up); save(); toast("Output ready");
-  }catch(e){workspace.innerHTML=`<div class="obox orange"><h4>Connection failed</h4><p>${esc(e.message)}</p></div>`}
-  finally{runBtn.disabled=false;runBtn.textContent="Run Engine"}
-}
-function renderOutput(d){
-  let acts=Array.isArray(d.actions)?d.actions:[];
-  workspace.innerHTML=`<div class="wsShell"><div>
-    <div class="now"><small>What To Do Now</small><b>${esc(d.what_to_do_now||d.next_move)}</b></div>
-    <div class="grid2"><div class="obox blue"><h4>Decision</h4><p>${esc(d.decision)}</p></div><div class="obox green"><h4>Next Move</h4><p>${esc(d.next_move)}</p></div></div>
-    <div class="obox" style="margin-top:12px"><h4>Actions</h4><div class="actions">${acts.map((a,i)=>`<div class="action"><i>${i+1}</i><span>${esc(a)}</span></div>`).join("")}</div></div>
-    <div class="grid3" style="margin-top:12px"><div class="obox orange"><h4>Risk</h4><p>${esc(d.risk)}</p></div><div class="obox blue"><h4>Priority</h4><p>${esc(d.priority)}</p></div><div class="obox green"><h4>Follow-Up</h4><p>${esc(d.follow_up)}</p></div></div>
-    <div class="obox" style="margin-top:12px"><h4>${esc(d.asset?.title||"Generated Asset")}</h4><p class="assetPreview">${esc(d.asset?.content||"No asset content returned.")}</p></div>
-    <div class="nextGuide"><h4>What happens next?</h4><p>Save the asset, then create the follow-up. That moves this from idea to execution.</p></div>
-  </div><div class="actionBar">
-    <button class="btn green" onclick="saveAsset()">Save Asset</button>
-    <button class="btn" onclick="createFollow()">Create Follow-Up</button>
-    <button class="btn light" onclick="saveDecision()">Save Decision</button>
-    <button class="btn orange" onclick="saveAction()">Add Action</button>
-  </div></div>`;
-}
-function saveAsset(){if(!latest?.asset)return toast("Run engine first");state.assets.unshift(latest.asset);save();fetch(API+"/save-asset",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest.asset)}).catch(()=>{});setFlow(4);toast("Asset saved")}
-function createFollow(){if(!latest)return toast("Run engine first");context={brain:"communications",output_type:"follow-up",input:`Create follow-up based on: ${latest.asset?.content||latest.decision}`};input.value="Create follow-up email.";input.focus();setFlow(5);toast("Follow-up loaded")}
-function saveDecision(){if(!latest)return toast("Run engine first");state.decisions.unshift(latest);save();fetch(API+"/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest)}).catch(()=>{});toast("Decision saved")}
-function saveAction(){if(!latest)return toast("Run engine first");let a=latest.actions?.[0]||latest.next_move;state.actions.unshift(a);save();fetch(API+"/save-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:a,priority:latest.priority})}).catch(()=>{});toast("Action added")}
 function show(p){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById("page-"+p).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));let el=document.querySelector(`.nav[data-page="${p}"]`);if(el)el.classList.add("active")}
-function openItem(i){context=state.items[i];input.value=context.input;show("today");input.focus();setFlow(2);toast("Context loaded")}
-function openDoc(type,i){show("today");let obj=type==="asset"?state.assets[i]:type==="decision"?state.decisions[i]:{title:"Follow-Up",content:state.followups[i]};workspace.classList.add("show");workspace.innerHTML=`<div class="detailTop"><div><div class="label">${esc(type)}</div><h2>${esc(obj.title||obj.asset?.title||"Record")}</h2></div><button class="btn light" onclick="workspace.classList.remove('show')">Close</button></div><div class="doc">${esc(obj.content||JSON.stringify(obj,null,2))}</div>`;workspace.scrollIntoView({behavior:"smooth"})}
+function openCommand(prefill="",brain="command"){activeBrain=brain;context=prefill?{input:prefill,brain}:null;show("command");commandTitle.textContent=brain==="command"?"Command Center":brain.charAt(0).toUpperCase()+brain.slice(1)+" Assistant";commandSub.textContent="Generate the next asset, decision, action, or follow-up.";input.value=prefill;input.focus()}
+function quick(t){input.value=t;input.focus()}
+function autoRoute(t){t=t.toLowerCase();if(/proposal|revenue|seo|ads|cpa|sales|lead|auto loan|dealership|hvac/.test(t))return"revenue";if(/email|follow/.test(t))return"communications";if(/risk|budget|concern/.test(t))return"risks";if(/meeting|agenda|prep/.test(t))return"meetings";if(/people|team|hire/.test(t))return"people";return activeBrain||"command"}
+async function run(){
+ let txt=input.value.trim();if(!txt)return toast("Add input first");
+ let brain=context?.brain||autoRoute(txt);let finalInput=context&&txt.length<90?context.input+"\\n\\nUser command: "+txt:txt;
+ runBtn.disabled=true;runBtn.textContent="Generating…";commandOutput.classList.add("show");commandOutput.innerHTML=`<div class="now"><small>Generating</small><b>Routing to ${esc(brain)} and building output…</b></div>`;
+ try{
+  let res=await fetch(API+"/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:finalInput,brain,output_type:"proposal",mode:"guided",depth:"standard"})});
+  let d=await res.json();latest=d;renderOutput(commandOutput,d);state.actions.unshift(d.actions?.[0]||d.next_move);state.decisions.unshift(d);if(d.asset?.content)state.assets.unshift(d.asset);save();toast("Output ready");
+ }catch(e){commandOutput.innerHTML=`<div class="obox orangeLine"><h4>Connection failed</h4><p>${esc(e.message)}</p></div>`}
+ finally{runBtn.disabled=false;runBtn.textContent="Generate"}
+}
+function renderOutput(el,d){
+ let acts=Array.isArray(d.actions)?d.actions:[];
+ el.innerHTML=`<div class="now"><small>What To Do Now</small><b>${esc(d.what_to_do_now||d.next_move)}</b></div>
+ <div class="grid2"><div class="obox blueLine"><h4>Decision</h4><p>${esc(d.decision)}</p></div><div class="obox greenLine"><h4>Next Move</h4><p>${esc(d.next_move)}</p></div></div>
+ <div class="obox" style="margin-top:12px"><h4>Actions</h4>${acts.map((a,i)=>`<div class="action"><i>${i+1}</i><span>${esc(a)}</span></div>`).join("")}</div>
+ <div class="grid3" style="margin-top:12px"><div class="obox orangeLine"><h4>Risk</h4><p>${esc(d.risk)}</p></div><div class="obox blueLine"><h4>Priority</h4><p>${esc(d.priority)}</p></div><div class="obox greenLine"><h4>Follow-Up</h4><p>${esc(d.follow_up)}</p></div></div>
+ <div class="obox" style="margin-top:12px"><h4>${esc(d.asset?.title||"Generated Asset")}</h4><p>${esc(d.asset?.content||"No asset content returned.")}</p></div>
+ <div class="row" style="margin-top:12px"><button class="btn green" onclick="saveAsset()">Save Asset</button><button class="btn" onclick="createFollow()">Create Follow-Up</button><button class="btn light" onclick="saveDecision()">Save Decision</button></div>`;
+}
+function saveAsset(){if(!latest?.asset)return toast("Run first");state.assets.unshift(latest.asset);save();fetch(API+"/save-asset",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest.asset)}).catch(()=>{});toast("Asset saved")}
+function saveDecision(){if(!latest)return toast("Run first");state.decisions.unshift(latest);save();fetch(API+"/save-decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(latest)}).catch(()=>{});toast("Decision saved")}
+function createFollow(){if(!latest)return toast("Run first");openCommand("Create follow-up email from the generated proposal.","communications");context={brain:"communications",input:`Create follow-up based on: ${latest.asset?.content||latest.decision}`};toast("Follow-up loaded")}
+function openDoc(type,i){show("dashboard");let obj=type==="asset"?state.assets[i]:state.decisions[i];output.classList.add("show");output.innerHTML=`<div class="label">${esc(type)}</div><h2>${esc(obj.title||obj.asset?.title||"Record")}</h2><div class="doc">${esc(obj.content||JSON.stringify(obj,null,2))}</div>`;output.scrollIntoView({behavior:"smooth"})}
 function render(){
-  feed.innerHTML=state.items.map((x,i)=>`<div class="item" onclick="openItem(${i})"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.input.slice(0,120))}</span></div><span class="chip ${i==0?'orange':''}">${esc(x.brain)}</span></div>`).join("");
-  nextBox.innerHTML=(state.actions[0]?`<div class="rline orange"><b>${esc(state.actions[0])}</b><span>Latest action</span></div>`:`<div class="rline orange"><b>Start the proposal</b><span>Click Start This</span></div>`);
-  assetBox.innerHTML=state.assets.slice(0,4).map((a,i)=>`<div class="rline green" onclick="openDoc('asset',${i})"><b>${esc(a.title)}</b><span>${esc(a.type||"asset")} · open</span></div>`).join("")||`<div class="rline"><b>No assets yet</b><span>Save after output.</span></div>`;
-  followBox.innerHTML=state.followups.slice(0,4).map((f,i)=>`<div class="rline green" onclick="openDoc('followup',${i})"><b>${esc(f.slice(0,60))}</b><span>Open follow-up</span></div>`).join("")||`<div class="rline"><b>No follow-ups yet</b><span>Create one after asset.</span></div>`;
-  decisionBox.innerHTML=state.decisions.slice(0,4).map((d,i)=>`<div class="rline" onclick="openDoc('decision',${i})"><b>${esc(d.decision)}</b><span>${esc(d.priority||"")}</span></div>`).join("")||`<div class="rline"><b>No decisions yet</b><span>Save after output.</span></div>`;
-  renderPages();
+ readyCount.textContent=state.items.length;
+ feed.innerHTML=state.items.map((x,i)=>`<div class="item" onclick="openCommand(${JSON.stringify(x.input).replace(/"/g,'&quot;')},'${x.brain}')"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.sub)}</span></div><span class="chip ${x.brain==='revenue'?'green':x.brain==='risks'?'orange':x.brain==='people'?'purple':''}">${esc(x.brain)}</span></div>`).join("");
+ tomorrowBox.innerHTML=`<div class="rline"><b>Decision-call follow-up</b><span>ABC HVAC · Prepared</span></div><div class="rline"><b>Q2 Budget Review</b><span>Leadership · Prepared</span></div>`;
+ assetBox.innerHTML=state.assets.slice(0,3).map((a,i)=>`<div class="rline" onclick="openDoc('asset',${i})"><b>${esc(a.title)}</b><span>${esc(a.type||"Asset")} · Open</span></div>`).join("")||`<div class="rline"><b>ABC HVAC Proposal</b><span>PDF · ready example</span></div>`;
+ riskBox.innerHTML=state.risks.map(r=>`<div class="rline orange"><b>${esc(r)}</b><span>Needs review</span></div>`).join("");
+ renderPages();
+}
+function featurePage(id,title,sub,color,featureTitle,featureSub,brain){
+ document.getElementById("page-"+id).innerHTML=`<div class="splitPage"><div><div class="hero"><h1>${title}</h1><p>${sub}</p></div><div class="feature ${color}"><small style="text-transform:uppercase;font-weight:950;letter-spacing:.1em">Top priority</small><h2>${featureTitle}</h2><p>${featureSub}</p><div class="row"><button class="btn light" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')">Prepare Now</button><button class="btn" style="background:rgba(255,255,255,.15)" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')">View Details</button></div></div><h2>Today</h2><div class="feed"><div class="item" onclick="openCommand('${featureSub.replace(/'/g,"\\'")}','${brain}')"><div class="num">1</div><div><b>${featureTitle}</b><span>${featureSub}</span></div><span class="chip">Open</span></div></div><div class="assistant"><label>AI Assistant</label><input id="${id}Input" placeholder="What do you need?"><button class="btn" onclick="openCommand(document.getElementById('${id}Input').value,'${brain}')">Generate</button></div></div><div class="panelStack"><h2>This Week</h2><div class="metric"><b>8</b><span>Total items</span></div><div class="metric"><b>6</b><span>Prepared</span></div><div class="metric"><b style="color:var(--orange)">2</b><span>Need prep</span></div></div></div>`;
 }
 function renderPages(){
-  pageAssets.innerHTML=`<div class="hero"><div class="eyebrow">Assets</div><h1>Ready assets.</h1><p>Open any saved asset in a detail view.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'asset')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No assets yet</b><span>Run the engine and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
-  pageDecisions.innerHTML=`<div class="hero"><div class="eyebrow">Decisions</div><h1>Decision log.</h1><p>Open decisions to review the full context.</p></div><div class="card"><div class="feed">${state.decisions.length?state.decisions.map((d,i)=>`<div class="item" onclick="openDoc('decision',${i})"><div class="num">${i+1}</div><div><b>${esc(d.decision)}</b><span>${esc(d.next_move||'')}</span></div><span class="chip">${esc(d.priority||'')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No decisions yet</b><span>Run the engine and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
-  pageMeetings.innerHTML=`<div class="hero"><div class="eyebrow">Meetings</div><h1>Meeting prep.</h1><p>Click a meeting item to load it into the Today workflow.</p></div><div class="card"><div class="feed">${state.items.filter(x=>x.brain==='meetings').map((x,i)=>`<div class="item" onclick="context=${JSON.stringify(x).replace(/"/g,'&quot;')};show('today');input.value=context.input;setFlow(2)"><div class="num">${i+1}</div><div><b>${esc(x.title)}</b><span>${esc(x.input)}</span></div><span class="chip">Prep</span></div>`).join("")}</div></div>`;
-  pageAdmin.innerHTML=`<div class="hero"><div class="eyebrow">Admin</div><h1>System tests.</h1><p>Frontend only. Backend remains unchanged.</p></div><div class="card"><label>API Base</label><input id="api" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-top:8px" value="${esc(API)}"><div style="display:flex;gap:10px;margin-top:12px"><button class="btn dark" onclick="saveApi()">Save API</button><button class="btn" onclick="testRoute('/test-report')">Test Report</button><button class="btn light" onclick="testRoute('/debug')">Debug</button></div><pre id="adminOut">Ready.</pre></div>`;
+ featurePage("meetings","Meetings","3 today • 2 need prep","orange","ABC HVAC Strategy Meeting","Prepare agenda, talking points, objections, and follow-up.","meetings");
+ featurePage("revenue","Revenue","$2.4M MRR • +12% MoM • $700K pipeline closing this week","green","ABC HVAC - $150K Annual","Review deal, prep close plan, build proposal, and follow-up.","revenue");
+ featurePage("people","People Command Center","Sales Team • Offer Alignment • Hiring Strategy","purple","Sales Team Alignment","Create alignment plan and execution rhythm for the team.","people");
+ featurePage("risks","Risks","Budget concerns • blockers • decision exposure","orange","Budget concern","Assess risk, create mitigation, and define next executive action.","risks");
+ pageAssets.innerHTML=`<div class="hero"><h1>Assets</h1><p>Saved proposals, briefs, emails, and generated work.</p></div><div class="card"><div class="feed">${state.assets.length?state.assets.map((a,i)=>`<div class="item" onclick="openDoc('asset',${i})"><div class="num">${i+1}</div><div><b>${esc(a.title)}</b><span>${esc((a.content||'').slice(0,130))}</span></div><span class="chip green">${esc(a.type||'Asset')}</span></div>`).join(""):`<div class="item"><div class="num">0</div><div><b>No assets yet</b><span>Generate and save one.</span></div><span class="chip">Empty</span></div>`}</div></div>`;
+ pageAdmin.innerHTML=`<div class="hero"><h1>Admin / Tests</h1><p>Verify backend routes.</p></div><div class="card"><input id="api" value="${esc(API)}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px"><div class="row" style="margin-top:12px"><button class="btn dark" onclick="saveApi()">Save API</button><button class="btn" onclick="testRoute('/test-report')">Test Report</button><button class="btn light" onclick="testRoute('/debug')">Debug</button></div><pre id="adminOut">Ready.</pre></div>`;
 }
-function saveApi(){API=api.value.trim()||API_DEFAULT;localStorage.setItem("ee_api",API);toast("API saved");check()}
+function saveApi(){API=api.value.trim()||API_DEFAULT;localStorage.setItem("ee_api",API);check();toast("API saved")}
 async function testRoute(r){adminOut.textContent="Testing…";try{let res=await fetch(API+r);adminOut.textContent=JSON.stringify(await res.json(),null,2)}catch(e){adminOut.textContent=e.message}}
-async function check(){try{let r=await fetch(API+"/test-report");let j=await r.json();sys.textContent=j.openai_key_loaded?"Backend live / key loaded":"Backend live / key issue";sys2.textContent=(j.version||"live")+" · "+(j.model||"")}catch(e){sys.textContent="Backend not connected";sys2.textContent=e.message}}
+async function check(){try{let r=await fetch(API+"/test-report");let j=await r.json();sys.textContent=j.openai_key_loaded?"ALL SYSTEMS GO":"Backend live / key issue";sys2.textContent=`${state.items.length} actions ready • 0 blockers`}catch(e){sys.textContent="Backend not connected";sys2.textContent=e.message}}
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>show(b.dataset.page));
-newBtn.onclick=()=>{show("today");input.focus()};
 runBtn.onclick=run;
-search.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){show("today");input.value=e.target.value.trim();e.target.value="";input.focus()}});
+search.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.value.trim()){openCommand(e.target.value.trim());e.target.value=""}});
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();run()}});
 render();check();
 </script>
