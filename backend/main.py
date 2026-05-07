@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from openai import OpenAI
 from anthropic import Anthropic
 import os, json, re
 from datetime import datetime
 
-VERSION = "34000-autonomous-executive-operator"
+VERSION = "34010-backend-html-test-report-console"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -638,8 +639,107 @@ def debug():
         "memory_counts": {k: len(v) if not isinstance(v, dict) else len(v.keys()) for k, v in MEMORY.items()},
     }
 
-@app.get("/test-report")
+
+def service_test_console_html():
+    return """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Executive Engine OS — Backend Test Console</title>
+  <style>
+    :root{--bg:#f7f7f5;--ink:#070707;--line:#dfdfdb;--card:#fff;--orange:#ff5a1f;--green:#00a66a;--shadow:0 24px 70px rgba(0,0,0,.10);--radius:22px}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:650}
+    .wrap{max-width:1180px;margin:0 auto;padding:58px 24px 80px}
+    h1{font-size:54px;line-height:.96;margin:0 0 10px;letter-spacing:-.06em;font-weight:950}
+    .sub{font-size:18px;color:#3f3f3f;margin:0 0 34px;font-weight:500}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+    .label{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#676767;font-weight:950;margin-bottom:12px}
+    input{width:100%;border:1px solid var(--line);background:#fff;border-radius:16px;padding:18px 20px;font:inherit;outline:none;margin-bottom:16px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 10px}
+    button{border:0;border-radius:14px;padding:15px 22px;font-weight:950;cursor:pointer;background:#111;color:white}
+    button.orange{background:var(--orange)}button.light{background:white;color:#111;border:1px solid var(--line)}button:disabled{opacity:.55;cursor:not-allowed}
+    .small{font-size:13px;color:#737373;font-weight:600}.services{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+    .svc{border:1px solid var(--line);border-radius:16px;background:#fff;padding:15px;cursor:pointer;transition:.15s ease}.svc:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+    .svc strong{display:block;font-size:14px;margin-bottom:6px}.svc code{font-size:12px;color:#696969;word-break:break-all}
+    .status{margin-top:10px;display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 10px;font-size:12px;background:#eee;color:#333;font-weight:950}
+    .status.ok{background:#e9fff5;color:#04734c}.status.fail{background:#fff0ed;color:#c22512}.status.wait{background:#f3f4f6;color:#4b5563}
+    .dot{width:8px;height:8px;border-radius:99px;background:currentColor;display:inline-block}
+    .console{background:#030303;color:#f9fafb;border-radius:18px;padding:20px;min-height:520px;white-space:pre-wrap;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.55;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.metric{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+    .metric strong{display:block;font-size:31px;letter-spacing:-.05em}.metric span{font-size:12px;color:#6f6f6f;text-transform:uppercase;letter-spacing:.12em;font-weight:950}
+    .topline{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.badge{border:1px solid var(--line);border-radius:999px;padding:9px 13px;background:#fff;font-size:13px;font-weight:950}
+    .badge.live{background:#e9fff5;color:#04734c;border-color:#b5efd5}.footer{margin-top:14px;color:#747474;font-size:13px;font-weight:600}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}h1{font-size:42px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topline">
+      <div><h1>Executive Engine Service Test Console</h1><p class="sub">Backend-hosted console for testing operator, workspace, memory, provider, and system routes.</p></div>
+      <span class="badge live" id="topStatus">● Ready</span>
+    </div>
+    <section class="grid">
+      <div class="card">
+        <div class="label">Backend Base URL</div>
+        <input id="baseUrl" value="https://executive-engine-os.onrender.com" />
+        <div class="actions">
+          <button id="runAllBtn" onclick="runAll()">Run All Tests</button>
+          <button class="orange" onclick="runCritical()">Run Critical</button>
+          <button class="light" onclick="copyOutput()">Copy Output</button>
+          <button class="light" onclick="clearOutput()">Clear</button>
+        </div>
+        <div class="small">Tests 10 live service URLs. Click any service card to run it individually.</div>
+        <div class="summary">
+          <div class="metric"><span>Passed</span><strong id="passed">0</strong></div>
+          <div class="metric"><span>Failed</span><strong id="failed">0</strong></div>
+          <div class="metric"><span>Total ms</span><strong id="totalMs">0</strong></div>
+        </div>
+        <div class="services" id="services"></div>
+        <div class="footer">Backend route: <strong>/test-report</strong>. JSON available at <strong>/test-report-json</strong>.</div>
+      </div>
+      <div class="card"><div class="label">Test Output</div><div class="console" id="output">Click “Run All Tests” to verify Executive Engine OS services.</div></div>
+    </section>
+  </main>
+<script>
+const services=[
+{name:"Root",method:"GET",path:"/",critical:true},
+{name:"Health",method:"GET",path:"/health",critical:true},
+{name:"Test Report JSON",method:"GET",path:"/test-report-json",critical:true},
+{name:"Providers",method:"GET",path:"/providers",critical:true},
+{name:"Debug",method:"GET",path:"/debug",critical:true},
+{name:"Operator Scan",method:"GET",path:"/operator-scan",critical:false},
+{name:"Workspace State",method:"GET",path:"/workspace-state",critical:false},
+{name:"Workspace Summary",method:"GET",path:"/workspace-summary",critical:false},
+{name:"Mission State",method:"GET",path:"/mission-state",critical:false},
+{name:"Engine State",method:"GET",path:"/engine-state",critical:false}
+];
+let results={};function $(id){return document.getElementById(id)}
+function renderServices(){$("services").innerHTML=services.map((s,i)=>`<div class="svc" onclick="runOne(${i})"><strong>${s.name}</strong><code>${s.method} ${s.path}</code><br><span id="status-${i}" class="status wait"><span class="dot"></span> Not tested</span></div>`).join("")}
+function setStatus(i,type,text){const el=$("status-"+i);if(!el)return;el.className="status "+(type||"wait");el.innerHTML=`<span class="dot"></span> ${text}`}
+function base(){return $("baseUrl").value.replace(/\/+$/,"")}
+async function runOne(i){const s=services[i];setStatus(i,"wait","Testing...");const start=performance.now();try{const res=await fetch(base()+s.path,{method:s.method,headers:{"Accept":"application/json"}});const text=await res.text();const ms=Math.round(performance.now()-start);let body;try{body=JSON.parse(text)}catch(e){body=text.slice(0,500)}const ok=res.ok&&!(body&&body.detail==="Not Found");results[s.path]={name:s.name,path:s.path,ok,status:res.status,ms,body};setStatus(i,ok?"ok":"fail",`${res.status} · ${ms}ms`);logResult(s,results[s.path]);updateSummary();return results[s.path]}catch(e){const ms=Math.round(performance.now()-start);results[s.path]={name:s.name,path:s.path,ok:false,status:"FETCH_FAILED",ms,error:e.message};setStatus(i,"fail",`Failed · ${ms}ms`);logResult(s,results[s.path]);updateSummary();return results[s.path]}}
+async function runAll(){$("runAllBtn").disabled=true;$("topStatus").textContent="● Running";results={};$("output").textContent=`EXECUTIVE ENGINE OS SERVICE TEST\\nStarted: ${new Date().toISOString()}\\nBase: ${base()}\\n\\n`;for(let i=0;i<services.length;i++){await runOne(i)}$("topStatus").textContent="● Complete";$("runAllBtn").disabled=false;finalReport()}
+async function runCritical(){$("output").textContent=`EXECUTIVE ENGINE OS CRITICAL TEST\\nStarted: ${new Date().toISOString()}\\nBase: ${base()}\\n\\n`;for(let i=0;i<services.length;i++){if(services[i].critical)await runOne(i)}finalReport()}
+function logResult(service,r){const header=`${r.ok?"PASS":"FAIL"} — ${service.name} (${service.method} ${service.path}) — ${r.status} — ${r.ms}ms`;const body=r.error?{error:r.error}:r.body;$("output").textContent+=`${header}\\n${JSON.stringify(body,null,2)}\\n\\n`;$("output").scrollTop=$("output").scrollHeight}
+function updateSummary(){const vals=Object.values(results);$("passed").textContent=vals.filter(r=>r.ok).length;$("failed").textContent=vals.filter(r=>!r.ok).length;$("totalMs").textContent=vals.reduce((a,r)=>a+(r.ms||0),0);$("topStatus").textContent=vals.some(r=>!r.ok)?"● Issues Found":"● Healthy"}
+function finalReport(){const vals=Object.values(results);const summary={timestamp:new Date().toISOString(),base_url:base(),total:vals.length,passed:vals.filter(r=>r.ok).length,failed:vals.filter(r=>!r.ok).length,total_ms:vals.reduce((a,r)=>a+(r.ms||0),0),failed_routes:vals.filter(r=>!r.ok).map(r=>({name:r.name,path:r.path,status:r.status,error:r.error||null}))};$("output").textContent+=`FINAL SUMMARY\\n${JSON.stringify(summary,null,2)}\\n`;updateSummary()}
+function copyOutput(){navigator.clipboard.writeText($("output").textContent||"")}
+function clearOutput(){results={};$("output").textContent="Output cleared.";services.forEach((_,i)=>setStatus(i,"wait","Not tested"));updateSummary()}
+renderServices();
+</script>
+</body>
+</html>"""
+
+
+@app.get("/test-report", response_class=HTMLResponse)
 def test_report():
+    return HTMLResponse(content=service_test_console_html(), status_code=200)
+
+@app.get("/test-report-json")
+def test_report_json():
     report = {
         "status": "ok",
         "version": VERSION,
