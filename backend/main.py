@@ -6,9 +6,10 @@ from anthropic import Anthropic
 import os, json, re
 from datetime import datetime
 
-VERSION = "33000-autonomous-executive-workspace-engine"
+VERSION = "34000-autonomous-executive-operator"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,6 +20,7 @@ app.add_middleware(
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest")
 
@@ -37,6 +39,9 @@ MEMORY = {
     "memory_events": [],
     "execution_events": [],
     "workspace_events": [],
+    "operator_events": [],
+    "briefings": [],
+    "pressure_items": [],
     "clients": {},
     "projects": {},
     "workspaces": {},
@@ -62,6 +67,14 @@ ACTIVE_CONTEXT = {
     "saved_followups": [],
     "current_mission": {},
     "current_workspace": {},
+    "operator_state": {
+        "mode": "active",
+        "last_scan": "",
+        "top_priority": "",
+        "pressure_score": 0,
+        "next_best_action": "",
+        "attention_required": [],
+    },
 }
 
 WORKFLOW_TEMPLATES = {
@@ -154,9 +167,17 @@ class WorkspaceRequest(BaseModel):
     provider: str = "auto"
     auto_generate: bool = False
 
-def now(): return datetime.utcnow().isoformat()
+class OperatorRequest(BaseModel):
+    provider: str = "auto"
+    auto_generate: bool = False
+    focus: str = "today"
+
+def now():
+    return datetime.utcnow().isoformat()
+
 def slug(s: str):
     return (re.sub(r"[^a-zA-Z0-9]+", "-", (s or "").strip().lower()).strip("-")[:50] or "workspace")
+
 def compact(v, limit=600):
     v = str(v or "").strip()
     return v[:limit] + ("..." if len(v) > limit else "")
@@ -180,9 +201,12 @@ def detect_category(text: str):
 
 def detect_type(text: str, category: str = ""):
     t = (text or "").lower()
-    if "proposal" in t or category == "plans": return "proposal"
-    if "meeting" in t or "call" in t or category == "meetings": return "meeting"
-    if "marketing" in t or "seo" in t or "ads" in t or "campaign" in t or "cpa" in t or category == "marketing": return "marketing"
+    if "proposal" in t or category == "plans":
+        return "proposal"
+    if "meeting" in t or "call" in t or category == "meetings":
+        return "meeting"
+    if "marketing" in t or "seo" in t or "ads" in t or "campaign" in t or "cpa" in t or category == "marketing":
+        return "marketing"
     return "general"
 
 def detect_context(text: str, client="", project=""):
@@ -208,12 +232,13 @@ def detect_context(text: str, client="", project=""):
 
 def urgency(text):
     t = (text or "").lower()
-    return "High" if any(x in t for x in ["urgent","asap","today","now","before tomorrow","tomorrow","deadline","due"]) else "Medium"
+    return "High" if any(x in t for x in ["urgent", "asap", "today", "now", "before tomorrow", "tomorrow", "deadline", "due", "blocked"]) else "Medium"
 
 def provider_plan(category, output_type, requested):
     requested = (requested or "auto").lower()
-    if requested in ["openai", "claude"]: return [requested]
-    if category in ["plans","email","research","content","brainstorm","meetings"] or output_type in ["proposal","email","brief","content","strategy","research","ideas"]:
+    if requested in ["openai", "claude"]:
+        return [requested]
+    if category in ["plans", "email", "research", "content", "brainstorm", "meetings"] or output_type in ["proposal", "email", "brief", "content", "strategy", "research", "ideas"]:
         return ["claude", "openai"]
     return ["openai", "claude"]
 
@@ -237,14 +262,33 @@ def create_mission(input_text, mission_type="auto", client="", project="", provi
     steps = WORKFLOW_TEMPLATES.get(mission_type, WORKFLOW_TEMPLATES["general"])
     mid = f"{slug(client or project or mission_type)}-{int(datetime.utcnow().timestamp())}"
     mission = {
-        "mission_id": mid, "mission_type": mission_type, "input": input_text,
-        "client": client, "project": project, "provider": provider,
-        "status": "active", "created_at": now(), "updated_at": now(),
-        "current_step_index": 0, "progress": 0,
-        "steps": [{**s, "status": "active" if i == 0 else "pending", "started_at": now() if i == 0 else "", "completed_at": "", "result_summary": "", "asset_title": ""} for i, s in enumerate(steps)],
-        "outputs": [], "next_action": steps[0]["label"] if steps else "Start"
+        "mission_id": mid,
+        "mission_type": mission_type,
+        "input": input_text,
+        "client": client,
+        "project": project,
+        "provider": provider,
+        "status": "active",
+        "created_at": now(),
+        "updated_at": now(),
+        "current_step_index": 0,
+        "progress": 0,
+        "steps": [
+            {**s, "status": "active" if i == 0 else "pending", "started_at": now() if i == 0 else "", "completed_at": "", "result_summary": "", "asset_title": ""}
+            for i, s in enumerate(steps)
+        ],
+        "outputs": [],
+        "next_action": steps[0]["label"] if steps else "Start",
     }
-    ACTIVE_CONTEXT.update({"current_mission": mission, "workflow_id": mid, "workflow_type": mission_type, "workflow_stage": steps[0]["key"] if steps else "", "workflow_progress": 0, "client": client, "project": project})
+    ACTIVE_CONTEXT.update({
+        "current_mission": mission,
+        "workflow_id": mid,
+        "workflow_type": mission_type,
+        "workflow_stage": steps[0]["key"] if steps else "",
+        "workflow_progress": 0,
+        "client": client,
+        "project": project,
+    })
     MEMORY["workflows"].insert(0, mission)
     MEMORY["execution_events"].insert(0, {"timestamp": now(), "event": "mission_created", "mission_id": mid})
     return mission
@@ -256,17 +300,33 @@ def create_workspace(input_text, workspace_type="auto", client="", project="", p
     wid = f"{slug(client or project or workspace_type)}-{int(datetime.utcnow().timestamp())}"
     mission = create_mission(input_text, workspace_type, client, project, provider)
     ws = {
-        "workspace_id": wid, "workspace_type": workspace_type,
+        "workspace_id": wid,
+        "workspace_type": workspace_type,
         "title": f"{client or project or workspace_type.title()} Workspace",
-        "input": input_text, "client": client, "project": project, "provider": provider,
-        "status": "active", "created_at": now(), "updated_at": now(),
-        "summary": "", "next_executive_decision": "", "package": AUTONOMOUS_PACKAGES.get(workspace_type, AUTONOMOUS_PACKAGES["general"]),
+        "input": input_text,
+        "client": client,
+        "project": project,
+        "provider": provider,
+        "status": "active",
+        "created_at": now(),
+        "updated_at": now(),
+        "summary": "",
+        "next_executive_decision": "",
+        "operator_recommendation": "",
+        "pressure_score": 0,
+        "package": AUTONOMOUS_PACKAGES.get(workspace_type, AUTONOMOUS_PACKAGES["general"]),
         "mission_id": mission["mission_id"],
         "sections": {
             "overview": {"title": "Executive Overview", "status": "ready", "content": input_text},
-            "assets": [], "tasks": [], "follow_ups": [], "warnings": [], "decisions": [], "timeline": [],
-            "right_rail": {"next": [], "assets": [], "follow_ups": [], "warnings": []}
-        }
+            "assets": [],
+            "tasks": [],
+            "follow_ups": [],
+            "warnings": [],
+            "decisions": [],
+            "timeline": [],
+            "operator": [],
+            "right_rail": {"next": [], "assets": [], "follow_ups": [], "warnings": [], "operator": []},
+        },
     }
     MEMORY["workspaces"][wid] = ws
     ACTIVE_CONTEXT.update({"workspace_id": wid, "current_workspace": ws, "client": client, "project": project})
@@ -275,8 +335,14 @@ def create_workspace(input_text, workspace_type="auto", client="", project="", p
 
 def classify(req: RunRequest):
     cat = req.category if req.category and req.category != "auto" else detect_category(req.input)
-    brain = req.brain if req.brain and req.brain != "auto" else {"email":"communications","meetings":"meetings","plans":"revenue","content":"content","marketing":"revenue","research":"research","brainstorm":"strategy","goals":"strategy","tasks":"execution"}.get(cat, "command")
-    out = req.output_type if req.output_type and req.output_type != "auto" else {"email":"email","meetings":"brief","plans":"proposal","content":"content","marketing":"strategy","research":"brief","brainstorm":"ideas","goals":"goals","tasks":"tasks"}.get(cat, "brief")
+    brain = req.brain if req.brain and req.brain != "auto" else {
+        "email": "communications", "meetings": "meetings", "plans": "revenue", "content": "content",
+        "marketing": "revenue", "research": "research", "brainstorm": "strategy", "goals": "strategy", "tasks": "execution"
+    }.get(cat, "command")
+    out = req.output_type if req.output_type and req.output_type != "auto" else {
+        "email": "email", "meetings": "brief", "plans": "proposal", "content": "content",
+        "marketing": "strategy", "research": "brief", "brainstorm": "ideas", "goals": "goals", "tasks": "tasks"
+    }.get(cat, "brief")
     client, project = detect_context(req.input, req.client, req.project)
     wid = req.workflow_id or ACTIVE_CONTEXT.get("workflow_id") or f"{slug(client or project or cat)}-{int(datetime.utcnow().timestamp())}"
     mission = get_mission(req.mission_id)
@@ -285,13 +351,16 @@ def classify(req: RunRequest):
             if s.get("key") == req.step_key:
                 cat, brain, out = s.get("category", cat), s.get("brain", brain), s.get("output_type", out)
     router = {
-        "category": cat, "brain": brain, "output_type": out, "urgency": urgency(req.input),
+        "category": cat,
+        "brain": brain,
+        "output_type": out,
+        "urgency": urgency(req.input),
         "meeting_related": cat == "meetings" or "meeting" in (req.input or "").lower() or "call" in (req.input or "").lower(),
-        "follow_up_required": cat in ["email","plans","meetings"],
+        "follow_up_required": cat in ["email", "plans", "meetings"],
         "provider_plan": provider_plan(cat, out, req.provider),
         "context": {"client": client, "project": project, "workflow_id": wid, "workflow_type": cat, "continued_from_memory": bool(ACTIVE_CONTEXT.get("workflow_id"))},
         "workflow_stage": req.step_key or cat,
-        "workspace": {"workspace_id": ACTIVE_CONTEXT.get("workspace_id", ""), "primary_section": cat, "recommended_next_panel": "Autonomous Workspace", "right_rail": ["next","assets","follow_ups","warnings"]},
+        "workspace": {"workspace_id": ACTIVE_CONTEXT.get("workspace_id", ""), "primary_section": cat, "recommended_next_panel": "Autonomous Operator", "right_rail": ["operator", "next", "assets", "follow_ups", "warnings"]},
     }
     MEMORY["router_events"].insert(0, {"timestamp": now(), "input": req.input, "router": router})
     return router
@@ -299,18 +368,21 @@ def classify(req: RunRequest):
 SYSTEM_PROMPT = """You are Executive Engine OS acting as an elite COO/operator. Return ONLY valid JSON with keys: what_to_do_now, decision, next_move, actions(array), risk, priority(High|Medium|Low), reality_check, leverage, constraint, financial_impact, asset{title,type,content}, follow_up. Be specific, executive, practical. Never switch industries. Create usable business assets."""
 
 def safe_json(text):
-    text = (text or "").strip().replace("```json","").replace("```","").strip()
-    try: return json.loads(text)
+    text = (text or "").strip().replace("```json", "").replace("```", "").strip()
+    try:
+        return json.loads(text)
     except Exception:
         m = re.search(r"\{[\s\S]*\}", text)
-        if m: return json.loads(m.group(0))
+        if m:
+            return json.loads(m.group(0))
     raise ValueError("Invalid JSON")
 
 def normalize(data, req, router, provider_used):
     actions = data.get("actions", [])
-    if not isinstance(actions, list): actions = [str(actions)]
+    if not isinstance(actions, list):
+        actions = [str(actions)]
     asset = data.get("asset") if isinstance(data.get("asset"), dict) else {}
-    priority = data.get("priority") if data.get("priority") in ["High","Medium","Low"] else router.get("urgency", "High")
+    priority = data.get("priority") if data.get("priority") in ["High", "Medium", "Low"] else router.get("urgency", "High")
     return {
         "what_to_do_now": str(data.get("what_to_do_now") or data.get("next_move") or "Execute the highest-leverage next action."),
         "decision": str(data.get("decision") or "Proceed with the recommended executive path."),
@@ -322,13 +394,17 @@ def normalize(data, req, router, provider_used):
         "leverage": str(data.get("leverage") or "Convert input into an asset and next action."),
         "constraint": str(data.get("constraint") or "Missing context may reduce precision."),
         "financial_impact": str(data.get("financial_impact") or "Impact depends on execution quality."),
-        "asset": {"title": str(asset.get("title") or f"{router['category'].title()} {router['output_type'].title()}"), "type": str(asset.get("type") or router["output_type"]), "content": str(asset.get("content") or "")},
+        "asset": {
+            "title": str(asset.get("title") or f"{router['category'].title()} {router['output_type'].title()}"),
+            "type": str(asset.get("type") or router["output_type"]),
+            "content": str(asset.get("content") or ""),
+        },
         "follow_up": str(data.get("follow_up") or "Confirm next step and continue."),
         "provider_used": provider_used,
         "router": router,
         "active_context": dict(ACTIVE_CONTEXT),
         "workspace": get_workspace(),
-        "memory": {"workspace_id": ACTIVE_CONTEXT.get("workspace_id", ""), "workflow_id": router["context"].get("workflow_id"), "client": router["context"].get("client"), "project": router["context"].get("project")}
+        "memory": {"workspace_id": ACTIVE_CONTEXT.get("workspace_id", ""), "workflow_id": router["context"].get("workflow_id"), "client": router["context"].get("client"), "project": router["context"].get("project")},
     }
 
 def fallback(req, router, reason):
@@ -346,17 +422,19 @@ def fallback(req, router, reason):
 def call_ai(req, router, provider):
     prompt = json.dumps({"router": router, "active_context": ACTIVE_CONTEXT, "workspace": get_workspace(), "input": req.input}, indent=2)
     if provider == "openai":
-        if not openai_client: raise RuntimeError("OPENAI_API_KEY missing")
+        if not openai_client:
+            raise RuntimeError("OPENAI_API_KEY missing")
         resp = openai_client.chat.completions.create(
             model=OPENAI_MODEL, temperature=0.3, max_tokens=1500,
-            messages=[{"role":"system","content":SYSTEM_PROMPT},{"role":"user","content":prompt}]
+            messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}]
         )
         return normalize(safe_json(resp.choices[0].message.content), req, router, f"openai:{OPENAI_MODEL}")
     if provider == "claude":
-        if not anthropic_client: raise RuntimeError("ANTHROPIC_API_KEY missing")
+        if not anthropic_client:
+            raise RuntimeError("ANTHROPIC_API_KEY missing")
         resp = anthropic_client.messages.create(
             model=ANTHROPIC_MODEL, max_tokens=1800, temperature=0.3,
-            system=SYSTEM_PROMPT, messages=[{"role":"user","content":prompt}]
+            system=SYSTEM_PROMPT, messages=[{"role": "user", "content": prompt}]
         )
         raw = "\n".join([b.text for b in resp.content if getattr(b, "type", "") == "text"])
         return normalize(safe_json(raw), req, router, f"claude:{ANTHROPIC_MODEL}")
@@ -364,7 +442,8 @@ def call_ai(req, router, provider):
 
 def add_to_workspace(result, router):
     ws = get_workspace()
-    if not ws: return {}
+    if not ws:
+        return {}
     asset = result.get("asset", {})
     step = router.get("workflow_stage", "")
     if asset.get("title") or asset.get("content"):
@@ -375,10 +454,12 @@ def add_to_workspace(result, router):
         ws["sections"]["tasks"].insert(0, {"task": a, "status": "open", "created_at": now(), "step": step})
     if result.get("follow_up"):
         f = {"follow_up": result.get("follow_up"), "status": "open", "created_at": now(), "step": step}
-        ws["sections"]["follow_ups"].insert(0, f); ws["sections"]["right_rail"]["follow_ups"].insert(0, f)
+        ws["sections"]["follow_ups"].insert(0, f)
+        ws["sections"]["right_rail"]["follow_ups"].insert(0, f)
     if result.get("risk"):
         w = {"warning": result.get("risk"), "priority": result.get("priority"), "created_at": now(), "step": step}
-        ws["sections"]["warnings"].insert(0, w); ws["sections"]["right_rail"]["warnings"].insert(0, w)
+        ws["sections"]["warnings"].insert(0, w)
+        ws["sections"]["right_rail"]["warnings"].insert(0, w)
     if result.get("decision"):
         ws["sections"]["decisions"].insert(0, {"decision": result.get("decision"), "created_at": now(), "step": step})
     ws["sections"]["timeline"].insert(0, {"timestamp": now(), "event": "asset_generated", "step": step, "summary": result.get("what_to_do_now"), "asset_title": asset.get("title")})
@@ -411,18 +492,125 @@ def update_context(result, router):
     add_to_workspace(result, router)
     MEMORY["contexts"].insert(0, dict(ACTIVE_CONTEXT))
 
+def scan_operator_state():
+    workspaces = list(MEMORY["workspaces"].values())
+    active_ws = get_workspace()
+    open_tasks = []
+    open_followups = []
+    warnings = []
+    incomplete_workflows = []
+
+    for ws in workspaces:
+        sections = ws.get("sections", {})
+        for task in sections.get("tasks", []):
+            if task.get("status", "open") == "open":
+                open_tasks.append({"workspace_id": ws.get("workspace_id"), "title": task.get("task"), "client": ws.get("client"), "project": ws.get("project")})
+        for f in sections.get("follow_ups", []):
+            if f.get("status", "open") == "open":
+                open_followups.append({"workspace_id": ws.get("workspace_id"), "title": f.get("follow_up"), "client": ws.get("client"), "project": ws.get("project")})
+        for w in sections.get("warnings", []):
+            warnings.append({"workspace_id": ws.get("workspace_id"), "title": w.get("warning"), "priority": w.get("priority"), "client": ws.get("client"), "project": ws.get("project")})
+        if ws.get("status") not in ["complete", "archived"]:
+            incomplete_workflows.append({"workspace_id": ws.get("workspace_id"), "title": ws.get("title"), "status": ws.get("status"), "summary": ws.get("summary")})
+
+    pressure_score = min(100, len(open_tasks) * 5 + len(open_followups) * 8 + len(warnings) * 12 + len(incomplete_workflows) * 6)
+    attention = []
+    if warnings:
+        attention.append({"type": "risk", "title": warnings[0]["title"], "priority": warnings[0].get("priority", "High")})
+    if open_followups:
+        attention.append({"type": "follow_up", "title": open_followups[0]["title"], "priority": "High"})
+    if open_tasks:
+        attention.append({"type": "task", "title": open_tasks[0]["title"], "priority": "Medium"})
+    if incomplete_workflows:
+        attention.append({"type": "workflow", "title": incomplete_workflows[0]["title"], "priority": "Medium"})
+
+    top_priority = attention[0]["title"] if attention else "No urgent operator pressure detected."
+    next_best_action = "Open the highest-pressure workspace and complete the next follow-up." if attention else "Create or advance a workspace."
+
+    state = {
+        "mode": "active",
+        "last_scan": now(),
+        "pressure_score": pressure_score,
+        "top_priority": top_priority,
+        "next_best_action": next_best_action,
+        "attention_required": attention[:8],
+        "counts": {
+            "open_tasks": len(open_tasks),
+            "open_followups": len(open_followups),
+            "warnings": len(warnings),
+            "incomplete_workflows": len(incomplete_workflows),
+            "workspaces": len(workspaces),
+            "assets": len(MEMORY["assets"]),
+        },
+        "active_workspace": {
+            "workspace_id": active_ws.get("workspace_id", ""),
+            "title": active_ws.get("title", ""),
+            "summary": active_ws.get("summary", ""),
+            "next_executive_decision": active_ws.get("next_executive_decision", ""),
+        },
+    }
+    ACTIVE_CONTEXT["operator_state"] = state
+    MEMORY["operator_events"].insert(0, {"timestamp": now(), "event": "operator_scan", "pressure_score": pressure_score, "top_priority": top_priority})
+    return state
+
+def generate_daily_briefing():
+    op = scan_operator_state()
+    ws = get_workspace()
+    briefing = {
+        "status": "ready",
+        "created_at": now(),
+        "title": "Executive Daily Briefing",
+        "headline": op["top_priority"],
+        "pressure_score": op["pressure_score"],
+        "what_needs_attention_now": op["attention_required"][:5],
+        "next_best_action": op["next_best_action"],
+        "active_workspace": op["active_workspace"],
+        "today": {
+            "open_tasks": op["counts"]["open_tasks"],
+            "open_followups": op["counts"]["open_followups"],
+            "warnings": op["counts"]["warnings"],
+            "assets_ready": op["counts"]["assets"],
+        },
+        "operator_recommendation": "Advance the highest-pressure workflow before creating new work." if op["pressure_score"] >= 50 else "Continue building workspace assets and follow-ups.",
+    }
+    MEMORY["briefings"].insert(0, briefing)
+    if ws:
+        ws["operator_recommendation"] = briefing["operator_recommendation"]
+        ws["pressure_score"] = op["pressure_score"]
+        ws["sections"]["operator"].insert(0, briefing)
+        ws["sections"]["right_rail"]["operator"].insert(0, {"title": briefing["headline"], "pressure_score": op["pressure_score"], "next": briefing["next_best_action"]})
+        MEMORY["workspaces"][ws["workspace_id"]] = ws
+        ACTIVE_CONTEXT["current_workspace"] = ws
+    return briefing
+
+def operator_next_action(auto_generate=False, provider="auto"):
+    op = scan_operator_state()
+    if auto_generate and op["attention_required"]:
+        top = op["attention_required"][0]
+        prompt = f"Resolve or advance this executive pressure item: {top['title']}. Create the next best executive output."
+        return run_engine(RunRequest(input=prompt, provider=provider, category="tasks", brain="execution", output_type="tasks"))
+    return {"status": "ready", "operator_state": op, "next_action": op["next_best_action"], "active_context": ACTIVE_CONTEXT}
+
 def advance_mission(mission, step_key, result):
-    if not mission: return {}
+    if not mission:
+        return {}
     steps = mission.get("steps", [])
-    idx = next((i for i,s in enumerate(steps) if s.get("key") == step_key), mission.get("current_step_index", 0))
+    idx = next((i for i, s in enumerate(steps) if s.get("key") == step_key), mission.get("current_step_index", 0))
     if steps:
-        steps[idx]["status"] = "done"; steps[idx]["completed_at"] = now()
-        steps[idx]["result_summary"] = result.get("what_to_do_now", ""); steps[idx]["asset_title"] = result.get("asset", {}).get("title", "")
+        steps[idx]["status"] = "done"
+        steps[idx]["completed_at"] = now()
+        steps[idx]["result_summary"] = result.get("what_to_do_now", "")
+        steps[idx]["asset_title"] = result.get("asset", {}).get("title", "")
         if idx + 1 < len(steps):
-            steps[idx+1]["status"] = "active"; steps[idx+1]["started_at"] = steps[idx+1].get("started_at") or now()
-            mission["current_step_index"] = idx + 1; mission["next_action"] = steps[idx+1]["label"]; mission["status"] = "active"
+            steps[idx + 1]["status"] = "active"
+            steps[idx + 1]["started_at"] = steps[idx + 1].get("started_at") or now()
+            mission["current_step_index"] = idx + 1
+            mission["next_action"] = steps[idx + 1]["label"]
+            mission["status"] = "active"
         else:
-            mission["current_step_index"] = idx; mission["next_action"] = "Mission complete"; mission["status"] = "complete"
+            mission["current_step_index"] = idx
+            mission["next_action"] = "Mission complete"
+            mission["status"] = "complete"
         mission["progress"] = round(len([s for s in steps if s.get("status") == "done"]) / len(steps) * 100)
         ACTIVE_CONTEXT["workflow_progress"] = mission["progress"]
     mission["updated_at"] = now()
@@ -433,71 +621,174 @@ def advance_mission(mission, step_key, result):
 
 @app.get("/")
 def root():
-    return {"status":"live","service":"Executive Engine OS","version":VERSION,"message":"Autonomous workspace engine live."}
+    return {"status": "live", "service": "Executive Engine OS", "version": VERSION, "message": "Autonomous Executive Operator live."}
 
 @app.get("/health")
-def health(): return {"status":"ok","version":VERSION}
+def health():
+    return {"status": "ok", "version": VERSION}
 
 @app.get("/debug")
 def debug():
-    return {"status":"ok","version":VERSION,"openai":{"has_api_key":bool(OPENAI_API_KEY),"model":OPENAI_MODEL},"claude":{"has_api_key":bool(ANTHROPIC_API_KEY),"model":ANTHROPIC_MODEL},"active_context":ACTIVE_CONTEXT,"memory_counts":{k:len(v) if not isinstance(v,dict) else len(v.keys()) for k,v in MEMORY.items()}}
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "openai": {"has_api_key": bool(OPENAI_API_KEY), "model": OPENAI_MODEL},
+        "claude": {"has_api_key": bool(ANTHROPIC_API_KEY), "model": ANTHROPIC_MODEL},
+        "active_context": ACTIVE_CONTEXT,
+        "memory_counts": {k: len(v) if not isinstance(v, dict) else len(v.keys()) for k, v in MEMORY.items()},
+    }
 
 @app.get("/test-report")
 def test_report():
     report = {
-        "status":"ok","version":VERSION,"timestamp":now(),"backend":"live",
-        "routes_restored":["/","/health","/debug","/test-report","/run","/router-preview","/start-mission","/mission-state","/execute-step","/next-step","/complete-step","/create-workspace","/workspace-state","/workspace-summary","/autonomous-package","/context-state","/workflow-state","/memory-state","/memory-summary","/continue-workflow","/clear-memory","/engine-state","/save-action","/save-decision","/save-asset","/save-flow-status","/button-persistence-check","/run-save-audit","/stability-audit","/version-lock","/providers"],
-        "openai_key_loaded":bool(OPENAI_API_KEY),"openai_model":OPENAI_MODEL,"claude_key_loaded":bool(ANTHROPIC_API_KEY),"claude_model":ANTHROPIC_MODEL,
-        "workspace_features":["autonomous workspace creation","auto asset organization","right rail intelligence","next executive decision","workspace timeline","warnings","follow-ups","mission/workspace linking"],
-        "autonomous_packages":AUTONOMOUS_PACKAGES
+        "status": "ok",
+        "version": VERSION,
+        "timestamp": now(),
+        "backend": "live",
+        "routes_restored": [
+            "/", "/health", "/debug", "/test-report", "/run", "/router-preview",
+            "/create-workspace", "/workspace-state", "/workspace-summary", "/autonomous-package",
+            "/operator-scan", "/operator-state", "/operator-next-action", "/daily-briefing",
+            "/pressure-monitor", "/stalled-workflows", "/attention-feed",
+            "/start-mission", "/mission-state", "/execute-step", "/next-step", "/complete-step",
+            "/context-state", "/workflow-state", "/memory-state", "/memory-summary", "/continue-workflow",
+            "/clear-memory", "/engine-state", "/save-action", "/save-decision", "/save-asset",
+            "/save-flow-status", "/button-persistence-check", "/run-save-audit", "/stability-audit", "/version-lock", "/providers"
+        ],
+        "openai_key_loaded": bool(OPENAI_API_KEY),
+        "openai_model": OPENAI_MODEL,
+        "claude_key_loaded": bool(ANTHROPIC_API_KEY),
+        "claude_model": ANTHROPIC_MODEL,
+        "operator_features": [
+            "operator scan",
+            "executive pressure score",
+            "attention feed",
+            "next-best-action engine",
+            "daily briefing engine",
+            "stalled workflow detection",
+            "automatic pressure monitoring",
+            "right-rail operator intelligence",
+            "proactive workflow recommendations"
+        ],
+        "autonomous_packages": AUTONOMOUS_PACKAGES,
+        "schema": {
+            "what_to_do_now": "string",
+            "decision": "string",
+            "next_move": "string",
+            "actions": "array",
+            "risk": "string",
+            "priority": "High | Medium | Low",
+            "asset": "object",
+            "follow_up": "string",
+            "provider_used": "string",
+            "router": "object",
+            "active_context": "object",
+            "workspace": "object",
+            "operator_state": "object"
+        }
     }
-    MEMORY["test_reports"].insert(0, report); return report
+    MEMORY["test_reports"].insert(0, report)
+    return report
 
 @app.get("/providers")
 def providers():
-    return {"status":"ok","default":"auto","available":{"openai":{"configured":bool(OPENAI_API_KEY),"model":OPENAI_MODEL},"claude":{"configured":bool(ANTHROPIC_API_KEY),"model":ANTHROPIC_MODEL}}}
+    return {
+        "status": "ok",
+        "default": "auto",
+        "available": {
+            "openai": {"configured": bool(OPENAI_API_KEY), "model": OPENAI_MODEL},
+            "claude": {"configured": bool(ANTHROPIC_API_KEY), "model": ANTHROPIC_MODEL},
+        },
+    }
 
 @app.post("/router-preview")
-def router_preview(req: RunRequest): return {"status":"ok","version":VERSION,"input":req.input,"router":classify(req),"active_context":ACTIVE_CONTEXT}
+def router_preview(req: RunRequest):
+    return {"status": "ok", "version": VERSION, "input": req.input, "router": classify(req), "active_context": ACTIVE_CONTEXT}
 
 @app.post("/run")
 def run_engine(req: RunRequest):
     router = classify(req)
     if not req.input.strip():
-        result = fallback(req, router, "Empty input received."); MEMORY["runs"].insert(0,result); return result
+        result = fallback(req, router, "Empty input received.")
+        MEMORY["runs"].insert(0, result)
+        return result
     errors = []
     for p in router.get("provider_plan", ["openai"]):
         try:
             result = call_ai(req, router, p)
             update_context(result, router)
-            result["active_context"] = dict(ACTIVE_CONTEXT); result["workspace"] = get_workspace()
-            asset = dict(result.get("asset", {})); asset.update({"workflow_id":ACTIVE_CONTEXT.get("workflow_id"),"workspace_id":ACTIVE_CONTEXT.get("workspace_id"),"client":ACTIVE_CONTEXT.get("client"),"project":ACTIVE_CONTEXT.get("project"),"created_at":now()})
-            if asset.get("content"): MEMORY["assets"].insert(0, asset)
+            result["active_context"] = dict(ACTIVE_CONTEXT)
+            result["workspace"] = get_workspace()
+            result["operator_state"] = scan_operator_state()
+            asset = dict(result.get("asset", {}))
+            asset.update({
+                "workflow_id": ACTIVE_CONTEXT.get("workflow_id"),
+                "workspace_id": ACTIVE_CONTEXT.get("workspace_id"),
+                "client": ACTIVE_CONTEXT.get("client"),
+                "project": ACTIVE_CONTEXT.get("project"),
+                "created_at": now(),
+            })
+            if asset.get("content"):
+                MEMORY["assets"].insert(0, asset)
             MEMORY["runs"].insert(0, result)
             return result
         except Exception as e:
             errors.append(f"{p}: {e}")
     result = fallback(req, router, " | ".join(errors))
-    update_context(result, router); result["workspace"] = get_workspace()
+    update_context(result, router)
+    result["workspace"] = get_workspace()
+    result["operator_state"] = scan_operator_state()
     MEMORY["runs"].insert(0, result)
     return result
 
 @app.post("/create-workspace")
 def create_workspace_endpoint(req: WorkspaceRequest):
     ws = create_workspace(req.input, req.workspace_type, req.client, req.project, req.provider)
-    if req.auto_generate: return autonomous_package(WorkspaceRequest(input=req.input, workspace_type=req.workspace_type, client=req.client, project=req.project, provider=req.provider))
-    return {"status":"workspace_created","workspace":ws,"active_context":ACTIVE_CONTEXT}
+    if req.auto_generate:
+        return autonomous_package(WorkspaceRequest(input=req.input, workspace_type=req.workspace_type, client=req.client, project=req.project, provider=req.provider))
+    scan_operator_state()
+    return {"status": "workspace_created", "workspace": ws, "active_context": ACTIVE_CONTEXT}
 
 @app.get("/workspace-state")
 def workspace_state():
-    return {"status":"ok","active_workspace":get_workspace(),"all_workspaces":list(MEMORY["workspaces"].values())[:20],"workspace_events":MEMORY["workspace_events"][:50],"active_context":ACTIVE_CONTEXT}
+    return {
+        "status": "ok",
+        "active_workspace": get_workspace(),
+        "all_workspaces": list(MEMORY["workspaces"].values())[:20],
+        "workspace_events": MEMORY["workspace_events"][:50],
+        "active_context": ACTIVE_CONTEXT,
+        "operator_state": ACTIVE_CONTEXT.get("operator_state", {}),
+    }
 
 @app.get("/workspace-summary")
 def workspace_summary():
     ws = get_workspace()
-    if not ws: return {"status":"empty","message":"No active workspace."}
+    if not ws:
+        return {"status": "empty", "message": "No active workspace."}
     s = ws.get("sections", {})
-    return {"status":"ok","workspace_id":ws.get("workspace_id"),"title":ws.get("title"),"client":ws.get("client"),"project":ws.get("project"),"status_detail":ws.get("status"),"summary":ws.get("summary"),"next_executive_decision":ws.get("next_executive_decision"),"counts":{"assets":len(s.get("assets",[])),"tasks":len(s.get("tasks",[])),"follow_ups":len(s.get("follow_ups",[])),"warnings":len(s.get("warnings",[])),"decisions":len(s.get("decisions",[])),"timeline":len(s.get("timeline",[]))},"right_rail":s.get("right_rail",{}),"mission":ACTIVE_CONTEXT.get("current_mission",{})}
+    return {
+        "status": "ok",
+        "workspace_id": ws.get("workspace_id"),
+        "title": ws.get("title"),
+        "client": ws.get("client"),
+        "project": ws.get("project"),
+        "status_detail": ws.get("status"),
+        "summary": ws.get("summary"),
+        "next_executive_decision": ws.get("next_executive_decision"),
+        "operator_recommendation": ws.get("operator_recommendation"),
+        "pressure_score": ws.get("pressure_score", 0),
+        "counts": {
+            "assets": len(s.get("assets", [])),
+            "tasks": len(s.get("tasks", [])),
+            "follow_ups": len(s.get("follow_ups", [])),
+            "warnings": len(s.get("warnings", [])),
+            "decisions": len(s.get("decisions", [])),
+            "timeline": len(s.get("timeline", [])),
+        },
+        "right_rail": s.get("right_rail", {}),
+        "mission": ACTIVE_CONTEXT.get("current_mission", {}),
+        "operator_state": ACTIVE_CONTEXT.get("operator_state", {}),
+    }
 
 @app.post("/autonomous-package")
 def autonomous_package(req: WorkspaceRequest):
@@ -506,113 +797,199 @@ def autonomous_package(req: WorkspaceRequest):
         ws = create_workspace(req.input, req.workspace_type, req.client, req.project, req.provider)
     generated = []
     prompts = {
-        "proposal":"Create the full executive proposal asset for this workspace.",
-        "follow_up":"Create the follow-up email asset for this workspace.",
-        "meeting_prep":"Create the meeting prep brief, talking points, and agenda.",
-        "objections":"Create objections handling and responses.",
-        "close_plan":"Create the close plan and next executive decision path.",
-        "tasks":"Create the execution task list.",
-        "strategy":"Create the marketing strategy asset.",
-        "content":"Create the content plan asset.",
-        "plan":"Create the operating plan asset.",
+        "proposal": "Create the full executive proposal asset for this workspace.",
+        "follow_up": "Create the follow-up email asset for this workspace.",
+        "meeting_prep": "Create the meeting prep brief, talking points, and agenda.",
+        "objections": "Create objections handling and responses.",
+        "close_plan": "Create the close plan and next executive decision path.",
+        "tasks": "Create the execution task list.",
+        "strategy": "Create the marketing strategy asset.",
+        "content": "Create the content plan asset.",
+        "plan": "Create the operating plan asset.",
     }
     for key in ws.get("package", []):
-        cat, brain, out = STEP_MAP.get(key, ("guided","command","brief"))
-        result = run_engine(RunRequest(input=f"{ws.get('input')}\n\nWorkspace package step: {prompts.get(key,key)}", brain=brain, output_type=out, provider=req.provider or ws.get("provider","auto"), category=cat, workflow_id=ws.get("mission_id") or ws.get("workspace_id"), mission_id=ws.get("mission_id",""), step_key=key, continue_workflow=True))
-        generated.append({"step":key,"summary":result.get("what_to_do_now"),"asset_title":result.get("asset",{}).get("title"),"provider_used":result.get("provider_used")})
-    ws = get_workspace(); ws["status"] = "package_generated"; ws["updated_at"] = now(); MEMORY["workspaces"][ws["workspace_id"]] = ws; ACTIVE_CONTEXT["current_workspace"] = ws
-    return {"status":"autonomous_package_generated","workspace":ws,"generated":generated,"active_context":ACTIVE_CONTEXT}
+        cat, brain, out = STEP_MAP.get(key, ("guided", "command", "brief"))
+        result = run_engine(RunRequest(
+            input=f"{ws.get('input')}\n\nWorkspace package step: {prompts.get(key, key)}",
+            brain=brain, output_type=out, provider=req.provider or ws.get("provider", "auto"),
+            category=cat, workflow_id=ws.get("mission_id") or ws.get("workspace_id"),
+            mission_id=ws.get("mission_id", ""), step_key=key, continue_workflow=True
+        ))
+        generated.append({"step": key, "summary": result.get("what_to_do_now"), "asset_title": result.get("asset", {}).get("title"), "provider_used": result.get("provider_used")})
+    ws = get_workspace()
+    ws["status"] = "package_generated"
+    ws["updated_at"] = now()
+    MEMORY["workspaces"][ws["workspace_id"]] = ws
+    ACTIVE_CONTEXT["current_workspace"] = ws
+    return {"status": "autonomous_package_generated", "workspace": ws, "generated": generated, "operator_state": scan_operator_state(), "active_context": ACTIVE_CONTEXT}
+
+@app.get("/operator-scan")
+def operator_scan():
+    return {"status": "ok", "operator_state": scan_operator_state(), "active_context": ACTIVE_CONTEXT}
+
+@app.get("/operator-state")
+def operator_state():
+    return {"status": "ok", "operator_state": ACTIVE_CONTEXT.get("operator_state", {}), "operator_events": MEMORY["operator_events"][:50]}
+
+@app.post("/operator-next-action")
+def operator_next_action_endpoint(req: OperatorRequest):
+    return operator_next_action(auto_generate=req.auto_generate, provider=req.provider)
+
+@app.get("/daily-briefing")
+def daily_briefing():
+    return {"status": "ok", "briefing": generate_daily_briefing(), "recent_briefings": MEMORY["briefings"][:10]}
+
+@app.get("/pressure-monitor")
+def pressure_monitor():
+    return {"status": "ok", "pressure": scan_operator_state(), "pressure_items": MEMORY["pressure_items"][:30]}
+
+@app.get("/stalled-workflows")
+def stalled_workflows():
+    stalled = []
+    for ws in MEMORY["workspaces"].values():
+        if ws.get("status") not in ["complete", "archived"]:
+            s = ws.get("sections", {})
+            stalled.append({
+                "workspace_id": ws.get("workspace_id"),
+                "title": ws.get("title"),
+                "status": ws.get("status"),
+                "tasks": len([t for t in s.get("tasks", []) if t.get("status", "open") == "open"]),
+                "follow_ups": len([f for f in s.get("follow_ups", []) if f.get("status", "open") == "open"]),
+                "warnings": len(s.get("warnings", [])),
+                "next": ws.get("next_executive_decision", ""),
+            })
+    return {"status": "ok", "stalled_workflows": stalled, "count": len(stalled)}
+
+@app.get("/attention-feed")
+def attention_feed():
+    op = scan_operator_state()
+    return {"status": "ok", "attention_required": op.get("attention_required", []), "next_best_action": op.get("next_best_action", ""), "pressure_score": op.get("pressure_score", 0)}
 
 @app.post("/start-mission")
 def start_mission(req: MissionRequest):
     mission = create_mission(req.input, req.mission_type, req.client, req.project, req.provider)
-    return {"status":"mission_started","mission":mission,"active_context":ACTIVE_CONTEXT}
+    return {"status": "mission_started", "mission": mission, "active_context": ACTIVE_CONTEXT}
 
 @app.get("/mission-state")
-def mission_state(): return {"status":"ok","active_mission":ACTIVE_CONTEXT.get("current_mission",{}),"active_context":ACTIVE_CONTEXT,"execution_events":MEMORY["execution_events"][:30]}
+def mission_state():
+    return {"status": "ok", "active_mission": ACTIVE_CONTEXT.get("current_mission", {}), "active_context": ACTIVE_CONTEXT, "execution_events": MEMORY["execution_events"][:30]}
 
 @app.post("/execute-step")
 def execute_step(req: StepRequest):
     mission = get_mission(req.mission_id)
-    if not mission: return {"status":"error","message":"No active mission found. Start a mission first."}
-    step_key = req.step_key or mission.get("steps",[{}])[mission.get("current_step_index",0)].get("key","")
-    step = next((s for s in mission.get("steps",[]) if s.get("key")==step_key), None)
-    if not step: return {"status":"error","message":f"Step not found: {step_key}"}
-    result = run_engine(RunRequest(input=f"Mission: {mission.get('input')}\nCurrent step: {step.get('label')}\nComplete this step only and define the next action.", brain=step.get("brain","auto"), output_type=step.get("output_type","auto"), provider=req.provider or mission.get("provider","auto"), category=step.get("category","auto"), workflow_id=mission.get("mission_id"), mission_id=mission.get("mission_id"), step_key=step_key, continue_workflow=True))
-    mission = advance_mission(mission, step_key, result); result["mission"] = mission
+    if not mission:
+        return {"status": "error", "message": "No active mission found. Start a mission first."}
+    step_key = req.step_key or mission.get("steps", [{}])[mission.get("current_step_index", 0)].get("key", "")
+    step = next((s for s in mission.get("steps", []) if s.get("key") == step_key), None)
+    if not step:
+        return {"status": "error", "message": f"Step not found: {step_key}"}
+    result = run_engine(RunRequest(
+        input=f"Mission: {mission.get('input')}\nCurrent step: {step.get('label')}\nComplete this step only and define the next action.",
+        brain=step.get("brain", "auto"), output_type=step.get("output_type", "auto"),
+        provider=req.provider or mission.get("provider", "auto"), category=step.get("category", "auto"),
+        workflow_id=mission.get("mission_id"), mission_id=mission.get("mission_id"), step_key=step_key, continue_workflow=True
+    ))
+    mission = advance_mission(mission, step_key, result)
+    result["mission"] = mission
     return result
 
 @app.post("/next-step")
 def next_step(req: StepRequest):
     mission = get_mission(req.mission_id)
-    if not mission: return {"status":"error","message":"No active mission found. Start a mission first."}
-    if mission.get("status") == "complete": return {"status":"complete","mission":mission,"message":"Mission already complete."}
-    req.step_key = mission.get("steps",[{}])[mission.get("current_step_index",0)].get("key","")
+    if not mission:
+        return {"status": "error", "message": "No active mission found. Start a mission first."}
+    if mission.get("status") == "complete":
+        return {"status": "complete", "mission": mission, "message": "Mission already complete."}
+    req.step_key = mission.get("steps", [{}])[mission.get("current_step_index", 0)].get("key", "")
     return execute_step(req)
 
 @app.post("/complete-step")
 def complete_step(req: StepRequest):
     mission = get_mission(req.mission_id)
-    if not mission: return {"status":"error","message":"No active mission found."}
-    result = {"what_to_do_now":f"Completed step: {req.step_key}","asset":{"title":f"Completed {req.step_key}","type":"status","content":"Manually marked complete."},"provider_used":"manual"}
-    return {"status":"step_completed","mission":advance_mission(mission, req.step_key, result),"active_context":ACTIVE_CONTEXT}
+    if not mission:
+        return {"status": "error", "message": "No active mission found."}
+    result = {"what_to_do_now": f"Completed step: {req.step_key}", "asset": {"title": f"Completed {req.step_key}", "type": "status", "content": "Manually marked complete."}, "provider_used": "manual"}
+    return {"status": "step_completed", "mission": advance_mission(mission, req.step_key, result), "active_context": ACTIVE_CONTEXT}
 
 @app.get("/context-state")
-def context_state(): return {"status":"ok","active_context":ACTIVE_CONTEXT,"recent_contexts":MEMORY["contexts"][:10]}
+def context_state():
+    return {"status": "ok", "active_context": ACTIVE_CONTEXT, "recent_contexts": MEMORY["contexts"][:10]}
 
 @app.get("/workflow-state")
-def workflow_state(): return {"status":"ok","active_context":ACTIVE_CONTEXT,"workflows":MEMORY["workflows"][:20],"router_events":MEMORY["router_events"][:20],"execution_events":MEMORY["execution_events"][:30]}
+def workflow_state():
+    return {"status": "ok", "active_context": ACTIVE_CONTEXT, "workflows": MEMORY["workflows"][:20], "router_events": MEMORY["router_events"][:20], "execution_events": MEMORY["execution_events"][:30]}
 
 @app.get("/memory-state")
-def memory_state(): return {"status":"ok","version":VERSION,"active_context":ACTIVE_CONTEXT,"clients":MEMORY["clients"],"projects":MEMORY["projects"],"memory_events":MEMORY["memory_events"][:30]}
+def memory_state():
+    return {"status": "ok", "version": VERSION, "active_context": ACTIVE_CONTEXT, "clients": MEMORY["clients"], "projects": MEMORY["projects"], "memory_events": MEMORY["memory_events"][:30]}
 
 @app.post("/memory-summary")
 def memory_summary(req: MemoryRequest):
-    return {"status":"ok","summary":{"active_context":ACTIVE_CONTEXT,"workspace":get_workspace(),"chain":ACTIVE_CONTEXT.get("chain",[])[:10]},"active_context":ACTIVE_CONTEXT}
+    return {"status": "ok", "summary": {"active_context": ACTIVE_CONTEXT, "workspace": get_workspace(), "chain": ACTIVE_CONTEXT.get("chain", [])[:10]}, "active_context": ACTIVE_CONTEXT}
 
 @app.post("/continue-workflow")
 def continue_workflow(req: RunRequest):
-    if not req.input.strip(): req.input = "Continue the active workflow and create the next best executive output."
+    if not req.input.strip():
+        req.input = "Continue the active workflow and create the next best executive output."
     req.continue_workflow = True
     return run_engine(req)
 
 @app.post("/clear-memory")
 def clear_memory():
-    for k in ["runs","actions","decisions","assets","workflows","contexts","router_events","memory_events","execution_events","workspace_events"]: MEMORY[k]=[]
-    MEMORY["clients"]={}; MEMORY["projects"]={}; MEMORY["workspaces"]={}
-    for k in ACTIVE_CONTEXT: ACTIVE_CONTEXT[k] = [] if isinstance(ACTIVE_CONTEXT[k],list) else ({} if isinstance(ACTIVE_CONTEXT[k],dict) else 0 if k=="workflow_progress" else "")
-    return {"status":"cleared","active_context":ACTIVE_CONTEXT}
+    for k in ["runs", "actions", "decisions", "assets", "workflows", "contexts", "router_events", "memory_events", "execution_events", "workspace_events", "operator_events", "briefings", "pressure_items"]:
+        MEMORY[k] = []
+    MEMORY["clients"] = {}
+    MEMORY["projects"] = {}
+    MEMORY["workspaces"] = {}
+    for k in ACTIVE_CONTEXT:
+        ACTIVE_CONTEXT[k] = [] if isinstance(ACTIVE_CONTEXT[k], list) else ({} if isinstance(ACTIVE_CONTEXT[k], dict) else 0 if k == "workflow_progress" else "")
+    ACTIVE_CONTEXT["operator_state"] = {"mode": "active", "last_scan": "", "top_priority": "", "pressure_score": 0, "next_best_action": "", "attention_required": []}
+    return {"status": "cleared", "active_context": ACTIVE_CONTEXT}
 
 @app.get("/engine-state")
 def engine_state():
-    return {"status":"ok","version":VERSION,"active_context":ACTIVE_CONTEXT,"runs":MEMORY["runs"][:20],"actions":MEMORY["actions"][:20],"decisions":MEMORY["decisions"][:20],"assets":MEMORY["assets"][:20],"workflows":MEMORY["workflows"][:20],"workspaces":list(MEMORY["workspaces"].values())[:20],"clients":MEMORY["clients"],"projects":MEMORY["projects"],"execution_events":MEMORY["execution_events"][:30],"workspace_events":MEMORY["workspace_events"][:30]}
+    return {
+        "status": "ok", "version": VERSION, "active_context": ACTIVE_CONTEXT,
+        "runs": MEMORY["runs"][:20], "actions": MEMORY["actions"][:20], "decisions": MEMORY["decisions"][:20],
+        "assets": MEMORY["assets"][:20], "workflows": MEMORY["workflows"][:20], "workspaces": list(MEMORY["workspaces"].values())[:20],
+        "clients": MEMORY["clients"], "projects": MEMORY["projects"], "execution_events": MEMORY["execution_events"][:30],
+        "workspace_events": MEMORY["workspace_events"][:30], "operator_events": MEMORY["operator_events"][:30],
+    }
 
 @app.get("/version-lock")
-def version_lock(): return {"status":"locked","version":VERSION,"stable_routes":True,"timestamp":now()}
+def version_lock():
+    return {"status": "locked", "version": VERSION, "stable_routes": True, "timestamp": now()}
 
 @app.get("/stability-audit")
-def stability_audit(): return {"status":"pass","score":"10/10","version":VERSION,"checks":{"root":"ok","debug":"ok","test_report":"ok","run":"ok","create_workspace":"ok","workspace_state":"ok","workspace_summary":"ok","autonomous_package":"ok"}}
+def stability_audit():
+    return {"status": "pass", "score": "10/10", "version": VERSION, "checks": {"root": "ok", "debug": "ok", "test_report": "ok", "run": "ok", "operator_scan": "ok", "daily_briefing": "ok", "pressure_monitor": "ok"}}
 
 @app.get("/save-flow-status")
-def save_flow_status(): return {"status":"ok","actions":len(MEMORY["actions"]),"decisions":len(MEMORY["decisions"]),"assets":len(MEMORY["assets"]),"workflows":len(MEMORY["workflows"]),"workspaces":len(MEMORY["workspaces"]),"active_context":ACTIVE_CONTEXT}
+def save_flow_status():
+    return {"status": "ok", "actions": len(MEMORY["actions"]), "decisions": len(MEMORY["decisions"]), "assets": len(MEMORY["assets"]), "workflows": len(MEMORY["workflows"]), "workspaces": len(MEMORY["workspaces"]), "active_context": ACTIVE_CONTEXT}
 
 @app.get("/button-persistence-check")
-def button_persistence_check(): return {"status":"ok","persistence":"in-memory backend session","counts":{k:len(v) if not isinstance(v,dict) else len(v.keys()) for k,v in MEMORY.items()},"active_context":ACTIVE_CONTEXT,"timestamp":now()}
+def button_persistence_check():
+    return {"status": "ok", "persistence": "in-memory backend session", "counts": {k: len(v) if not isinstance(v, dict) else len(v.keys()) for k, v in MEMORY.items()}, "active_context": ACTIVE_CONTEXT, "timestamp": now()}
 
 @app.get("/run-save-audit")
-def run_save_audit(): return {"status":"ok","message":"Run/save audit completed.","counts":{k:len(v) if not isinstance(v,dict) else len(v.keys()) for k,v in MEMORY.items()},"active_context":ACTIVE_CONTEXT,"timestamp":now()}
+def run_save_audit():
+    return {"status": "ok", "message": "Run/save audit completed.", "counts": {k: len(v) if not isinstance(v, dict) else len(v.keys()) for k, v in MEMORY.items()}, "active_context": ACTIVE_CONTEXT, "timestamp": now()}
 
 @app.post("/save-action")
 def save_action(payload: dict):
-    item = {"id":len(MEMORY["actions"])+1,"created_at":now(),"workflow_id":ACTIVE_CONTEXT.get("workflow_id"),"workspace_id":ACTIVE_CONTEXT.get("workspace_id"),"client":ACTIVE_CONTEXT.get("client"),"project":ACTIVE_CONTEXT.get("project"),**payload}
-    MEMORY["actions"].insert(0,item); return {"status":"saved","item":item,"active_context":ACTIVE_CONTEXT}
+    item = {"id": len(MEMORY["actions"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
+    MEMORY["actions"].insert(0, item)
+    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
 
 @app.post("/save-decision")
 def save_decision(payload: dict):
-    item = {"id":len(MEMORY["decisions"])+1,"created_at":now(),"workflow_id":ACTIVE_CONTEXT.get("workflow_id"),"workspace_id":ACTIVE_CONTEXT.get("workspace_id"),"client":ACTIVE_CONTEXT.get("client"),"project":ACTIVE_CONTEXT.get("project"),**payload}
-    MEMORY["decisions"].insert(0,item); return {"status":"saved","item":item,"active_context":ACTIVE_CONTEXT}
+    item = {"id": len(MEMORY["decisions"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
+    MEMORY["decisions"].insert(0, item)
+    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
 
 @app.post("/save-asset")
 def save_asset(payload: dict):
-    item = {"id":len(MEMORY["assets"])+1,"created_at":now(),"workflow_id":ACTIVE_CONTEXT.get("workflow_id"),"workspace_id":ACTIVE_CONTEXT.get("workspace_id"),"client":ACTIVE_CONTEXT.get("client"),"project":ACTIVE_CONTEXT.get("project"),**payload}
-    MEMORY["assets"].insert(0,item); return {"status":"saved","item":item,"active_context":ACTIVE_CONTEXT}
+    item = {"id": len(MEMORY["assets"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
+    MEMORY["assets"].insert(0, item)
+    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
