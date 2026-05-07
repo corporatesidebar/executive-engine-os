@@ -943,7 +943,7 @@ def _dedupe_list(items, key_fields=("title", "task", "follow_up", "warning", "de
         clean.append(item)
     return clean
 
-def v35080_clean_workspace(sanitize_workspace(workspace)):
+def v35080_clean_workspace(workspace):
     if not isinstance(workspace, dict):
         return workspace
 
