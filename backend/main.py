@@ -7,7 +7,7 @@ from anthropic import Anthropic
 import os, json, re
 from datetime import datetime
 
-VERSION = "35050-backend-output-quality-workspace-reset"
+VERSION = "35060-executive-operating-flow-stabilization"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -910,6 +910,120 @@ def clear_all_runtime_state():
     return {"status": "ok", "message": "Runtime workspace, context, and memory state cleared."}
 
 
+
+
+# V35060_EXECUTIVE_OPERATING_FLOW_STABILIZATION
+BAD_OUTPUT_MARKERS = [
+    "provider failed", "provider failure", "missing credits", "confirm context and run again",
+    "fallback", "not specified", "create the executive workspace package manually",
+    "retry with provider=openai", "add claude credits", "risk not specified"
+]
+
+def _is_bad_output(value):
+    text = str(value or "").strip().lower()
+    if not text or len(text) < 18:
+        return True
+    return any(marker in text for marker in BAD_OUTPUT_MARKERS)
+
+def _dedupe_list(items, key_fields=("title", "task", "follow_up", "warning", "decision", "content")):
+    clean, seen = [], set()
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        signature = ""
+        for k in key_fields:
+            if item.get(k):
+                signature = str(item.get(k)).strip().lower()
+                break
+        if not signature:
+            signature = str(item).strip().lower()
+        if not signature or signature in seen or _is_bad_output(signature):
+            continue
+        seen.add(signature)
+        clean.append(item)
+    return clean
+
+def sanitize_workspace(workspace):
+    if not isinstance(workspace, dict):
+        return workspace
+
+    sections = workspace.setdefault("sections", {})
+    sections["assets"] = _dedupe_list(sections.get("assets", []), ("title", "content", "summary"))
+    sections["tasks"] = _dedupe_list(sections.get("tasks", []), ("task",))
+    sections["follow_ups"] = _dedupe_list(sections.get("follow_ups", []), ("follow_up", "title"))
+    sections["warnings"] = _dedupe_list(sections.get("warnings", []), ("warning", "title"))
+    sections["decisions"] = _dedupe_list(sections.get("decisions", []), ("decision",))
+    sections["timeline"] = _dedupe_list(sections.get("timeline", []), ("event", "asset_title", "summary"))
+
+    if _is_bad_output(workspace.get("summary")):
+        input_text = workspace.get("input", "")
+        identity = extract_workspace_identity(input_text)
+        workspace["summary"] = f"Build a client-ready execution workspace for {identity['client']} focused on {identity['project']}."
+
+    if _is_bad_output(workspace.get("next_executive_decision")):
+        workspace["next_executive_decision"] = "Confirm the business objective, required asset, target buyer, timeline, and decision owner."
+
+    if _is_bad_output(workspace.get("operator_recommendation")):
+        workspace["operator_recommendation"] = "Start with a focused executive brief, then create the client-ready asset and follow-up."
+
+    right = sections.setdefault("right_rail", {})
+    right["assets"] = _dedupe_list(right.get("assets", []), ("title",))
+    right["follow_ups"] = _dedupe_list(right.get("follow_ups", []), ("follow_up", "title"))
+    right["warnings"] = _dedupe_list(right.get("warnings", []), ("warning", "title"))
+    right["next"] = _dedupe_list(right.get("next", []), ("title",))
+
+    if not right.get("next"):
+        right["next"] = [{"title": workspace.get("next_executive_decision", "Define the next executive decision."), "type": "next_move", "priority": "High"}]
+    if not right.get("assets") and sections.get("assets"):
+        right["assets"] = [{"title": a.get("title", "Asset"), "type": a.get("type", "asset"), "step": a.get("step", "workspace")} for a in sections["assets"][:4]]
+    if not right.get("follow_ups") and sections.get("follow_ups"):
+        right["follow_ups"] = sections["follow_ups"][:4]
+    if not right.get("warnings") and sections.get("warnings"):
+        right["warnings"] = sections["warnings"][:4]
+
+    return workspace
+
+def guided_context_questions(input_text):
+    identity = extract_workspace_identity(input_text)
+    return [
+        f"What is the specific outcome you want for {identity['client']}?",
+        "Who is the decision-maker or stakeholder?",
+        "What is the deadline or target date?",
+        "What asset do you need first: proposal, email, meeting brief, plan, or task list?",
+        "What numbers matter most: budget, CPA, revenue, conversion rate, or timeline?"
+    ]
+
+def build_stabilized_guidance(input_text):
+    identity = extract_workspace_identity(input_text)
+    questions = guided_context_questions(input_text)
+    return {
+        "what_to_do_now": f"Create a focused executive brief for {identity['client']} and answer the highest-leverage missing context questions.",
+        "decision": "Use guided extraction before generating final client-ready assets.",
+        "next_move": f"Clarify outcome, stakeholder, deadline, and first required asset for {identity['client']}.",
+        "actions": [
+            "Confirm the exact business outcome.",
+            "Identify the decision-maker and audience.",
+            "Choose the first asset to create.",
+            "Define the key metric or constraint.",
+            "Generate the client-ready output after context is clear."
+        ],
+        "risk": "Weak context creates generic output, duplicate tasks, and low-value assets.",
+        "priority": "High",
+        "asset": {
+            "title": f"{identity['client']} Context Intake Brief",
+            "type": "brief",
+            "content": "To move this forward, answer these:\\n- " + "\\n- ".join(questions),
+            "summary": "Guided intake brief to prevent generic output."
+        },
+        "follow_up": "Confirm the missing context, then generate the first executive asset.",
+        "provider_used": "stabilization-engine:v35060",
+        "router": {"category": "guided", "output_type": "brief", "workspace_type": identity["workspace_type"]},
+        "active_context": globals().get("active_context", {}),
+        "workspace": {},
+        "operator_state": globals().get("operator_state", {})
+    }
+
+
 @app.get("/")
 def root():
     return {"status": "live", "service": "Executive Engine OS", "version": VERSION, "message": "Autonomous Executive Operator live."}
@@ -1124,7 +1238,7 @@ def run_engine(req: RunRequest):
                 "input": input_text,
                 "client": identity["client"],
                 "project": identity["project"],
-                "provider": getattr(request, "provider", "auto") or "auto",
+                "provider": "openai",
                 "status": "quality_generated",
                 "created_at": now,
                 "updated_at": now,
@@ -1185,7 +1299,7 @@ def run_engine(req: RunRequest):
                 }
             }
 
-            globals()["current_workspace"] = workspace
+            globals()["current_workspace"] = sanitize_workspace(workspace)
             try:
                 active_context["client"] = identity["client"]
                 active_context["project"] = identity["project"]
@@ -1211,7 +1325,7 @@ def run_engine(req: RunRequest):
                 "provider_used": "quality-engine:v35050",
                 "router": {"category": category or "plans", "output_type": output_type, "workspace_type": identity["workspace_type"]},
                 "active_context": globals().get("active_context", {}),
-                "workspace": workspace,
+                "workspace": sanitize_workspace(workspace),
                 "operator_state": globals().get("operator_state", {})
             }
     except Exception as quality_error:
@@ -1325,7 +1439,7 @@ def autonomous_package(req: WorkspaceRequest):
                 "input": input_text,
                 "client": identity["client"],
                 "project": identity["project"],
-                "provider": getattr(request, "provider", "auto") or "auto",
+                "provider": "openai",
                 "status": "package_generated",
                 "created_at": now,
                 "updated_at": now,
@@ -1352,8 +1466,8 @@ def autonomous_package(req: WorkspaceRequest):
                     }
                 }
             }
-            globals()["current_workspace"] = workspace
-            return {"status": "ok", "workspace": workspace, "package": workspace["package"]}
+            globals()["current_workspace"] = sanitize_workspace(workspace)
+            return {"status": "ok", "workspace": sanitize_workspace(workspace), "package": workspace["package"]}
     except Exception as package_error:
         print("V35050 autonomous package patch skipped:", package_error)
     ws = get_workspace()
@@ -1572,3 +1686,38 @@ def clear_workspace():
 def reset_state():
     return clear_all_runtime_state()
 
+
+
+
+@app.post("/stabilize-workspace")
+def stabilize_workspace():
+    try:
+        ws = globals().get("current_workspace", {})
+        if ws:
+            globals()["current_workspace"] = sanitize_workspace(ws)
+        return {"status": "ok", "workspace": globals().get("current_workspace", {})}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.get("/quality-state")
+def quality_state():
+    ws = globals().get("current_workspace", {})
+    warnings = []
+    try:
+        ws = sanitize_workspace(ws)
+        sections = ws.get("sections", {}) if isinstance(ws, dict) else {}
+        for area in ["assets", "tasks", "follow_ups", "warnings", "decisions"]:
+            for item in sections.get(area, []):
+                if _is_bad_output(item):
+                    warnings.append(f"Bad item in {area}")
+    except Exception as e:
+        warnings.append(str(e))
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "quality_ok": len(warnings) == 0,
+        "warnings": warnings,
+        "claude_temporarily_disabled": True,
+        "provider_mode": "openai-first",
+        "workspace": ws
+    }

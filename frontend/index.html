@@ -57,13 +57,23 @@
     .proposal-block ul{margin:8px 0 14px 18px;padding:0}
     .proposal-block li{margin:6px 0}
 
+
+    .top-command-panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:22px}
+    .top-command-row{display:grid;grid-template-columns:170px 1fr auto auto;gap:10px;align-items:center}
+    .select{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;font-weight:900}
+    .command-input{min-height:54px!important;height:54px;resize:vertical}
+    .quality-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .quality-pill{border-radius:999px;background:#eef6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:8px 11px;font-size:12px;font-weight:950}
+    .quality-pill.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .danger-btn{background:#dc2626!important;color:#fff!important}
+    
     @media(max-width:1200px){.app{grid-template-columns:220px 1fr}.rail{display:none}.top{grid-column:1/3}.main{grid-column:2}.search{width:280px}}
   </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
-    <div class="brand"><div class="logo">EE</div><div><strong>Executive Engine OS</strong><small>V35040 Chat Feedback + Output Quality</small></div></div>
+    <div class="brand"><div class="logo">EE</div><div><strong>Executive Engine OS</strong><small>V35060 Executive Operating Flow</small></div></div>
     <button class="top-btn" onclick="showView('guided')">Guided Flow</button>
     <button class="top-btn orange" onclick="newWorkspace()">+ New</button>
     <button class="top-btn dark" onclick="showView('system')">System Test</button>
@@ -75,9 +85,33 @@
     <h5>CREATE</h5><div class="navitem" onclick="preset('email')">✉ Email</div><div class="navitem" onclick="preset('proposal')">▤ Plans & Proposals</div><div class="navitem" onclick="preset('content')">✦ Content Creation</div>
     <h5>THINK</h5><div class="navitem" onclick="preset('meeting')">☷ Meetings</div><div class="navitem" onclick="preset('marketing')">☻ Marketing Strategy</div><div class="navitem" onclick="preset('research')">⌕ Research</div><div class="navitem" onclick="preset('brainstorm')">⌘ Brainstorming</div>
     <h5>EXECUTE</h5><div class="navitem" onclick="preset('goals')">◆ Goals</div><div class="navitem" onclick="preset('tasks')">✓ Tasks / To-Dos</div><div class="navitem" onclick="showView('assets')">▦ Assets</div><div class="navitem" onclick="showView('system')">⚙ System Test</div>
-    <div class="note"><strong>V35040</strong><br>Feedback loop added. Generate is left/blue. Outputs are structured for executive review, edits, and continuation.</div>
+    <div class="note"><strong>V35060</strong><br>Operating flow stabilized: persistent command, workspace reset, quality checks, OpenAI-first routing, and guided context.</div>
   </aside>
   <main class="main">
+
+    <section class="top-command-panel">
+      <div class="label">Executive Command</div>
+      <div class="top-command-row">
+        <select id="commandType" class="select">
+          <option value="proposal">Proposal</option>
+          <option value="meeting">Meeting</option>
+          <option value="email">Email</option>
+          <option value="strategy">Strategy</option>
+          <option value="research">Research</option>
+          <option value="tasks">Tasks</option>
+          <option value="guided">Guided</option>
+        </select>
+        <textarea id="persistentCommand" class="command-input" placeholder="Tell EE what needs to happen. Example: Build proposal for Ontario auto-loan dealership with SEO, social, Google Ads, CPA under $100."></textarea>
+        <button class="top-btn primary-action" onclick="runPersistentCommand()">Run</button>
+        <button class="top-btn dark" onclick="resetWorkspace()">Reset</button>
+      </div>
+      <div class="quality-strip">
+        <span class="quality-pill" id="qualityProvider">OpenAI-first</span>
+        <span class="quality-pill" id="qualityState">Quality guard: active</span>
+        <span class="quality-pill warn">Claude disabled until credits restored</span>
+      </div>
+    </section>
+
     <section id="view-today">
       <h1>Good morning Will — workspace ready.</h1><p class="sub">Choose the next executive move. No raw JSON. No dead buttons.</p>
       <div class="mini-grid"><div class="metric"><span>Assets</span><strong id="mAssets">0</strong></div><div class="metric"><span>Tasks</span><strong id="mTasks">0</strong></div><div class="metric"><span>Follow-ups</span><strong id="mFollow">0</strong></div><div class="metric"><span>Pressure</span><strong id="mPressure">0</strong></div></div>
@@ -95,7 +129,7 @@
     <section id="view-workspace" class="hidden">
       <h1 id="workspaceTitle">Workspace</h1><p class="sub" id="workspaceSubtitle">Client/project workspace.</p>
       <div class="tabs"><button class="tab active" onclick="workspaceTab('overview')">Overview</button><button class="tab" onclick="workspaceTab('proposal')">Proposal</button><button class="tab" onclick="workspaceTab('email')">Email</button><button class="tab" onclick="workspaceTab('meeting')">Meeting</button><button class="tab" onclick="workspaceTab('tasks')">Tasks</button><button class="tab" onclick="workspaceTab('timeline')">Timeline</button></div>
-      <div id="workspaceActionBar" class="btnrow" style="margin-bottom:18px"><button class="top-btn" onclick="generatePackage()">Generate Missing Assets</button><button class="top-btn dark" onclick="saveCurrentView()">Save Current View</button><button class="top-btn orange" onclick="workspaceTab('email')">Create Follow-up</button></div>
+      <div id="workspaceActionBar" class="btnrow" style="margin-bottom:18px"><button class="top-btn" onclick="generatePackage()">Generate Missing Assets</button><button class="top-btn dark" onclick="saveCurrentView()">Save Current View</button><button class="top-btn orange" onclick="workspaceTab('email')">Create Follow-up</button><button class="top-btn danger-btn" onclick="resetWorkspace()">Reset Workspace</button><button class="top-btn green" onclick="stabilizeWorkspace()">Clean State</button></div>
       <div class="section">
         <div class="section-title-row">
           <div>
@@ -145,7 +179,7 @@
 const API="https://executive-engine-os.onrender.com";
 let state={workspace:null,assets:[],selectedAsset:null,currentView:"today",currentTab:"overview",lastSystem:null};
 const services=[
-{name:"Root",path:"/"},{name:"Health",path:"/health"},{name:"Test Report JSON",path:"/test-report-json"},{name:"Providers",path:"/providers"},{name:"Debug",path:"/debug"},{name:"Operator Scan",path:"/operator-scan"},{name:"Workspace State",path:"/workspace-state"},{name:"Workspace Summary",path:"/workspace-summary"},{name:"Mission State",path:"/mission-state"},{name:"Engine State",path:"/engine-state"}
+{name:"Root",path:"/"},{name:"Health",path:"/health"},{name:"Test Report JSON",path:"/test-report-json"},{name:"Providers",path:"/providers"},{name:"Debug",path:"/debug"},{name:"Operator Scan",path:"/operator-scan"},{name:"Workspace State",path:"/workspace-state"},{name:"Workspace Summary",path:"/workspace-summary"},{name:"Mission State",path:"/mission-state"},{name:"Engine State",path:"/engine-state"},{name:"Quality State",path:"/quality-state"}
 ];
 function $(id){return document.getElementById(id)}
 async function api(path,opts={}){const r=await fetch(API+path,{headers:{"Content-Type":"application/json",Accept:"application/json",...(opts.headers||{})},...opts});const txt=await r.text();let data;try{data=JSON.parse(txt)}catch(e){throw new Error("Unexpected non-JSON response from "+path)}if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);return data}
@@ -153,9 +187,9 @@ function showView(v){["today","guided","assets","workspace","system"].forEach(x=
 function setPrompt(t){$("mainInput").value=t}
 function preset(type){const map={email:["Create Follow-Up Email","Category: Email • output: email","Create a follow-up email based on the active workspace, proposal, and next step."],proposal:["Create Plans & Proposals","Category: Plans & Proposals • output: proposal","Build the proposal for SEO, social media, Google Ads, CPA target, risk, and follow-up."],content:["Create Content","Category: Content Creation • output: content","Create content assets for the active business objective."],meeting:["Prepare Meeting","Category: Meetings • output: brief","Prepare the meeting brief, agenda, talking points, objections, and next action."],marketing:["Marketing Strategy","Category: Marketing Strategy • output: strategy","Create the marketing strategy, channels, KPIs, budget logic, risk, and execution plan."],research:["Research Brief","Category: Research • output: brief","Research the business context and create an executive brief based on known context."],brainstorm:["Brainstorm","Category: Brainstorming • output: ideas","Brainstorm strategic options and recommend the best path."],goals:["Goals","Category: Goals • output: goals","Create goals, KPIs, success metrics, and execution rhythm."],tasks:["Tasks / To-Dos","Category: Tasks • output: tasks","Create the execution task list with sequence, priority, and next action."]};const m=map[type]||map.proposal;$("inputTitle").textContent=m[0];$("inputMeta").textContent=m[1];$("mainInput").value=m[2];showView("guided")}
 function inferType(t){t=(t||"").toLowerCase();if(t.includes("meeting")||t.includes("call"))return"meeting";if(t.includes("marketing")||t.includes("seo")||t.includes("ads")||t.includes("cpa"))return"marketing";return"proposal"}
-async function testBackend(){try{const d=await api("/test-report-json");$("backendPill").textContent=d.version||"Backend";$("backendPill").className="pill";$("railSystem").innerHTML=`<div class="rail-card green" onclick="showView('system')"><strong>Backend live</strong><span>${esc(d.version)}</span></div>`}catch(e){$("backendPill").textContent="Backend check needed";$("backendPill").className="pill error";$("railSystem").innerHTML=`<div class="rail-card red" onclick="showView('system')"><strong>Check system</strong><span>${esc(e.message)}</span></div>`}}
-async function runWorkspace(){const input=$("mainInput").value.trim();if(!input)return alert("Add context first.");$("runBtn").disabled=true;$("runBtn").textContent="Generating...";$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Generating</div><h2>Building workspace and first useful asset...</h2>`;try{const wt=inferType(input);const created=await api("/create-workspace",{method:"POST",body:JSON.stringify({input,workspace_type:wt,provider:"auto",auto_generate:false})});state.workspace=created.workspace;const run=await api("/run",{method:"POST",body:JSON.stringify({input,provider:"auto",category:wt==="marketing"?"marketing":wt==="meeting"?"meetings":"plans",output_type:wt==="meeting"?"brief":"proposal"})});if(run.workspace)state.workspace=run.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Generation failed</strong><br>${esc(e.message)}<br><br>Open System Test and run critical checks.</div>`}finally{$("runBtn").disabled=false;$("runBtn").textContent="Generate"}}
-async function generatePackage(){const input=$("mainInput").value.trim()||(state.workspace&&state.workspace.input)||"Build executive workspace package.";try{showView("guided");$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Autonomous Package</div><h2>Generating proposal, follow-up, meeting prep, tasks, and risk notes...</h2>`;const d=await api("/autonomous-package",{method:"POST",body:JSON.stringify({input,workspace_type:inferType(input),provider:"auto"})});state.workspace=d.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Package failed</strong><br>${esc(e.message)}</div>`}}
+async function testBackend(){try{const d=await api("/test-report-json"); const q=await api("/quality-state").catch(()=>null); $("backendPill").textContent=d.version||"Backend"; if(q){$("qualityState").textContent=q.quality_ok?"Quality guard: clean":"Quality guard: review";}$("backendPill").className="pill";$("railSystem").innerHTML=`<div class="rail-card green" onclick="showView('system')"><strong>Backend live</strong><span>${esc(d.version)}</span></div>`}catch(e){$("backendPill").textContent="Backend check needed";$("backendPill").className="pill error";$("railSystem").innerHTML=`<div class="rail-card red" onclick="showView('system')"><strong>Check system</strong><span>${esc(e.message)}</span></div>`}}
+async function runWorkspace(){const input=$("mainInput").value.trim();if(!input)return alert("Add context first.");$("runBtn").disabled=true;$("runBtn").textContent="Generating...";$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Generating</div><h2>Building workspace and first useful asset...</h2>`;try{const wt=inferType(input);const created=await api("/create-workspace",{method:"POST",body:JSON.stringify({input,workspace_type:wt,provider:"openai",auto_generate:false})});state.workspace=created.workspace;const run=await api("/run",{method:"POST",body:JSON.stringify({input,provider:"openai",category:wt==="marketing"?"marketing":wt==="meeting"?"meetings":"plans",output_type:wt==="meeting"?"brief":"proposal"})});if(run.workspace)state.workspace=run.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Generation failed</strong><br>${esc(e.message)}<br><br>Open System Test and run critical checks.</div>`}finally{$("runBtn").disabled=false;$("runBtn").textContent="Generate"}}
+async function generatePackage(){const input=$("mainInput").value.trim()||(state.workspace&&state.workspace.input)||"Build executive workspace package.";try{showView("guided");$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Autonomous Package</div><h2>Generating proposal, follow-up, meeting prep, tasks, and risk notes...</h2>`;const d=await api("/autonomous-package",{method:"POST",body:JSON.stringify({input,workspace_type:inferType(input),provider:"openai"})});state.workspace=d.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Package failed</strong><br>${esc(e.message)}</div>`}}
 async function dailyBriefing(){try{const d=await api("/daily-briefing");const b=d.briefing||{};$("workspaceSummary").textContent=b.headline||b.next_best_action||"Briefing ready.";await loadWorkspace();showView("today")}catch(e){alert(e.message)}}
 async function loadWorkspace(){try{const d=await api("/workspace-state");state.workspace=d.active_workspace||null;renderAll();return d}catch(e){$("railSystem").innerHTML=`<div class="rail-card red" onclick="showView('system')"><strong>Workspace load failed</strong><span>${esc(e.message)}</span></div>`}}
 function collectAssets(){const ws=state.workspace||{};const s=ws.sections||{};state.assets=Array.isArray(s.assets)?s.assets:[];return state.assets}
@@ -270,6 +304,50 @@ function copyTests(){navigator.clipboard.writeText($("testOutput").textContent||
 function quickCommand(){const v=$("topSearch").value.trim();if(!v)return;$("mainInput").value=v;showView("guided");runWorkspace()}
 function newWorkspace(){state.workspace=null;state.assets=[];state.selectedAsset=null;$("mainInput").value="";showView("guided");renderAll()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+async function resetWorkspace(){
+  if(!confirm("Reset workspace state and clear polluted memory?")) return;
+  try{
+    await api("/workspace-reset",{method:"POST",body:JSON.stringify({})});
+    state.workspace=null; state.assets=[]; state.selectedAsset=null;
+    $("mainInput").value="";
+    $("persistentCommand").value="";
+    renderAll();
+    showView("guided");
+    alert("Workspace reset complete.");
+  }catch(e){
+    alert("Reset failed: "+e.message);
+  }
+}
+async function stabilizeWorkspace(){
+  try{
+    const d=await api("/stabilize-workspace",{method:"POST",body:JSON.stringify({})});
+    state.workspace=d.workspace||state.workspace;
+    renderAll();
+    alert("Workspace stabilized.");
+  }catch(e){ alert(e.message); }
+}
+async function runPersistentCommand(){
+  const value=$("persistentCommand").value.trim();
+  if(!value) return alert("Add a command first.");
+  const type=$("commandType").value;
+  $("mainInput").value=value;
+  const titles={
+    proposal:["Create Plans & Proposals","Category: Plans & Proposals • output: proposal"],
+    meeting:["Prepare Meeting","Category: Meetings • output: brief"],
+    email:["Create Follow-Up Email","Category: Email • output: email"],
+    strategy:["Marketing Strategy","Category: Marketing Strategy • output: strategy"],
+    research:["Research Brief","Category: Research • output: brief"],
+    tasks:["Tasks / To-Dos","Category: Tasks • output: tasks"],
+    guided:["What needs to happen?","Category: Guided Flow • output: brief"]
+  };
+  const t=titles[type]||titles.guided;
+  $("inputTitle").textContent=t[0];
+  $("inputMeta").textContent=t[1];
+  showView("guided");
+  await runWorkspace();
+}
+
 window.onload=async()=>{renderServices();showView("today");await testBackend();await loadWorkspace();}
 </script>
 </body>
