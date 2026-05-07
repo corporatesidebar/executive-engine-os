@@ -7,7 +7,7 @@ from anthropic import Anthropic
 import os, json, re
 from datetime import datetime
 
-VERSION = "35060-executive-operating-flow-stabilization"
+VERSION = "35080-output-guard-workspace-cleanup"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -943,7 +943,7 @@ def _dedupe_list(items, key_fields=("title", "task", "follow_up", "warning", "de
         clean.append(item)
     return clean
 
-def sanitize_workspace(workspace):
+def v35080_clean_workspace(sanitize_workspace(workspace)):
     if not isinstance(workspace, dict):
         return workspace
 
@@ -1016,11 +1016,190 @@ def build_stabilized_guidance(input_text):
             "summary": "Guided intake brief to prevent generic output."
         },
         "follow_up": "Confirm the missing context, then generate the first executive asset.",
-        "provider_used": "stabilization-engine:v35060",
+        "provider_used": "openai-first:output-guard-v35080",
         "router": {"category": "guided", "output_type": "brief", "workspace_type": identity["workspace_type"]},
         "active_context": globals().get("active_context", {}),
         "workspace": {},
         "operator_state": globals().get("operator_state", {})
+    }
+
+
+
+
+# V35080_OUTPUT_GUARD_WORKSPACE_CLEANUP
+
+V35080_BLOCKED_PHRASES = [
+    "provider failed",
+    "provider failure",
+    "missing credits",
+    "retry with",
+    "run again",
+    "confirm context and run again",
+    "fallback",
+    "ai provider failed",
+    "openai failed",
+    "claude failed",
+    "provider=openai",
+    "provider=claude",
+    "internal error",
+    "malformed",
+    "risk not specified",
+    "create the executive workspace package manually",
+    "no provider available",
+    "rate limit",
+    "token limit",
+]
+
+def v35080_contains_blocked(value):
+    text = str(value or "").lower()
+    return any(p in text for p in V35080_BLOCKED_PHRASES)
+
+def v35080_safe_text(value, replacement):
+    value = str(value or "").strip()
+    if not value or len(value) < 12 or v35080_contains_blocked(value):
+        return replacement
+    return value
+
+def v35080_normalize_signature(value):
+    import re
+    value = str(value or "").lower().strip()
+    value = re.sub(r"[^a-z0-9\s]", "", value)
+    value = re.sub(r"\s+", " ", value)
+    return value
+
+def v35080_clean_list(items, primary_keys):
+    cleaned = []
+    seen = set()
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        key = ""
+        for k in primary_keys:
+            if item.get(k):
+                key = item.get(k)
+                break
+        sig = v35080_normalize_signature(key or str(item))
+        if not sig or sig in seen or v35080_contains_blocked(sig):
+            continue
+        seen.add(sig)
+        cleaned.append(item)
+    return cleaned
+
+def v35080_executive_safe_package(input_text=""):
+    identity = extract_workspace_identity(input_text or "")
+    quality = build_quality_asset(input_text or f"Build executive workspace for {identity['client']}", "proposal", "plans")
+    return quality
+
+def v35080_clean_workspace(workspace):
+    if not isinstance(workspace, dict):
+        return workspace
+
+    input_text = workspace.get("input", "")
+    identity = extract_workspace_identity(input_text or workspace.get("title", ""))
+    safe = v35080_executive_safe_package(input_text)
+
+    workspace["title"] = v35080_safe_text(workspace.get("title"), identity["title"])
+    workspace["client"] = v35080_safe_text(workspace.get("client"), identity["client"])
+    workspace["project"] = v35080_safe_text(workspace.get("project"), identity["project"])
+    workspace["summary"] = v35080_safe_text(workspace.get("summary"), safe["asset"]["summary"])
+    workspace["next_executive_decision"] = v35080_safe_text(workspace.get("next_executive_decision"), safe["decision"])
+    workspace["operator_recommendation"] = v35080_safe_text(workspace.get("operator_recommendation"), safe["next_move"])
+
+    sections = workspace.setdefault("sections", {})
+    sections["assets"] = v35080_clean_list(sections.get("assets", []), ["title", "content", "summary"])
+    sections["tasks"] = v35080_clean_list(sections.get("tasks", []), ["task"])
+    sections["follow_ups"] = v35080_clean_list(sections.get("follow_ups", []), ["follow_up", "title"])
+    sections["warnings"] = v35080_clean_list(sections.get("warnings", []), ["warning", "title"])
+    sections["decisions"] = v35080_clean_list(sections.get("decisions", []), ["decision"])
+    sections["timeline"] = v35080_clean_list(sections.get("timeline", []), ["event", "summary", "asset_title"])
+
+    if not sections["assets"]:
+        sections["assets"] = [{
+            "title": safe["asset"]["title"],
+            "type": safe["asset"]["type"],
+            "content": safe["asset"]["content"],
+            "summary": safe["asset"]["summary"],
+            "step": "proposal",
+            "category": "plans",
+            "provider_used": "output-guard:v35080"
+        }]
+
+    if len(sections["tasks"]) < 3:
+        sections["tasks"] = [{"task": t, "status": "open", "step": "execution"} for t in safe["tasks"]]
+
+    if not sections["follow_ups"]:
+        sections["follow_ups"] = [{"follow_up": safe["follow_up"], "status": "open", "step": "follow_up"}]
+
+    if not sections["warnings"]:
+        sections["warnings"] = [{"warning": safe["risk"], "priority": "High", "step": "risk"}]
+
+    if not sections["decisions"]:
+        sections["decisions"] = [{"decision": safe["decision"], "step": "decision"}]
+
+    right = sections.setdefault("right_rail", {})
+    right["next"] = [{"title": workspace["next_executive_decision"], "type": "next_move", "priority": "High"}]
+    right["assets"] = [{"title": a.get("title", "Asset"), "type": a.get("type", "asset"), "step": a.get("step", "workspace")} for a in sections["assets"][:4]]
+    right["follow_ups"] = sections["follow_ups"][:4]
+    right["warnings"] = sections["warnings"][:4]
+    right["operator"] = right.get("operator", [])
+
+    return workspace
+
+def v35080_clean_response_payload(payload, input_text=""):
+    if not isinstance(payload, dict):
+        payload = {}
+    safe = v35080_executive_safe_package(input_text)
+
+    payload["what_to_do_now"] = v35080_safe_text(payload.get("what_to_do_now"), safe["what_to_do_now"])
+    payload["decision"] = v35080_safe_text(payload.get("decision"), safe["decision"])
+    payload["next_move"] = v35080_safe_text(payload.get("next_move"), safe["next_move"])
+    payload["risk"] = v35080_safe_text(payload.get("risk"), safe["risk"])
+    payload["priority"] = payload.get("priority") if payload.get("priority") in ["High", "Medium", "Low"] else "High"
+
+    actions = payload.get("actions")
+    if not isinstance(actions, list):
+        actions = []
+    actions = [str(a).strip() for a in actions if str(a).strip() and not v35080_contains_blocked(a)]
+    deduped = []
+    seen = set()
+    for a in actions:
+        sig = v35080_normalize_signature(a)
+        if sig and sig not in seen and len(a.split()) >= 3:
+            seen.add(sig)
+            deduped.append(a)
+    if len(deduped) < 3:
+        deduped = safe["tasks"]
+    payload["actions"] = deduped[:8]
+
+    asset = payload.get("asset")
+    if not isinstance(asset, dict) or v35080_contains_blocked(asset):
+        payload["asset"] = safe["asset"]
+
+    payload["follow_up"] = v35080_safe_text(payload.get("follow_up"), safe["follow_up"])
+    if isinstance(payload.get("workspace"), dict):
+        payload["workspace"] = v35080_clean_workspace(payload["workspace"])
+
+    payload["provider_used"] = "openai-first:output-guard-v35080"
+    return payload
+
+@app.post("/purge-pollution")
+def purge_pollution():
+    ws = globals().get("current_workspace", {})
+    if ws:
+        ws = v35080_clean_workspace(ws)
+        globals()["current_workspace"] = ws
+    return {"status": "ok", "version": VERSION, "workspace": ws}
+
+@app.get("/pollution-audit")
+def pollution_audit():
+    ws = globals().get("current_workspace", {})
+    text = str(ws)
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "pollution_detected": v35080_contains_blocked(text),
+        "blocked_phrases": [p for p in V35080_BLOCKED_PHRASES if p in text.lower()],
+        "workspace_present": isinstance(ws, dict) and bool(ws)
     }
 
 
@@ -1261,7 +1440,7 @@ def run_engine(req: RunRequest):
                         "type": asset["type"],
                         "content": asset["content"],
                         "summary": asset["summary"],
-                        "provider_used": "quality-engine:v35050"
+                        "provider_used": "openai-first:output-guard-v35080"
                     }],
                     "tasks": [{"task": t, "status": "open", "created_at": now, "step": "proposal"} for t in quality["tasks"]],
                     "follow_ups": [{
@@ -1299,7 +1478,7 @@ def run_engine(req: RunRequest):
                 }
             }
 
-            globals()["current_workspace"] = sanitize_workspace(workspace)
+            globals()["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
             try:
                 active_context["client"] = identity["client"]
                 active_context["project"] = identity["project"]
@@ -1313,7 +1492,7 @@ def run_engine(req: RunRequest):
             except Exception:
                 pass
 
-            return {
+            return v35080_clean_response_payload({
                 "what_to_do_now": quality["what_to_do_now"],
                 "decision": quality["decision"],
                 "next_move": quality["next_move"],
@@ -1322,12 +1501,12 @@ def run_engine(req: RunRequest):
                 "priority": quality["priority"],
                 "asset": asset,
                 "follow_up": quality["follow_up"],
-                "provider_used": "quality-engine:v35050",
+                "provider_used": "openai-first:output-guard-v35080",
                 "router": {"category": category or "plans", "output_type": output_type, "workspace_type": identity["workspace_type"]},
                 "active_context": globals().get("active_context", {}),
-                "workspace": sanitize_workspace(workspace),
+                "workspace": v35080_clean_workspace(sanitize_workspace(workspace)),
                 "operator_state": globals().get("operator_state", {})
-            }
+            }, input_text)
     except Exception as quality_error:
         print("V35050 quality patch skipped:", quality_error)
     router = classify(req)
@@ -1427,9 +1606,9 @@ def autonomous_package(req: WorkspaceRequest):
             meeting_quality = build_quality_asset(input_text, output_type="meeting", category="meeting")
 
             assets = [
-                {**proposal_asset, "timestamp": now, "step": "proposal", "category": "plans", "provider_used": "quality-engine:v35050"},
-                {**email_quality["asset"], "timestamp": now, "step": "follow_up", "category": "email", "provider_used": "quality-engine:v35050"},
-                {**meeting_quality["asset"], "timestamp": now, "step": "meeting_prep", "category": "meeting", "provider_used": "quality-engine:v35050"},
+                {**proposal_asset, "timestamp": now, "step": "proposal", "category": "plans", "provider_used": "openai-first:output-guard-v35080"},
+                {**email_quality["asset"], "timestamp": now, "step": "follow_up", "category": "email", "provider_used": "openai-first:output-guard-v35080"},
+                {**meeting_quality["asset"], "timestamp": now, "step": "meeting_prep", "category": "meeting", "provider_used": "openai-first:output-guard-v35080"},
             ]
 
             workspace = {
@@ -1466,8 +1645,8 @@ def autonomous_package(req: WorkspaceRequest):
                     }
                 }
             }
-            globals()["current_workspace"] = sanitize_workspace(workspace)
-            return {"status": "ok", "workspace": sanitize_workspace(workspace), "package": workspace["package"]}
+            globals()["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
+            return {"status": "ok", "workspace": v35080_clean_workspace(sanitize_workspace(workspace)), "package": workspace["package"]}
     except Exception as package_error:
         print("V35050 autonomous package patch skipped:", package_error)
     ws = get_workspace()

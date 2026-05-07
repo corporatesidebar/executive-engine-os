@@ -73,7 +73,7 @@
 <body>
 <div class="app">
   <header class="top">
-    <div class="brand"><div class="logo">EE</div><div><strong>Executive Engine OS</strong><small>V35060 Executive Operating Flow</small></div></div>
+    <div class="brand"><div class="logo">EE</div><div><strong>Executive Engine OS</strong><small>V35080 Output Guard</small></div></div>
     <button class="top-btn" onclick="showView('guided')">Guided Flow</button>
     <button class="top-btn orange" onclick="newWorkspace()">+ New</button>
     <button class="top-btn dark" onclick="showView('system')">System Test</button>
@@ -85,7 +85,7 @@
     <h5>CREATE</h5><div class="navitem" onclick="preset('email')">✉ Email</div><div class="navitem" onclick="preset('proposal')">▤ Plans & Proposals</div><div class="navitem" onclick="preset('content')">✦ Content Creation</div>
     <h5>THINK</h5><div class="navitem" onclick="preset('meeting')">☷ Meetings</div><div class="navitem" onclick="preset('marketing')">☻ Marketing Strategy</div><div class="navitem" onclick="preset('research')">⌕ Research</div><div class="navitem" onclick="preset('brainstorm')">⌘ Brainstorming</div>
     <h5>EXECUTE</h5><div class="navitem" onclick="preset('goals')">◆ Goals</div><div class="navitem" onclick="preset('tasks')">✓ Tasks / To-Dos</div><div class="navitem" onclick="showView('assets')">▦ Assets</div><div class="navitem" onclick="showView('system')">⚙ System Test</div>
-    <div class="note"><strong>V35060</strong><br>Operating flow stabilized: persistent command, workspace reset, quality checks, OpenAI-first routing, and guided context.</div>
+    <div class="note"><strong>V35080</strong><br>Output guard active: fallback pollution removed, workspace cleanup enforced, duplicates blocked, executive-safe responses only.</div>
   </aside>
   <main class="main">
 
@@ -107,7 +107,7 @@
       </div>
       <div class="quality-strip">
         <span class="quality-pill" id="qualityProvider">OpenAI-first</span>
-        <span class="quality-pill" id="qualityState">Quality guard: active</span>
+        <span class="quality-pill" id="qualityState">Output guard: active</span>
         <span class="quality-pill warn">Claude disabled until credits restored</span>
       </div>
     </section>
@@ -129,7 +129,7 @@
     <section id="view-workspace" class="hidden">
       <h1 id="workspaceTitle">Workspace</h1><p class="sub" id="workspaceSubtitle">Client/project workspace.</p>
       <div class="tabs"><button class="tab active" onclick="workspaceTab('overview')">Overview</button><button class="tab" onclick="workspaceTab('proposal')">Proposal</button><button class="tab" onclick="workspaceTab('email')">Email</button><button class="tab" onclick="workspaceTab('meeting')">Meeting</button><button class="tab" onclick="workspaceTab('tasks')">Tasks</button><button class="tab" onclick="workspaceTab('timeline')">Timeline</button></div>
-      <div id="workspaceActionBar" class="btnrow" style="margin-bottom:18px"><button class="top-btn" onclick="generatePackage()">Generate Missing Assets</button><button class="top-btn dark" onclick="saveCurrentView()">Save Current View</button><button class="top-btn orange" onclick="workspaceTab('email')">Create Follow-up</button><button class="top-btn danger-btn" onclick="resetWorkspace()">Reset Workspace</button><button class="top-btn green" onclick="stabilizeWorkspace()">Clean State</button></div>
+      <div id="workspaceActionBar" class="btnrow" style="margin-bottom:18px"><button class="top-btn" onclick="generatePackage()">Generate Missing Assets</button><button class="top-btn dark" onclick="saveCurrentView()">Save Current View</button><button class="top-btn orange" onclick="workspaceTab('email')">Create Follow-up</button><button class="top-btn danger-btn" onclick="resetWorkspace()">Reset Workspace</button><button class="top-btn green" onclick="stabilizeWorkspace()">Clean State</button><button class="top-btn danger-btn" onclick="purgePollution()">Purge Pollution</button></div>
       <div class="section">
         <div class="section-title-row">
           <div>
@@ -179,7 +179,7 @@
 const API="https://executive-engine-os.onrender.com";
 let state={workspace:null,assets:[],selectedAsset:null,currentView:"today",currentTab:"overview",lastSystem:null};
 const services=[
-{name:"Root",path:"/"},{name:"Health",path:"/health"},{name:"Test Report JSON",path:"/test-report-json"},{name:"Providers",path:"/providers"},{name:"Debug",path:"/debug"},{name:"Operator Scan",path:"/operator-scan"},{name:"Workspace State",path:"/workspace-state"},{name:"Workspace Summary",path:"/workspace-summary"},{name:"Mission State",path:"/mission-state"},{name:"Engine State",path:"/engine-state"},{name:"Quality State",path:"/quality-state"}
+{name:"Root",path:"/"},{name:"Health",path:"/health"},{name:"Test Report JSON",path:"/test-report-json"},{name:"Providers",path:"/providers"},{name:"Debug",path:"/debug"},{name:"Operator Scan",path:"/operator-scan"},{name:"Workspace State",path:"/workspace-state"},{name:"Workspace Summary",path:"/workspace-summary"},{name:"Mission State",path:"/mission-state"},{name:"Engine State",path:"/engine-state"},{name:"Quality State",path:"/quality-state"},{name:"Pollution Audit",path:"/pollution-audit"}
 ];
 function $(id){return document.getElementById(id)}
 async function api(path,opts={}){const r=await fetch(API+path,{headers:{"Content-Type":"application/json",Accept:"application/json",...(opts.headers||{})},...opts});const txt=await r.text();let data;try{data=JSON.parse(txt)}catch(e){throw new Error("Unexpected non-JSON response from "+path)}if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);return data}
@@ -304,6 +304,18 @@ function copyTests(){navigator.clipboard.writeText($("testOutput").textContent||
 function quickCommand(){const v=$("topSearch").value.trim();if(!v)return;$("mainInput").value=v;showView("guided");runWorkspace()}
 function newWorkspace(){state.workspace=null;state.assets=[];state.selectedAsset=null;$("mainInput").value="";showView("guided");renderAll()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+
+async function purgePollution(){
+  try{
+    const d=await api("/purge-pollution",{method:"POST",body:JSON.stringify({})});
+    state.workspace=d.workspace||state.workspace;
+    renderAll();
+    alert("Pollution purge complete.");
+  }catch(e){
+    alert("Pollution purge failed: "+e.message);
+  }
+}
 
 async function resetWorkspace(){
   if(!confirm("Reset workspace state and clear polluted memory?")) return;
