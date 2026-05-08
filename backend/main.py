@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "35120-command-centre-db-experience"
+VERSION = "35130-real-executive-workflow"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -431,24 +431,43 @@ def classify(req: RunRequest):
     MEMORY["router_events"].insert(0, {"timestamp": now(), "input": req.input, "router": router})
     return router
 
-SYSTEM_PROMPT = """You are Executive Engine OS, a high-performance executive operator.
+SYSTEM_PROMPT = """You are Executive Engine OS, a premium executive operator for CEOs, COOs, CMOs, Presidents, and senior operators.
 
-Your output must be specific, useful, and action-ready. Never give generic business advice.
+You are not a chatbot. You are the operator sitting beside the executive. Your job is to convert messy input into boardroom-quality execution.
 
-Rules:
-- Think like a COO + CMO + Chief of Staff.
-- Every response must create movement: decision, next move, action steps, risk, priority, asset, and follow-up.
-- Use the user's real context. If the user mentions a company, client, market, meeting, proposal, CPA, SEO, ads, budget, stakeholder, or deadline, use it.
-- Do not drift into generic summaries.
-- If asked for a proposal, create a real client-ready proposal structure: objective, positioning, scope, deliverables, timeline, measurement, risks, next step.
-- If asked for marketing, include channels, offer, funnel, KPIs, tracking, budget logic, and execution steps.
-- If asked for a meeting, include agenda, talking points, questions, objections, decision required, and follow-up.
-- If asked for email, write a concise usable email with subject line and clear CTA.
-- Actions must be executable today.
-- Risk must be concrete.
-- Priority must be High, Medium, or Low.
+OUTPUT STANDARD:
+- Be specific to the exact input. Never give generic business advice.
+- Use the user's language, market, client, objective, risks, numbers, and constraints.
+- Assume the executive wants speed, control, leverage, money, clarity, and fewer open loops.
+- Never say "consider", "try", "it depends", or "here are some ideas" unless followed by a firm decision.
+- Every action must be something a real executive, assistant, COO, or operator can do today.
+- The response must feel commercially useful, not motivational.
 
-Return valid JSON only using the expected schema.
+REQUIRED JSON SCHEMA ONLY:
+{
+  "what_to_do_now": "one immediate action, under 22 words",
+  "decision": "clear executive decision, not generic",
+  "next_move": "the next operational move",
+  "actions": ["5-8 concrete steps with owner/action/object"],
+  "risk": "specific business risk",
+  "priority": "High | Medium | Low",
+  "reality_check": "hard truth or constraint",
+  "leverage": "where the win or compounding value is",
+  "constraint": "main bottleneck",
+  "financial_impact": "money/revenue/cost/retention impact",
+  "asset": {"title":"specific asset title", "type":"proposal|email|brief|plan|strategy|tasks|content", "content":"usable final draft or operating document"},
+  "follow_up": "usable follow-up message or next communication"
+}
+
+TYPE RULES:
+- Proposal: write a client-ready proposal with objective, value proposition, scope, deliverables, timeline, KPIs, risks, and close step.
+- Meeting: write agenda, decision required, talking points, questions, objections, and after-call follow-up.
+- Email: write the actual email with subject line and CTA.
+- Strategy: write operating thesis, target, moves, sequencing, KPIs, risks, and decision gates.
+- Tasks: write a prioritized action queue with clear owners and due timing.
+- Content: write the actual post/ad/script/copy, not advice about creating it.
+
+Return valid JSON only. No markdown fences.
 """
 
 def safe_json(text):
@@ -491,17 +510,60 @@ def normalize(data, req, router, provider_used):
         "memory": {"workspace_id": ACTIVE_CONTEXT.get("workspace_id", ""), "workflow_id": router["context"].get("workflow_id"), "client": router["context"].get("client"), "project": router["context"].get("project")},
     }
 
+def executive_rule_based_response(req, router, reason=""):
+    text = (req.input or "").strip()
+    lower = text.lower()
+    output_type = router.get("output_type", "brief")
+    priority = router.get("urgency", "High")
+    client = router.get("context", {}).get("client") or req.client or ACTIVE_CONTEXT.get("client") or "the opportunity"
+    project = router.get("context", {}).get("project") or req.project or ACTIVE_CONTEXT.get("project") or "the workstream"
+
+    if any(w in lower for w in ["proposal", "scope", "sow", "pitch"]):
+        title = f"{client.title()} Executive Proposal" if client != "the opportunity" else "Executive Proposal"
+        content = f"{title}\n\nObjective\nTurn the request into a clear commercial plan: {text}\n\nExecutive Positioning\nThis should not be sold as activity. It should be sold as a controlled operating outcome: clearer pipeline, faster decision-making, measurable execution, and fewer dropped follow-ups.\n\nRecommended Scope\n1. Confirm the business outcome, decision maker, budget range, timeline, and success metric.\n2. Build the core offer or execution plan with clear deliverables and acceptance criteria.\n3. Create the follow-up system: meeting agenda, proposal review, decision deadline, and next owner.\n4. Track the work through a visible action queue with open risks and pending approvals.\n\nDeliverables\n- Executive summary\n- Scope and implementation plan\n- Action queue\n- Risk/constraint register\n- Follow-up email\n- Decision checklist\n\nTimeline\nDay 1: lock context and success criteria.\nDays 2-3: prepare proposal, operating plan, and review package.\nDays 4-5: run decision meeting, handle objections, and confirm next step.\n\nKPIs\n- Decision date confirmed\n- Owner assigned\n- Budget or value range confirmed\n- Next meeting booked\n- Open risks reduced\n\nClose Step\nBook a proposal review and ask for a decision path, not a vague follow-up."
+        actions = [
+            "Confirm the decision maker, budget range, timeline, and success metric.",
+            "Draft the proposal around outcomes, not activities.",
+            "Create a one-page executive summary before the full detail.",
+            "Prepare the follow-up email with a specific review time.",
+            "List the objections that could block approval and answer them before the call.",
+            "Set the decision gate: approve, revise, or pause."
+        ]
+        follow = f"Subject: Next step on {project}\n\nHi [Name],\n\nI pulled the plan into a cleaner executive structure so we can move this from discussion to decision.\n\nThe next step is a short review where we confirm the outcome, scope, timeline, budget range, and decision path.\n\nAre you available for 30 minutes this week to review and lock the next move?\n\nBest,\nWill"
+    elif any(w in lower for w in ["meeting", "call", "agenda", "prep"]):
+        title = f"{project.title()} Meeting Brief"
+        content = f"{title}\n\nMeeting Purpose\nMove the conversation from discussion to a decision.\n\nInput Context\n{text}\n\nAgenda\n1. Confirm the outcome required from the meeting.\n2. Review current context, open constraints, and commercial stakes.\n3. Identify the decision maker and approval path.\n4. Confirm next action, owner, and deadline.\n\nTalking Points\n- The goal is not more discussion. The goal is a clear next move.\n- The highest risk is leaving without an owner, deadline, or decision path.\n- We should separate what is known, what is assumed, and what needs confirmation.\n\nQuestions To Ask\n- What decision needs to be made today?\n- What would stop this from moving forward?\n- Who else needs to approve it?\n- What timeline matters?\n- What does success look like in measurable terms?\n\nClose\nEnd with: owner, deadline, next meeting, and follow-up asset."
+        actions = ["Define the meeting decision before joining.", "Prepare three questions that expose the real blocker.", "Write the follow-up email before the call starts.", "Capture owner, deadline, and approval path.", "Send recap within 30 minutes after the call."]
+        follow = f"Subject: Recap and next step\n\nHi [Name],\n\nThanks for the time today. My read is that the next decision is to confirm the outcome, owner, and timeline for {project}.\n\nNext step: I will send the working plan and proposed action queue. Please confirm whether the owner and timing look correct.\n\nBest,\nWill"
+    elif any(w in lower for w in ["email", "reply", "follow up", "follow-up", "message"]):
+        title = "Executive Follow-Up Email"
+        content = "Subject: Next step\n\nHi [Name],\n\nI wanted to follow up and move this into a clear next step.\n\nBased on the current context, the priority is to confirm the objective, decision owner, timeline, and what needs to happen next.\n\nMy recommendation is that we use the next conversation to lock the action plan and remove any open blockers.\n\nAre you available for 20-30 minutes this week?\n\nBest,\nWill"
+        actions = ["Send the email with one clear CTA.", "Add a deadline or meeting window.", "Attach the relevant asset if available.", "Create a follow-up reminder for 48 hours.", "Track response status in the action queue."]
+        follow = content
+    else:
+        title = "Executive Operating Plan"
+        content = f"Executive Operating Plan\n\nInput\n{text}\n\nDecision\nTurn this into a controlled workflow with one owner, one next move, and one measurable result.\n\nOperating Sequence\n1. Define the outcome.\n2. Identify who owns the next action.\n3. Remove the highest-friction blocker.\n4. Create or update the asset required to move forward.\n5. Send the follow-up or decision request.\n6. Review progress within 24 hours.\n\nSuccess Criteria\n- Clear next action\n- Owner assigned\n- Deadline visible\n- Risk known\n- Follow-up sent\n- Decision path documented"
+        actions = ["Write the desired outcome in one sentence.", "Pick the single next action that creates movement today.", "Assign an owner and deadline.", "Create the asset or message needed to unblock the work.", "Save the decision and follow-up in the workspace.", "Review the action queue before end of day."]
+        follow = "Confirm the next owner, deadline, and decision path so this does not stay open-ended."
+
+    return {
+        "what_to_do_now": actions[0],
+        "decision": f"Move forward with a controlled {output_type} workflow for {project}.",
+        "next_move": actions[1] if len(actions) > 1 else actions[0],
+        "actions": actions,
+        "risk": "The work stays open-ended if the owner, deadline, approval path, and success metric are not confirmed.",
+        "priority": priority,
+        "reality_check": "Executives will not use a system that only displays information; it must move decisions and follow-ups forward.",
+        "leverage": "The leverage is converting messy context into a decision, asset, action queue, and follow-up in one motion.",
+        "constraint": "The main constraint is missing business context: owner, budget, timeline, stakeholder, and measurable outcome.",
+        "financial_impact": "The impact is faster cycle time, fewer dropped opportunities, and better conversion from discussion to decision.",
+        "asset": {"title": title, "type": output_type if output_type != "auto" else "brief", "content": content},
+        "follow_up": follow,
+    }
+
 def fallback(req, router, reason):
-    return normalize({
-        "what_to_do_now": "Create the executive workspace package manually because the AI provider failed.",
-        "decision": "Keep workflow moving with a controlled fallback.",
-        "next_move": "Confirm context and run again.",
-        "actions": ["Confirm client/project.", "Run OpenAI if Claude has no credits.", "Save the generated asset.", "Create follow-up."],
-        "risk": "Provider failure or missing credits.",
-        "priority": router.get("urgency", "High"),
-        "asset": {"title": f"{router['category'].title()} Fallback", "type": router["output_type"], "content": f"Input:\n{req.input}\n\nDebug:\n{reason}"},
-        "follow_up": "Retry with provider=openai or add Claude credits."
-    }, req, router, "fallback")
+    data = executive_rule_based_response(req, router, reason)
+    return normalize(data, req, router, "fallback:executive-rule-engine")
 
 def call_ai(req, router, provider):
     prompt = json.dumps({"router": router, "active_context": ACTIVE_CONTEXT, "workspace": get_workspace(), "input": req.input}, indent=2)
@@ -509,7 +571,7 @@ def call_ai(req, router, provider):
         if not openai_client:
             raise RuntimeError("OPENAI_API_KEY missing")
         resp = openai_client.chat.completions.create(
-            model=OPENAI_MODEL, temperature=0.3, max_tokens=1500,
+            model=OPENAI_MODEL, temperature=0.25, max_tokens=2600,
             messages=[{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}]
         )
         return normalize(safe_json(resp.choices[0].message.content), req, router, f"openai:{OPENAI_MODEL}")
@@ -517,7 +579,7 @@ def call_ai(req, router, provider):
         if not anthropic_client:
             raise RuntimeError("ANTHROPIC_API_KEY missing")
         resp = anthropic_client.messages.create(
-            model=ANTHROPIC_MODEL, max_tokens=1800, temperature=0.3,
+            model=ANTHROPIC_MODEL, max_tokens=2600, temperature=0.25,
             system=SYSTEM_PROMPT, messages=[{"role": "user", "content": prompt}]
         )
         raw = "\n".join([b.text for b in resp.content if getattr(b, "type", "") == "text"])
@@ -1488,6 +1550,26 @@ def db_test_write(payload: dict = None):
 def router_preview(req: RunRequest):
     return {"status": "ok", "version": VERSION, "input": req.input, "router": classify(req), "active_context": ACTIVE_CONTEXT}
 
+
+@app.get("/demo-state")
+def demo_state():
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "brief": {
+            "headline": "Three open loops need executive control today.",
+            "next_move": "Lock the proposal review, confirm the decision owner, and send the follow-up before noon.",
+            "pressure_score": 68,
+            "wins": ["Backend stable", "DB layer available", "Action queue ready"],
+            "risks": ["UI must drive workflow, not just display cards", "DB env vars must be configured in Render"]
+        },
+        "sample_actions": [
+            {"task": "Confirm target outcome and decision owner", "priority": "High", "status": "open"},
+            {"task": "Send proposal review follow-up", "priority": "High", "status": "open"},
+            {"task": "Run DB status and save test write", "priority": "Medium", "status": "open"}
+        ]
+    }
+
 @app.post("/run")
 def run_engine(req: RunRequest):
     # V35050_RUN_QUALITY_PATCH
@@ -1497,13 +1579,12 @@ def run_engine(req: RunRequest):
         output_type = getattr(req, "output_type", "") or "proposal"
         quality = build_quality_asset(input_text, output_type=output_type, category=category)
 
-        if input_text and (
+        auto_dealer_context = any(k in input_text.lower() for k in ["auto loan", "auto loans", "dealership", "car financing", "vehicle financing", "bad credit car", "used car dealer"])
+        if input_text and auto_dealer_context and (
             "proposal" in input_text.lower()
             or "seo" in input_text.lower()
             or "google ads" in input_text.lower()
             or "cpa" in input_text.lower()
-            or "auto loan" in input_text.lower()
-            or "dealership" in input_text.lower()
         ):
             identity = quality["identity"]
             asset = quality["asset"]
