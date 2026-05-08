@@ -2,365 +2,295 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Executive Engine OS — V35030 Functional Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Executive Assistant OS — V35100</title>
   <style>
     :root{
-      --nav:#071425;--rail:#102137;--ink:#061226;--muted:#53657d;--line:#d8e2ef;
-      --bg:#eef4fb;--card:#fff;--blue:#2563eb;--green:#059669;--orange:#f0440c;--red:#dc2626;--purple:#8b5cf6;
-      --shadow:0 18px 50px rgba(15,31,53,.14);--radius:18px;
+      --nav:#07111f;
+      --nav2:#0d1b2f;
+      --ink:#08111f;
+      --muted:#66758a;
+      --soft:#eef4fb;
+      --soft2:#f7f9fc;
+      --card:#ffffff;
+      --line:#dce5f0;
+      --blue:#2563eb;
+      --orange:#f97316;
+      --green:#10b981;
+      --red:#ef4444;
+      --gold:#f59e0b;
+      --shadow:0 18px 55px rgba(8,17,31,.10);
+      --shadow2:0 8px 24px rgba(8,17,31,.08);
+      --radius:22px;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-weight:650}
-    button,input,textarea{font:inherit}
-    .app{min-height:100vh;display:grid;grid-template-columns:250px minmax(760px,1fr) 360px;grid-template-rows:72px 1fr}
-    .top{grid-column:1/4;background:#101d30;color:#fff;display:flex;align-items:center;gap:22px;padding:0 28px;box-shadow:0 16px 35px rgba(5,12,24,.25);position:sticky;top:0;z-index:20}
-    .brand{display:flex;align-items:center;gap:14px;min-width:250px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#2664ff,#13a8ff);display:grid;place-items:center;font-weight:950}
-    .brand strong{font-size:17px}.brand small{display:block;color:#8fa6c5;font-size:12px;margin-top:2px}
-    .top-btn{border:0;border-radius:14px;background:var(--blue);color:white;padding:13px 22px;font-weight:950;cursor:pointer}.top-btn.orange{background:var(--orange)}.top-btn.dark{background:#071425}.top-btn.green{background:var(--green)}
-    .search{margin-left:auto;width:410px;background:#17263d;border:1px solid #2d405d;color:#d9e7fa;border-radius:15px;padding:14px 18px;outline:0}
-    .pill{border:1px solid #2d405d;border-radius:999px;padding:11px 17px;color:#d9e7fa;background:#132139;font-size:13px;font-weight:950}.pill.live{background:#064936;border-color:#087f5b;color:#48f3bb}.pill.error{background:#4b1c1c;border-color:#ef4444;color:#fecaca}
-    .left{grid-column:1;grid-row:2;background:#071425;color:#dce8fb;padding:26px 17px;overflow:auto}.left h5{color:#8ba3c3;letter-spacing:.22em;font-size:12px;margin:22px 8px 10px}
-    .navitem{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#dbe8fb;cursor:pointer;margin:4px 0;font-size:15px}.navitem:hover,.navitem.active{background:#1a2c46;color:#fff}.navitem b{margin-left:auto;background:#f26a22;color:white;border-radius:999px;font-size:11px;padding:4px 8px}
-    .note{margin-top:28px;background:#122239;border:1px solid #2b3f5b;border-radius:16px;padding:15px;color:#dce8fb;font-size:12px;line-height:1.45}
-    .main{grid-column:2;grid-row:2;padding:38px;overflow:auto;background:linear-gradient(180deg,#fff 0%,#f6f9fd 62%,#eef4fb 100%)}.rail{grid-column:3;grid-row:2;background:#102137;color:white;padding:32px 24px;overflow:auto}
-    h1{font-size:44px;line-height:1.02;margin:0 0 8px;font-weight:950;letter-spacing:-.055em}h2{font-size:28px;margin:0 0 8px;letter-spacing:-.04em}h3{font-size:22px;margin:0 0 14px;letter-spacing:-.03em}p{color:var(--muted);line-height:1.5;margin:0}.sub{font-size:18px;color:#4d6280;margin-bottom:28px}
-    .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:22px}.section.flush{padding:0;overflow:hidden}
-    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}.step{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;min-height:64px}.step.active{background:#edf4ff;border-color:#9ab9ff}.step.done{background:#eafbf1;border-color:#a4efc4}.step small{display:block;color:#527091;margin-bottom:7px}
-    .label{font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:#1f5fff;font-weight:950;margin-bottom:8px}
-    textarea{width:100%;min-height:116px;border:1px solid var(--line);border-radius:15px;padding:18px;background:#f8fbff;resize:vertical;outline:0}
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}.chip{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 13px;font-size:13px;font-weight:950;cursor:pointer}.chip.active{background:#071425;color:white;border-color:#071425}
-    .run{float:right;border:0;background:#071425;color:white;border-radius:14px;padding:13px 20px;font-weight:950;cursor:pointer}.run:disabled{opacity:.55}
-    .status{padding:18px 20px;border-left:5px solid var(--orange);background:#fff7ed;border-radius:14px;margin-top:16px;color:#111827}.status.ok{border-color:var(--green);background:#ecfdf5}.status.blue{border-color:var(--blue);background:#eff6ff}.status.fail{border-color:var(--red);background:#fef2f2}
-    .mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:white;border:1px solid var(--line);border-radius:16px;padding:16px}.metric strong{font-size:26px;display:block}.metric span{color:#63748d;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
-    .rail-section{border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:24px;margin-bottom:24px}.rail h3{color:white;margin-top:0}.rail-card{background:#1a2d49;border:1px solid #385172;border-radius:14px;padding:15px;margin:10px 0;color:white;cursor:pointer}.rail-card:hover{border-color:#6ea8ff}.rail-card.green{background:#064936;border-color:#07895f}.rail-card.orange{background:#4b2518;border-color:#f26a22}.rail-card.red{background:#4b1c1c;border-color:#ef4444}.rail-card strong{display:block;font-size:14px}.rail-card span{display:block;color:#c2d4ed;font-size:12px;margin-top:6px}.rail-link{float:right;color:#54a3ff;font-size:12px;cursor:pointer}
-    .tabs{display:flex;gap:8px;margin:16px 0}.tab{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 13px;font-size:13px;font-weight:950;cursor:pointer}.tab.active{background:#071425;color:white;border-color:#071425}.hidden{display:none!important}
-    .docbox{border:1px solid var(--line);border-radius:15px;background:#fbfdff;padding:18px;white-space:pre-wrap;line-height:1.55;min-height:260px;font-weight:600;color:#132139;overflow:auto}
-    .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}.workcard{border:1px solid var(--line);border-radius:16px;background:#fff;padding:16px;cursor:pointer}.workcard:hover{box-shadow:0 12px 30px rgba(0,0,0,.08)}.workcard strong{display:block;margin-bottom:6px}.workcard span{display:block;color:#64748b;font-size:13px}
-    .svcgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.svc{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;cursor:pointer}.svc code{font-size:12px;color:#53657d}.badge{display:inline-block;border-radius:999px;padding:7px 10px;font-size:12px;margin-top:8px;background:#eef2f7}.badge.ok{background:#dcfce7;color:#047857}.badge.fail{background:#fee2e2;color:#b91c1c}
-    .asset-view{display:grid;grid-template-columns:300px 1fr;gap:0;min-height:520px}.asset-list{border-right:1px solid var(--line);background:#f7faff;padding:16px}.asset-card{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer}.asset-card.active{border-color:#1463ff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.asset-card span{display:block;color:#64748b;font-size:12px;margin-top:5px}.editor{padding:20px;background:white}.editor-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}
-    .task{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;margin:9px 0}.check{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;color:white;background:#071425;font-size:12px;flex:0 0 auto}
-
-    .generate-left{float:none;background:var(--blue);margin-bottom:16px}
-    .output-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-    .quality-output{display:grid;gap:16px}
-    .output-card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px}
-    .output-card h3{margin:0 0 8px;font-size:20px}
-    .output-card .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#2563eb;font-weight:950;margin-bottom:8px}
-    .output-card p{color:#132139;font-weight:650}
-    .feedback-box{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:20px;margin-top:20px}
-    .feedback-box textarea{min-height:88px}
-    .section-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .primary-action{background:var(--blue)!important;color:#fff!important}
-    .proposal-block{font-weight:650;color:#132139;line-height:1.65}
-    .proposal-block h3{font-size:18px;margin:20px 0 8px}
-    .proposal-block ul{margin:8px 0 14px 18px;padding:0}
-    .proposal-block li{margin:6px 0}
-
-
-    .top-command-panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:22px}
-    .top-command-row{display:grid;grid-template-columns:170px 1fr auto auto;gap:10px;align-items:center}
-    .select{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;font-weight:900}
-    .command-input{min-height:54px!important;height:54px;resize:vertical}
-    .quality-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .quality-pill{border-radius:999px;background:#eef6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:8px 11px;font-size:12px;font-weight:950}
-    .quality-pill.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
-    .danger-btn{background:#dc2626!important;color:#fff!important}
-    
-    @media(max-width:1200px){.app{grid-template-columns:220px 1fr}.rail{display:none}.top{grid-column:1/3}.main{grid-column:2}.search{width:280px}}
+    body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,#edf3fb 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);font-weight:650}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:268px minmax(680px,1fr) 390px;grid-template-rows:auto 1fr}
+    .top{grid-column:1/4;height:76px;background:rgba(7,17,31,.98);color:white;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:20;box-shadow:0 14px 40px rgba(7,17,31,.22)}
+    .brand{width:244px;display:flex;align-items:center;gap:13px}
+    .logo{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--blue),#37b7ff);display:grid;place-items:center;font-weight:950;letter-spacing:-.03em}
+    .brand strong{display:block;font-size:16px;letter-spacing:-.02em}.brand span{display:block;color:#9fb2cc;font-size:12px;margin-top:2px}
+    .top-command{flex:1;display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;max-width:1040px;margin:0 auto}
+    .top-command select,.top-command textarea{height:46px;border:1px solid #263850;background:#0e1d32;color:#f4f8ff;border-radius:14px;padding:11px 13px;outline:0}
+    .top-command textarea{resize:none;overflow:hidden;line-height:22px}
+    .top-command textarea::placeholder{color:#879bb7}
+    .btn{border:0;border-radius:14px;background:var(--ink);color:white;padding:12px 16px;font-weight:950;box-shadow:var(--shadow2)}
+    .btn.blue{background:var(--blue)}.btn.orange{background:var(--orange)}.btn.green{background:var(--green)}.btn.ghost{background:white;color:var(--ink);border:1px solid var(--line);box-shadow:none}.btn.dark{background:#07111f}.btn.red{background:var(--red)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .status-pill{margin-left:14px;border:1px solid #24415f;background:#0d2338;color:#cfe4ff;border-radius:999px;padding:10px 13px;font-size:12px;font-weight:950;white-space:nowrap}.status-pill.ok{background:#063d31;border-color:#0f8a66;color:#9dffd9}.status-pill.bad{background:#421a1a;border-color:#b63a3a;color:#ffd1d1}
+    .left{grid-column:1;grid-row:2;background:linear-gradient(180deg,#07111f 0%,#0c1a2e 100%);color:#dbeafe;padding:22px 16px;overflow:auto}
+    .left h5{font-size:11px;letter-spacing:.20em;text-transform:uppercase;color:#7f97b5;margin:24px 10px 10px}.navitem{display:flex;align-items:center;gap:11px;padding:12px 12px;border-radius:14px;margin:4px 0;color:#dbeafe;cursor:pointer;font-size:14px}.navitem:hover,.navitem.active{background:#162840;color:white}.navitem b{margin-left:auto;background:rgba(249,115,22,.18);color:#fdba74;border:1px solid rgba(249,115,22,.35);border-radius:999px;padding:4px 8px;font-size:11px}.side-card{margin-top:24px;background:#10243b;border:1px solid #273d59;border-radius:18px;padding:16px}.side-card strong{display:block;color:#fff;margin-bottom:7px}.side-card p{color:#9eb1cc;font-size:12px;line-height:1.45;margin:0}
+    .main{grid-column:2;grid-row:2;padding:30px;overflow:auto}.rail{grid-column:3;grid-row:2;background:#0d1b2f;color:white;padding:26px 22px;overflow:auto;border-left:1px solid rgba(255,255,255,.08)}
+    h1{font-size:42px;line-height:1.02;letter-spacing:-.055em;margin:0 0 8px}h2{font-size:26px;letter-spacing:-.035em;margin:0 0 8px}h3{font-size:20px;letter-spacing:-.025em;margin:0 0 10px}p{margin:0;color:var(--muted);line-height:1.55}.sub{font-size:17px;color:#596b82;margin-bottom:22px;max-width:820px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:20px}.hero-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.hero-card.dark{background:linear-gradient(135deg,#08111f,#10233d);color:white;border-color:#223a58}.hero-card.dark p{color:#bfd0e6}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--blue);font-weight:950;margin-bottom:9px}.dark .eyebrow{color:#93c5fd}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.metric{background:white;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(8,17,31,.05)}.metric span{display:block;color:#78879a;text-transform:uppercase;letter-spacing:.11em;font-size:11px}.metric strong{display:block;font-size:28px;margin-top:5px;letter-spacing:-.04em}.metric.good strong{color:var(--green)}.metric.warn strong{color:var(--orange)}
+    .view{display:none}.view.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:white;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}.mini-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 22px rgba(8,17,31,.05)}.mini-card strong{display:block;margin-bottom:7px}.mini-card p{font-size:14px}.click{cursor:pointer}.click:hover{border-color:#9db7e8;box-shadow:0 12px 30px rgba(37,99,235,.10)}
+    .quick-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.chip{border:1px solid var(--line);background:#fff;color:#132033;border-radius:999px;padding:10px 13px;font-size:13px;font-weight:900}.chip.active{background:#08111f;color:white;border-color:#08111f}.chip.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.chip.blue{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.chip.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}
+    textarea.big{width:100%;min-height:130px;border:1px solid var(--line);border-radius:18px;background:#f8fbff;padding:16px;resize:vertical;outline:0;color:#101827}.form-row{display:grid;grid-template-columns:1fr 1fr 160px;gap:10px;margin-top:12px}.form-row input,.form-row select{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px;outline:0}
+    .result-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.result-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 28px rgba(8,17,31,.05)}.result-card.priority{border-left:5px solid var(--orange)}.result-card.next{border-left:5px solid var(--blue)}.result-card.decision{border-left:5px solid var(--green)}.result-card.risk{border-left:5px solid var(--red)}.result-card p,.result-card li{font-size:14px;color:#182235;line-height:1.55;font-weight:650}.result-card ul{margin:8px 0 0 20px;padding:0}.result-card li{margin:7px 0}.asset-box{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:18px;white-space:pre-wrap;color:#162033;line-height:1.62;max-height:560px;overflow:auto;font-weight:620}
+    .list{display:grid;gap:10px}.item{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;display:flex;gap:12px;align-items:flex-start}.check{width:28px;height:28px;border-radius:9px;background:#08111f;color:white;display:grid;place-items:center;flex:0 0 auto;font-size:12px}.item strong{display:block;margin-bottom:5px}.item span{display:block;color:#68798d;font-size:13px;line-height:1.4}
+    .asset-layout{display:grid;grid-template-columns:310px 1fr;gap:16px}.asset-list{display:grid;gap:10px}.asset-item{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;cursor:pointer}.asset-item.active,.asset-item:hover{border-color:#7ca7ff;box-shadow:0 0 0 4px rgba(37,99,235,.10)}.asset-item strong{display:block;font-size:14px}.asset-item span{display:block;color:#66758a;font-size:12px;margin-top:5px}.asset-content{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+    .rail-section{border-bottom:1px solid rgba(255,255,255,.11);padding-bottom:20px;margin-bottom:20px}.rail h3{color:white}.rail-card{background:#142842;border:1px solid #2d4564;border-radius:17px;padding:15px;margin:10px 0;cursor:pointer}.rail-card:hover{border-color:#7fb0ff}.rail-card strong{display:block;color:#fff;font-size:14px}.rail-card span{display:block;color:#b7c9df;font-size:12px;margin-top:6px;line-height:1.4}.rail-card.green{background:#063e33;border-color:#0f8566}.rail-card.orange{background:#442716;border-color:#cf6a24}.rail-card.red{background:#431d21;border-color:#b54848}.rail .small{color:#9eb1cc;font-size:12px;line-height:1.45}
+    .system-table{width:100%;border-collapse:separate;border-spacing:0 10px}.system-table td{background:white;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px}.system-table td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px;font-weight:900}.system-table td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0;color:#52647a}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#08111f;color:white;border-radius:999px;padding:12px 16px;box-shadow:var(--shadow);z-index:50;display:none}.toast.show{display:block}.hidden{display:none!important}
+    @media(max-width:1250px){.app{grid-template-columns:240px 1fr}.rail{display:none}.top{grid-column:1/3}.main{grid-column:2}.top-command{max-width:none}.status-pill{display:none}.hero,.result-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:850px){.app{display:block}.top{height:auto;padding:14px;display:block}.brand{width:auto;margin-bottom:12px}.top-command{grid-template-columns:1fr}.left{display:none}.main{padding:18px}.hero,.grid2,.grid3,.asset-layout,.form-row{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}h1{font-size:34px}}
   </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
-    <div class="brand"><div class="logo">EE</div><div><strong>Executive Engine OS</strong><small>V35090 Stabilization</small></div></div>
-    <button class="top-btn" onclick="showView('guided')">Guided Flow</button>
-    <button class="top-btn orange" onclick="newWorkspace()">+ New</button>
-    <button class="top-btn dark" onclick="showView('system')">System Test</button>
-    <input class="search" id="topSearch" placeholder="Search / command..." onkeydown="if(event.key==='Enter') quickCommand()" />
-    <span class="pill live">● Live</span><span class="pill" id="backendPill">Checking</span>
+    <div class="brand"><div class="logo">EA</div><div><strong>Executive Assistant OS</strong><span>V35100 UI/EUX Upgrade</span></div></div>
+    <div class="top-command">
+      <select id="modeTop" aria-label="Mode">
+        <option value="execution">Execution</option>
+        <option value="strategy">Strategy</option>
+        <option value="decision">Decision</option>
+        <option value="meeting">Meeting</option>
+      </select>
+      <textarea id="quickInput" placeholder="Type the objective. Example: Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."></textarea>
+      <button class="btn blue" id="quickRun">Run OS</button>
+    </div>
+    <div class="status-pill" id="backendStatus">Checking backend</div>
   </header>
+
   <aside class="left">
-    <h5>START</h5><div class="navitem active" onclick="showView('today')">▦ Today <b>Live</b></div><div class="navitem" onclick="showView('guided')">▶ Guided Flow</div>
-    <h5>CREATE</h5><div class="navitem" onclick="preset('email')">✉ Email</div><div class="navitem" onclick="preset('proposal')">▤ Plans & Proposals</div><div class="navitem" onclick="preset('content')">✦ Content Creation</div>
-    <h5>THINK</h5><div class="navitem" onclick="preset('meeting')">☷ Meetings</div><div class="navitem" onclick="preset('marketing')">☻ Marketing Strategy</div><div class="navitem" onclick="preset('research')">⌕ Research</div><div class="navitem" onclick="preset('brainstorm')">⌘ Brainstorming</div>
-    <h5>EXECUTE</h5><div class="navitem" onclick="preset('goals')">◆ Goals</div><div class="navitem" onclick="preset('tasks')">✓ Tasks / To-Dos</div><div class="navitem" onclick="showView('assets')">▦ Assets</div><div class="navitem" onclick="showView('system')">⚙ System Test</div>
-    <div class="note"><strong>V35090</strong><br>Stabilization active: request handling fixed, OpenAI-first routing preserved, workspace cleanup enforced, executive-safe responses only.</div>
+    <h5>Command</h5>
+    <div class="navitem active" data-view="today">Today <b id="badgeToday">0</b></div>
+    <div class="navitem" data-view="run">Run Command</div>
+    <div class="navitem" data-view="workspace">Workspace</div>
+    <div class="navitem" data-view="assets">Assets <b id="badgeAssets">0</b></div>
+    <h5>Operator</h5>
+    <div class="navitem" data-view="actions">Actions <b id="badgeActions">0</b></div>
+    <div class="navitem" data-view="risks">Risk Monitor <b id="badgeRisks">0</b></div>
+    <div class="navitem" data-view="operator">Operator Intelligence</div>
+    <h5>System</h5>
+    <div class="navitem" data-view="system">System Status</div>
+    <div class="side-card"><strong>Executive Mode</strong><p>Command goes in. The system returns next move, decision, actions, asset, follow-up, and operator pressure.</p></div>
   </aside>
+
   <main class="main">
-
-    <section class="top-command-panel">
-      <div class="label">Executive Command</div>
-      <div class="top-command-row">
-        <select id="commandType" class="select">
-          <option value="proposal">Proposal</option>
-          <option value="meeting">Meeting</option>
-          <option value="email">Email</option>
-          <option value="strategy">Strategy</option>
-          <option value="research">Research</option>
-          <option value="tasks">Tasks</option>
-          <option value="guided">Guided</option>
-        </select>
-        <textarea id="persistentCommand" class="command-input" placeholder="Tell EE what needs to happen. Example: Build proposal for Ontario auto-loan dealership with SEO, social, Google Ads, CPA under $100."></textarea>
-        <button class="top-btn primary-action" onclick="runPersistentCommand()">Run</button>
-        <button class="top-btn dark" onclick="resetWorkspace()">Reset</button>
-      </div>
-      <div class="quality-strip">
-        <span class="quality-pill" id="qualityProvider">OpenAI-first</span>
-        <span class="quality-pill" id="qualityState">Output guard: active</span>
-        <span class="quality-pill warn">Claude disabled until credits restored</span>
-      </div>
-    </section>
-
-    <section id="view-today">
-      <h1>Good morning Will — workspace ready.</h1><p class="sub">Choose the next executive move. No raw JSON. No dead buttons.</p>
-      <div class="mini-grid"><div class="metric"><span>Assets</span><strong id="mAssets">0</strong></div><div class="metric"><span>Tasks</span><strong id="mTasks">0</strong></div><div class="metric"><span>Follow-ups</span><strong id="mFollow">0</strong></div><div class="metric"><span>Pressure</span><strong id="mPressure">0</strong></div></div>
-      <div class="section" style="margin-top:22px"><h2>What needs attention now?</h2><p id="workspaceSummary">No workspace loaded yet. Start one below.</p><div class="btnrow"><button class="top-btn" onclick="showView('guided')">Start / Continue</button><button class="top-btn" onclick="showView('workspace');workspaceTab('overview')">Open Workspace</button><button class="top-btn orange" onclick="generatePackage()">Generate Full Package</button><button class="top-btn green" onclick="dailyBriefing()">Daily Brief</button></div></div>
-      <div class="section"><h2>Work waiting for you</h2><div id="todayCards" class="cards"></div></div>
-    </section>
-
-    <section id="view-guided" class="hidden">
-      <h1>Guided Flow</h1><p class="sub">Input → workspace → asset → follow-up → done.</p>
-      <div class="section"><div class="steps"><div class="step done"><small>1</small><strong>Load Context</strong></div><div class="step active"><small>2</small><strong>Generate</strong></div><div class="step"><small>3</small><strong>Review</strong></div><div class="step"><small>4</small><strong>Save</strong></div><div class="step"><small>5</small><strong>Follow Up</strong></div></div></div>
-      <div class="section"><button class="run generate-left primary-action" id="runBtn" onclick="runWorkspace()">Generate</button><div class="label">AI Assistant</div><h2 id="inputTitle">What needs to happen?</h2><p id="inputMeta">Category: Guided Flow • output: brief</p><textarea id="mainInput">Auto loan company services all of Ontario. They are a dealership and sell cars online, get people approved, and then sell the customer a car. They need SEO, social media, and Google Ads management with a CPA of $100 or less. Build a proposal.</textarea><div class="btnrow"><button class="chip" onclick="setPrompt('Build the proposal for SEO, social media, Google Ads, CPA target, risk, and follow-up.')">Build proposal</button><button class="chip" onclick="setPrompt('Create a follow-up email based on the active proposal and meeting context.')">Follow-up</button><button class="chip" onclick="setPrompt('Create the marketing strategy, budget logic, channels, risks, KPIs, and next steps.')">Marketing strategy</button><button class="chip" onclick="setPrompt('Prepare the meeting brief, agenda, talking points, risks, objections, and follow-up.')">Prep meeting</button></div></div>
-      <div id="generationStatus" class="section hidden"><div class="label">Generating</div><h2>Building executive workspace output...</h2></div>
-    </section>
-
-    <section id="view-workspace" class="hidden">
-      <h1 id="workspaceTitle">Workspace</h1><p class="sub" id="workspaceSubtitle">Client/project workspace.</p>
-      <div class="tabs"><button class="tab active" onclick="workspaceTab('overview')">Overview</button><button class="tab" onclick="workspaceTab('proposal')">Proposal</button><button class="tab" onclick="workspaceTab('email')">Email</button><button class="tab" onclick="workspaceTab('meeting')">Meeting</button><button class="tab" onclick="workspaceTab('tasks')">Tasks</button><button class="tab" onclick="workspaceTab('timeline')">Timeline</button></div>
-      <div id="workspaceActionBar" class="btnrow" style="margin-bottom:18px"><button class="top-btn" onclick="generatePackage()">Generate Missing Assets</button><button class="top-btn dark" onclick="saveCurrentView()">Save Current View</button><button class="top-btn orange" onclick="workspaceTab('email')">Create Follow-up</button><button class="top-btn danger-btn" onclick="resetWorkspace()">Reset Workspace</button><button class="top-btn green" onclick="stabilizeWorkspace()">Clean State</button><button class="top-btn danger-btn" onclick="purgePollution()">Purge Pollution</button></div>
-      <div class="section">
-        <div class="section-title-row">
-          <div>
-            <div class="label">Executive Output</div>
-            <h2 id="workspacePanelTitle">Review-ready workspace</h2>
-          </div>
-          <div class="btnrow" style="margin-top:0">
-            <button class="chip" onclick="copyWorkspaceOutput()">Copy</button>
-            <button class="chip" onclick="saveCurrentView()">Save</button>
+    <section class="view active" id="view-today">
+      <div class="hero">
+        <div class="hero-card dark">
+          <div class="eyebrow">Today</div>
+          <h1>Run the day from one command.</h1>
+          <p id="todaySummary">Backend is stable. Next step is operating flow: create a workspace, generate assets, and move actions forward.</p>
+          <div class="quick-row">
+            <button class="btn orange" onclick="showView('run');focusCommand()">Start Command</button>
+            <button class="btn ghost" onclick="loadDailyBriefing()">Daily Brief</button>
+            <button class="btn ghost" onclick="loadOperator(true)">Refresh Operator</button>
           </div>
         </div>
-        <div id="workspacePanel" class="quality-output">Workspace data loading...</div>
-      </div>
-      <div class="feedback-box">
-        <div class="label">Continue / Give Feedback</div>
-        <h2>Tell the system what to improve next.</h2>
-        <textarea id="feedbackInput" placeholder="Example: Make the proposal more premium, add pricing options, include risks, and create a stronger follow-up email."></textarea>
-        <div class="btnrow">
-          <button class="top-btn primary-action" onclick="continueWithFeedback()">Continue With Feedback</button>
-          <button class="chip" onclick="quickFeedback('Make this more specific, executive-level, and less generic. Add concrete next steps.')">Make sharper</button>
-          <button class="chip" onclick="quickFeedback('Turn this into a client-ready proposal with positioning, scope, deliverables, timeline, pricing logic, and follow-up.')">Client-ready proposal</button>
-          <button class="chip" onclick="quickFeedback('Create the next follow-up email and action list based on this workspace.')">Follow-up + tasks</button>
+        <div class="hero-card">
+          <div class="eyebrow">Next Best Action</div>
+          <h2 id="nextBestAction">Create or advance a workspace.</h2>
+          <p id="pressureText">Pressure score will appear after operator scan.</p>
+          <div class="quick-row">
+            <span class="chip blue" id="providerChip">OpenAI-first</span>
+            <span class="chip green" id="versionChip">V35100 frontend</span>
+          </div>
         </div>
       </div>
+
+      <div class="metrics">
+        <div class="metric"><span>Assets</span><strong id="metricAssets">0</strong></div>
+        <div class="metric"><span>Open Actions</span><strong id="metricActions">0</strong></div>
+        <div class="metric"><span>Follow-ups</span><strong id="metricFollowups">0</strong></div>
+        <div class="metric warn"><span>Pressure</span><strong id="metricPressure">0</strong></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Operating Flow</div>
+        <h2>What needs attention now</h2>
+        <div class="grid3" id="todayCards"></div>
+      </div>
     </section>
 
-    <section id="view-assets" class="hidden">
-      <h1>Assets</h1><p class="sub">Open, review, copy, and save generated executive assets.</p>
-      <div class="section flush"><div class="asset-view"><div class="asset-list" id="assetList"></div><div class="editor"><div class="editor-head"><div><h2 id="assetTitle">No asset selected</h2><p id="assetType">Select an asset</p></div><div class="btnrow"><button class="chip" onclick="copyAsset()">Copy</button><button class="chip" onclick="saveAsset()">Save</button><button class="chip" onclick="showView('workspace');workspaceTab('overview')">Back</button></div></div><div id="assetContent" class="docbox">No asset loaded yet.</div></div></div></div>
+    <section class="view" id="view-run">
+      <div class="card">
+        <div class="eyebrow">Command</div>
+        <h1>Tell the OS what outcome you need.</h1>
+        <p class="sub">Keep it messy. The system will structure the decision, next move, actions, risk, priority, asset, and follow-up.</p>
+        <textarea class="big" id="mainInput" placeholder="Example: Build proposal for Ontario auto loan dealership with SEO, social media, Google Ads, CPA target under $100, risks, and follow-up email."></textarea>
+        <div class="form-row">
+          <input id="clientInput" placeholder="Client / company optional" />
+          <input id="projectInput" placeholder="Project optional" />
+          <select id="outputType">
+            <option value="proposal">Proposal</option>
+            <option value="meeting">Meeting Prep</option>
+            <option value="email">Follow-up Email</option>
+            <option value="strategy">Strategy</option>
+            <option value="tasks">Tasks</option>
+            <option value="auto">Auto</option>
+          </select>
+        </div>
+        <div class="quick-row">
+          <button class="btn blue" id="mainRun">Run Executive OS</button>
+          <button class="btn orange" id="packageRun">Generate Full Package</button>
+          <button class="btn ghost" onclick="fillExample('proposal')">Proposal</button>
+          <button class="btn ghost" onclick="fillExample('meeting')">Meeting</button>
+          <button class="btn ghost" onclick="fillExample('followup')">Follow-up</button>
+          <button class="btn ghost" onclick="fillExample('strategy')">Strategy</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="loadingCard">
+        <div class="eyebrow">Working</div>
+        <h2>Building the executive output...</h2>
+        <p>The backend is generating the next move, asset, actions, follow-up, and operator state.</p>
+      </div>
+
+      <div id="resultArea" class="hidden">
+        <div class="result-grid">
+          <div class="result-card next"><div class="eyebrow">Next Move</div><h2 id="resNext">-</h2><p id="resNow">-</p></div>
+          <div class="result-card decision"><div class="eyebrow">Decision</div><h2 id="resDecision">-</h2><p>Priority: <strong id="resPriority">-</strong></p></div>
+        </div>
+        <div class="result-grid" style="margin-top:16px">
+          <div class="result-card"><div class="eyebrow">Action Steps</div><ul id="resActions"></ul></div>
+          <div class="result-card risk"><div class="eyebrow">Risk</div><p id="resRisk">-</p><div class="quick-row"><button class="btn ghost" onclick="saveCurrent('decision')">Save Decision</button><button class="btn ghost" onclick="saveCurrent('action')">Save Action</button><button class="btn ghost" onclick="copyAsset()">Copy Asset</button></div></div>
+        </div>
+        <div class="card"><div class="eyebrow">Generated Asset</div><h2 id="assetTitle">Asset</h2><div class="asset-box" id="resAsset">-</div></div>
+        <div class="card"><div class="eyebrow">Follow-up</div><p id="resFollow">-</p></div>
+      </div>
     </section>
 
-    <section id="view-system" class="hidden">
-      <h1>System Test Console</h1><p class="sub">Tests the 10 core backend services directly from EE OS.</p>
-      <div class="section"><div class="btnrow"><button class="top-btn" onclick="runAllTests()">Run All Tests</button><button class="top-btn orange" onclick="runCritical()">Run Critical</button><button class="top-btn dark" onclick="copyTests()">Copy Output</button></div><div class="svcgrid" id="serviceGrid" style="margin-top:18px"></div></div>
-      <div class="section"><div class="label">Output</div><pre id="testOutput" class="docbox">Click Run All Tests.</pre></div>
+    <section class="view" id="view-workspace">
+      <div class="card">
+        <div class="eyebrow">Active Workspace</div>
+        <h1 id="workspaceTitle">No active workspace</h1>
+        <p class="sub" id="workspaceSummary">Run a command to create an executive workspace.</p>
+        <div class="quick-row">
+          <button class="btn blue" onclick="showView('run')">Run Another Command</button>
+          <button class="btn ghost" onclick="loadWorkspace(true)">Refresh Workspace</button>
+          <button class="btn ghost" onclick="continueWorkflow()">Continue Workflow</button>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="eyebrow">Next Executive Decision</div><h2 id="workspaceDecision">-</h2></div>
+        <div class="card"><div class="eyebrow">Operator Recommendation</div><h2 id="workspaceRecommendation">-</h2></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="eyebrow">Recent Decisions</div><div class="list" id="decisionList"></div></div>
+        <div class="card"><div class="eyebrow">Timeline</div><div class="list" id="timelineList"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-assets">
+      <div class="card"><div class="eyebrow">Assets</div><h1>Client-ready output library.</h1><p class="sub">Generated proposals, emails, meeting prep, plans, and execution documents from the active workspace.</p></div>
+      <div class="asset-layout">
+        <div class="asset-list" id="assetList"></div>
+        <div class="asset-content"><div class="eyebrow" id="selectedAssetType">Asset</div><h2 id="selectedAssetTitle">Select an asset</h2><div class="asset-box" id="selectedAssetContent">No asset selected.</div><div class="quick-row"><button class="btn ghost" onclick="copySelectedAsset()">Copy Selected Asset</button></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-actions">
+      <div class="card"><div class="eyebrow">Actions</div><h1>Execution queue.</h1><p class="sub">Actions are pulled from generated workspaces and operator recommendations.</p></div>
+      <div class="list" id="actionsList"></div>
+    </section>
+
+    <section class="view" id="view-risks">
+      <div class="card"><div class="eyebrow">Risk Monitor</div><h1>Constraints before they become problems.</h1><p class="sub">The OS should surface risk, stalled workflow, missing follow-up, and pressure signals.</p></div>
+      <div class="list" id="riskList"></div>
+    </section>
+
+    <section class="view" id="view-operator">
+      <div class="card"><div class="eyebrow">Operator Intelligence</div><h1>System recommendation layer.</h1><p class="sub">Reads current workspace, actions, follow-ups, pressure, and attention signals.</p><div class="quick-row"><button class="btn blue" onclick="loadOperator(true)">Run Operator Scan</button><button class="btn ghost" onclick="loadDailyBriefing()">Generate Daily Brief</button></div></div>
+      <div class="grid2">
+        <div class="card"><div class="eyebrow">Pressure Score</div><h1 id="opPressure">0</h1><p id="opTopPriority">No pressure loaded.</p></div>
+        <div class="card"><div class="eyebrow">Next Best Action</div><h2 id="opNext">Create or advance a workspace.</h2></div>
+      </div>
+      <div class="card"><div class="eyebrow">Attention Feed</div><div class="list" id="attentionList"></div></div>
+    </section>
+
+    <section class="view" id="view-system">
+      <div class="card"><div class="eyebrow">System Status</div><h1>V35090 backend. V35100 frontend.</h1><p class="sub">This view checks the existing backend without changing routes.</p><div class="quick-row"><button class="btn blue" onclick="runSystemChecks()">Run Checks</button><button class="btn ghost" onclick="clearWorkspaceUI()">Clear Local UI State</button></div></div>
+      <div class="card"><table class="system-table" id="systemTable"></table></div>
     </section>
   </main>
+
   <aside class="rail">
+    <div class="rail-section"><h3>Operator Rail</h3><p class="small" id="railSummary">Waiting for workspace or operator scan.</p></div>
     <div class="rail-section"><h3>Next</h3><div id="railNext"></div></div>
-    <div class="rail-section"><h3>Assets <span class="rail-link" onclick="showView('assets')">View All</span></h3><div id="railAssets"></div></div>
-    <div class="rail-section"><h3>Follow-Ups</h3><div id="railFollowups"></div></div>
+    <div class="rail-section"><h3>Assets</h3><div id="railAssets"></div></div>
+    <div class="rail-section"><h3>Follow-ups</h3><div id="railFollowups"></div></div>
     <div class="rail-section"><h3>Risks</h3><div id="railRisks"></div></div>
-    <div class="rail-section"><h3>System</h3><div id="railSystem"><div class="rail-card green"><strong>Checking...</strong><span>Backend connection</span></div></div></div>
   </aside>
 </div>
+<div class="toast" id="toast"></div>
+
 <script>
 const API="https://executive-engine-os.onrender.com";
-let state={workspace:null,assets:[],selectedAsset:null,currentView:"today",currentTab:"overview",lastSystem:null};
-const services=[
-{name:"Root",path:"/"},{name:"Health",path:"/health"},{name:"Test Report JSON",path:"/test-report-json"},{name:"Providers",path:"/providers"},{name:"Debug",path:"/debug"},{name:"Operator Scan",path:"/operator-scan"},{name:"Workspace State",path:"/workspace-state"},{name:"Workspace Summary",path:"/workspace-summary"},{name:"Mission State",path:"/mission-state"},{name:"Engine State",path:"/engine-state"},{name:"Quality State",path:"/quality-state"},{name:"Pollution Audit",path:"/pollution-audit"}
-];
-function $(id){return document.getElementById(id)}
-async function api(path,opts={}){const r=await fetch(API+path,{headers:{"Content-Type":"application/json",Accept:"application/json",...(opts.headers||{})},...opts});const txt=await r.text();let data;try{data=JSON.parse(txt)}catch(e){throw new Error("Unexpected non-JSON response from "+path)}if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);return data}
-function showView(v){["today","guided","assets","workspace","system"].forEach(x=>$("view-"+x).classList.add("hidden"));$("view-"+v).classList.remove("hidden");state.currentView=v;if(v==="assets")renderAssets();if(v==="system")renderServices()}
-function setPrompt(t){$("mainInput").value=t}
-function preset(type){const map={email:["Create Follow-Up Email","Category: Email • output: email","Create a follow-up email based on the active workspace, proposal, and next step."],proposal:["Create Plans & Proposals","Category: Plans & Proposals • output: proposal","Build the proposal for SEO, social media, Google Ads, CPA target, risk, and follow-up."],content:["Create Content","Category: Content Creation • output: content","Create content assets for the active business objective."],meeting:["Prepare Meeting","Category: Meetings • output: brief","Prepare the meeting brief, agenda, talking points, objections, and next action."],marketing:["Marketing Strategy","Category: Marketing Strategy • output: strategy","Create the marketing strategy, channels, KPIs, budget logic, risk, and execution plan."],research:["Research Brief","Category: Research • output: brief","Research the business context and create an executive brief based on known context."],brainstorm:["Brainstorm","Category: Brainstorming • output: ideas","Brainstorm strategic options and recommend the best path."],goals:["Goals","Category: Goals • output: goals","Create goals, KPIs, success metrics, and execution rhythm."],tasks:["Tasks / To-Dos","Category: Tasks • output: tasks","Create the execution task list with sequence, priority, and next action."]};const m=map[type]||map.proposal;$("inputTitle").textContent=m[0];$("inputMeta").textContent=m[1];$("mainInput").value=m[2];showView("guided")}
-function inferType(t){t=(t||"").toLowerCase();if(t.includes("meeting")||t.includes("call"))return"meeting";if(t.includes("marketing")||t.includes("seo")||t.includes("ads")||t.includes("cpa"))return"marketing";return"proposal"}
-async function testBackend(){try{const d=await api("/test-report-json"); const q=await api("/quality-state").catch(()=>null); $("backendPill").textContent=d.version||"Backend"; if(q){$("qualityState").textContent=q.quality_ok?"Quality guard: clean":"Quality guard: review";}$("backendPill").className="pill";$("railSystem").innerHTML=`<div class="rail-card green" onclick="showView('system')"><strong>Backend live</strong><span>${esc(d.version)}</span></div>`}catch(e){$("backendPill").textContent="Backend check needed";$("backendPill").className="pill error";$("railSystem").innerHTML=`<div class="rail-card red" onclick="showView('system')"><strong>Check system</strong><span>${esc(e.message)}</span></div>`}}
-async function runWorkspace(){const input=$("mainInput").value.trim();if(!input)return alert("Add context first.");$("runBtn").disabled=true;$("runBtn").textContent="Generating...";$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Generating</div><h2>Building workspace and first useful asset...</h2>`;try{const wt=inferType(input);const created=await api("/create-workspace",{method:"POST",body:JSON.stringify({input,workspace_type:wt,provider:"openai",auto_generate:false})});state.workspace=created.workspace;const run=await api("/run",{method:"POST",body:JSON.stringify({input,provider:"openai",category:wt==="marketing"?"marketing":wt==="meeting"?"meetings":"plans",output_type:wt==="meeting"?"brief":"proposal"})});if(run.workspace)state.workspace=run.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Generation failed</strong><br>${esc(e.message)}<br><br>Open System Test and run critical checks.</div>`}finally{$("runBtn").disabled=false;$("runBtn").textContent="Generate"}}
-async function generatePackage(){const input=$("mainInput").value.trim()||(state.workspace&&state.workspace.input)||"Build executive workspace package.";try{showView("guided");$("generationStatus").classList.remove("hidden");$("generationStatus").innerHTML=`<div class="label">Autonomous Package</div><h2>Generating proposal, follow-up, meeting prep, tasks, and risk notes...</h2>`;const d=await api("/autonomous-package",{method:"POST",body:JSON.stringify({input,workspace_type:inferType(input),provider:"openai"})});state.workspace=d.workspace;await loadWorkspace();showView("workspace");workspaceTab("overview");$("generationStatus").classList.add("hidden")}catch(e){$("generationStatus").innerHTML=`<div class="status fail"><strong>Package failed</strong><br>${esc(e.message)}</div>`}}
-async function dailyBriefing(){try{const d=await api("/daily-briefing");const b=d.briefing||{};$("workspaceSummary").textContent=b.headline||b.next_best_action||"Briefing ready.";await loadWorkspace();showView("today")}catch(e){alert(e.message)}}
-async function loadWorkspace(){try{const d=await api("/workspace-state");state.workspace=d.active_workspace||null;renderAll();return d}catch(e){$("railSystem").innerHTML=`<div class="rail-card red" onclick="showView('system')"><strong>Workspace load failed</strong><span>${esc(e.message)}</span></div>`}}
-function collectAssets(){const ws=state.workspace||{};const s=ws.sections||{};state.assets=Array.isArray(s.assets)?s.assets:[];return state.assets}
-function renderAll(){renderMetrics();renderRail();renderAssets();renderTodayCards();if(state.currentView==="workspace")workspaceTab(state.currentTab||"overview")}
-function renderMetrics(){const ws=state.workspace||{},s=ws.sections||{},op=(ws.sections&&ws.sections.operator&&ws.sections.operator[0])||{};$("mAssets").textContent=(s.assets||[]).length||0;$("mTasks").textContent=(s.tasks||[]).length||0;$("mFollow").textContent=(s.follow_ups||[]).length||0;$("mPressure").textContent=ws.pressure_score||op.pressure_score||0;$("workspaceSummary").textContent=ws.summary||ws.input||"No active workspace loaded yet."}
-function renderTodayCards(){const ws=state.workspace||{},s=ws.sections||{},tasks=s.tasks||[],assets=s.assets||[],f=s.follow_ups||[];let cards=[];if(ws.title)cards.push(`<div class="workcard" onclick="showView('workspace');workspaceTab('overview')"><strong>${esc(ws.title)}</strong><span>${esc(ws.summary||"Open workspace")}</span></div>`);if(assets[0])cards.push(`<div class="workcard" onclick="showView('assets')"><strong>Review asset</strong><span>${esc(assets[0].title||"Generated asset")}</span></div>`);if(tasks[0])cards.push(`<div class="workcard" onclick="showView('workspace');workspaceTab('tasks')"><strong>Next task</strong><span>${esc(tasks[0].task)}</span></div>`);if(f[0])cards.push(`<div class="workcard" onclick="showView('workspace');workspaceTab('email')"><strong>Follow-up</strong><span>${esc(f[0].follow_up)}</span></div>`);$("todayCards").innerHTML=cards.join("")||`<div class="workcard" onclick="showView('guided')"><strong>Start a workspace</strong><span>Click here and enter the business objective.</span></div>`}
-function renderRail(){const ws=state.workspace||{},s=ws.sections||{},rr=s.right_rail||{},assets=collectAssets(),follows=rr.follow_ups||s.follow_ups||[],risks=rr.warnings||s.warnings||[];$("railNext").innerHTML=(rr.next||[]).length?(rr.next||[]).slice(0,3).map(n=>`<div class="rail-card orange" onclick="showView('workspace');workspaceTab('tasks')"><strong>${esc(n.title||"Next action")}</strong><span>${esc(n.type||"next")} · ${esc(n.priority||"")}</span></div>`).join(""):`<div class="rail-card orange" onclick="showView('guided')"><strong>Build growth proposal</strong><span>Plans & Proposals · Start now</span></div>`;$("railAssets").innerHTML=assets.length?assets.slice(0,4).map((a,i)=>`<div class="rail-card green" onclick="openAsset(${i})"><strong>${esc(a.title||"Untitled Asset")}</strong><span>${esc(a.type||"asset")} · Open</span></div>`).join(""):`<div class="rail-card green" onclick="showView('guided')"><strong>No assets yet</strong><span>Generate workspace</span></div>`;$("railFollowups").innerHTML=follows.length?follows.slice(0,4).map(f=>`<div class="rail-card" onclick="showView('workspace');workspaceTab('email')"><strong>${esc(f.follow_up||f.title||"Follow-up")}</strong><span>Email · continue</span></div>`).join(""):`<div class="rail-card" onclick="workspaceTab('email')"><strong>No follow-ups yet</strong><span>Create after proposal</span></div>`;$("railRisks").innerHTML=risks.length?risks.slice(0,3).map(r=>`<div class="rail-card red" onclick="showView('workspace');workspaceTab('overview')"><strong>${esc(r.warning||r.title||"Risk")}</strong><span>${esc(r.priority||"Review")}</span></div>`).join(""):`<div class="rail-card green"><strong>No active risks</strong><span>Operator clear</span></div>`}
-function renderAssets(){const assets=collectAssets();const list=$("assetList");if(!list)return;list.innerHTML=assets.length?assets.map((a,i)=>`<div class="asset-card ${state.selectedAsset===i?'active':''}" onclick="openAsset(${i},false)"><strong>${esc(a.title||"Untitled Asset")}</strong><span>${esc(a.type||"asset")} · ${esc(a.step||"workspace")}</span></div>`).join(""):`<div class="asset-card"><strong>No assets yet</strong><span>Generate a workspace package first.</span></div>`;if(assets.length&&state.selectedAsset===null)openAsset(0,false)}
-function openAsset(i,switchView=true){const a=collectAssets()[i];if(!a)return;state.selectedAsset=i;$("assetTitle").textContent=a.title||"Untitled Asset";$("assetType").textContent=`${a.type||"asset"} · ${a.step||"workspace"}`;$("assetContent").textContent=a.content||a.summary||"No content available.";renderAssets();if(switchView)showView("assets")}
-
-function cardHTML(title, body, eyebrow=""){
-  return `<div class="output-card">${eyebrow?`<div class="eyebrow">${esc(eyebrow)}</div>`:""}<h3>${esc(title)}</h3><div class="proposal-block">${formatText(body||"-")}</div></div>`;
-}
-function formatText(value){
-  const raw = String(value ?? "-").trim();
-  if(!raw) return "-";
-  const safe = esc(raw);
-  return safe
-    .replace(/\n###\s?(.+)/g, "\n<h3>$1</h3>")
-    .replace(/\n##\s?(.+)/g, "\n<h3>$1</h3>")
-    .replace(/\n-\s(.+)/g, "\n• $1")
-    .replace(/\n/g, "<br>");
-}
-function assetBy(kind){
-  const s=(state.workspace&&state.workspace.sections)||{};
-  const assets=s.assets||[];
-  const lower = kind.toLowerCase();
-  return assets.find(x =>
-    (x.type||"").toLowerCase().includes(lower) ||
-    (x.title||"").toLowerCase().includes(lower) ||
-    (x.category||"").toLowerCase().includes(lower) ||
-    (x.step||"").toLowerCase().includes(lower)
-  );
-}
-function buildExecutiveProposalFallback(ws,s){
-  const input = ws.input || $("mainInput").value || "Build proposal.";
-  return [
-    "CLIENT OBJECTIVE",
-    ws.summary || input,
-    "",
-    "POSITIONING",
-    "Position this as a growth system, not a generic marketing service. The client needs more qualified approvals, lower acquisition friction, stronger trust, and a measurable path to CPA under target.",
-    "",
-    "RECOMMENDED SCOPE",
-    "• SEO foundation: location/service pages, approval-intent content, technical cleanup, conversion paths.",
-    "• Google Ads: high-intent search campaigns, negative keyword control, landing page alignment, call/form tracking.",
-    "• Social: credibility content, offer education, remarketing, proof assets, dealership trust signals.",
-    "• Reporting: weekly CPA, lead quality, conversion rate, booked appointment, and sold-unit visibility.",
-    "",
-    "NEXT MOVE",
-    ws.next_executive_decision || "Confirm the target geography, monthly ad budget, current lead volume, and definition of a qualified approval.",
-    "",
-    "RISK",
-    (s.warnings||[])[0]?.warning || "CPA target will be difficult without clean tracking, strong landing pages, and fast sales follow-up."
-  ].join("\\n");
-}
-function workspaceTab(tab){
-  state.currentTab=tab;
-  const ws=state.workspace||{},s=ws.sections||{};
-  $("workspaceTitle").textContent=ws.title||"Workspace";
-  $("workspaceSubtitle").textContent=`${ws.client||"Client"} · ${ws.project||"Project"} · ${ws.status||"active"}`;
-  $("workspacePanelTitle").textContent = tab.charAt(0).toUpperCase()+tab.slice(1);
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  let btn=[...document.querySelectorAll(".tab")].find(b=>b.textContent.toLowerCase()===tab);if(btn)btn.classList.add("active");
-
-  let html="";
-  if(tab==="overview"){
-    html += cardHTML("What this workspace is doing", ws.summary||ws.input||"No summary yet.", "Summary");
-    html += cardHTML("Next executive decision", ws.next_executive_decision||"Define the next decision required to move this forward.", "Decision");
-    html += cardHTML("Operator recommendation", ws.operator_recommendation||"Review the highest-value asset, then create the follow-up.", "Recommendation");
-    html += cardHTML("Workspace counts", `Assets: ${(s.assets||[]).length}\nTasks: ${(s.tasks||[]).length}\nFollow-ups: ${(s.follow_ups||[]).length}\nRisks: ${(s.warnings||[]).length}`, "Status");
-  } else if(tab==="proposal"){
-    const a=assetBy("proposal") || assetBy("strategy") || assetBy("marketing") || (s.assets||[])[0];
-    html += cardHTML(a?.title || "Client-ready proposal draft", a?.content || buildExecutiveProposalFallback(ws,s), "Proposal");
-    html += cardHTML("Proposal improvement checklist", "• Make the business case measurable.\n• Include scope, deliverables, timeline, and tracking.\n• Add risk controls around CPA and lead quality.\n• End with a clear close/next meeting request.", "Quality Control");
-  } else if(tab==="email"){
-    const follow=(s.follow_ups||[])[0]?.follow_up || "Schedule a review meeting, confirm priorities, and send the proposal package.";
-    html += cardHTML("Follow-up email direction", follow, "Email");
-    html += cardHTML("Suggested email structure", "Subject: Next steps for Ontario auto loan growth\n\nHi [Name],\n\nThanks again for the conversation. Based on what you shared, the opportunity is to build a cleaner acquisition system across SEO, Google Ads, and social while keeping CPA discipline front and center.\n\nThe next step is to review the proposed scope, confirm budget and tracking requirements, and align on what counts as a qualified approval.\n\nAre you available this week for a 30-minute review?", "Draft");
-  } else if(tab==="meeting"){
-    const a=assetBy("meeting") || assetBy("brief") || assetBy("checklist");
-    html += cardHTML(a?.title || "Meeting prep", a?.content || "Agenda:\n• Confirm business objective.\n• Confirm current marketing channels and spend.\n• Define target CPA and qualified lead criteria.\n• Review proposal scope.\n• Agree on next step and owner.", "Meeting");
-  } else if(tab==="tasks"){
-    const tasks=s.tasks||[];
-    html = tasks.length ? tasks.slice(0,12).map((t,i)=>`<div class="task"><div class="check">${i+1}</div><div><strong>${esc(t.task||"Task")}</strong><p>${esc(t.step||"workspace")} · ${esc(t.status||"open")}</p></div></div>`).join("") : cardHTML("No tasks yet","Generate missing assets to create the execution queue.","Tasks");
-  } else {
-    const timeline=s.timeline||[];
-    html = timeline.length ? timeline.slice(0,12).map(t=>cardHTML(t.event||"Workspace event", `${t.timestamp||""}\n${t.summary||t.asset_title||""}`, t.step||"Timeline")).join("") : cardHTML("No timeline yet","Run the workspace to create history.","Timeline");
-  }
-  $("workspacePanel").innerHTML=html;
-  showView("workspace");
-}
-function copyWorkspaceOutput(){
-  navigator.clipboard.writeText($("workspacePanel").innerText||"");
-}
-function quickFeedback(text){
-  $("feedbackInput").value = text;
-}
-async function continueWithFeedback(){
-  const fb = $("feedbackInput").value.trim();
-  if(!fb) return alert("Add feedback first.");
-  const context = $("workspacePanel").innerText || "";
-  $("mainInput").value = `${fb}\n\nCurrent workspace context:\n${context.slice(0,2500)}`;
-  showView("guided");
-  await runWorkspace();
-}
-function renderServices(){$("serviceGrid").innerHTML=services.map((s,i)=>`<div class="svc" onclick="runOneTest(${i})"><strong>${s.name}</strong><br><code>GET ${s.path}</code><br><span id="svc-${i}" class="badge">Not tested</span></div>`).join("")}
-async function runOneTest(i){const s=services[i],el=$("svc-"+i),start=performance.now();el.className="badge";el.textContent="Testing...";try{const r=await fetch(API+s.path,{headers:{Accept:"application/json"}}),txt=await r.text();let body;try{body=JSON.parse(txt)}catch(e){body=txt.slice(0,300)}const ms=Math.round(performance.now()-start),ok=r.ok&&!(body&&body.detail==="Not Found");el.className="badge "+(ok?"ok":"fail");el.textContent=`${r.status} · ${ms}ms`;$("testOutput").textContent+=`${ok?"PASS":"FAIL"} — ${s.name} — ${r.status} — ${ms}ms\n${JSON.stringify(body,null,2)}\n\n`;return ok}catch(e){el.className="badge fail";el.textContent="Failed";$("testOutput").textContent+=`FAIL — ${s.name}\n${e.message}\n\n`;return false}}
-async function runAllTests(){$("testOutput").textContent=`EE OS SERVICE TEST\n${new Date().toISOString()}\n\n`;for(let i=0;i<services.length;i++)await runOneTest(i)}
-async function runCritical(){$("testOutput").textContent=`EE OS CRITICAL TEST\n${new Date().toISOString()}\n\n`;for(let i=0;i<5;i++)await runOneTest(i)}
-function copyTests(){navigator.clipboard.writeText($("testOutput").textContent||"")}
-function quickCommand(){const v=$("topSearch").value.trim();if(!v)return;$("mainInput").value=v;showView("guided");runWorkspace()}
-function newWorkspace(){state.workspace=null;state.assets=[];state.selectedAsset=null;$("mainInput").value="";showView("guided");renderAll()}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-
-
-async function purgePollution(){
-  try{
-    const d=await api("/purge-pollution",{method:"POST",body:JSON.stringify({})});
-    state.workspace=d.workspace||state.workspace;
-    renderAll();
-    alert("Pollution purge complete.");
-  }catch(e){
-    alert("Pollution purge failed: "+e.message);
-  }
-}
-
-async function resetWorkspace(){
-  if(!confirm("Reset workspace state and clear polluted memory?")) return;
-  try{
-    await api("/workspace-reset",{method:"POST",body:JSON.stringify({})});
-    state.workspace=null; state.assets=[]; state.selectedAsset=null;
-    $("mainInput").value="";
-    $("persistentCommand").value="";
-    renderAll();
-    showView("guided");
-    alert("Workspace reset complete.");
-  }catch(e){
-    alert("Reset failed: "+e.message);
-  }
-}
-async function stabilizeWorkspace(){
-  try{
-    const d=await api("/stabilize-workspace",{method:"POST",body:JSON.stringify({})});
-    state.workspace=d.workspace||state.workspace;
-    renderAll();
-    alert("Workspace stabilized.");
-  }catch(e){ alert(e.message); }
-}
-async function runPersistentCommand(){
-  const value=$("persistentCommand").value.trim();
-  if(!value) return alert("Add a command first.");
-  const type=$("commandType").value;
-  $("mainInput").value=value;
-  const titles={
-    proposal:["Create Plans & Proposals","Category: Plans & Proposals • output: proposal"],
-    meeting:["Prepare Meeting","Category: Meetings • output: brief"],
-    email:["Create Follow-Up Email","Category: Email • output: email"],
-    strategy:["Marketing Strategy","Category: Marketing Strategy • output: strategy"],
-    research:["Research Brief","Category: Research • output: brief"],
-    tasks:["Tasks / To-Dos","Category: Tasks • output: tasks"],
-    guided:["What needs to happen?","Category: Guided Flow • output: brief"]
-  };
-  const t=titles[type]||titles.guided;
-  $("inputTitle").textContent=t[0];
-  $("inputMeta").textContent=t[1];
-  showView("guided");
-  await runWorkspace();
-}
-
-window.onload=async()=>{renderServices();showView("today");await testBackend();await loadWorkspace();}
+const state={workspace:null,operator:null,lastRun:null,selectedAsset:0,system:{}};
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>'"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[m]));
+const clip=v=>String(v??"").trim();
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
+async function api(path,opts={}){const res=await fetch(API+path,{headers:{"Content-Type":"application/json",...(opts.headers||{})},...opts});let data;try{data=await res.json()}catch(e){data={status:"error",message:await res.text()}}if(!res.ok)throw new Error(data.message||`HTTP ${res.status}`);return data}
+function showView(name){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$("view-"+name).classList.add("active");document.querySelectorAll(".navitem").forEach(n=>n.classList.toggle("active",n.dataset.view===name));if(name==="assets")renderAssets();if(name==="actions")renderActions();if(name==="risks")renderRisks();}
+function focusCommand(){setTimeout(()=>$("mainInput").focus(),50)}
+document.querySelectorAll(".navitem").forEach(n=>n.addEventListener("click",()=>showView(n.dataset.view)));
+$("quickRun").addEventListener("click",()=>{const v=clip($("quickInput").value);if(!v){showView("run");focusCommand();return}$("mainInput").value=v;$("modeTop").value=$("modeTop").value||"execution";showView("run");runCommand();});
+$("mainRun").addEventListener("click",runCommand);
+$("packageRun").addEventListener("click",generatePackage);
+function inferCategory(text,type){const t=(text||"").toLowerCase();if(type==="meeting"||t.includes("meeting")||t.includes("call"))return "meetings";if(type==="email"||t.includes("follow-up")||t.includes("email"))return "email";if(t.includes("seo")||t.includes("google ads")||t.includes("marketing")||t.includes("cpa"))return "marketing";if(type==="tasks")return "tasks";if(type==="strategy")return "strategy";return "plans";}
+function fillExample(kind){const map={proposal:"Build proposal for Ontario auto loan dealership with SEO, social media, Google Ads, CPA target under $100, objections, risks, close plan, and follow-up email.",meeting:"Prepare me for a client meeting. Include agenda, talking points, objections, questions, decision required, and follow-up.",followup:"Write a confident follow-up email that moves the client to the next step and books a proposal review.",strategy:"Create a 30-day execution strategy with priorities, actions, risks, owners, and measurable wins."};$("mainInput").value=map[kind]||map.proposal;$("outputType").value=kind==="followup"?"email":kind;focusCommand();}
+async function runCommand(){const input=clip($("mainInput").value)||clip($("quickInput").value);if(!input){toast("Add a command first.");showView("run");return}const output_type=$("outputType").value||"proposal";const payload={input,mode:$("modeTop").value||"execution",brain:"auto",output_type,depth:"standard",provider:"openai",category:inferCategory(input,output_type),client:clip($("clientInput").value),project:clip($("projectInput").value),continue_workflow:true};setLoading(true);try{const data=await api("/run",{method:"POST",body:JSON.stringify(payload)});state.lastRun=data;if(data.workspace)state.workspace=data.workspace;renderRun(data);await refreshAll(false);showView("run");toast("Executive output ready.");}catch(e){toast(e.message);renderError(e.message)}finally{setLoading(false)}}
+async function generatePackage(){const input=clip($("mainInput").value)||clip($("quickInput").value);if(!input){toast("Add a command first.");return}setLoading(true,"Generating full package...");try{const data=await api("/autonomous-package",{method:"POST",body:JSON.stringify({input,workspace_type:inferCategory(input,"proposal"),client:clip($("clientInput").value),project:clip($("projectInput").value),provider:"openai",auto_generate:true})});state.workspace=data.workspace;state.lastRun=data;await refreshAll(false);showView("workspace");toast("Full executive package generated.");}catch(e){toast(e.message);renderError(e.message)}finally{setLoading(false)}}
+function setLoading(on,msg){$("loadingCard").classList.toggle("hidden",!on);if(msg)$("loadingCard").querySelector("h2").textContent=msg;$("mainRun").disabled=on;$("packageRun").disabled=on;$("quickRun").disabled=on;}
+function renderError(msg){$("resultArea").classList.remove("hidden");$("resNext").textContent="Backend response needs review";$("resNow").textContent=msg;$("resDecision").textContent="Do not ship a UI change until this endpoint responds cleanly.";$("resPriority").textContent="High";$("resActions").innerHTML="<li>Open System Status and run checks.</li><li>Confirm /health and /debug.</li><li>Retest /run with a simple prompt.</li>";$("resRisk").textContent=msg;$("assetTitle").textContent="Error Detail";$("resAsset").textContent=msg;$("resFollow").textContent="Fix the endpoint response before continuing.";}
+function renderRun(d){$("resultArea").classList.remove("hidden");$("resNext").textContent=d.next_move||d.what_to_do_now||"Move the active workflow forward.";$("resNow").textContent=d.what_to_do_now||"Execute the next step now.";$("resDecision").textContent=d.decision||"Decision pending.";$("resPriority").textContent=d.priority||"Medium";$("resActions").innerHTML=(Array.isArray(d.actions)?d.actions:[]).map(a=>`<li>${esc(typeof a==="string"?a:a.task||a.action||JSON.stringify(a))}</li>`).join("")||"<li>No action list returned.</li>";$("resRisk").textContent=d.risk||"No risk returned.";const asset=d.asset||{};$("assetTitle").textContent=asset.title||"Generated Asset";$("resAsset").textContent=asset.content||asset.summary||JSON.stringify(asset,null,2)||"No asset returned.";$("resFollow").textContent=d.follow_up||"No follow-up returned.";}
+async function refreshAll(showToast=true){await Promise.allSettled([loadWorkspace(false),loadOperator(false),runSystemChecks(false)]);renderAll();if(showToast)toast("Dashboard refreshed.")}
+async function loadWorkspace(showToast=false){try{const d=await api("/workspace-state");state.workspace=d.active_workspace||state.workspace;state.operator=d.operator_state||state.operator;if(showToast)toast("Workspace refreshed.");renderAll();return d}catch(e){if(showToast)toast(e.message)}}
+async function loadOperator(showToast=false){try{const d=await api("/operator-scan");state.operator=d.operator_state||d.pressure||state.operator;if(showToast)toast("Operator scan complete.");renderAll();return d}catch(e){if(showToast)toast(e.message)}}
+async function loadDailyBriefing(){try{const d=await api("/daily-briefing");const b=d.briefing||{};$("todaySummary").textContent=b.headline||b.summary||b.next_best_action||"Daily briefing generated.";if(b.next_best_action)$("nextBestAction").textContent=b.next_best_action;showView("today");toast("Daily brief loaded.")}catch(e){toast(e.message)}}
+async function continueWorkflow(){try{const d=await api("/continue-workflow",{method:"POST",body:JSON.stringify({input:"Continue the active workflow and create the next best executive output.",mode:"execution",output_type:"auto",provider:"openai",continue_workflow:true})});state.lastRun=d;if(d.workspace)state.workspace=d.workspace;renderRun(d);await refreshAll(false);showView("run");toast("Workflow continued.")}catch(e){toast(e.message)}}
+async function runSystemChecks(showToast=true){const rows=[];async function check(label,path){try{const d=await api(path);rows.push([label,"PASS",d.version||d.status||"ok"]);if(path==="/health"){$("backendStatus").textContent=`Backend ${d.version||"live"}`;$("backendStatus").className="status-pill ok";$("versionChip").textContent=d.version||"V35090 backend";}return d}catch(e){rows.push([label,"FAIL",e.message]);$("backendStatus").textContent="Backend check failed";$("backendStatus").className="status-pill bad";}}
+await check("Root","/");await check("Health","/health");await check("Providers","/providers");await check("Debug","/debug");await check("Quality","/quality-state");$("systemTable").innerHTML=rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("");if(showToast)toast("System checks complete.")}
+function sections(){return (state.workspace&&state.workspace.sections)||{}}
+function assets(){const a=sections().assets||[];return Array.isArray(a)?a:[]}
+function actions(){const a=sections().tasks||[];return Array.isArray(a)?a:[]}
+function followups(){const f=sections().follow_ups||[];return Array.isArray(f)?f:[]}
+function risks(){const r=sections().warnings||[];return Array.isArray(r)?r:[]}
+function decisions(){const d=sections().decisions||[];return Array.isArray(d)?d:[]}
+function timeline(){const t=sections().timeline||[];return Array.isArray(t)?t:[]}
+function renderAll(){const ws=state.workspace||{};const op=state.operator||{};$("metricAssets").textContent=assets().length;$("metricActions").textContent=actions().length;$("metricFollowups").textContent=followups().length;$("metricPressure").textContent=ws.pressure_score||op.pressure_score||0;$("badgeAssets").textContent=assets().length;$("badgeActions").textContent=actions().length;$("badgeRisks").textContent=risks().length;$("badgeToday").textContent=(actions().length+followups().length+risks().length)||0;$("workspaceTitle").textContent=ws.title||"No active workspace";$("workspaceSummary").textContent=ws.summary||ws.input||"Run a command to create an executive workspace.";$("workspaceDecision").textContent=ws.next_executive_decision||"No decision loaded.";$("workspaceRecommendation").textContent=ws.operator_recommendation||op.next_best_action||"Create or advance a workspace.";$("nextBestAction").textContent=op.next_best_action||ws.operator_recommendation||ws.next_executive_decision||"Create or advance a workspace.";$("pressureText").textContent=`Pressure score: ${ws.pressure_score||op.pressure_score||0}. ${op.top_priority||"No urgent operator pressure detected."}`;$("opPressure").textContent=op.pressure_score||ws.pressure_score||0;$("opTopPriority").textContent=op.top_priority||"No urgent operator pressure detected.";$("opNext").textContent=op.next_best_action||ws.operator_recommendation||"Create or advance a workspace.";$("railSummary").textContent=ws.title?`${ws.title}. ${ws.summary||"Workspace active."}`:"No active workspace yet. Run a command to activate operator mode.";renderTodayCards();renderRail();renderAssets();renderActions();renderRisks();renderOperator();renderWorkspaceLists();}
+function renderTodayCards(){const cards=[];const ws=state.workspace||{};if(ws.title)cards.push(card("Active Workspace",ws.title,ws.summary||"Open workspace","workspace"));else cards.push(card("Start Workspace","Create the executive operating context.","Use Run Command to generate the first asset.","run"));const a=actions()[0];cards.push(card("Next Action",a?(a.task||a.action):"No open action yet",a?"Pulled from active workspace.":"Generate a package to create tasks.","actions"));const f=followups()[0];cards.push(card("Follow-up",f?(f.follow_up||f.title):"No follow-up yet",f?"Ready to send or refine.":"Generate a proposal or meeting package.","assets"));$("todayCards").innerHTML=cards.join("");}
+function card(title,bold,desc,view){return `<div class="mini-card click" onclick="showView('${view}')"><strong>${esc(title)}</strong><p><b>${esc(bold)}</b><br>${esc(desc)}</p></div>`}
+function renderRail(){const rn=sections().right_rail||{};const next=rn.next||[];$("railNext").innerHTML=(next.length?next:[{title:(state.workspace||{}).operator_recommendation||"Run the next command",type:"next",priority:"High"}]).slice(0,3).map(n=>`<div class="rail-card orange" onclick="showView('actions')"><strong>${esc(n.title||"Next action")}</strong><span>${esc(n.type||"next")} · ${esc(n.priority||"High")}</span></div>`).join("");$("railAssets").innerHTML=(assets().length?assets():[{title:"No assets yet",type:"Run Command",step:"create"}]).slice(0,4).map((a,i)=>`<div class="rail-card green" onclick="showView('assets');selectAsset(${i})"><strong>${esc(a.title||"Asset")}</strong><span>${esc(a.type||"asset")} · ${esc(a.step||"workspace")}</span></div>`).join("");$("railFollowups").innerHTML=(followups().length?followups():[{follow_up:"No follow-ups yet",status:"pending"}]).slice(0,4).map(f=>`<div class="rail-card" onclick="showView('assets')"><strong>${esc(f.follow_up||f.title||"Follow-up")}</strong><span>${esc(f.status||"open")}</span></div>`).join("");$("railRisks").innerHTML=(risks().length?risks():[{warning:"No active risks",priority:"Clear"}]).slice(0,4).map(r=>`<div class="rail-card ${r.priority==="Clear"?"green":"red"}" onclick="showView('risks')"><strong>${esc(r.warning||r.title||"Risk")}</strong><span>${esc(r.priority||"Review")}</span></div>`).join("");}
+function renderAssets(){const list=assets();$("assetList").innerHTML=list.length?list.map((a,i)=>`<div class="asset-item ${i===state.selectedAsset?'active':''}" onclick="selectAsset(${i})"><strong>${esc(a.title||"Untitled Asset")}</strong><span>${esc(a.type||"asset")} · ${esc(a.step||"workspace")}</span></div>`).join(""):`<div class="asset-item"><strong>No assets yet</strong><span>Run a command or generate full package.</span></div>`;if(list.length){selectAsset(Math.min(state.selectedAsset,list.length-1),false)}else{$("selectedAssetTitle").textContent="No asset selected";$("selectedAssetContent").textContent="No asset selected.";}}
+function selectAsset(i,switchView=false){const a=assets()[i];if(!a)return;state.selectedAsset=i;$("selectedAssetType").textContent=a.type||"Asset";$("selectedAssetTitle").textContent=a.title||"Untitled Asset";$("selectedAssetContent").textContent=a.content||a.summary||JSON.stringify(a,null,2);document.querySelectorAll(".asset-item").forEach((el,idx)=>el.classList.toggle("active",idx===i));if(switchView)showView("assets");}
+function renderActions(){const list=actions();$("actionsList").innerHTML=list.length?list.map((a,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(a.task||a.action||"Action")}</strong><span>${esc(a.status||"open")} · ${esc(a.step||"execution")}</span></div></div>`).join(""):`<div class="item"><div class="check">+</div><div><strong>No actions yet</strong><span>Run a command to generate an action queue.</span></div></div>`;}
+function renderRisks(){const list=risks();$("riskList").innerHTML=list.length?list.map((r,i)=>`<div class="item"><div class="check">!</div><div><strong>${esc(r.warning||r.title||"Risk")}</strong><span>${esc(r.priority||"Review")} · ${esc(r.step||"risk")}</span></div></div>`).join(""):`<div class="item"><div class="check">✓</div><div><strong>No active risks</strong><span>Operator is clear for now.</span></div></div>`;}
+function renderOperator(){const op=state.operator||{};const att=op.attention_required||[];$("attentionList").innerHTML=att.length?att.map((a,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(a.title||a.type||"Attention")}</strong><span>${esc(a.message||a.summary||JSON.stringify(a))}</span></div></div>`).join(""):`<div class="item"><div class="check">✓</div><div><strong>No urgent attention items</strong><span>${esc(op.top_priority||"Create or advance a workspace.")}</span></div></div>`;}
+function renderWorkspaceLists(){$("decisionList").innerHTML=decisions().length?decisions().map((d,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(d.decision||"Decision")}</strong><span>${esc(d.step||"decision")}</span></div></div>`).join(""):`<div class="item"><div class="check">-</div><div><strong>No decisions yet</strong><span>Run a command to create one.</span></div></div>`;$("timelineList").innerHTML=timeline().length?timeline().slice(0,8).map((t,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(t.event||t.asset_title||"Event")}</strong><span>${esc(t.summary||t.timestamp||"")}</span></div></div>`).join(""):`<div class="item"><div class="check">-</div><div><strong>No timeline yet</strong><span>Workspace events will appear here.</span></div></div>`;}
+async function saveCurrent(type){try{if(!state.lastRun){toast("No current run to save.");return}if(type==="decision"){await api("/save-decision",{method:"POST",body:JSON.stringify({decision:state.lastRun.decision||"Decision saved from UI",source:"v35100"})});}else{await api("/save-action",{method:"POST",body:JSON.stringify({action:state.lastRun.next_move||state.lastRun.what_to_do_now||"Action saved from UI",source:"v35100"})});}toast(type==="decision"?"Decision saved.":"Action saved.")}catch(e){toast(e.message)}}
+function copyAsset(){const txt=$("resAsset").textContent;navigator.clipboard.writeText(txt).then(()=>toast("Asset copied."));}
+function copySelectedAsset(){const txt=$("selectedAssetContent").textContent;navigator.clipboard.writeText(txt).then(()=>toast("Selected asset copied."));}
+function clearWorkspaceUI(){state.workspace=null;state.operator=null;state.lastRun=null;state.selectedAsset=0;renderAll();toast("Local UI state cleared. Backend memory unchanged.")}
+(async function init(){await runSystemChecks(false);await refreshAll(false);renderAll();})();
 </script>
 </body>
 </html>
