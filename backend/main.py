@@ -5,9 +5,10 @@ from pydantic import BaseModel
 from openai import OpenAI
 from anthropic import Anthropic
 import os, json, re
+import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "35090-stabilization-patch"
+VERSION = "35120-command-centre-db-experience"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -176,6 +177,64 @@ class OperatorRequest(BaseModel):
 def now():
     return datetime.utcnow().isoformat()
 
+
+# V35120_DATABASE_PERSISTENCE_LAYER
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY") or os.getenv("SUPABASE_KEY", "")
+SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", "items")
+
+def db_configured():
+    return bool(SUPABASE_URL and SUPABASE_KEY and SUPABASE_TABLE)
+
+def db_headers(extra=None):
+    h = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if extra:
+        h.update(extra)
+    return h
+
+def db_insert(kind, payload):
+    """Persist to Supabase when configured; always fail safely to memory."""
+    event = {
+        "kind": kind,
+        "payload": payload,
+        "created_at": now(),
+    }
+    MEMORY.setdefault("memory_events", []).insert(0, event)
+    if not db_configured():
+        event["db_status"] = "not_configured"
+        return {"ok": False, "configured": False, "message": "Supabase env vars not configured.", "event": event}
+    try:
+        url = f"{SUPABASE_URL}/rest/v1/{SUPABASE_TABLE}"
+        body = json.dumps(event).encode("utf-8")
+        req = urllib.request.Request(url, data=body, headers=db_headers(), method="POST")
+        with urllib.request.urlopen(req, timeout=8) as res:
+            raw = res.read().decode("utf-8")
+            data = json.loads(raw) if raw else []
+        event["db_status"] = "saved"
+        return {"ok": True, "configured": True, "data": data, "event": event}
+    except Exception as e:
+        event["db_status"] = "failed"
+        event["db_error"] = str(e)
+        return {"ok": False, "configured": True, "message": str(e), "event": event}
+
+def db_read(limit=25):
+    if not db_configured():
+        return {"ok": False, "configured": False, "items": [], "message": "Supabase env vars not configured."}
+    try:
+        url = f"{SUPABASE_URL}/rest/v1/{SUPABASE_TABLE}?select=*&order=created_at.desc&limit={int(limit)}"
+        req = urllib.request.Request(url, headers=db_headers({"Accept":"application/json"}), method="GET")
+        with urllib.request.urlopen(req, timeout=8) as res:
+            raw = res.read().decode("utf-8")
+            data = json.loads(raw) if raw else []
+        return {"ok": True, "configured": True, "items": data}
+    except Exception as e:
+        return {"ok": False, "configured": True, "items": [], "message": str(e)}
+
 def slug(s: str):
     return (re.sub(r"[^a-zA-Z0-9]+", "-", (s or "").strip().lower()).strip("-")[:50] or "workspace")
 
@@ -337,6 +396,7 @@ def create_workspace(input_text, workspace_type="auto", client="", project="", p
     MEMORY["workspaces"][wid] = ws
     ACTIVE_CONTEXT.update({"workspace_id": wid, "current_workspace": ws, "client": client, "project": project})
     MEMORY["workspace_events"].insert(0, {"timestamp": now(), "event": "workspace_created", "workspace_id": wid, "mission_id": mission["mission_id"]})
+    db_insert("workspace_created", ws)
     return ws
 
 def classify(req: RunRequest):
@@ -1396,6 +1456,34 @@ def providers():
         },
     }
 
+
+
+@app.get("/db-status")
+def db_status():
+    read = db_read(5) if db_configured() else {"ok": False, "configured": False, "items": []}
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "configured": db_configured(),
+        "supabase_url_loaded": bool(SUPABASE_URL),
+        "supabase_key_loaded": bool(SUPABASE_KEY),
+        "table": SUPABASE_TABLE,
+        "read_ok": read.get("ok", False),
+        "sample_count": len(read.get("items", [])),
+        "message": read.get("message", "Database connected." if read.get("ok") else "Database not configured."),
+    }
+
+@app.get("/db-items")
+def db_items(limit: int = 25):
+    return {"status": "ok", "version": VERSION, **db_read(limit)}
+
+@app.post("/db-test-write")
+def db_test_write(payload: dict = None):
+    payload = payload or {"test": True, "source": "v35120", "message": "Database write test"}
+    result = db_insert("test", payload)
+    return {"status": "ok" if result.get("ok") else "not_saved", "version": VERSION, "result": result}
+
+
 @app.post("/router-preview")
 def router_preview(req: RunRequest):
     return {"status": "ok", "version": VERSION, "input": req.input, "router": classify(req), "active_context": ACTIVE_CONTEXT}
@@ -1503,7 +1591,7 @@ def run_engine(req: RunRequest):
             except Exception:
                 pass
 
-            return v35080_clean_response_payload({
+            quality_payload = {
                 "what_to_do_now": quality["what_to_do_now"],
                 "decision": quality["decision"],
                 "next_move": quality["next_move"],
@@ -1517,7 +1605,12 @@ def run_engine(req: RunRequest):
                 "active_context": dict(ACTIVE_CONTEXT),
                 "workspace": v35080_clean_workspace(sanitize_workspace(workspace)),
                 "operator_state": ACTIVE_CONTEXT.get("operator_state", {})
-            }, input_text)
+            }
+            MEMORY["workspaces"][workspace["workspace_id"]] = v35080_clean_workspace(sanitize_workspace(workspace))
+            MEMORY["runs"].insert(0, quality_payload)
+            db_insert("run", quality_payload)
+            db_insert("workspace", workspace)
+            return v35080_clean_response_payload(quality_payload, input_text)
     except Exception as quality_error:
         print("V35050 quality patch skipped:", quality_error)
     router = classify(req)
@@ -1543,7 +1636,9 @@ def run_engine(req: RunRequest):
             })
             if asset.get("content"):
                 MEMORY["assets"].insert(0, asset)
+                db_insert("asset", asset)
             MEMORY["runs"].insert(0, result)
+            db_insert("run", result)
             return result
         except Exception as e:
             errors.append(f"{p}: {e}")
@@ -1552,6 +1647,7 @@ def run_engine(req: RunRequest):
     result["workspace"] = get_workspace()
     result["operator_state"] = scan_operator_state()
     MEMORY["runs"].insert(0, result)
+    db_insert("run", result)
     return result
 
 @app.post("/create-workspace")
@@ -1848,19 +1944,22 @@ def run_save_audit():
 def save_action(payload: dict):
     item = {"id": len(MEMORY["actions"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
     MEMORY["actions"].insert(0, item)
-    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
+    db = db_insert("action", item)
+    return {"status": "saved", "item": item, "db": db, "active_context": ACTIVE_CONTEXT}
 
 @app.post("/save-decision")
 def save_decision(payload: dict):
     item = {"id": len(MEMORY["decisions"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
     MEMORY["decisions"].insert(0, item)
-    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
+    db = db_insert("decision", item)
+    return {"status": "saved", "item": item, "db": db, "active_context": ACTIVE_CONTEXT}
 
 @app.post("/save-asset")
 def save_asset(payload: dict):
     item = {"id": len(MEMORY["assets"]) + 1, "created_at": now(), "workflow_id": ACTIVE_CONTEXT.get("workflow_id"), "workspace_id": ACTIVE_CONTEXT.get("workspace_id"), "client": ACTIVE_CONTEXT.get("client"), "project": ACTIVE_CONTEXT.get("project"), **payload}
     MEMORY["assets"].insert(0, item)
-    return {"status": "saved", "item": item, "active_context": ACTIVE_CONTEXT}
+    db = db_insert("asset", item)
+    return {"status": "saved", "item": item, "db": db, "active_context": ACTIVE_CONTEXT}
 
 
 
