@@ -7,7 +7,7 @@ from anthropic import Anthropic
 import os, json, re
 from datetime import datetime
 
-VERSION = "35080-output-guard-workspace-cleanup"
+VERSION = "35090-stabilization-patch"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -236,10 +236,15 @@ def urgency(text):
     return "High" if any(x in t for x in ["urgent", "asap", "today", "now", "before tomorrow", "tomorrow", "deadline", "due", "blocked"]) else "Medium"
 
 def provider_plan(category, output_type, requested):
+    """
+    V35080-Restore provider routing.
+    OpenAI is the safe default. Claude can be used only when explicitly requested,
+    and it must fall back to OpenAI if Claude credits/API fail.
+    """
     requested = (requested or "auto").lower()
-    if requested in ["openai", "claude"]:
-        return [requested]
-    if category in ["plans", "email", "research", "content", "brainstorm", "meetings"] or output_type in ["proposal", "email", "brief", "content", "strategy", "research", "ideas"]:
+    if requested == "openai":
+        return ["openai"]
+    if requested == "claude":
         return ["claude", "openai"]
     return ["openai", "claude"]
 
@@ -1016,11 +1021,11 @@ def build_stabilized_guidance(input_text):
             "summary": "Guided intake brief to prevent generic output."
         },
         "follow_up": "Confirm the missing context, then generate the first executive asset.",
-        "provider_used": "openai-first:output-guard-v35080",
+        "provider_used": "openai-first:stabilization-v35090",
         "router": {"category": "guided", "output_type": "brief", "workspace_type": identity["workspace_type"]},
-        "active_context": globals().get("active_context", {}),
+        "active_context": dict(ACTIVE_CONTEXT),
         "workspace": {},
-        "operator_state": globals().get("operator_state", {})
+        "operator_state": ACTIVE_CONTEXT.get("operator_state", {})
     }
 
 
@@ -1121,7 +1126,7 @@ def v35080_clean_workspace(workspace):
             "summary": safe["asset"]["summary"],
             "step": "proposal",
             "category": "plans",
-            "provider_used": "output-guard:v35080"
+            "provider_used": "stabilization:v35090"
         }]
 
     if len(sections["tasks"]) < 3:
@@ -1179,20 +1184,26 @@ def v35080_clean_response_payload(payload, input_text=""):
     if isinstance(payload.get("workspace"), dict):
         payload["workspace"] = v35080_clean_workspace(payload["workspace"])
 
-    payload["provider_used"] = "openai-first:output-guard-v35080"
+    payload["provider_used"] = "openai-first:stabilization-v35090"
     return payload
+
+
+
+def sanitize_workspace(workspace):
+    """V35090 compatibility shim: preserve old route calls while using the active workspace cleaner."""
+    return v35080_clean_workspace(workspace)
 
 @app.post("/purge-pollution")
 def purge_pollution():
-    ws = globals().get("current_workspace", {})
+    ws = ACTIVE_CONTEXT.get("current_workspace", {})
     if ws:
         ws = v35080_clean_workspace(ws)
-        globals()["current_workspace"] = ws
+        ACTIVE_CONTEXT["current_workspace"] = ws
     return {"status": "ok", "version": VERSION, "workspace": ws}
 
 @app.get("/pollution-audit")
 def pollution_audit():
-    ws = globals().get("current_workspace", {})
+    ws = ACTIVE_CONTEXT.get("current_workspace", {})
     text = str(ws)
     return {
         "status": "ok",
@@ -1393,9 +1404,9 @@ def router_preview(req: RunRequest):
 def run_engine(req: RunRequest):
     # V35050_RUN_QUALITY_PATCH
     try:
-        input_text = getattr(request, "input", "") or getattr(request, "prompt", "") or ""
-        category = getattr(request, "category", "") or getattr(request, "brain", "") or getattr(request, "mode", "")
-        output_type = getattr(request, "output_type", "") or "proposal"
+        input_text = getattr(req, "input", "") or getattr(req, "prompt", "") or ""
+        category = getattr(req, "category", "") or getattr(req, "brain", "") or getattr(req, "mode", "")
+        output_type = getattr(req, "output_type", "") or "proposal"
         quality = build_quality_asset(input_text, output_type=output_type, category=category)
 
         if input_text and (
@@ -1440,7 +1451,7 @@ def run_engine(req: RunRequest):
                         "type": asset["type"],
                         "content": asset["content"],
                         "summary": asset["summary"],
-                        "provider_used": "openai-first:output-guard-v35080"
+                        "provider_used": "openai-first:stabilization-v35090"
                     }],
                     "tasks": [{"task": t, "status": "open", "created_at": now, "step": "proposal"} for t in quality["tasks"]],
                     "follow_ups": [{
@@ -1478,17 +1489,17 @@ def run_engine(req: RunRequest):
                 }
             }
 
-            globals()["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
+            ACTIVE_CONTEXT["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
             try:
-                active_context["client"] = identity["client"]
-                active_context["project"] = identity["project"]
-                active_context["workspace_id"] = workspace["workspace_id"]
-                active_context["last_category"] = category or "plans"
-                active_context["last_output_type"] = output_type
-                active_context["last_summary"] = asset["summary"]
-                active_context["last_asset_title"] = asset["title"]
-                active_context["last_asset_content"] = asset["content"]
-                active_context["last_follow_up"] = quality["follow_up"]
+                ACTIVE_CONTEXT["client"] = identity["client"]
+                ACTIVE_CONTEXT["project"] = identity["project"]
+                ACTIVE_CONTEXT["workspace_id"] = workspace["workspace_id"]
+                ACTIVE_CONTEXT["last_category"] = category or "plans"
+                ACTIVE_CONTEXT["last_output_type"] = output_type
+                ACTIVE_CONTEXT["last_summary"] = asset["summary"]
+                ACTIVE_CONTEXT["last_asset_title"] = asset["title"]
+                ACTIVE_CONTEXT["last_asset_content"] = asset["content"]
+                ACTIVE_CONTEXT["last_follow_up"] = quality["follow_up"]
             except Exception:
                 pass
 
@@ -1501,11 +1512,11 @@ def run_engine(req: RunRequest):
                 "priority": quality["priority"],
                 "asset": asset,
                 "follow_up": quality["follow_up"],
-                "provider_used": "openai-first:output-guard-v35080",
+                "provider_used": "openai-first:stabilization-v35090",
                 "router": {"category": category or "plans", "output_type": output_type, "workspace_type": identity["workspace_type"]},
-                "active_context": globals().get("active_context", {}),
+                "active_context": dict(ACTIVE_CONTEXT),
                 "workspace": v35080_clean_workspace(sanitize_workspace(workspace)),
-                "operator_state": globals().get("operator_state", {})
+                "operator_state": ACTIVE_CONTEXT.get("operator_state", {})
             }, input_text)
     except Exception as quality_error:
         print("V35050 quality patch skipped:", quality_error)
@@ -1596,19 +1607,19 @@ def workspace_summary():
 def autonomous_package(req: WorkspaceRequest):
     # V35050_AUTONOMOUS_PACKAGE_PATCH
     try:
-        input_text = getattr(request, "input", "") or ""
+        input_text = getattr(req, "input", "") or ""
         if input_text:
             quality = build_quality_asset(input_text, output_type="proposal", category="plans")
             identity = quality["identity"]
-            now = datetime.utcnow().isoformat()
+            now_ts = datetime.utcnow().isoformat()
             proposal_asset = quality["asset"]
             email_quality = build_quality_asset(input_text, output_type="email", category="email")
             meeting_quality = build_quality_asset(input_text, output_type="meeting", category="meeting")
 
             assets = [
-                {**proposal_asset, "timestamp": now, "step": "proposal", "category": "plans", "provider_used": "openai-first:output-guard-v35080"},
-                {**email_quality["asset"], "timestamp": now, "step": "follow_up", "category": "email", "provider_used": "openai-first:output-guard-v35080"},
-                {**meeting_quality["asset"], "timestamp": now, "step": "meeting_prep", "category": "meeting", "provider_used": "openai-first:output-guard-v35080"},
+                {**proposal_asset, "timestamp": now_ts, "step": "proposal", "category": "plans", "provider_used": "openai-first:stabilization-v35090"},
+                {**email_quality["asset"], "timestamp": now_ts, "step": "follow_up", "category": "email", "provider_used": "openai-first:stabilization-v35090"},
+                {**meeting_quality["asset"], "timestamp": now_ts, "step": "meeting_prep", "category": "meeting", "provider_used": "openai-first:stabilization-v35090"},
             ]
 
             workspace = {
@@ -1620,8 +1631,8 @@ def autonomous_package(req: WorkspaceRequest):
                 "project": identity["project"],
                 "provider": "openai",
                 "status": "package_generated",
-                "created_at": now,
-                "updated_at": now,
+                "created_at": now_ts,
+                "updated_at": now_ts,
                 "summary": proposal_asset["summary"],
                 "next_executive_decision": quality["decision"],
                 "operator_recommendation": quality["next_move"],
@@ -1630,11 +1641,11 @@ def autonomous_package(req: WorkspaceRequest):
                 "sections": {
                     "overview": {"title": "Executive Overview", "status": "ready", "content": proposal_asset["summary"]},
                     "assets": assets,
-                    "tasks": [{"task": t, "status": "open", "created_at": now, "step": "proposal"} for t in quality["tasks"]],
-                    "follow_ups": [{"follow_up": quality["follow_up"], "status": "open", "created_at": now, "step": "follow_up"}],
-                    "warnings": [{"warning": quality["risk"], "priority": "High", "created_at": now, "step": "risk"}],
-                    "decisions": [{"decision": quality["decision"], "created_at": now, "step": "decision"}],
-                    "timeline": [{"timestamp": now, "event": "quality_package_generated", "step": "proposal", "summary": proposal_asset["summary"], "asset_title": proposal_asset["title"]}],
+                    "tasks": [{"task": t, "status": "open", "created_at": now_ts, "step": "proposal"} for t in quality["tasks"]],
+                    "follow_ups": [{"follow_up": quality["follow_up"], "status": "open", "created_at": now_ts, "step": "follow_up"}],
+                    "warnings": [{"warning": quality["risk"], "priority": "High", "created_at": now_ts, "step": "risk"}],
+                    "decisions": [{"decision": quality["decision"], "created_at": now_ts, "step": "decision"}],
+                    "timeline": [{"timestamp": now_ts, "event": "quality_package_generated", "step": "proposal", "summary": proposal_asset["summary"], "asset_title": proposal_asset["title"]}],
                     "operator": [],
                     "right_rail": {
                         "next": [{"title": quality["next_move"], "type": "next_move", "priority": "High"}],
@@ -1645,7 +1656,7 @@ def autonomous_package(req: WorkspaceRequest):
                     }
                 }
             }
-            globals()["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
+            ACTIVE_CONTEXT["current_workspace"] = v35080_clean_workspace(sanitize_workspace(workspace))
             return {"status": "ok", "workspace": v35080_clean_workspace(sanitize_workspace(workspace)), "package": workspace["package"]}
     except Exception as package_error:
         print("V35050 autonomous package patch skipped:", package_error)
@@ -1871,16 +1882,16 @@ def reset_state():
 @app.post("/stabilize-workspace")
 def stabilize_workspace():
     try:
-        ws = globals().get("current_workspace", {})
+        ws = ACTIVE_CONTEXT.get("current_workspace", {})
         if ws:
-            globals()["current_workspace"] = sanitize_workspace(ws)
-        return {"status": "ok", "workspace": globals().get("current_workspace", {})}
+            ACTIVE_CONTEXT["current_workspace"] = sanitize_workspace(ws)
+        return {"status": "ok", "workspace": ACTIVE_CONTEXT.get("current_workspace", {})}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
 @app.get("/quality-state")
 def quality_state():
-    ws = globals().get("current_workspace", {})
+    ws = ACTIVE_CONTEXT.get("current_workspace", {})
     warnings = []
     try:
         ws = sanitize_workspace(ws)
