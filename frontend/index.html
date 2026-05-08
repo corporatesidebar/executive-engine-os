@@ -1,296 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Executive Assistant OS — V35100</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Executive Assistant OS — V35111</title>
   <style>
-    :root{
-      --nav:#07111f;
-      --nav2:#0d1b2f;
-      --ink:#08111f;
-      --muted:#66758a;
-      --soft:#eef4fb;
-      --soft2:#f7f9fc;
-      --card:#ffffff;
-      --line:#dce5f0;
-      --blue:#2563eb;
-      --orange:#f97316;
-      --green:#10b981;
-      --red:#ef4444;
-      --gold:#f59e0b;
-      --shadow:0 18px 55px rgba(8,17,31,.10);
-      --shadow2:0 8px 24px rgba(8,17,31,.08);
-      --radius:22px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,#edf3fb 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);font-weight:650}
-    button,input,textarea,select{font:inherit}
-    button{cursor:pointer}
-    .app{min-height:100vh;display:grid;grid-template-columns:268px minmax(680px,1fr) 390px;grid-template-rows:auto 1fr}
-    .top{grid-column:1/4;height:76px;background:rgba(7,17,31,.98);color:white;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:20;box-shadow:0 14px 40px rgba(7,17,31,.22)}
-    .brand{width:244px;display:flex;align-items:center;gap:13px}
-    .logo{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--blue),#37b7ff);display:grid;place-items:center;font-weight:950;letter-spacing:-.03em}
-    .brand strong{display:block;font-size:16px;letter-spacing:-.02em}.brand span{display:block;color:#9fb2cc;font-size:12px;margin-top:2px}
-    .top-command{flex:1;display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;max-width:1040px;margin:0 auto}
-    .top-command select,.top-command textarea{height:46px;border:1px solid #263850;background:#0e1d32;color:#f4f8ff;border-radius:14px;padding:11px 13px;outline:0}
-    .top-command textarea{resize:none;overflow:hidden;line-height:22px}
-    .top-command textarea::placeholder{color:#879bb7}
-    .btn{border:0;border-radius:14px;background:var(--ink);color:white;padding:12px 16px;font-weight:950;box-shadow:var(--shadow2)}
-    .btn.blue{background:var(--blue)}.btn.orange{background:var(--orange)}.btn.green{background:var(--green)}.btn.ghost{background:white;color:var(--ink);border:1px solid var(--line);box-shadow:none}.btn.dark{background:#07111f}.btn.red{background:var(--red)}
-    .btn:disabled{opacity:.55;cursor:not-allowed}
-    .status-pill{margin-left:14px;border:1px solid #24415f;background:#0d2338;color:#cfe4ff;border-radius:999px;padding:10px 13px;font-size:12px;font-weight:950;white-space:nowrap}.status-pill.ok{background:#063d31;border-color:#0f8a66;color:#9dffd9}.status-pill.bad{background:#421a1a;border-color:#b63a3a;color:#ffd1d1}
-    .left{grid-column:1;grid-row:2;background:linear-gradient(180deg,#07111f 0%,#0c1a2e 100%);color:#dbeafe;padding:22px 16px;overflow:auto}
-    .left h5{font-size:11px;letter-spacing:.20em;text-transform:uppercase;color:#7f97b5;margin:24px 10px 10px}.navitem{display:flex;align-items:center;gap:11px;padding:12px 12px;border-radius:14px;margin:4px 0;color:#dbeafe;cursor:pointer;font-size:14px}.navitem:hover,.navitem.active{background:#162840;color:white}.navitem b{margin-left:auto;background:rgba(249,115,22,.18);color:#fdba74;border:1px solid rgba(249,115,22,.35);border-radius:999px;padding:4px 8px;font-size:11px}.side-card{margin-top:24px;background:#10243b;border:1px solid #273d59;border-radius:18px;padding:16px}.side-card strong{display:block;color:#fff;margin-bottom:7px}.side-card p{color:#9eb1cc;font-size:12px;line-height:1.45;margin:0}
-    .main{grid-column:2;grid-row:2;padding:30px;overflow:auto}.rail{grid-column:3;grid-row:2;background:#0d1b2f;color:white;padding:26px 22px;overflow:auto;border-left:1px solid rgba(255,255,255,.08)}
-    h1{font-size:42px;line-height:1.02;letter-spacing:-.055em;margin:0 0 8px}h2{font-size:26px;letter-spacing:-.035em;margin:0 0 8px}h3{font-size:20px;letter-spacing:-.025em;margin:0 0 10px}p{margin:0;color:var(--muted);line-height:1.55}.sub{font-size:17px;color:#596b82;margin-bottom:22px;max-width:820px}
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:20px}.hero-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.hero-card.dark{background:linear-gradient(135deg,#08111f,#10233d);color:white;border-color:#223a58}.hero-card.dark p{color:#bfd0e6}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--blue);font-weight:950;margin-bottom:9px}.dark .eyebrow{color:#93c5fd}
-    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.metric{background:white;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(8,17,31,.05)}.metric span{display:block;color:#78879a;text-transform:uppercase;letter-spacing:.11em;font-size:11px}.metric strong{display:block;font-size:28px;margin-top:5px;letter-spacing:-.04em}.metric.good strong{color:var(--green)}.metric.warn strong{color:var(--orange)}
-    .view{display:none}.view.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:white;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}.mini-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 22px rgba(8,17,31,.05)}.mini-card strong{display:block;margin-bottom:7px}.mini-card p{font-size:14px}.click{cursor:pointer}.click:hover{border-color:#9db7e8;box-shadow:0 12px 30px rgba(37,99,235,.10)}
-    .quick-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.chip{border:1px solid var(--line);background:#fff;color:#132033;border-radius:999px;padding:10px 13px;font-size:13px;font-weight:900}.chip.active{background:#08111f;color:white;border-color:#08111f}.chip.orange{background:#fff7ed;border-color:#fed7aa;color:#c2410c}.chip.blue{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.chip.green{background:#ecfdf5;border-color:#bbf7d0;color:#047857}
-    textarea.big{width:100%;min-height:130px;border:1px solid var(--line);border-radius:18px;background:#f8fbff;padding:16px;resize:vertical;outline:0;color:#101827}.form-row{display:grid;grid-template-columns:1fr 1fr 160px;gap:10px;margin-top:12px}.form-row input,.form-row select{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px;outline:0}
-    .result-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.result-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 28px rgba(8,17,31,.05)}.result-card.priority{border-left:5px solid var(--orange)}.result-card.next{border-left:5px solid var(--blue)}.result-card.decision{border-left:5px solid var(--green)}.result-card.risk{border-left:5px solid var(--red)}.result-card p,.result-card li{font-size:14px;color:#182235;line-height:1.55;font-weight:650}.result-card ul{margin:8px 0 0 20px;padding:0}.result-card li{margin:7px 0}.asset-box{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:18px;white-space:pre-wrap;color:#162033;line-height:1.62;max-height:560px;overflow:auto;font-weight:620}
-    .list{display:grid;gap:10px}.item{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;display:flex;gap:12px;align-items:flex-start}.check{width:28px;height:28px;border-radius:9px;background:#08111f;color:white;display:grid;place-items:center;flex:0 0 auto;font-size:12px}.item strong{display:block;margin-bottom:5px}.item span{display:block;color:#68798d;font-size:13px;line-height:1.4}
-    .asset-layout{display:grid;grid-template-columns:310px 1fr;gap:16px}.asset-list{display:grid;gap:10px}.asset-item{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;cursor:pointer}.asset-item.active,.asset-item:hover{border-color:#7ca7ff;box-shadow:0 0 0 4px rgba(37,99,235,.10)}.asset-item strong{display:block;font-size:14px}.asset-item span{display:block;color:#66758a;font-size:12px;margin-top:5px}.asset-content{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
-    .rail-section{border-bottom:1px solid rgba(255,255,255,.11);padding-bottom:20px;margin-bottom:20px}.rail h3{color:white}.rail-card{background:#142842;border:1px solid #2d4564;border-radius:17px;padding:15px;margin:10px 0;cursor:pointer}.rail-card:hover{border-color:#7fb0ff}.rail-card strong{display:block;color:#fff;font-size:14px}.rail-card span{display:block;color:#b7c9df;font-size:12px;margin-top:6px;line-height:1.4}.rail-card.green{background:#063e33;border-color:#0f8566}.rail-card.orange{background:#442716;border-color:#cf6a24}.rail-card.red{background:#431d21;border-color:#b54848}.rail .small{color:#9eb1cc;font-size:12px;line-height:1.45}
-    .system-table{width:100%;border-collapse:separate;border-spacing:0 10px}.system-table td{background:white;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px}.system-table td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px;font-weight:900}.system-table td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0;color:#52647a}
-    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#08111f;color:white;border-radius:999px;padding:12px 16px;box-shadow:var(--shadow);z-index:50;display:none}.toast.show{display:block}.hidden{display:none!important}
-    @media(max-width:1250px){.app{grid-template-columns:240px 1fr}.rail{display:none}.top{grid-column:1/3}.main{grid-column:2}.top-command{max-width:none}.status-pill{display:none}.hero,.result-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:850px){.app{display:block}.top{height:auto;padding:14px;display:block}.brand{width:auto;margin-bottom:12px}.top-command{grid-template-columns:1fr}.left{display:none}.main{padding:18px}.hero,.grid2,.grid3,.asset-layout,.form-row{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}h1{font-size:34px}}
+    :root{--nav:#0b1424;--nav2:#101d32;--ink:#111827;--muted:#667085;--line:#e6eaf0;--soft:#f4f7fb;--card:#fff;--blue:#2563eb;--orange:#ff7a1a;--green:#067647;--red:#b42318;--shadow:0 20px 50px rgba(15,23,42,.08);--radius:24px}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#edf2f7;color:var(--ink);font-size:14px}button,input,textarea,select{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:248px minmax(720px,1fr) 336px}.side{background:linear-gradient(180deg,var(--nav),#07101d);color:#fff;padding:22px 16px;display:flex;flex-direction:column;gap:22px}.brand{display:flex;gap:12px;align-items:center}.logo{width:40px;height:40px;border-radius:14px;background:#2f80ed;display:grid;place-items:center;font-weight:900}.brand strong{display:block;font-size:14px;letter-spacing:-.02em}.brand span{display:block;font-size:11px;color:#9fb0c7;margin-top:2px}.nav-group{display:flex;flex-direction:column;gap:8px}.nav-label{font-size:10px;letter-spacing:.22em;color:#8090a8;text-transform:uppercase;margin:0 8px 4px}.nav-btn{border:0;background:transparent;color:#d8e2f1;text-align:left;border-radius:14px;padding:12px 14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.nav-btn:hover,.nav-btn.active{background:#132741;color:#fff}.badge{min-width:22px;height:22px;border-radius:999px;background:rgba(255,122,26,.2);color:#ffb47a;font-size:11px;display:grid;place-items:center}.mode-card{margin-top:auto;background:#122640;border:1px solid #203959;border-radius:18px;padding:16px}.mode-card b{display:block;margin-bottom:8px}.mode-card p{margin:0;color:#b8c7dc;line-height:1.45;font-size:12px}.main{padding:26px 28px 44px;overflow:auto}.topbar{display:grid;grid-template-columns:170px 1fr 118px;gap:12px;margin-bottom:20px}.select,.command{border:1px solid #dce3ed;background:white;border-radius:16px;height:52px;padding:0 16px;outline:none;box-shadow:0 1px 0 rgba(15,23,42,.03)}.command{font-weight:700;color:#1f2937}.run{border:0;background:var(--blue);color:white;border-radius:16px;font-weight:900;cursor:pointer}.hero{background:#fff;border-radius:30px;box-shadow:var(--shadow);padding:26px;border:1px solid #e8edf4}.hero-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#3157d4;font-weight:900}.hero h1{font-size:34px;line-height:1.05;letter-spacing:-.05em;margin:9px 0 10px}.hero p{margin:0;color:#5e6b7b;line-height:1.55;font-weight:650}.status-pill{white-space:nowrap;border-radius:999px;border:1px solid #b7e4c7;background:#ecfdf3;color:#067647;padding:9px 12px;font-size:12px;font-weight:900}.brief-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:22px}.next-card{background:#071222;color:white;border-radius:26px;padding:24px}.next-card .eyebrow{color:#8fb4ff}.next-card h2{font-size:28px;line-height:1.08;letter-spacing:-.04em;margin:10px 0 12px}.next-card p{color:#b9c6d8}.why-card{border:1px solid var(--line);border-radius:26px;padding:22px;background:#fbfcff}.why-card h3{font-size:18px;margin:0 0 10px}.why-card p{font-size:13px}.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.metric span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#6d7a8d;font-weight:900}.metric b{display:block;font-size:26px;letter-spacing:-.04em;margin-top:6px}.work{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.04)}.panel.wide{grid-column:1/-1}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.panel h2{font-size:20px;letter-spacing:-.03em;margin:0}.small{font-size:12px;color:#748093;font-weight:750}.actions{display:flex;flex-direction:column;gap:10px}.action{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:start;padding:14px;border:1px solid #e4eaf2;border-radius:18px;background:#fbfcfe}.check{width:22px;height:22px;border-radius:8px;border:2px solid #cbd5e1;background:white;cursor:pointer}.check.done{background:var(--green);border-color:var(--green)}.action b{display:block;font-size:14px;line-height:1.35}.tag{border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900;background:#eef4ff;color:#3157d4}.tag.high{background:#fff1f0;color:#b42318}.asset-preview,.follow-preview,.risk-preview{padding:15px;border-radius:18px;border:1px solid #e4eaf2;background:#fbfcfe;margin-bottom:10px}.asset-preview b,.follow-preview b,.risk-preview b{display:block;margin-bottom:6px}.asset-preview p,.follow-preview p,.risk-preview p{margin:0;color:#607086;line-height:1.45;font-size:13px}.right{background:#07101d;color:white;padding:24px 18px;overflow:auto}.right h2{font-size:18px;margin:0 0 4px;letter-spacing:-.03em}.right .sub{color:#aab8cc;font-size:12px;line-height:1.45;margin:0 0 22px}.rail-section{border-top:1px solid #20324b;padding-top:18px;margin-top:18px}.rail-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.rail-title b{font-size:15px}.rail-card{background:#10223a;border:1px solid #223a5a;border-radius:18px;padding:14px;margin-bottom:10px}.rail-card.green{background:#063d2d;border-color:#0b684a}.rail-card.red{background:#3a1418;border-color:#842029}.rail-card.orange{background:#4a260c;border-color:#a64f12}.rail-card b{display:block;font-size:13px;line-height:1.35}.rail-card span{display:block;color:#b6c6dc;font-size:12px;line-height:1.4;margin-top:6px}.rail-stat{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.rail-stat strong{font-size:26px;letter-spacing:-.05em}.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}.btn.orange{background:var(--orange);color:white}.btn.white{background:#fff;color:#111827;border:1px solid #dce3ed}.btn.blue{background:var(--blue);color:white}.view{display:none}.view.active{display:block}.modal{position:fixed;inset:0;background:rgba(2,6,23,.55);display:none;align-items:center;justify-content:center;padding:28px;z-index:10}.modal.open{display:flex}.modal-box{background:white;max-width:900px;width:100%;max-height:84vh;overflow:auto;border-radius:28px;padding:24px;box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px}.modal-head h2{margin:0;font-size:24px}.x{border:0;background:#f1f5f9;border-radius:12px;width:38px;height:38px;font-weight:900;cursor:pointer}.pre{white-space:pre-wrap;line-height:1.55;color:#334155;background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:16px}.loading{opacity:.6;pointer-events:none}@media(max-width:1180px){.shell{grid-template-columns:220px 1fr}.right{display:none}.brief-grid,.work{grid-template-columns:1fr}.metric-row{grid-template-columns:repeat(2,1fr)}}@media(max-width:820px){.shell{grid-template-columns:1fr}.side{display:none}.main{padding:16px}.topbar{grid-template-columns:1fr}.hero h1{font-size:28px}.hero-head{display:block}.metric-row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-<div class="app">
-  <header class="top">
-    <div class="brand"><div class="logo">EA</div><div><strong>Executive Assistant OS</strong><span>V35100 UI/EUX Upgrade</span></div></div>
-    <div class="top-command">
-      <select id="modeTop" aria-label="Mode">
-        <option value="execution">Execution</option>
-        <option value="strategy">Strategy</option>
-        <option value="decision">Decision</option>
-        <option value="meeting">Meeting</option>
-      </select>
-      <textarea id="quickInput" placeholder="Type the objective. Example: Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."></textarea>
-      <button class="btn blue" id="quickRun">Run OS</button>
-    </div>
-    <div class="status-pill" id="backendStatus">Checking backend</div>
-  </header>
-
-  <aside class="left">
-    <h5>Command</h5>
-    <div class="navitem active" data-view="today">Today <b id="badgeToday">0</b></div>
-    <div class="navitem" data-view="run">Run Command</div>
-    <div class="navitem" data-view="workspace">Workspace</div>
-    <div class="navitem" data-view="assets">Assets <b id="badgeAssets">0</b></div>
-    <h5>Operator</h5>
-    <div class="navitem" data-view="actions">Actions <b id="badgeActions">0</b></div>
-    <div class="navitem" data-view="risks">Risk Monitor <b id="badgeRisks">0</b></div>
-    <div class="navitem" data-view="operator">Operator Intelligence</div>
-    <h5>System</h5>
-    <div class="navitem" data-view="system">System Status</div>
-    <div class="side-card"><strong>Executive Mode</strong><p>Command goes in. The system returns next move, decision, actions, asset, follow-up, and operator pressure.</p></div>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><div class="logo">EA</div><div><strong>Executive Assistant OS</strong><span>V35111 Force UI Refresh</span></div></div>
+    <div class="nav-group"><div class="nav-label">Command</div><button class="nav-btn active" data-view="today">Today <span class="badge" id="todayBadge">0</span></button><button class="nav-btn" data-view="workspace">Workspace</button><button class="nav-btn" data-view="assets">Assets <span class="badge" id="assetBadge">0</span></button></div>
+    <div class="nav-group"><div class="nav-label">Operator</div><button class="nav-btn" data-view="actions">Action Queue <span class="badge" id="actionBadge">0</span></button><button class="nav-btn" data-view="risks">Risk Monitor <span class="badge" id="riskBadge">0</span></button></div>
+    <div class="nav-group"><div class="nav-label">System</div><button class="nav-btn" data-view="system">System Status</button></div>
+    <div class="mode-card"><b>Executive Mode</b><p>The system pushes the next move, actions, assets, follow-ups, and risk signals into one operating view.</p></div>
   </aside>
-
   <main class="main">
+    <div class="topbar"><select class="select" id="mode"><option value="execution">Execution</option><option value="strategy">Strategy</option><option value="decision">Decision</option><option value="meeting">Meeting</option></select><input class="command" id="command" placeholder="Type the objective. Example: Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."/><button class="run" id="runBtn">Run OS</button></div>
     <section class="view active" id="view-today">
       <div class="hero">
-        <div class="hero-card dark">
-          <div class="eyebrow">Today</div>
-          <h1>Run the day from one command.</h1>
-          <p id="todaySummary">Backend is stable. Next step is operating flow: create a workspace, generate assets, and move actions forward.</p>
-          <div class="quick-row">
-            <button class="btn orange" onclick="showView('run');focusCommand()">Start Command</button>
-            <button class="btn ghost" onclick="loadDailyBriefing()">Daily Brief</button>
-            <button class="btn ghost" onclick="loadOperator(true)">Refresh Operator</button>
-          </div>
-        </div>
-        <div class="hero-card">
-          <div class="eyebrow">Next Best Action</div>
-          <h2 id="nextBestAction">Create or advance a workspace.</h2>
-          <p id="pressureText">Pressure score will appear after operator scan.</p>
-          <div class="quick-row">
-            <span class="chip blue" id="providerChip">OpenAI-first</span>
-            <span class="chip green" id="versionChip">V35100 frontend</span>
-          </div>
-        </div>
+        <div class="hero-head"><div><div class="eyebrow">Today’s Executive Brief</div><h1>Here is what matters now.</h1><p>The backend is stable. The operating layer is now focused on next move, action queue, assets, follow-ups, and risk.</p></div><div class="status-pill" id="versionPill">Checking backend...</div></div>
+        <div class="brief-grid"><div class="next-card"><div class="eyebrow">Next Move</div><h2 id="nextMove">Create or advance a workspace.</h2><p id="nextWhy">Run a command to generate the executive brief, actions, assets, and follow-up package.</p><div class="btn-row"><button class="btn orange" onclick="quickCommand('Build executive workspace for focused client acquisition, proposal, action queue, follow-up, and risks.')">Start Workspace</button><button class="btn white" onclick="dailyBrief()">Daily Brief</button><button class="btn blue" onclick="operatorScan()">Refresh Operator</button></div></div><div class="why-card"><h3>Why it matters</h3><p id="whyMatters">The system should reduce executive friction by turning one objective into a decision, next action, asset, follow-up, and risk view.</p></div></div>
       </div>
-
-      <div class="metrics">
-        <div class="metric"><span>Assets</span><strong id="metricAssets">0</strong></div>
-        <div class="metric"><span>Open Actions</span><strong id="metricActions">0</strong></div>
-        <div class="metric"><span>Follow-ups</span><strong id="metricFollowups">0</strong></div>
-        <div class="metric warn"><span>Pressure</span><strong id="metricPressure">0</strong></div>
-      </div>
-
-      <div class="card">
-        <div class="eyebrow">Operating Flow</div>
-        <h2>What needs attention now</h2>
-        <div class="grid3" id="todayCards"></div>
-      </div>
+      <div class="metric-row"><div class="metric"><span>Assets</span><b id="mAssets">0</b></div><div class="metric"><span>Open Actions</span><b id="mActions">0</b></div><div class="metric"><span>Follow-ups</span><b id="mFollow">0</b></div><div class="metric"><span>Pressure</span><b id="mPressure">0</b></div></div>
+      <div class="work"><div class="panel wide"><div class="panel-head"><h2>Action Queue</h2><span class="small" id="queueHint">Start with the highest-leverage action.</span></div><div class="actions" id="actionQueue"></div></div><div class="panel"><div class="panel-head"><h2>Latest Asset</h2><button class="btn white" onclick="openDetails('asset')">Open</button></div><div id="assetPanel"></div></div><div class="panel"><div class="panel-head"><h2>Follow-Up</h2><button class="btn white" onclick="openDetails('follow')">Open</button></div><div id="followPanel"></div></div></div>
     </section>
-
-    <section class="view" id="view-run">
-      <div class="card">
-        <div class="eyebrow">Command</div>
-        <h1>Tell the OS what outcome you need.</h1>
-        <p class="sub">Keep it messy. The system will structure the decision, next move, actions, risk, priority, asset, and follow-up.</p>
-        <textarea class="big" id="mainInput" placeholder="Example: Build proposal for Ontario auto loan dealership with SEO, social media, Google Ads, CPA target under $100, risks, and follow-up email."></textarea>
-        <div class="form-row">
-          <input id="clientInput" placeholder="Client / company optional" />
-          <input id="projectInput" placeholder="Project optional" />
-          <select id="outputType">
-            <option value="proposal">Proposal</option>
-            <option value="meeting">Meeting Prep</option>
-            <option value="email">Follow-up Email</option>
-            <option value="strategy">Strategy</option>
-            <option value="tasks">Tasks</option>
-            <option value="auto">Auto</option>
-          </select>
-        </div>
-        <div class="quick-row">
-          <button class="btn blue" id="mainRun">Run Executive OS</button>
-          <button class="btn orange" id="packageRun">Generate Full Package</button>
-          <button class="btn ghost" onclick="fillExample('proposal')">Proposal</button>
-          <button class="btn ghost" onclick="fillExample('meeting')">Meeting</button>
-          <button class="btn ghost" onclick="fillExample('followup')">Follow-up</button>
-          <button class="btn ghost" onclick="fillExample('strategy')">Strategy</button>
-        </div>
-      </div>
-
-      <div class="card hidden" id="loadingCard">
-        <div class="eyebrow">Working</div>
-        <h2>Building the executive output...</h2>
-        <p>The backend is generating the next move, asset, actions, follow-up, and operator state.</p>
-      </div>
-
-      <div id="resultArea" class="hidden">
-        <div class="result-grid">
-          <div class="result-card next"><div class="eyebrow">Next Move</div><h2 id="resNext">-</h2><p id="resNow">-</p></div>
-          <div class="result-card decision"><div class="eyebrow">Decision</div><h2 id="resDecision">-</h2><p>Priority: <strong id="resPriority">-</strong></p></div>
-        </div>
-        <div class="result-grid" style="margin-top:16px">
-          <div class="result-card"><div class="eyebrow">Action Steps</div><ul id="resActions"></ul></div>
-          <div class="result-card risk"><div class="eyebrow">Risk</div><p id="resRisk">-</p><div class="quick-row"><button class="btn ghost" onclick="saveCurrent('decision')">Save Decision</button><button class="btn ghost" onclick="saveCurrent('action')">Save Action</button><button class="btn ghost" onclick="copyAsset()">Copy Asset</button></div></div>
-        </div>
-        <div class="card"><div class="eyebrow">Generated Asset</div><h2 id="assetTitle">Asset</h2><div class="asset-box" id="resAsset">-</div></div>
-        <div class="card"><div class="eyebrow">Follow-up</div><p id="resFollow">-</p></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-workspace">
-      <div class="card">
-        <div class="eyebrow">Active Workspace</div>
-        <h1 id="workspaceTitle">No active workspace</h1>
-        <p class="sub" id="workspaceSummary">Run a command to create an executive workspace.</p>
-        <div class="quick-row">
-          <button class="btn blue" onclick="showView('run')">Run Another Command</button>
-          <button class="btn ghost" onclick="loadWorkspace(true)">Refresh Workspace</button>
-          <button class="btn ghost" onclick="continueWorkflow()">Continue Workflow</button>
-        </div>
-      </div>
-      <div class="grid2">
-        <div class="card"><div class="eyebrow">Next Executive Decision</div><h2 id="workspaceDecision">-</h2></div>
-        <div class="card"><div class="eyebrow">Operator Recommendation</div><h2 id="workspaceRecommendation">-</h2></div>
-      </div>
-      <div class="grid2">
-        <div class="card"><div class="eyebrow">Recent Decisions</div><div class="list" id="decisionList"></div></div>
-        <div class="card"><div class="eyebrow">Timeline</div><div class="list" id="timelineList"></div></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-assets">
-      <div class="card"><div class="eyebrow">Assets</div><h1>Client-ready output library.</h1><p class="sub">Generated proposals, emails, meeting prep, plans, and execution documents from the active workspace.</p></div>
-      <div class="asset-layout">
-        <div class="asset-list" id="assetList"></div>
-        <div class="asset-content"><div class="eyebrow" id="selectedAssetType">Asset</div><h2 id="selectedAssetTitle">Select an asset</h2><div class="asset-box" id="selectedAssetContent">No asset selected.</div><div class="quick-row"><button class="btn ghost" onclick="copySelectedAsset()">Copy Selected Asset</button></div></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-actions">
-      <div class="card"><div class="eyebrow">Actions</div><h1>Execution queue.</h1><p class="sub">Actions are pulled from generated workspaces and operator recommendations.</p></div>
-      <div class="list" id="actionsList"></div>
-    </section>
-
-    <section class="view" id="view-risks">
-      <div class="card"><div class="eyebrow">Risk Monitor</div><h1>Constraints before they become problems.</h1><p class="sub">The OS should surface risk, stalled workflow, missing follow-up, and pressure signals.</p></div>
-      <div class="list" id="riskList"></div>
-    </section>
-
-    <section class="view" id="view-operator">
-      <div class="card"><div class="eyebrow">Operator Intelligence</div><h1>System recommendation layer.</h1><p class="sub">Reads current workspace, actions, follow-ups, pressure, and attention signals.</p><div class="quick-row"><button class="btn blue" onclick="loadOperator(true)">Run Operator Scan</button><button class="btn ghost" onclick="loadDailyBriefing()">Generate Daily Brief</button></div></div>
-      <div class="grid2">
-        <div class="card"><div class="eyebrow">Pressure Score</div><h1 id="opPressure">0</h1><p id="opTopPriority">No pressure loaded.</p></div>
-        <div class="card"><div class="eyebrow">Next Best Action</div><h2 id="opNext">Create or advance a workspace.</h2></div>
-      </div>
-      <div class="card"><div class="eyebrow">Attention Feed</div><div class="list" id="attentionList"></div></div>
-    </section>
-
-    <section class="view" id="view-system">
-      <div class="card"><div class="eyebrow">System Status</div><h1>V35090 backend. V35100 frontend.</h1><p class="sub">This view checks the existing backend without changing routes.</p><div class="quick-row"><button class="btn blue" onclick="runSystemChecks()">Run Checks</button><button class="btn ghost" onclick="clearWorkspaceUI()">Clear Local UI State</button></div></div>
-      <div class="card"><table class="system-table" id="systemTable"></table></div>
-    </section>
+    <section class="view" id="view-workspace"><div class="panel wide"><div class="panel-head"><h2>Workspace</h2><button class="btn blue" onclick="loadWorkspace()">Refresh</button></div><div id="workspacePanel"></div></div></section>
+    <section class="view" id="view-assets"><div class="panel wide"><div class="panel-head"><h2>Assets</h2><span class="small">Collapsed by default. Open only what matters.</span></div><div id="assetsList"></div></div></section>
+    <section class="view" id="view-actions"><div class="panel wide"><div class="panel-head"><h2>Action Queue</h2><span class="small">Check items off as you execute.</span></div><div class="actions" id="actionsFull"></div></div></section>
+    <section class="view" id="view-risks"><div class="panel wide"><div class="panel-head"><h2>Risk Monitor</h2><button class="btn blue" onclick="operatorScan()">Scan</button></div><div id="risksList"></div></div></section>
+    <section class="view" id="view-system"><div class="panel wide"><div class="panel-head"><h2>System Status</h2><button class="btn blue" onclick="checkSystem(true)">Run Check</button></div><div id="systemPanel"></div></div></section>
   </main>
-
-  <aside class="rail">
-    <div class="rail-section"><h3>Operator Rail</h3><p class="small" id="railSummary">Waiting for workspace or operator scan.</p></div>
-    <div class="rail-section"><h3>Next</h3><div id="railNext"></div></div>
-    <div class="rail-section"><h3>Assets</h3><div id="railAssets"></div></div>
-    <div class="rail-section"><h3>Follow-ups</h3><div id="railFollowups"></div></div>
-    <div class="rail-section"><h3>Risks</h3><div id="railRisks"></div></div>
-  </aside>
+  <aside class="right"><h2>Operator Rail</h2><p class="sub" id="railSummary">Compact summary only. Details open in the main view.</p><div class="rail-section"><div class="rail-title"><b>Next</b><span class="tag">Live</span></div><div class="rail-card orange"><b id="railNext">Create or advance a workspace.</b><span id="railNextMeta">next move · High</span></div></div><div class="rail-section"><div class="rail-title"><b>Summary</b></div><div class="rail-card"><div class="rail-stat"><span>Open actions</span><strong id="rActions">0</strong></div></div><div class="rail-card green"><div class="rail-stat"><span>Assets ready</span><strong id="rAssets">0</strong></div></div><div class="rail-card"><div class="rail-stat"><span>Follow-ups</span><strong id="rFollow">0</strong></div></div><div class="rail-card red"><div class="rail-stat"><span>Risks</span><strong id="rRisks">0</strong></div></div></div><div class="rail-section"><div class="rail-title"><b>System</b></div><div class="rail-card"><b id="railBackend">Backend check pending</b><span id="railProviders">OpenAI-first routing</span></div></div></aside>
 </div>
-<div class="toast" id="toast"></div>
-
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h2 id="modalTitle">Details</h2><button class="x" onclick="closeModal()">×</button></div><div class="pre" id="modalBody"></div></div></div>
 <script>
-const API="https://executive-engine-os.onrender.com";
-const state={workspace:null,operator:null,lastRun:null,selectedAsset:0,system:{}};
+const API='https://executive-engine-os.onrender.com';
+const VERSION='V35111 Force UI Refresh';
+let state={assets:[],actions:[],followups:[],risks:[],decisions:[],workspace:{},operator:{},lastRun:null};
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??"").replace(/[&<>'"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[m]));
-const clip=v=>String(v??"").trim();
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
-async function api(path,opts={}){const res=await fetch(API+path,{headers:{"Content-Type":"application/json",...(opts.headers||{})},...opts});let data;try{data=await res.json()}catch(e){data={status:"error",message:await res.text()}}if(!res.ok)throw new Error(data.message||`HTTP ${res.status}`);return data}
-function showView(name){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$("view-"+name).classList.add("active");document.querySelectorAll(".navitem").forEach(n=>n.classList.toggle("active",n.dataset.view===name));if(name==="assets")renderAssets();if(name==="actions")renderActions();if(name==="risks")renderRisks();}
-function focusCommand(){setTimeout(()=>$("mainInput").focus(),50)}
-document.querySelectorAll(".navitem").forEach(n=>n.addEventListener("click",()=>showView(n.dataset.view)));
-$("quickRun").addEventListener("click",()=>{const v=clip($("quickInput").value);if(!v){showView("run");focusCommand();return}$("mainInput").value=v;$("modeTop").value=$("modeTop").value||"execution";showView("run");runCommand();});
-$("mainRun").addEventListener("click",runCommand);
-$("packageRun").addEventListener("click",generatePackage);
-function inferCategory(text,type){const t=(text||"").toLowerCase();if(type==="meeting"||t.includes("meeting")||t.includes("call"))return "meetings";if(type==="email"||t.includes("follow-up")||t.includes("email"))return "email";if(t.includes("seo")||t.includes("google ads")||t.includes("marketing")||t.includes("cpa"))return "marketing";if(type==="tasks")return "tasks";if(type==="strategy")return "strategy";return "plans";}
-function fillExample(kind){const map={proposal:"Build proposal for Ontario auto loan dealership with SEO, social media, Google Ads, CPA target under $100, objections, risks, close plan, and follow-up email.",meeting:"Prepare me for a client meeting. Include agenda, talking points, objections, questions, decision required, and follow-up.",followup:"Write a confident follow-up email that moves the client to the next step and books a proposal review.",strategy:"Create a 30-day execution strategy with priorities, actions, risks, owners, and measurable wins."};$("mainInput").value=map[kind]||map.proposal;$("outputType").value=kind==="followup"?"email":kind;focusCommand();}
-async function runCommand(){const input=clip($("mainInput").value)||clip($("quickInput").value);if(!input){toast("Add a command first.");showView("run");return}const output_type=$("outputType").value||"proposal";const payload={input,mode:$("modeTop").value||"execution",brain:"auto",output_type,depth:"standard",provider:"openai",category:inferCategory(input,output_type),client:clip($("clientInput").value),project:clip($("projectInput").value),continue_workflow:true};setLoading(true);try{const data=await api("/run",{method:"POST",body:JSON.stringify(payload)});state.lastRun=data;if(data.workspace)state.workspace=data.workspace;renderRun(data);await refreshAll(false);showView("run");toast("Executive output ready.");}catch(e){toast(e.message);renderError(e.message)}finally{setLoading(false)}}
-async function generatePackage(){const input=clip($("mainInput").value)||clip($("quickInput").value);if(!input){toast("Add a command first.");return}setLoading(true,"Generating full package...");try{const data=await api("/autonomous-package",{method:"POST",body:JSON.stringify({input,workspace_type:inferCategory(input,"proposal"),client:clip($("clientInput").value),project:clip($("projectInput").value),provider:"openai",auto_generate:true})});state.workspace=data.workspace;state.lastRun=data;await refreshAll(false);showView("workspace");toast("Full executive package generated.");}catch(e){toast(e.message);renderError(e.message)}finally{setLoading(false)}}
-function setLoading(on,msg){$("loadingCard").classList.toggle("hidden",!on);if(msg)$("loadingCard").querySelector("h2").textContent=msg;$("mainRun").disabled=on;$("packageRun").disabled=on;$("quickRun").disabled=on;}
-function renderError(msg){$("resultArea").classList.remove("hidden");$("resNext").textContent="Backend response needs review";$("resNow").textContent=msg;$("resDecision").textContent="Do not ship a UI change until this endpoint responds cleanly.";$("resPriority").textContent="High";$("resActions").innerHTML="<li>Open System Status and run checks.</li><li>Confirm /health and /debug.</li><li>Retest /run with a simple prompt.</li>";$("resRisk").textContent=msg;$("assetTitle").textContent="Error Detail";$("resAsset").textContent=msg;$("resFollow").textContent="Fix the endpoint response before continuing.";}
-function renderRun(d){$("resultArea").classList.remove("hidden");$("resNext").textContent=d.next_move||d.what_to_do_now||"Move the active workflow forward.";$("resNow").textContent=d.what_to_do_now||"Execute the next step now.";$("resDecision").textContent=d.decision||"Decision pending.";$("resPriority").textContent=d.priority||"Medium";$("resActions").innerHTML=(Array.isArray(d.actions)?d.actions:[]).map(a=>`<li>${esc(typeof a==="string"?a:a.task||a.action||JSON.stringify(a))}</li>`).join("")||"<li>No action list returned.</li>";$("resRisk").textContent=d.risk||"No risk returned.";const asset=d.asset||{};$("assetTitle").textContent=asset.title||"Generated Asset";$("resAsset").textContent=asset.content||asset.summary||JSON.stringify(asset,null,2)||"No asset returned.";$("resFollow").textContent=d.follow_up||"No follow-up returned.";}
-async function refreshAll(showToast=true){await Promise.allSettled([loadWorkspace(false),loadOperator(false),runSystemChecks(false)]);renderAll();if(showToast)toast("Dashboard refreshed.")}
-async function loadWorkspace(showToast=false){try{const d=await api("/workspace-state");state.workspace=d.active_workspace||state.workspace;state.operator=d.operator_state||state.operator;if(showToast)toast("Workspace refreshed.");renderAll();return d}catch(e){if(showToast)toast(e.message)}}
-async function loadOperator(showToast=false){try{const d=await api("/operator-scan");state.operator=d.operator_state||d.pressure||state.operator;if(showToast)toast("Operator scan complete.");renderAll();return d}catch(e){if(showToast)toast(e.message)}}
-async function loadDailyBriefing(){try{const d=await api("/daily-briefing");const b=d.briefing||{};$("todaySummary").textContent=b.headline||b.summary||b.next_best_action||"Daily briefing generated.";if(b.next_best_action)$("nextBestAction").textContent=b.next_best_action;showView("today");toast("Daily brief loaded.")}catch(e){toast(e.message)}}
-async function continueWorkflow(){try{const d=await api("/continue-workflow",{method:"POST",body:JSON.stringify({input:"Continue the active workflow and create the next best executive output.",mode:"execution",output_type:"auto",provider:"openai",continue_workflow:true})});state.lastRun=d;if(d.workspace)state.workspace=d.workspace;renderRun(d);await refreshAll(false);showView("run");toast("Workflow continued.")}catch(e){toast(e.message)}}
-async function runSystemChecks(showToast=true){const rows=[];async function check(label,path){try{const d=await api(path);rows.push([label,"PASS",d.version||d.status||"ok"]);if(path==="/health"){$("backendStatus").textContent=`Backend ${d.version||"live"}`;$("backendStatus").className="status-pill ok";$("versionChip").textContent=d.version||"V35090 backend";}return d}catch(e){rows.push([label,"FAIL",e.message]);$("backendStatus").textContent="Backend check failed";$("backendStatus").className="status-pill bad";}}
-await check("Root","/");await check("Health","/health");await check("Providers","/providers");await check("Debug","/debug");await check("Quality","/quality-state");$("systemTable").innerHTML=rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("");if(showToast)toast("System checks complete.")}
-function sections(){return (state.workspace&&state.workspace.sections)||{}}
-function assets(){const a=sections().assets||[];return Array.isArray(a)?a:[]}
-function actions(){const a=sections().tasks||[];return Array.isArray(a)?a:[]}
-function followups(){const f=sections().follow_ups||[];return Array.isArray(f)?f:[]}
-function risks(){const r=sections().warnings||[];return Array.isArray(r)?r:[]}
-function decisions(){const d=sections().decisions||[];return Array.isArray(d)?d:[]}
-function timeline(){const t=sections().timeline||[];return Array.isArray(t)?t:[]}
-function renderAll(){const ws=state.workspace||{};const op=state.operator||{};$("metricAssets").textContent=assets().length;$("metricActions").textContent=actions().length;$("metricFollowups").textContent=followups().length;$("metricPressure").textContent=ws.pressure_score||op.pressure_score||0;$("badgeAssets").textContent=assets().length;$("badgeActions").textContent=actions().length;$("badgeRisks").textContent=risks().length;$("badgeToday").textContent=(actions().length+followups().length+risks().length)||0;$("workspaceTitle").textContent=ws.title||"No active workspace";$("workspaceSummary").textContent=ws.summary||ws.input||"Run a command to create an executive workspace.";$("workspaceDecision").textContent=ws.next_executive_decision||"No decision loaded.";$("workspaceRecommendation").textContent=ws.operator_recommendation||op.next_best_action||"Create or advance a workspace.";$("nextBestAction").textContent=op.next_best_action||ws.operator_recommendation||ws.next_executive_decision||"Create or advance a workspace.";$("pressureText").textContent=`Pressure score: ${ws.pressure_score||op.pressure_score||0}. ${op.top_priority||"No urgent operator pressure detected."}`;$("opPressure").textContent=op.pressure_score||ws.pressure_score||0;$("opTopPriority").textContent=op.top_priority||"No urgent operator pressure detected.";$("opNext").textContent=op.next_best_action||ws.operator_recommendation||"Create or advance a workspace.";$("railSummary").textContent=ws.title?`${ws.title}. ${ws.summary||"Workspace active."}`:"No active workspace yet. Run a command to activate operator mode.";renderTodayCards();renderRail();renderAssets();renderActions();renderRisks();renderOperator();renderWorkspaceLists();}
-function renderTodayCards(){const cards=[];const ws=state.workspace||{};if(ws.title)cards.push(card("Active Workspace",ws.title,ws.summary||"Open workspace","workspace"));else cards.push(card("Start Workspace","Create the executive operating context.","Use Run Command to generate the first asset.","run"));const a=actions()[0];cards.push(card("Next Action",a?(a.task||a.action):"No open action yet",a?"Pulled from active workspace.":"Generate a package to create tasks.","actions"));const f=followups()[0];cards.push(card("Follow-up",f?(f.follow_up||f.title):"No follow-up yet",f?"Ready to send or refine.":"Generate a proposal or meeting package.","assets"));$("todayCards").innerHTML=cards.join("");}
-function card(title,bold,desc,view){return `<div class="mini-card click" onclick="showView('${view}')"><strong>${esc(title)}</strong><p><b>${esc(bold)}</b><br>${esc(desc)}</p></div>`}
-function renderRail(){const rn=sections().right_rail||{};const next=rn.next||[];$("railNext").innerHTML=(next.length?next:[{title:(state.workspace||{}).operator_recommendation||"Run the next command",type:"next",priority:"High"}]).slice(0,3).map(n=>`<div class="rail-card orange" onclick="showView('actions')"><strong>${esc(n.title||"Next action")}</strong><span>${esc(n.type||"next")} · ${esc(n.priority||"High")}</span></div>`).join("");$("railAssets").innerHTML=(assets().length?assets():[{title:"No assets yet",type:"Run Command",step:"create"}]).slice(0,4).map((a,i)=>`<div class="rail-card green" onclick="showView('assets');selectAsset(${i})"><strong>${esc(a.title||"Asset")}</strong><span>${esc(a.type||"asset")} · ${esc(a.step||"workspace")}</span></div>`).join("");$("railFollowups").innerHTML=(followups().length?followups():[{follow_up:"No follow-ups yet",status:"pending"}]).slice(0,4).map(f=>`<div class="rail-card" onclick="showView('assets')"><strong>${esc(f.follow_up||f.title||"Follow-up")}</strong><span>${esc(f.status||"open")}</span></div>`).join("");$("railRisks").innerHTML=(risks().length?risks():[{warning:"No active risks",priority:"Clear"}]).slice(0,4).map(r=>`<div class="rail-card ${r.priority==="Clear"?"green":"red"}" onclick="showView('risks')"><strong>${esc(r.warning||r.title||"Risk")}</strong><span>${esc(r.priority||"Review")}</span></div>`).join("");}
-function renderAssets(){const list=assets();$("assetList").innerHTML=list.length?list.map((a,i)=>`<div class="asset-item ${i===state.selectedAsset?'active':''}" onclick="selectAsset(${i})"><strong>${esc(a.title||"Untitled Asset")}</strong><span>${esc(a.type||"asset")} · ${esc(a.step||"workspace")}</span></div>`).join(""):`<div class="asset-item"><strong>No assets yet</strong><span>Run a command or generate full package.</span></div>`;if(list.length){selectAsset(Math.min(state.selectedAsset,list.length-1),false)}else{$("selectedAssetTitle").textContent="No asset selected";$("selectedAssetContent").textContent="No asset selected.";}}
-function selectAsset(i,switchView=false){const a=assets()[i];if(!a)return;state.selectedAsset=i;$("selectedAssetType").textContent=a.type||"Asset";$("selectedAssetTitle").textContent=a.title||"Untitled Asset";$("selectedAssetContent").textContent=a.content||a.summary||JSON.stringify(a,null,2);document.querySelectorAll(".asset-item").forEach((el,idx)=>el.classList.toggle("active",idx===i));if(switchView)showView("assets");}
-function renderActions(){const list=actions();$("actionsList").innerHTML=list.length?list.map((a,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(a.task||a.action||"Action")}</strong><span>${esc(a.status||"open")} · ${esc(a.step||"execution")}</span></div></div>`).join(""):`<div class="item"><div class="check">+</div><div><strong>No actions yet</strong><span>Run a command to generate an action queue.</span></div></div>`;}
-function renderRisks(){const list=risks();$("riskList").innerHTML=list.length?list.map((r,i)=>`<div class="item"><div class="check">!</div><div><strong>${esc(r.warning||r.title||"Risk")}</strong><span>${esc(r.priority||"Review")} · ${esc(r.step||"risk")}</span></div></div>`).join(""):`<div class="item"><div class="check">✓</div><div><strong>No active risks</strong><span>Operator is clear for now.</span></div></div>`;}
-function renderOperator(){const op=state.operator||{};const att=op.attention_required||[];$("attentionList").innerHTML=att.length?att.map((a,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(a.title||a.type||"Attention")}</strong><span>${esc(a.message||a.summary||JSON.stringify(a))}</span></div></div>`).join(""):`<div class="item"><div class="check">✓</div><div><strong>No urgent attention items</strong><span>${esc(op.top_priority||"Create or advance a workspace.")}</span></div></div>`;}
-function renderWorkspaceLists(){$("decisionList").innerHTML=decisions().length?decisions().map((d,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(d.decision||"Decision")}</strong><span>${esc(d.step||"decision")}</span></div></div>`).join(""):`<div class="item"><div class="check">-</div><div><strong>No decisions yet</strong><span>Run a command to create one.</span></div></div>`;$("timelineList").innerHTML=timeline().length?timeline().slice(0,8).map((t,i)=>`<div class="item"><div class="check">${i+1}</div><div><strong>${esc(t.event||t.asset_title||"Event")}</strong><span>${esc(t.summary||t.timestamp||"")}</span></div></div>`).join(""):`<div class="item"><div class="check">-</div><div><strong>No timeline yet</strong><span>Workspace events will appear here.</span></div></div>`;}
-async function saveCurrent(type){try{if(!state.lastRun){toast("No current run to save.");return}if(type==="decision"){await api("/save-decision",{method:"POST",body:JSON.stringify({decision:state.lastRun.decision||"Decision saved from UI",source:"v35100"})});}else{await api("/save-action",{method:"POST",body:JSON.stringify({action:state.lastRun.next_move||state.lastRun.what_to_do_now||"Action saved from UI",source:"v35100"})});}toast(type==="decision"?"Decision saved.":"Action saved.")}catch(e){toast(e.message)}}
-function copyAsset(){const txt=$("resAsset").textContent;navigator.clipboard.writeText(txt).then(()=>toast("Asset copied."));}
-function copySelectedAsset(){const txt=$("selectedAssetContent").textContent;navigator.clipboard.writeText(txt).then(()=>toast("Selected asset copied."));}
-function clearWorkspaceUI(){state.workspace=null;state.operator=null;state.lastRun=null;state.selectedAsset=0;renderAll();toast("Local UI state cleared. Backend memory unchanged.")}
-(async function init(){await runSystemChecks(false);await refreshAll(false);renderAll();})();
+function cleanText(v,f='Not available yet.'){if(v===null||v===undefined)return f;let s=String(v).replace(/Build executive workspace for\s*/gi,'').replace(/Client-ready proposal for\s*for/gi,'Client-ready proposal').replace(/focused on Executive Workstream/gi,'').replace(/\s+/g,' ').trim();return s||f}
+function cleanTitle(v,f='Executive Workspace'){let s=cleanText(v,f); if(s.length<4||/^for$/i.test(s))return f; return s}
+function first(arr){return Array.isArray(arr)&&arr.length?arr[0]:null}
+function normWorkspace(raw){const w=raw?.current_workspace||raw?.workspace||raw||{}; const sections=w.sections||{}; state.workspace=w; state.assets=sections.assets||state.assets||[]; state.actions=sections.tasks||state.actions||[]; state.followups=sections.follow_ups||state.followups||[]; state.risks=sections.warnings||state.risks||[]; state.decisions=sections.decisions||state.decisions||[];}
+function setView(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));$('view-'+name)?.classList.add('active');document.querySelector(`[data-view="${name}"]`)?.classList.add('active')}
+document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+$('runBtn').addEventListener('click',runOS);$('command').addEventListener('keydown',e=>{if(e.key==='Enter')runOS()});
+function render(){const next=cleanText(state.workspace?.next_executive_decision||state.operator?.next_best_action||state.lastRun?.next_move,'Create or advance a workspace.'); const risk=first(state.risks); const asset=first(state.assets); const follow=first(state.followups); $('nextMove').textContent=next; $('railNext').textContent=next; $('nextWhy').textContent=cleanText(state.workspace?.operator_recommendation||state.lastRun?.decision,'Run a command to generate the executive brief, actions, assets, and follow-up package.'); $('whyMatters').textContent=risk?cleanText(risk.warning||risk.risk,'This is the constraint that could slow execution if not handled now.'):cleanText(state.workspace?.summary,'The system turns one objective into operating clarity and executive follow-through.'); const counts={a:state.assets.length,t:state.actions.length,f:state.followups.length,r:state.risks.length,p:state.operator?.pressure_score??0}; $('mAssets').textContent=counts.a;$('mActions').textContent=counts.t;$('mFollow').textContent=counts.f;$('mPressure').textContent=counts.p;$('rAssets').textContent=counts.a;$('rActions').textContent=counts.t;$('rFollow').textContent=counts.f;$('rRisks').textContent=counts.r;$('todayBadge').textContent=counts.t;$('assetBadge').textContent=counts.a;$('actionBadge').textContent=counts.t;$('riskBadge').textContent=counts.r; renderActions('actionQueue',state.actions.slice(0,5)); renderActions('actionsFull',state.actions); $('assetPanel').innerHTML=asset?card('asset-preview',cleanTitle(asset.title,'Growth Proposal'),cleanText(asset.summary||asset.content,'Asset ready. Open to review.')):empty('No asset generated yet.'); $('followPanel').innerHTML=follow?card('follow-preview','Follow-up ready',cleanText(follow.follow_up||follow.content,'Follow-up ready. Open to review.')):empty('No follow-up generated yet.'); $('assetsList').innerHTML=state.assets.length?state.assets.map(a=>card('asset-preview',cleanTitle(a.title,'Executive Asset'),cleanText(a.summary||a.content,'Ready to review.'))).join(''):empty('No assets yet. Run a proposal, meeting, or strategy command.'); $('risksList').innerHTML=state.risks.length?state.risks.map(r=>card('risk-preview',cleanText(r.priority,'Risk'),cleanText(r.warning||r.risk,'Risk detected.'))).join(''):empty('No risks detected.'); $('workspacePanel').innerHTML=workspaceHtml(); $('railSummary').textContent=cleanText(state.workspace?.summary,'Compact summary only. Details open in the main view.');}
+function card(cls,title,body){return `<div class="${cls}"><b>${escapeHtml(title)}</b><p>${escapeHtml(body).slice(0,260)}${body.length>260?'...':''}</p></div>`}
+function empty(t){return `<div class="asset-preview"><p>${escapeHtml(t)}</p></div>`}
+function renderActions(id,actions){$(id).innerHTML=actions.length?actions.map((a,i)=>`<div class="action"><button class="check" onclick="this.classList.toggle('done')"></button><div><b>${escapeHtml(cleanText(a.task||a.action||a.title||a,'Action item'))}</b><span class="small">${escapeHtml(cleanText(a.status||'open','open'))}</span></div><span class="tag ${i===0?'high':''}">${i===0?'Start':'Open'}</span></div>`).join(''):empty('No open actions yet. Run the OS to create the action queue.')}
+function workspaceHtml(){const w=state.workspace||{};return `<div class="asset-preview"><b>${escapeHtml(cleanTitle(w.title,'Executive Workspace'))}</b><p>${escapeHtml(cleanText(w.summary,'No active workspace summary yet.'))}</p></div><div class="asset-preview"><b>Next executive decision</b><p>${escapeHtml(cleanText(w.next_executive_decision,'No decision captured yet.'))}</p></div>`}
+function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+async function api(path,opts={}){const res=await fetch(API+path,{headers:{'Content-Type':'application/json'},...opts}); if(!res.ok)throw new Error(path+' '+res.status); return await res.json()}
+async function checkSystem(show=false){try{const [h,p]=await Promise.all([api('/health'),api('/providers')]); $('versionPill').textContent='Backend '+(h.version||'live'); $('railBackend').textContent='Backend '+(h.version||'live'); $('railProviders').textContent='OpenAI: '+(p.available?.openai?.configured?'configured':'missing')+' · Claude: '+(p.available?.claude?.configured?'configured':'missing'); $('systemPanel').innerHTML=`<div class="asset-preview"><b>Backend</b><p>${escapeHtml(JSON.stringify(h,null,2))}</p></div><div class="asset-preview"><b>Providers</b><p>${escapeHtml(JSON.stringify(p,null,2))}</p></div>`}catch(e){$('versionPill').textContent='Backend check failed';$('railBackend').textContent='Backend check failed';if(show)alert(e.message)}}
+async function loadWorkspace(){try{const data=await api('/debug'); normWorkspace(data.active_context||{}); if(data.active_context?.operator_state)state.operator=data.active_context.operator_state; render()}catch(e){console.error(e)}}
+async function operatorScan(){try{const data=await api('/operator-scan',{method:'POST',body:JSON.stringify({})}); state.operator=data.operator_state||data||{}; render()}catch(e){console.error(e); await loadWorkspace()}}
+async function dailyBrief(){try{const data=await api('/daily-briefing'); state.lastRun=data; if(data.operator_state)state.operator=data.operator_state; render()}catch(e){console.error(e)}}
+async function runOS(){const input=$('command').value.trim(); if(!input)return; document.body.classList.add('loading'); try{const data=await api('/run',{method:'POST',body:JSON.stringify({input,mode:$('mode').value,output_type:'proposal',depth:'standard',provider:'openai'})}); state.lastRun=data; if(data.workspace)normWorkspace(data.workspace); if(data.active_context)normWorkspace(data.active_context); if(data.operator_state)state.operator=data.operator_state; if(data.actions?.length)state.actions=data.actions.map(x=>typeof x==='string'?{task:x,status:'open'}:x); if(data.asset&&!state.assets.length)state.assets=[data.asset]; if(data.follow_up&&!state.followups.length)state.followups=[{follow_up:data.follow_up,status:'open'}]; if(data.risk&&!state.risks.length)state.risks=[{warning:data.risk,priority:data.priority||'High'}]; render(); $('command').value='';}catch(e){alert('Run failed: '+e.message)}finally{document.body.classList.remove('loading')}}
+function quickCommand(t){$('command').value=t;runOS()}
+function openDetails(type){let title='Details',body='Nothing to show yet.'; if(type==='asset'){const a=first(state.assets);title=cleanTitle(a?.title,'Asset');body=a?.content||a?.summary||body} if(type==='follow'){const f=first(state.followups);title='Follow-up';body=f?.follow_up||f?.content||body} $('modalTitle').textContent=title;$('modalBody').textContent=body;$('modal').classList.add('open')}
+function closeModal(){$('modal').classList.remove('open')}
+(async function init(){await checkSystem(); await loadWorkspace(); render();})();
 </script>
 </body>
 </html>
