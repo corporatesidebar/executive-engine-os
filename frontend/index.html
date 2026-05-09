@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36110</title>
+<title>Executive Engine OS · V36100</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36110-context-profile-setup';
+const VERSION='36100-memory-context-relevance';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -47,7 +47,7 @@ state.operating=JSON.parse(localStorage.getItem('ee_operating_v36010')||'null')|
 state.dailyUse=JSON.parse(localStorage.getItem('ee_daily_use_v36020')||'null')||{};
 state.dailyFlow=JSON.parse(localStorage.getItem('ee_daily_flow_v36070')||'null')||{};
 const groups=[['COMMAND',[['dailyflow','◆','Daily Flow',1],['dailyuse','▶','Daily Use',1],['operating','⬢','Operating Layer',1],['today','✦','Today',3],['daily','☀','Daily Brief',1],['run','⌘','Run Command',0],['meeting','◴','Meeting Prep',0],['decisions','◆','Decisions',0]]],['WORKFLOW',[['workspace','▣','Workspace',0],['actions','☑','Action Queue',state.tasks.filter(t=>t.status!=='done').length],['assets','▤','Assets',state.assets.length],['followups','✉','Follow-Ups',1],['notes','✎','Notes',state.notes.length]]],['INTELLIGENCE',[['operator','◎','Operator Intelligence',0],['risk','⚠','Risk Monitor',1],['strategy','↗','Strategy Board',0],['team','◌','Team Pulse',0],['finance','$','Financial Snapshot',0]]],['SYSTEM',[['database','◫','Database',0],['status','●','System Status',0]]]];
-const copy={profile:['Profile Setup','Add role, company, priorities, risks, people, and goals so outputs become more relevant.'],dailyflow:['Daily Flow','Start day, attention, first move, top 3, meeting prep, follow-ups, end-of-day review, and tomorrow prep.'],dailyuse:['Daily Use','Start here: what to do first, top 3 moves, follow-up, asset, risk, and end-of-day review.'],operating:['Operating Layer','Push-based command layer: now, today, tomorrow, decisions, execution, risks, and follow-ups.'],today:['Today','Executive cockpit: pressure, priority, decision, actions, and follow-up.'],daily:['Daily Brief','Start here before the day gets noisy.'],run:['Run Command','Deeper ChatGPT-style work room with saved run history.'],meeting:['Meeting Prep','Turn meetings into decisions before they happen.'],decisions:['Decisions','Save the call, tradeoff, risk, and next owner.'],workspace:['Workspace','The active client/project operating file.'],actions:['Action Queue','Executable work, not vague tasks.'],assets:['Assets','Generated proposals, emails, briefs, plans, and scripts.'],followups:['Follow-Ups','Messages that move conversations forward.'],notes:['Notes','Fast capture for context and memory.'],operator:['Operator Intelligence','Pressure, open loops, and next-best action.'],risk:['Risk Monitor','What could slow, block, or weaken execution.'],strategy:['Strategy Board','Bigger moves, market angles, and decision gates.'],team:['Team Pulse','People, owners, dependencies, and blockers.'],finance:['Financial Snapshot','Revenue, cost, pipeline, and execution impact.'],database:['Database','Supabase status, writes, reads, and persistence.'],status:['System Status','Routes, providers, version, and diagnostics.']};
+const copy={dailyflow:['Daily Flow','Start day, attention, first move, top 3, meeting prep, follow-ups, end-of-day review, and tomorrow prep.'],dailyuse:['Daily Use','Start here: what to do first, top 3 moves, follow-up, asset, risk, and end-of-day review.'],operating:['Operating Layer','Push-based command layer: now, today, tomorrow, decisions, execution, risks, and follow-ups.'],today:['Today','Executive cockpit: pressure, priority, decision, actions, and follow-up.'],daily:['Daily Brief','Start here before the day gets noisy.'],run:['Run Command','Deeper ChatGPT-style work room with saved run history.'],meeting:['Meeting Prep','Turn meetings into decisions before they happen.'],decisions:['Decisions','Save the call, tradeoff, risk, and next owner.'],workspace:['Workspace','The active client/project operating file.'],actions:['Action Queue','Executable work, not vague tasks.'],assets:['Assets','Generated proposals, emails, briefs, plans, and scripts.'],followups:['Follow-Ups','Messages that move conversations forward.'],notes:['Notes','Fast capture for context and memory.'],operator:['Operator Intelligence','Pressure, open loops, and next-best action.'],risk:['Risk Monitor','What could slow, block, or weaken execution.'],strategy:['Strategy Board','Bigger moves, market angles, and decision gates.'],team:['Team Pulse','People, owners, dependencies, and blockers.'],finance:['Financial Snapshot','Revenue, cost, pipeline, and execution impact.'],database:['Database','Supabase status, writes, reads, and persistence.'],status:['System Status','Routes, providers, version, and diagnostics.']};
 function save(){localStorage.setItem('ee_runs_v35130',JSON.stringify(state.runs.slice(0,30)));localStorage.setItem('ee_tasks_v35130',JSON.stringify(state.tasks));localStorage.setItem('ee_assets_v35130',JSON.stringify(state.assets.slice(0,50)));localStorage.setItem('ee_notes_v35130',JSON.stringify(state.notes.slice(0,60)));localStorage.setItem('ee_operating_v36010',JSON.stringify(state.operating||{}));localStorage.setItem('ee_daily_use_v36020',JSON.stringify(state.dailyUse||{}));localStorage.setItem('ee_daily_flow_v36070',JSON.stringify(state.dailyFlow||{}));}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
 async function api(path,opts={}){const res=await fetch(API+path,{headers:{'Content-Type':'application/json','Accept':'application/json'},...opts});if(!res.ok)throw new Error(path+' '+res.status);return await res.json()}
@@ -72,7 +72,7 @@ function dailyFlowPage(){
   const f=state.dailyFlow||{};
   return `<section class="grid2">
     <div class="hero">
-      <span class="kicker">V36110 / Daily Operating Flow</span>
+      <span class="kicker">V36100 / Daily Operating Flow</span>
       <h3>${esc(clean(f.greeting||'Hey Will, let’s Rock n Roll today.'))}</h3>
       <p>${esc(clean(f.executive_summary||'Start here each morning. Tell the system what’s on your plate. It will help prioritize the day.'))}</p>
       <div class="cockpit">
@@ -125,7 +125,7 @@ async function runDailyFlow(){
       actions:data.top_3_actions||data.actions,
       risk:data.risk,
       priority:data.priority,
-      asset:{title:'V36110 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36100 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
     },input);
     save();render();toast('Daily Flow ready');
   }catch(e){toast('Daily Flow failed: '+e.message)}
@@ -196,7 +196,7 @@ async function runDailyUse(){
       actions:data.actions,
       risk:data.risk_to_watch,
       priority:data.priority,
-      asset:{title:'V36110 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36100 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
     },input);
     save();
     render();
@@ -288,7 +288,7 @@ function saveOperatingActions(){
   render();toast('Operating actions pushed to queue');
 }
 
-function renderPages(){let html='';Object.keys(copy).forEach(id=>{html+=`<div class="page ${state.page===id?'active':''}">${id==='profile'?profileSetupPage():id==='dailyflow'?dailyFlowPage():id==='dailyuse'?dailyUsePage():id==='operating'?operatingPage():id==='today'?todayPage():id==='run'?commandPage():sectionPage(id)}</div>`});$('pages').innerHTML=html;}
+function renderPages(){let html='';Object.keys(copy).forEach(id=>{html+=`<div class="page ${state.page===id?'active':''}">${id==='dailyflow'?dailyFlowPage():id==='dailyuse'?dailyUsePage():id==='operating'?operatingPage():id==='today'?todayPage():id==='run'?commandPage():sectionPage(id)}</div>`});$('pages').innerHTML=html;}
 function renderRail(){const b=brief();$('rail').innerHTML=`<h2>Operator Radar</h2><p>Push-based intelligence: pressure, next move, counts, and system state.</p><div class="radar"></div><div class="railSec"><div class="railCard orange"><strong>Do Now</strong><span>${esc(b.next)}</span></div><div class="railCard red"><strong>Risk</strong><span>${esc(b.top)}</span></div><div class="railCard green"><strong>Progress</strong><span>${state.tasks.filter(t=>t.status==='done').length} complete · ${state.tasks.filter(t=>t.status!=='done').length} open</span></div></div><div class="railSec"><div class="railCard"><strong>Runs</strong><span>${state.runs.length} saved locally</span></div><div class="railCard"><strong>Assets</strong><span>${state.assets.length} ready</span></div><div class="railCard"><strong>DB</strong><span>${state.db.configured?'Connected':'Memory mode / configure Supabase'}</span></div></div>`;}
 function toggleTask(i){state.tasks[i].status=state.tasks[i].status==='done'?'open':'done';render()}
 function addSampleAction(){state.tasks.unshift({task:'Confirm owner, deadline, and decision path for current workstream.',priority:'High',status:'open'});render();toast('Action added')}
@@ -348,7 +348,7 @@ async function runPressureAttention(){
 }
 
 
-async function loadFirstMessageV36110(){
+async function loadFirstMessageV36100(){
   try{
     const res = await fetch(API_BASE + "/first-load", {cache:"no-store"});
     const data = await res.json();
@@ -364,7 +364,7 @@ async function loadFirstMessageV36110(){
     if(el) el.textContent = "Hey Will, let’s Rock n Roll today.";
   }
 }
-setTimeout(loadFirstMessageV36110, 250);
+setTimeout(loadFirstMessageV36100, 250);
 
 
 async function runQualityPolish(){
@@ -472,130 +472,6 @@ async function runMemoryContext(){
   }catch(e){
     alert("Memory Context failed: " + e.message);
   }
-}
-
-
-async function saveProfileSetup(){
-  const get = id => document.getElementById(id)?.value || "";
-  const payload = {
-    role:get("profileRole"),
-    company:get("profileCompany"),
-    company_type:get("profileCompanyType"),
-    current_priorities:get("profilePriorities"),
-    active_projects:get("profileProjects"),
-    key_people:get("profilePeople"),
-    current_risks:get("profileRisks"),
-    goals_30_days:get("profileGoals"),
-    communication_style:get("profileStyle") || "direct",
-    account_id:"default",
-    user_id:"owner"
-  };
-
-  try{
-    const res = await fetch(API_BASE + "/profile-setup",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
-    });
-    const data = await res.json();
-
-    const out = document.getElementById("profileOutput");
-    if(out){
-      out.innerHTML = `
-        <div class="card">
-          <span class="kicker">PROFILE SAVED</span>
-          <h3>${data.summary?.identity || "Context profile saved."}</h3>
-          <p>Future runs can use this profile to reduce generic output and make recommendations more relevant.</p>
-          <span class="kicker">WHAT CHANGES NOW</span>
-          <ul>${(data.what_changes_now||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
-        </div>
-      `;
-    }
-    alert("Profile saved.");
-  }catch(e){
-    alert("Profile setup failed: " + e.message);
-  }
-}
-
-async function runProfileAwareFlow(){
-  const input = document.getElementById("profileAwareInput")?.value || document.getElementById("masterFlowInput")?.value || "";
-  if(!input){ alert("Enter today’s pressure first."); return; }
-
-  try{
-    const res = await fetch(API_BASE + "/profile-aware-flow",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({input})
-    });
-    const data = await res.json();
-
-    const out = document.getElementById("profileOutput") || document.getElementById("masterFlowOutput");
-    if(out){
-      out.innerHTML = `
-        <div class="card">
-          <span class="kicker">PROFILE-AWARE FLOW</span>
-          <h3>${data.what_matters_first || "First move ready."}</h3>
-          <span class="kicker">TOP 3</span>
-          <ul>${(data.top_3||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
-          <span class="kicker">RISK</span>
-          <p>${data.risk || "No risk returned."}</p>
-        </div>
-      `;
-    }
-  }catch(e){
-    alert("Profile-aware flow failed: " + e.message);
-  }
-}
-
-function profileSetupPage(){
-  return `<section class="section">
-    <div class="canvas">
-      <div class="sectionHeader">
-        <div>
-          <span class="kicker">V36110 / Context Profile</span>
-          <h3>Teach the system what matters.</h3>
-        </div>
-      </div>
-
-      <div class="grid2">
-        <div class="card">
-          <span class="kicker">Profile</span>
-          <input id="profileRole" placeholder="Role: CEO, COO, manager, founder..." />
-          <input id="profileCompany" placeholder="Company / organization" style="margin-top:10px" />
-          <input id="profileCompanyType" placeholder="Company type: small business, mid-market, agency, dealership..." style="margin-top:10px" />
-          <select id="profileStyle" style="margin-top:10px">
-            <option value="direct">Direct</option>
-            <option value="supportive">Supportive</option>
-            <option value="operator">Operator</option>
-            <option value="concise">Concise</option>
-          </select>
-        </div>
-
-        <div class="card">
-          <span class="kicker">Current Context</span>
-          <textarea id="profilePriorities" placeholder="Current priorities..." style="min-height:72px"></textarea>
-          <textarea id="profileProjects" placeholder="Active projects..." style="min-height:72px;margin-top:10px"></textarea>
-          <textarea id="profilePeople" placeholder="Key people / clients / team..." style="min-height:72px;margin-top:10px"></textarea>
-        </div>
-
-        <div class="card">
-          <span class="kicker">Pressure</span>
-          <textarea id="profileRisks" placeholder="Current risks / bottlenecks..." style="min-height:72px"></textarea>
-          <textarea id="profileGoals" placeholder="30-day goals..." style="min-height:72px;margin-top:10px"></textarea>
-          <div class="actions"><button class="btn orange" onclick="saveProfileSetup()">Save Context Profile</button></div>
-        </div>
-
-        <div class="card">
-          <span class="kicker">Use It</span>
-          <p>After saving your profile, run a profile-aware flow so outputs are less generic.</p>
-          <input id="profileAwareInput" placeholder="What has your attention today?" />
-          <div class="actions"><button class="btn green" onclick="runProfileAwareFlow()">Run Profile-Aware Flow</button></div>
-        </div>
-      </div>
-
-      <div id="profileOutput" style="margin-top:18px"></div>
-    </div>
-  </section>`;
 }
 
 </script>
