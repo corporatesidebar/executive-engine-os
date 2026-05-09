@@ -4,21 +4,23 @@
 Backend:
 - [ ] /health
 - [ ] /test-report-json
-- [ ] /profile-state
-- [ ] POST /profile-setup
-- [ ] POST /profile-aware-flow
+- [ ] /morning-brief
+- [ ] /morning-brief-state
 
 Frontend:
-- [ ] Profile Setup appears in nav
-- [ ] Save Context Profile works
-- [ ] Profile-Aware Flow works
-- [ ] Outputs reference profile context
+- [ ] Morning Brief button appears
+- [ ] Morning Brief runs
+- [ ] Do This First appears
+- [ ] Top 3 appears
+- [ ] Open Loops appears
+- [ ] Follow-up before end of day appears
+- [ ] Tomorrow Prep appears
 
 Macro test:
-1. Save profile:
-   Role: COO
-   Company: mid-sized services company
-   Priorities: sales conversion, client follow-up, team accountability
-   Risks: delayed proposals, unclear ownership
-2. Run: I have too many priorities today.
-3. Confirm output references priorities/risks.
+Open app first thing and click Morning Brief.
+Expected:
+- clear first move
+- carry-forward memory
+- open loops
+- top 3
+- end-of-day follow-up

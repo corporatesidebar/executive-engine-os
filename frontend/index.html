@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36100</title>
+<title>Executive Engine OS · V36110</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36100-memory-context-relevance';
+const VERSION='36110-real-daily-brief-morning-start';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -72,7 +72,7 @@ function dailyFlowPage(){
   const f=state.dailyFlow||{};
   return `<section class="grid2">
     <div class="hero">
-      <span class="kicker">V36100 / Daily Operating Flow</span>
+      <span class="kicker">V36110 / Daily Operating Flow</span>
       <h3>${esc(clean(f.greeting||'Hey Will, let’s Rock n Roll today.'))}</h3>
       <p>${esc(clean(f.executive_summary||'Start here each morning. Tell the system what’s on your plate. It will help prioritize the day.'))}</p>
       <div class="cockpit">
@@ -125,7 +125,7 @@ async function runDailyFlow(){
       actions:data.top_3_actions||data.actions,
       risk:data.risk,
       priority:data.priority,
-      asset:{title:'V36100 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36110 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
     },input);
     save();render();toast('Daily Flow ready');
   }catch(e){toast('Daily Flow failed: '+e.message)}
@@ -196,7 +196,7 @@ async function runDailyUse(){
       actions:data.actions,
       risk:data.risk_to_watch,
       priority:data.priority,
-      asset:{title:'V36100 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36110 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
     },input);
     save();
     render();
@@ -327,7 +327,7 @@ async function runExecutiveIntelligence(){
 
 
 async function runPressureAttention(){
-  const input = prompt("What has your attention right now? Example: too many client follow-ups, proposal due, sales not closing, team bottleneck.");
+  const input = prompt("Start here each morning. Example: too many client follow-ups, proposal due, sales not closing, team bottleneck.");
   if(!input) return;
   try{
     const res = await fetch(API_BASE + "/pressure-attention",{
@@ -348,12 +348,12 @@ async function runPressureAttention(){
 }
 
 
-async function loadFirstMessageV36100(){
+async function loadFirstMessageV36110(){
   try{
     const res = await fetch(API_BASE + "/first-load", {cache:"no-store"});
     const data = await res.json();
     const greeting = data.greeting || "Hey Will, let’s Rock n Roll today.";
-    const subtext = data.subtext || "What has your attention right now?";
+    const subtext = data.subtext || "Start here each morning.";
     const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
     setText("whatNow", greeting);
     setText("summaryTop", subtext);
@@ -364,7 +364,7 @@ async function loadFirstMessageV36100(){
     if(el) el.textContent = "Hey Will, let’s Rock n Roll today.";
   }
 }
-setTimeout(loadFirstMessageV36100, 250);
+setTimeout(loadFirstMessageV36110, 250);
 
 
 async function runQualityPolish(){
@@ -471,6 +471,52 @@ async function runMemoryContext(){
 
   }catch(e){
     alert("Memory Context failed: " + e.message);
+  }
+}
+
+
+async function runMorningBrief(){
+  const input = document.getElementById("masterFlowInput")?.value?.trim()
+    || "Build my morning executive brief from current memory, open loops, pressure, priorities, follow-ups, and tomorrow prep.";
+
+  try{
+    const res = await fetch(API_BASE + "/morning-brief",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input,account_id:"default",user_id:"owner"})
+    });
+
+    const data = await res.json();
+    const out = document.getElementById("masterFlowOutput");
+
+    const html = `
+      <div class="card">
+        <span class="kicker">MORNING BRIEF</span>
+        <h3>${data.greeting || "Hey Will, let’s Rock n Roll today."}</h3>
+        <p>${data.morning_summary || ""}</p>
+
+        <span class="kicker" style="margin-top:18px;display:block">DO THIS FIRST</span>
+        <h3>${data.what_to_do_first || "Start with the highest-pressure loop."}</h3>
+
+        <span class="kicker" style="margin-top:18px;display:block">TOP 3</span>
+        <ul>${(data.top_3||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+
+        <span class="kicker" style="margin-top:18px;display:block">OPEN LOOPS</span>
+        <ul>${(data.open_loops||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+
+        <span class="kicker" style="margin-top:18px;display:block">FOLLOW-UP BEFORE END OF DAY</span>
+        <ul>${(data.follow_up_before_end_of_day||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+
+        <span class="kicker" style="margin-top:18px;display:block">TOMORROW PREP</span>
+        <ul>${(data.tomorrow_prep||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+      </div>
+    `;
+
+    if(out){ out.innerHTML = html; }
+    else { alert("Morning Brief ready."); }
+
+  }catch(e){
+    alert("Morning Brief failed: " + e.message);
   }
 }
 

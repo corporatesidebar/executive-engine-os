@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36100-memory-context-relevance"
+VERSION = "36110-real-daily-brief-morning-start"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3257,6 +3257,188 @@ def v36100_memory_context_state():
             k: len(v) if isinstance(v, list) else len(v.keys()) if isinstance(v, dict) else 0
             for k, v in MEMORY.items()
         },
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT
+    }
+
+
+# ---------------------------------------------------------------------
+# V36110 — Real Daily Brief + Morning Start
+# Makes the first page useful immediately: morning brief, pressure,
+# first move, top 3, open loops, follow-up, tomorrow prep.
+# Additive only. Does not replace /run.
+# ---------------------------------------------------------------------
+
+class V36110MorningBriefRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36110_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36110_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36110_recent_operator_events(limit=20):
+    try:
+        return MEMORY.get("operator_events", [])[:limit]
+    except Exception:
+        return []
+
+def _v36110_payload(event):
+    if not isinstance(event, dict):
+        return {}
+    p = event.get("payload") or event.get("output") or event
+    return p if isinstance(p, dict) else {}
+
+def _v36110_collect_open_loops(events):
+    loops = []
+    for e in events:
+        p = _v36110_payload(e)
+        for key in ["follow_up", "follow_ups", "follow_up_queue", "unfinished_loops", "follow_up_before_end_of_day"]:
+            for item in _v36110_list(p.get(key)):
+                if item and len(loops) < 6:
+                    loops.append(_v36110_text(item))
+        for key in ["top_3", "top_3_actions", "actions", "execution_queue"]:
+            for item in _v36110_list(p.get(key)):
+                s = _v36110_text(item)
+                if s and any(w in s.lower() for w in ["send", "confirm", "prepare", "schedule", "review", "close", "assign"]) and len(loops) < 6:
+                    loops.append(s)
+    clean = []
+    seen = set()
+    for x in loops:
+        k = x.lower()[:90]
+        if k not in seen:
+            seen.add(k)
+            clean.append(x)
+    return clean[:6]
+
+def _v36110_collect_priorities(events):
+    priorities = []
+    for e in events:
+        p = _v36110_payload(e)
+        for key in ["what_matters_first", "what_matters_now", "what_to_do_now", "next_best_action", "next_move", "do_this_first"]:
+            val = _v36110_text(p.get(key))
+            if val:
+                priorities.append(val)
+    clean = []
+    seen = set()
+    for x in priorities:
+        k = x.lower()[:90]
+        if k not in seen:
+            seen.add(k)
+            clean.append(x)
+    return clean[:5]
+
+def _v36110_score_pressure(input_text, open_loops):
+    t = (input_text or "").lower()
+    score = min(40, len(open_loops) * 8)
+    for word, value in {
+        "client": 12, "meeting": 10, "proposal": 10, "sales": 12,
+        "revenue": 14, "urgent": 14, "deadline": 12, "team": 8,
+        "follow": 8, "risk": 12, "too many": 14, "overwhelmed": 14
+    }.items():
+        if word in t:
+            score += value
+    return min(score, 100)
+
+def _v36110_level(score):
+    if score >= 75:
+        return "Critical"
+    if score >= 50:
+        return "High"
+    if score >= 25:
+        return "Medium"
+    return "Ready"
+
+@app.post("/morning-brief")
+def v36110_morning_brief(req: V36110MorningBriefRequest):
+    input_text = req.input or "Build my morning executive brief from current memory, open loops, pressure, priorities, follow-ups, and tomorrow prep."
+    events = _v36110_recent_operator_events()
+    open_loops = _v36110_collect_open_loops(events)
+    priorities = _v36110_collect_priorities(events)
+
+    score = _v36110_score_pressure(input_text, open_loops)
+    level = _v36110_level(score)
+
+    first_move = priorities[0] if priorities else "Enter what has your attention and close the highest-pressure loop first."
+
+    top_3 = []
+    if open_loops:
+        top_3.append(open_loops[0])
+    top_3.append(first_move)
+    top_3.append("Send one follow-up that confirms owner, deadline, and next step.")
+    clean_top = []
+    seen = set()
+    for x in top_3:
+        k = str(x).lower()[:90]
+        if k not in seen and x:
+            seen.add(k)
+            clean_top.append(x)
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36110_real_daily_brief_morning_start",
+        "greeting": "Hey Will, let’s Rock n Roll today.",
+        "morning_summary": "Start with the pressure, the open loops, and the first move. Do not begin with low-value work.",
+        "pressure_score": score,
+        "pressure_level": level,
+        "what_to_do_first": first_move,
+        "top_3": clean_top[:3],
+        "open_loops": open_loops or ["No open loops detected yet. Run the system today and memory will improve."],
+        "follow_up_before_end_of_day": [
+            "Confirm owner, deadline, and next step for the most important open item.",
+            "Close or reschedule any unresolved client/revenue follow-up."
+        ],
+        "meeting_prep": [
+            "Check today/tomorrow meetings for objective, likely objection, and desired decision.",
+            "Prepare the follow-up message before the meeting begins."
+        ],
+        "tomorrow_prep": [
+            "Carry forward unfinished critical loops.",
+            "Identify tomorrow’s first move before ending today.",
+            "Remove one low-value item from tomorrow’s list."
+        ],
+        "do_not_do": [
+            "Do not start with inbox noise.",
+            "Do not add new priorities until the first loop is closed.",
+            "Do not leave follow-up vague."
+        ],
+        "relevant_priorities": priorities or ["No recent priority found."],
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "morning_brief",
+        "payload": result,
+        "created_at": now()
+    })
+
+    try:
+        db_insert("morning_brief", result)
+    except Exception:
+        pass
+
+    return result
+
+@app.get("/morning-brief-state")
+def v36110_morning_brief_state():
+    events = MEMORY.get("operator_events", [])
+    briefs = [e for e in events if e.get("kind") == "morning_brief"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(briefs),
+        "latest": briefs[:10],
         "operator_state": scan_operator_state(),
         "active_context": ACTIVE_CONTEXT
     }
