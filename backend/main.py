@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36170-layout-lock-clean-frontend"
+VERSION = "36200-conversational-executive-operating-system"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3788,3 +3788,170 @@ def v36150_action_command(req: V36150ActionCommandRequest):
         pass
 
     return result
+
+
+# ---------------------------------------------------------------------
+# V36200 — Conversational Executive Operating System
+# Thread-first action layer. Additive only; existing routes remain.
+# ---------------------------------------------------------------------
+
+class V36200ThreadRequest(BaseModel):
+    action_id: str = ""
+    input: str = ""
+    title: str = ""
+    category: str = "action"
+    current_thread: list = []
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36200_clean(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36200_detect_category(text):
+    t = (text or "").lower()
+    if any(x in t for x in ["meeting", "met with", "call", "thursday", "next week"]):
+        return "meeting"
+    if any(x in t for x in ["proposal", "quote", "contract", "pricing"]):
+        return "proposal"
+    if any(x in t for x in ["strategy", "marketing", "sales", "plan"]):
+        return "strategy"
+    if any(x in t for x in ["follow up", "follow-up", "email", "reply"]):
+        return "follow_up"
+    return "action"
+
+def _v36200_title(text):
+    text = _v36200_clean(text)
+    if not text:
+        return "New Action"
+    low = text.lower()
+    if "bob" in low and "auto" in low:
+        return "Bob — Auto Loan Strategy"
+    if "proposal" in low:
+        return "Proposal — " + " ".join(text.split()[:4])
+    if "meeting" in low:
+        return "Meeting — " + " ".join(text.split()[:5])
+    return " ".join(text.split()[:6])[:80]
+
+def _v36200_response(text, category):
+    low = (text or "").lower()
+    title = _v36200_title(text)
+
+    short = {
+        "summary": "Captured and organized into an active ACTION.",
+        "next_move": "Review the short version, then expand details only if needed.",
+        "risk": "Loose notes create missed follow-up and unclear ownership."
+    }
+
+    top_actions = [
+        "Clarify the next decision.",
+        "Create or update the draft.",
+        "Close the follow-up loop."
+    ]
+
+    if category == "meeting":
+        short = {
+            "summary": "Meeting context captured.",
+            "next_move": "Prepare talking points and confirm the next step before the meeting ends.",
+            "risk": "The meeting creates no value if no owner, deadline, or next action is confirmed."
+        }
+        top_actions = [
+            "Prepare 3 talking points.",
+            "Identify likely objection or blocker.",
+            "Draft the follow-up before the meeting."
+        ]
+    elif category == "proposal":
+        short = {
+            "summary": "Proposal opportunity detected.",
+            "next_move": "Build the proposal overview and identify missing pricing/scope details.",
+            "risk": "Proposal value may be missed if scope, budget, and timing stay vague."
+        }
+        top_actions = [
+            "Draft proposal overview.",
+            "Identify missing budget/scope/timeline.",
+            "Prepare client-ready next step."
+        ]
+    elif category == "strategy":
+        short = {
+            "summary": "Strategy action captured.",
+            "next_move": "Turn the idea into a clear direction, owner, and first move.",
+            "risk": "Strategy stays abstract if not tied to execution."
+        }
+        top_actions = [
+            "Define the strategic direction.",
+            "Pick the first operational move.",
+            "Identify the constraint or risk."
+        ]
+
+    long_detail = {
+        "context": text,
+        "recommended_sections": ["Summary", "Next Move", "Actions", "Risks", "Draft", "Follow-Up"],
+        "missing_information": [],
+        "draft": f"{title}\n\nSHORT VERSION\n{short['summary']}\n\nNEXT MOVE\n{short['next_move']}\n\nACTION ITEMS\n- " + "\n- ".join(top_actions)
+    }
+
+    if "company" not in low and "client" not in low and category in ["meeting", "proposal"]:
+        long_detail["missing_information"].append("Company/client name")
+    if "budget" not in low and "$" not in low and category == "proposal":
+        long_detail["missing_information"].append("Budget or investment range")
+    if "when" not in low and "next week" not in low and "today" not in low and category in ["meeting", "follow_up"]:
+        long_detail["missing_information"].append("Timing/date")
+
+    return {
+        "title": title,
+        "category": category,
+        "short": short,
+        "top_actions": top_actions,
+        "long_detail": long_detail
+    }
+
+@app.post("/thread-run")
+def v36200_thread_run(req: V36200ThreadRequest):
+    text = _v36200_clean(req.input)
+    category = req.category or _v36200_detect_category(text)
+    if category == "action":
+        category = _v36200_detect_category(text)
+
+    action_id = req.action_id or str(uuid.uuid4())
+    response = _v36200_response(text, category)
+
+    payload = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36200_conversational_executive_operating_system",
+        "action_id": action_id,
+        "title": req.title or response["title"],
+        "category": response["category"],
+        "user_message": text,
+        "assistant_message": {
+            "short": response["short"],
+            "top_actions": response["top_actions"],
+            "long_detail": response["long_detail"]
+        },
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("thread_events", []).insert(0, payload)
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "thread_run",
+        "payload": payload,
+        "created_at": now()
+    })
+
+    try:
+        db_insert("thread_run", payload)
+    except Exception:
+        pass
+
+    return payload
+
+@app.get("/thread-state")
+def v36200_thread_state():
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(MEMORY.get("thread_events", [])),
+        "latest": MEMORY.get("thread_events", [])[:20]
+    }

@@ -1,350 +1,316 @@
 const API_BASE = "https://executive-engine-os.onrender.com";
-const VERSION = "36170-layout-lock-clean-frontend";
+const VERSION = "36200-conversational-executive-operating-system";
 
 const seedActions = [
-  {
-    id: "abc-roofing-proposal",
-    title: "ABC Roofing Proposal",
-    subtitle: "Proposal draft ready for review",
-    priority: "High",
-    due: "Due today",
-    age: "2h ago",
-    icon: "!",
-    type: "proposal",
-    draft: "PROPOSAL OVERVIEW\n\nObjective:\nPrepare a client-ready proposal direction.\n\nCurrent Status:\nProposal draft is ready for review.\n\nNext Move:\nConfirm scope, timing, and investment range before sending."
-  },
-  {
-    id: "bob-meeting-strategy",
-    title: "Bob Meeting – Strategy",
-    subtitle: "Strategic planning meeting",
-    priority: "High",
-    due: "Today 3:00 PM",
-    age: "1h ago",
-    icon: "◷",
-    type: "meeting",
-    draft: "MEETING BRIEF\n\nObjective:\nPrepare for Bob meeting and identify next decision.\n\nTalking Points:\n- Confirm business objective\n- Identify constraints\n- Clarify next step\n\nFollow-Up:\nSend recap with decision, owner, and timeline."
-  },
-  {
-    id: "auto-loan-leads-followup",
-    title: "Auto Loan Leads Follow-Up",
-    subtitle: "3 follow-ups pending response",
-    priority: "Medium",
-    due: "Due tomorrow",
-    age: "4h ago",
-    icon: "◎",
-    type: "follow-up",
-    draft: "FOLLOW-UP ACTION\n\nSummary:\nThree follow-ups are pending.\n\nNext Move:\nSend concise recap and ask for confirmation on next step."
-  },
-  {
-    id: "q4-sales-push",
-    title: "Q4 Sales Push Strategy",
-    subtitle: "Strategy draft in progress",
-    priority: "Low",
-    due: "Due in 2 days",
-    age: "6h ago",
-    icon: "↗",
-    type: "strategy",
-    draft: "STRATEGY ACTION\n\nFocus:\nQ4 sales push.\n\nNext Move:\nDefine target segment, offer, timeline, and owner."
-  },
-  {
-    id: "investor-followup",
-    title: "Investor Follow-Up",
-    subtitle: "Update deck and follow up",
-    priority: "Low",
-    due: "Due in 3 days",
-    age: "1d ago",
-    icon: "✉",
-    type: "follow-up",
-    draft: "INVESTOR FOLLOW-UP\n\nNext Move:\nUpdate deck and send follow-up with clear ask."
-  },
-  {
-    id: "website-redesign",
-    title: "Website Redesign",
-    subtitle: "Gather requirements",
-    priority: "Low",
-    due: "Due in 1 week",
-    age: "2d ago",
-    icon: "▣",
-    type: "documents",
-    draft: "WEBSITE REDESIGN\n\nNext Move:\nGather requirements, define scope, and identify conversion goals."
-  }
+  { id:"abc-roofing-proposal", title:"ABC Roofing Proposal", subtitle:"Proposal draft ready for review", priority:"High", due:"Due today", age:"2h ago", category:"proposal", thread:[] },
+  { id:"bob-meeting-strategy", title:"Bob Meeting – Strategy", subtitle:"Strategic planning meeting", priority:"High", due:"Today 3:00 PM", age:"1h ago", category:"meeting", thread:[] },
+  { id:"auto-loan-leads-followup", title:"Auto Loan Leads Follow-Up", subtitle:"3 follow-ups pending response", priority:"Medium", due:"Due tomorrow", age:"4h ago", category:"follow_up", thread:[] },
+  { id:"q4-sales-push", title:"Q4 Sales Push Strategy", subtitle:"Strategy draft in progress", priority:"Low", due:"Due in 2 days", age:"6h ago", category:"strategy", thread:[] },
+  { id:"investor-followup", title:"Investor Follow-Up", subtitle:"Update deck and follow up", priority:"Low", due:"Due in 3 days", age:"1d ago", category:"follow_up", thread:[] },
+  { id:"website-redesign", title:"Website Redesign", subtitle:"Gather requirements", priority:"Low", due:"Due in 1 week", age:"2d ago", category:"documents", thread:[] }
 ];
 
-let actions = JSON.parse(localStorage.getItem("ee_actions_v36170") || "null") || seedActions;
-let activeActionId = null;
+let actions = JSON.parse(localStorage.getItem("ee_actions_v36200") || "null") || seedActions;
+let activeActionId = localStorage.getItem("ee_active_action_v36200") || null;
 
 const $ = (id) => document.getElementById(id);
 
-function saveActions() {
-  localStorage.setItem("ee_actions_v36170", JSON.stringify(actions));
+function save() {
+  localStorage.setItem("ee_actions_v36200", JSON.stringify(actions));
+  if (activeActionId) localStorage.setItem("ee_active_action_v36200", activeActionId);
 }
 
-function priorityLevel(p) {
-  return (p || "Low").toLowerCase();
-}
+function level(p) { return (p || "Low").toLowerCase(); }
 
-function renderPriorities() {
-  const top = actions.slice(0, 3);
-  $("priorityList").innerHTML = top.map((a) => `
-    <div class="priority-row" onclick="openAction('${a.id}')">
-      <div class="icon-box ${a.priority === "High" ? "icon-red" : a.priority === "Medium" ? "icon-yellow" : "icon-blue"}">${a.icon || "•"}</div>
-      <div class="priority-main">
-        <strong>${escapeHtml(a.title)}</strong>
-        <span>${escapeHtml(a.subtitle)}</span>
-      </div>
-      <div class="priority-meta ${priorityLevel(a.priority)}">
-        ${escapeHtml(a.priority)} Priority
-        <span>${escapeHtml(a.due)}</span>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  `).join("");
+function getActive() {
+  return actions.find(a => a.id === activeActionId);
 }
 
 function renderActionsRail() {
   const q = ($("actionSearch").value || "").toLowerCase();
   const filtered = actions.filter(a => (a.title + " " + a.subtitle + " " + a.priority).toLowerCase().includes(q));
-  $("actionsRail").innerHTML = filtered.map((a) => `
-    <div class="action-card ${priorityLevel(a.priority)}" onclick="openAction('${a.id}')">
+  $("actionsRail").innerHTML = filtered.map(a => `
+    <div class="action-card ${level(a.priority)}" onclick="openAction('${a.id}')">
       <div class="action-top">
-        <div>
-          <strong>${escapeHtml(a.title)}</strong>
-          <span>${escapeHtml(a.subtitle)}</span>
-        </div>
-        <em class="badge ${priorityLevel(a.priority)}">${escapeHtml(a.priority)}</em>
+        <div><strong>${escapeHtml(a.title)}</strong><span>${escapeHtml(a.subtitle)}</span></div>
+        <em class="badge ${level(a.priority)}">${escapeHtml(a.priority)}</em>
       </div>
-      <div class="action-time">
-        <span>${escapeHtml(a.due)}</span>
-        <span>${escapeHtml(a.age)}</span>
-      </div>
+      <div class="action-time"><span>${escapeHtml(a.due)}</span><span>${escapeHtml(a.age)}</span></div>
     </div>
   `).join("");
   $("notificationCount").textContent = filtered.length;
 }
 
-function openAction(id) {
-  activeActionId = id;
-  const a = actions.find(x => x.id === id);
-  if (!a) return;
+function renderThread() {
+  const active = getActive();
+  const stream = $("threadStream");
 
-  $("actionWorkspace").innerHTML = `
-    <div class="workspace-head">
-      <div>
-        <div class="section-label">ACTION WORKSPACE</div>
-        <h2>${escapeHtml(a.title)}</h2>
-        <p>${escapeHtml(a.subtitle)}</p>
-      </div>
-      <em class="badge ${priorityLevel(a.priority)}">${escapeHtml(a.priority)}</em>
+  if (!active) {
+    stream.innerHTML = `
+      <div class="welcome-card">
+        <div class="msg-kicker">THE ENGINE</div>
+        <h2>What are we building and let’s make it happen.</h2>
+        <p>Start with a messy note, meeting, proposal, follow-up, idea, or task. The Engine will turn it into an ACTION thread.</p>
+      </div>`;
+    scrollThreadBottom();
+    return;
+  }
+
+  const messages = active.thread || [];
+  stream.innerHTML = `
+    <div class="welcome-card">
+      <div class="msg-kicker">ACTION THREAD</div>
+      <h2>${escapeHtml(active.title)}</h2>
+      <p>${escapeHtml(active.subtitle)}</p>
     </div>
+    ${messages.map((m, i) => renderMessage(m, i)).join("")}
+  `;
+  scrollThreadBottom();
+}
 
-    <div class="workspace-grid">
-      <div class="workspace-card">
-        <h3>Editable Draft</h3>
-        <textarea id="workspaceEditor" class="workspace-editor">${escapeHtml(a.draft || "")}</textarea>
-        <div class="workspace-actions">
-          <button class="small-btn" onclick="saveDraft()">Save</button>
-          <button class="small-btn" onclick="workspaceCommand('polish')">AI Polish</button>
-          <button class="small-btn" onclick="workspaceCommand('client')">Client Ready</button>
-          <button class="small-btn" onclick="workspaceCommand('shorten')">Shorten</button>
-          <button class="small-btn" onclick="workspaceCommand('followup')">Follow-Up</button>
-          <button class="small-btn" onclick="workspaceCommand('proposal')">Proposal</button>
-        </div>
+function renderMessage(m, i) {
+  if (m.role === "user") {
+    return `<div class="user-msg"><div class="user-bubble">${escapeHtml(m.content)}</div></div>`;
+  }
+
+  const id = `detail-${i}`;
+  const s = m.short || {};
+  const top = m.top_actions || [];
+  const d = m.long_detail || {};
+
+  return `
+    <div class="assistant-msg">
+      <div class="msg-kicker">SHORT VERSION</div>
+      <h3>${escapeHtml(s.summary || "Action organized.")}</h3>
+      <div class="short-grid">
+        <div class="short-tile"><strong>Next Move</strong><span>${escapeHtml(s.next_move || "Review and continue.")}</span></div>
+        <div class="short-tile"><strong>Risk</strong><span>${escapeHtml(s.risk || "Loose notes create missed follow-up.")}</span></div>
+        <div class="short-tile"><strong>Top Actions</strong><span>${escapeHtml(top.slice(0,3).join(" · ") || "Close the loop.")}</span></div>
       </div>
-
-      <div class="workspace-card">
-        <h3>Short Version</h3>
-        <p><strong>What matters:</strong> ${escapeHtml(a.subtitle)}</p>
-        <p><strong>Next move:</strong> Review, edit, and close the next step.</p>
-        <p><strong>Risk:</strong> This action stalls if the owner, deadline, or scope is unclear.</p>
-        <h3>Operational Timeline</h3>
-        <p>Captured → Draft ready → Review → Follow-up → Decision</p>
+      <button class="expand-btn" onclick="toggleDetail('${id}')">View Detailed Brief</button>
+    </div>
+    <div class="detail-block" id="${id}">
+      <div class="msg-kicker">DETAILED BRIEF</div>
+      <p><strong>Missing info:</strong> ${escapeHtml((d.missing_information || []).join(", ") || "Nothing obvious.")}</p>
+      <textarea id="draft-${i}">${escapeHtml(d.draft || "")}</textarea>
+      <div class="detail-actions">
+        <button class="small-btn" onclick="saveDraft(${i})">Save</button>
+        <button class="small-btn" onclick="editDraft(${i}, 'polish')">AI Polish</button>
+        <button class="small-btn" onclick="editDraft(${i}, 'client')">Client Ready</button>
+        <button class="small-btn" onclick="editDraft(${i}, 'shorten')">Shorten</button>
+        <button class="small-btn" onclick="editDraft(${i}, 'followup')">Follow-Up</button>
+        <button class="small-btn" onclick="editDraft(${i}, 'proposal')">Proposal</button>
       </div>
     </div>
   `;
 }
 
-function saveDraft() {
-  const a = actions.find(x => x.id === activeActionId);
-  const editor = $("workspaceEditor");
-  if (!a || !editor) return;
-  a.draft = editor.value;
-  a.age = "just now";
-  saveActions();
-  renderAll();
-}
-
-async function workspaceCommand(type) {
-  const a = actions.find(x => x.id === activeActionId);
-  const editor = $("workspaceEditor");
-  if (!a || !editor) return;
-
-  const commandMap = {
-    polish: "polish and improve this",
-    client: "make this client ready",
-    shorten: "shorten this for executive review",
-    followup: "create follow-up draft",
-    proposal: "add proposal structure"
-  };
-
-  try {
-    const res = await fetch(API_BASE + "/action-command", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        action_id: a.id,
-        command: commandMap[type] || type,
-        current_draft: editor.value,
-        account_id: "default",
-        user_id: "owner"
-      })
-    });
-    const data = await res.json();
-    editor.value = data.updated_draft || editor.value;
-  } catch (e) {
-    const additions = {
-      polish: "\n\nPOLISH NOTES\n- Make this clearer and more direct.\n- Confirm owner, deadline, and next step.",
-      client: "\n\nCLIENT-READY NEXT STEP\nPlease confirm preferred direction, timing, and scope.",
-      shorten: "",
-      followup: "\n\nFOLLOW-UP DRAFT\nThanks for the conversation. I’ll prepare the next-step overview and send a clear direction with recommended actions, timing, and scope.",
-      proposal: "\n\nPROPOSAL STRUCTURE\n- Problem\n- Recommended scope\n- Timeline\n- Investment range\n- Next step"
-    };
-    if (type === "shorten") {
-      editor.value = editor.value.split("\n").filter(Boolean).slice(0, 8).join("\n");
-    } else {
-      editor.value += additions[type] || "";
-    }
+function openAction(id) {
+  activeActionId = id;
+  const a = getActive();
+  if (a && (!a.thread || a.thread.length === 0)) {
+    a.thread = [{
+      role: "assistant",
+      short: {
+        summary: a.subtitle,
+        next_move: "Review the ACTION and continue the thread.",
+        risk: "The action stalls if the next step is not clear."
+      },
+      top_actions: ["Review context", "Update draft", "Close follow-up"],
+      long_detail: {
+        missing_information: [],
+        draft: `${a.title}\n\nSHORT VERSION\n${a.subtitle}\n\nNEXT MOVE\nReview the ACTION and continue the thread.`
+      }
+    }];
   }
-
-  saveDraft();
+  save();
+  renderActionsRail();
+  renderThread();
 }
 
-async function createActionFromCommand() {
+async function runCommand() {
   const input = $("commandInput").value.trim();
   if (!input) return;
 
-  let newAction = {
-    id: "action-" + Date.now(),
-    title: makeTitle(input),
-    subtitle: "Generated from The Engine",
-    priority: detectPriority(input),
-    due: "New",
-    age: "just now",
-    icon: detectIcon(input),
-    type: detectType(input),
-    draft: buildDraft(input)
-  };
+  let active = getActive();
+
+  if (!active) {
+    active = {
+      id: "action-" + Date.now(),
+      title: makeTitle(input),
+      subtitle: "Generated from The Engine",
+      priority: detectPriority(input),
+      due: "New",
+      age: "just now",
+      category: detectCategory(input),
+      thread: []
+    };
+    actions.unshift(active);
+    activeActionId = active.id;
+  }
+
+  active.thread = active.thread || [];
+  active.thread.push({role:"user", content:input});
+  $("commandInput").value = "";
+  renderThread();
+
+  let assistantPayload = localAssistant(input, active.category);
 
   try {
-    const res = await fetch(API_BASE + "/action-capture", {
+    const res = await fetch(API_BASE + "/thread-run", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type":"application/json"},
       body: JSON.stringify({
+        action_id: active.id,
         input,
-        category: newAction.type,
+        title: active.title,
+        category: active.category,
+        current_thread: active.thread,
         account_id: "default",
         user_id: "owner"
       })
     });
     const data = await res.json();
-    if (data && data.action) {
-      newAction = {
-        id: data.action.action_id || newAction.id,
-        title: data.action.title || newAction.title,
-        subtitle: data.action.short?.summary || newAction.subtitle,
-        priority: "High",
-        due: "New",
-        age: "just now",
-        icon: detectIcon(input),
-        type: data.action.category || newAction.type,
-        draft: data.action.details?.draft || newAction.draft
-      };
+    if (data && data.assistant_message) {
+      assistantPayload = data.assistant_message;
+      active.title = data.title || active.title;
+      active.category = data.category || active.category;
     }
-  } catch (e) {}
+  } catch(e) {}
 
-  actions.unshift(newAction);
-  $("commandInput").value = "";
-  saveActions();
-  renderAll();
-  openAction(newAction.id);
+  active.subtitle = assistantPayload.short?.summary || active.subtitle;
+  active.priority = detectPriority(input);
+  active.age = "just now";
+  active.thread.push({role:"assistant", ...assistantPayload});
+  save();
+  renderActionsRail();
+  renderThread();
+}
+
+function localAssistant(input, category) {
+  const cat = category || detectCategory(input);
+  let short = {
+    summary: "Captured and organized into an active ACTION.",
+    next_move: "Review the short version, then expand details only if needed.",
+    risk: "Loose notes create missed follow-up and unclear ownership."
+  };
+  let top = ["Clarify the next decision.", "Create or update the draft.", "Close the follow-up loop."];
+
+  if (cat === "meeting") {
+    short = { summary:"Meeting context captured.", next_move:"Prepare talking points and confirm the next step before the meeting ends.", risk:"The meeting creates no value if no owner, deadline, or next action is confirmed." };
+    top = ["Prepare 3 talking points.", "Identify likely objection.", "Draft the follow-up before the meeting."];
+  } else if (cat === "proposal") {
+    short = { summary:"Proposal opportunity detected.", next_move:"Build the proposal overview and identify missing pricing/scope details.", risk:"Proposal value may be missed if scope, budget, and timing stay vague." };
+    top = ["Draft proposal overview.", "Identify missing budget/scope/timeline.", "Prepare client-ready next step."];
+  }
+
+  return {
+    short,
+    top_actions: top,
+    long_detail: {
+      missing_information: [],
+      draft: `${makeTitle(input)}\n\nSHORT VERSION\n${short.summary}\n\nNEXT MOVE\n${short.next_move}\n\nACTION ITEMS\n- ${top.join("\n- ")}`
+    }
+  };
+}
+
+function toggleDetail(id) {
+  const el = $(id);
+  if (el) el.classList.toggle("show");
+}
+
+function saveDraft(i) {
+  const active = getActive();
+  const textarea = $(`draft-${i}`);
+  if (!active || !textarea || !active.thread[i]) return;
+  active.thread[i].long_detail = active.thread[i].long_detail || {};
+  active.thread[i].long_detail.draft = textarea.value;
+  save();
+}
+
+function editDraft(i, type) {
+  const textarea = $(`draft-${i}`);
+  if (!textarea) return;
+
+  if (type === "shorten") {
+    textarea.value = textarea.value.split("\n").filter(Boolean).slice(0,8).join("\n");
+  } else if (type === "client") {
+    textarea.value = "CLIENT-READY VERSION\n\n" + textarea.value + "\n\nNext Step:\nPlease confirm the preferred direction, timing, and scope.";
+  } else if (type === "followup") {
+    textarea.value += "\n\nFOLLOW-UP DRAFT\nThanks for the conversation. I’ll prepare the next-step overview and send over a clear direction with recommended actions, timing, and scope.";
+  } else if (type === "proposal") {
+    textarea.value += "\n\nPROPOSAL STRUCTURE\n- Problem\n- Recommended scope\n- Timeline\n- Investment range\n- Next step";
+  } else {
+    textarea.value += "\n\nPOLISH NOTES\n- Make this clearer.\n- Confirm owner, deadline, and next step.\n- Remove vague language.";
+  }
+  saveDraft(i);
 }
 
 function makeTitle(input) {
-  const lower = input.toLowerCase();
-  if (lower.includes("bob") && lower.includes("auto")) return "Bob — Auto Loan Strategy";
-  if (lower.includes("proposal")) return "Proposal — " + input.split(/\s+/).slice(0, 4).join(" ");
-  if (lower.includes("meeting")) return "Meeting — " + input.split(/\s+/).slice(0, 5).join(" ");
-  return input.split(/\s+/).slice(0, 5).join(" ") || "New Action";
+  const t = input.toLowerCase();
+  if (t.includes("bob") && t.includes("auto")) return "Bob — Auto Loan Strategy";
+  if (t.includes("proposal")) return "Proposal — " + input.split(/\s+/).slice(0,4).join(" ");
+  if (t.includes("meeting")) return "Meeting — " + input.split(/\s+/).slice(0,5).join(" ");
+  return input.split(/\s+/).slice(0,6).join(" ") || "New Action";
+}
+
+function detectCategory(input) {
+  const t = input.toLowerCase();
+  if (t.includes("meeting") || t.includes("met with")) return "meeting";
+  if (t.includes("proposal")) return "proposal";
+  if (t.includes("strategy") || t.includes("marketing") || t.includes("sales")) return "strategy";
+  if (t.includes("follow")) return "follow_up";
+  return "action";
 }
 
 function detectPriority(input) {
   const t = input.toLowerCase();
-  if (["urgent", "proposal", "client", "meeting", "revenue", "today"].some(x => t.includes(x))) return "High";
-  if (["follow", "strategy", "task"].some(x => t.includes(x))) return "Medium";
+  if (["urgent","proposal","client","meeting","revenue","today"].some(x => t.includes(x))) return "High";
+  if (["follow","strategy","task"].some(x => t.includes(x))) return "Medium";
   return "Low";
 }
 
-function detectIcon(input) {
-  const t = input.toLowerCase();
-  if (t.includes("proposal")) return "!";
-  if (t.includes("meeting")) return "◷";
-  if (t.includes("follow")) return "◎";
-  return "↗";
-}
-
-function detectType(input) {
-  const t = input.toLowerCase();
-  if (t.includes("meeting")) return "meeting";
-  if (t.includes("proposal")) return "proposal";
-  if (t.includes("follow")) return "follow-up";
-  if (t.includes("strategy")) return "strategy";
-  return "action";
-}
-
-function buildDraft(input) {
-  return `ACTION NOTES\n\n${input}\n\nSHORT VERSION\nWhat matters: organize this into one active ACTION.\nNext move: review, edit, and close the next step.\nRisk: loose notes create missed follow-up.`;
+function scrollThreadBottom() {
+  requestAnimationFrame(() => {
+    const s = $("threadStream");
+    if (s) s.scrollTop = s.scrollHeight;
+  });
 }
 
 function escapeHtml(str) {
   return String(str || "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    "\"":"&quot;",
-    "'":"&#039;"
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#039;"
   }[c]));
-}
-
-function renderAll() {
-  renderPriorities();
-  renderActionsRail();
 }
 
 async function health() {
   try {
-    const res = await fetch(API_BASE + "/health", {cache: "no-store"});
+    const res = await fetch(API_BASE + "/health", {cache:"no-store"});
     const data = await res.json();
     $("backendStatus").textContent = data.status === "ok" ? "Backend Online" : "Backend Check";
     $("backendStatus").classList.toggle("online", data.status === "ok");
-  } catch (e) {
+  } catch(e) {
     $("backendStatus").textContent = "Backend Offline";
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  $("runCommand").addEventListener("click", createActionFromCommand);
-  $("commandInput").addEventListener("keydown", (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") createActionFromCommand();
+  $("runCommand").addEventListener("click", runCommand);
+  $("commandInput").addEventListener("keydown", e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") runCommand();
   });
   $("actionSearch").addEventListener("input", renderActionsRail);
   $("viewAllActions").addEventListener("click", () => {
     activeActionId = null;
-    $("actionWorkspace").innerHTML = `
-      <div class="empty-workspace">
-        <h3>All ACTIONS are visible on the right.</h3>
-        <p>Select one to open the ACTION workspace here.</p>
-      </div>`;
+    localStorage.removeItem("ee_active_action_v36200");
+    renderThread();
   });
 
-  renderAll();
+  renderActionsRail();
+  if (activeActionId && actions.find(a => a.id === activeActionId)) {
+    renderThread();
+  } else {
+    renderThread();
+  }
   health();
 });

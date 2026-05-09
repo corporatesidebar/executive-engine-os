@@ -13,14 +13,12 @@
         <div class="brand-logo">EE</div>
         <div>
           <div class="brand-title">Executive Engine</div>
-          <div class="brand-sub">V36170 Layout Lock</div>
+          <div class="brand-sub">V36200 Operating System</div>
         </div>
       </div>
 
       <nav class="nav-list">
-        <button class="nav-item active" data-view="engine">
-          <span>⌂</span><strong>The Engine</strong>
-        </button>
+        <button class="nav-item active" data-view="engine"><span>⌂</span><strong>The Engine</strong></button>
         <button class="nav-item" data-view="meetings"><span>□</span><strong>Meetings</strong></button>
         <button class="nav-item" data-view="proposals"><span>▣</span><strong>Proposals</strong></button>
         <button class="nav-item" data-view="strategy"><span>◌</span><strong>Strategy</strong></button>
@@ -33,16 +31,10 @@
       </nav>
 
       <div class="nav-bottom">
-        <button class="notification-row">
-          <span>♢ Notifications</span>
-          <em id="notificationCount">0</em>
-        </button>
+        <button class="notification-row"><span>♢ Notifications</span><em id="notificationCount">0</em></button>
         <div class="user-card">
           <div class="avatar">WS</div>
-          <div>
-            <strong>Will Stewart</strong>
-            <small>Executive</small>
-          </div>
+          <div><strong>Will Stewart</strong><small>Executive</small></div>
         </div>
       </div>
     </aside>
@@ -53,34 +45,28 @@
         <div class="backend-pill" id="backendStatus">Checking backend</div>
       </header>
 
-      <section class="engine-card">
-        <div class="engine-kicker">THE ENGINE</div>
-        <h2>What are we building and let’s make it happen.</h2>
-        <p>Your Strategic Operator</p>
+      <section class="thread-shell">
+        <div id="threadStream" class="thread-stream"></div>
 
-        <div class="command-box">
-          <textarea id="commandInput" placeholder="Type or speak your what we need to do"></textarea>
-          <div class="command-footer">
-            <div class="command-tools">
-              <span>⌘</span>
-              <span>🎙</span>
-              <span class="divider"></span>
-              <span>✦ AI Assistant</span>
+        <div class="command-dock">
+          <div class="command-card">
+            <div class="engine-kicker">THE ENGINE</div>
+            <div class="command-title">What are we building and let’s make it happen.</div>
+            <div class="command-sub">Your Strategic Operator</div>
+
+            <div class="command-box">
+              <textarea id="commandInput" placeholder="Type or speak your what we need to do"></textarea>
+              <div class="command-footer">
+                <div class="command-tools">
+                  <span>⌘</span>
+                  <span>🎙</span>
+                  <span class="divider"></span>
+                  <span>✦ AI Assistant</span>
+                </div>
+                <button id="runCommand" class="send-btn">↑</button>
+              </div>
             </div>
-            <button id="runCommand" class="send-btn">↑</button>
           </div>
-        </div>
-      </section>
-
-      <section class="priority-card">
-        <div class="section-label">TOP PRIORITIES</div>
-        <div id="priorityList"></div>
-      </section>
-
-      <section class="action-workspace" id="actionWorkspace">
-        <div class="empty-workspace">
-          <h3>Open an ACTION or create one from The Engine.</h3>
-          <p>The center workspace will show the short summary first, then details, editable drafts, follow-ups, and next moves.</p>
         </div>
       </section>
     </main>
@@ -90,16 +76,13 @@
         <h2>ACTIONS</h2>
         <button id="viewAllActions">View All</button>
       </div>
-
       <div class="action-search">
         <input id="actionSearch" placeholder="Search actions..." />
         <button>≡</button>
       </div>
-
       <div id="actionsRail" class="actions-rail"></div>
     </aside>
   </div>
-
   <script src="./app.js"></script>
 </body>
 </html>
