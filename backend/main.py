@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36110-real-daily-brief-morning-start"
+VERSION = "36120-actions-operating-ux"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3442,3 +3442,216 @@ def v36110_morning_brief_state():
         "operator_state": scan_operator_state(),
         "active_context": ACTIVE_CONTEXT
     }
+
+
+# ---------------------------------------------------------------------
+# V36120 — ACTIONS Operating UX
+# Workspace/action capture endpoints. Additive only. Existing routes stay.
+# ---------------------------------------------------------------------
+
+class V36120ActionRequest(BaseModel):
+    input: str = ""
+    action_id: str = ""
+    title: str = ""
+    category: str = "general"
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36120_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36120_detect_category(text):
+    t = (text or "").lower()
+    if any(x in t for x in ["meeting", "met with", "call", "thursday", "next week", "office"]):
+        return "meeting"
+    if any(x in t for x in ["proposal", "quote", "contract", "pricing", "retainer"]):
+        return "proposal"
+    if any(x in t for x in ["strategy", "plan", "growth", "marketing", "sales", "ads", "advertising"]):
+        return "strategy"
+    if any(x in t for x in ["follow up", "follow-up", "reply", "email"]):
+        return "follow_up"
+    if any(x in t for x in ["task", "need to", "todo", "do this"]):
+        return "execution"
+    return "action"
+
+def _v36120_title(text):
+    text = _v36120_text(text)
+    if not text:
+        return "New Action"
+    # Try to produce useful title from messy input
+    lower = text.lower()
+    if "bob" in lower and "auto" in lower:
+        return "Bob — Auto Loan Strategy"
+    if "proposal" in lower:
+        return "Proposal — " + " ".join(text.split()[:5])
+    if "meeting" in lower or "met with" in lower:
+        return "Meeting — " + " ".join(text.split()[:6])
+    return " ".join(text.split()[:7])[:84]
+
+def _v36120_extract_entities(text):
+    raw = text or ""
+    website = ""
+    web = re.search(r"(https?://\S+|[a-zA-Z0-9.-]+\.(com|ca|io|net|org)\S*)", raw)
+    if web:
+        website = web.group(1)
+    person = ""
+    company = ""
+    # Common simple extraction
+    m = re.search(r"\bwith\s+([A-Z][a-zA-Z]+)", raw)
+    if m:
+        person = m.group(1)
+    elif "bob" in raw.lower():
+        person = "Bob"
+    caps = re.findall(r"\b[A-Z][a-zA-Z0-9&.-]+\b", raw)
+    if caps:
+        if not person:
+            person = caps[0]
+        candidates = [c for c in caps if c.lower() not in ["Meeting", "Met", "He", "Website", "Google"] and c != person]
+        company = " ".join(candidates[:3])
+    return {"person": person, "company": company, "website": website}
+
+def _v36120_action_payload(req):
+    input_text = req.input or ""
+    category = req.category if req.category and req.category != "general" else _v36120_detect_category(input_text)
+    action_id = req.action_id or str(uuid.uuid4())
+    title = req.title or _v36120_title(input_text)
+    entities = _v36120_extract_entities(input_text)
+
+    summary = "Captured and organized into an active ACTION."
+    if category == "meeting":
+        summary = "Meeting context captured. Prep, follow-up, proposal direction, and next actions are ready to refine."
+    elif category == "proposal":
+        summary = "Proposal opportunity detected. Draft overview, missing info, scope ideas, and next steps are ready."
+    elif category == "strategy":
+        summary = "Strategy action captured. System organized the core issue, next move, and execution angle."
+
+    missing = []
+    if not entities.get("person"):
+        missing.append("person/contact")
+    if not entities.get("company"):
+        missing.append("company/client")
+    if category in ["proposal", "strategy"] and "budget" not in input_text.lower() and "$" not in input_text:
+        missing.append("budget/scope")
+
+    draft = "ACTION NOTES\n\n" + input_text + "\n\nNEXT MOVE\nReview, edit, and tell the system what to improve."
+    if category == "meeting":
+        draft = f"""MEETING BRIEF DRAFT
+
+Summary:
+{summary}
+
+Known Context:
+{input_text}
+
+Talking Points:
+- Confirm the business problem and current priority.
+- Understand timing, budget, decision process, and constraints.
+- Identify what would make this a successful next step.
+
+Possible Opportunity:
+- Strategy support
+- Proposal follow-up
+- Conversion/lead-quality improvement
+- Website or campaign optimization
+
+Follow-Up Draft:
+Thanks for the meeting. I’ll put together the next-step overview and send over a clear direction with recommended actions, timing, and scope.
+
+Missing Info:
+{", ".join(missing) if missing else "Nothing obvious yet."}
+"""
+    elif category == "proposal":
+        draft = f"""PROPOSAL OVERVIEW DRAFT
+
+Opportunity:
+{input_text}
+
+Potential Scope:
+- Discovery and strategy
+- Execution plan
+- Conversion or operational improvement
+- Reporting / measurement
+- Follow-up cadence
+
+Missing Info:
+{", ".join(missing) if missing else "Budget, timeline, decision-maker, and success metric."}
+
+Next:
+Turn this into a client-ready proposal once details are confirmed.
+"""
+
+    payload = {
+        "action_id": action_id,
+        "title": title,
+        "category": category,
+        "input": input_text,
+        "short": {
+            "summary": summary,
+            "what_matters": "Keep this work tied to one ACTION so notes, decisions, drafts, and follow-ups do not scatter.",
+            "next_move": "Review the short summary, then open details if you need to edit or expand.",
+            "risk": "If this stays as loose notes, follow-up and proposal value may get missed.",
+            "open_loops": [
+                "Confirm missing info: " + ", ".join(missing) if missing else "No critical missing info detected.",
+                "Decide whether this needs meeting prep, proposal, follow-up, or execution."
+            ]
+        },
+        "details": {
+            "entities": entities,
+            "missing_info": missing,
+            "draft": draft,
+            "sections": ["Overview", "Notes", "Draft", "Actions", "Follow-Up", "Missing Info"]
+        },
+        "messages": [
+            {"role": "user", "content": input_text, "created_at": now()},
+            {"role": "system", "content": summary, "created_at": now()}
+        ],
+        "tasks": [
+            {"task": "Review and edit the generated draft.", "status": "open", "priority": "High"},
+            {"task": "Fill missing info: " + ", ".join(missing) if missing else "Continue with next instruction.", "status": "open", "priority": "Medium"}
+        ],
+        "created_at": now(),
+        "updated_at": now(),
+        "version": VERSION
+    }
+    return payload
+
+@app.post("/action-capture")
+def v36120_action_capture(req: V36120ActionRequest):
+    payload = _v36120_action_payload(req)
+    MEMORY.setdefault("actions_index", {})[payload["action_id"]] = payload
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind": "action_capture", "payload": payload, "created_at": now()})
+    try:
+        db_insert("action_capture", payload)
+    except Exception:
+        pass
+    return {"status": "ok", "action": payload, "version": VERSION}
+
+@app.get("/actions-lite")
+def v36120_actions_lite():
+    actions = MEMORY.get("actions_index", {})
+    items = list(actions.values()) if isinstance(actions, dict) else []
+    items = sorted(items, key=lambda x: x.get("updated_at", ""), reverse=True)
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(items),
+        "actions": [
+            {
+                "action_id": a.get("action_id"),
+                "title": a.get("title"),
+                "category": a.get("category"),
+                "updated_at": a.get("updated_at"),
+                "short": a.get("short", {})
+            } for a in items[:50]
+        ]
+    }
+
+@app.get("/action-lite/{action_id}")
+def v36120_action_lite(action_id: str):
+    action = MEMORY.get("actions_index", {}).get(action_id)
+    if not action:
+        return {"status": "missing", "action_id": action_id, "version": VERSION}
+    return {"status": "ok", "action": action, "version": VERSION}
