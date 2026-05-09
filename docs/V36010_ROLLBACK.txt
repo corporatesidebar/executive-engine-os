@@ -1,0 +1,19 @@
+V36010 ROLLBACK
+
+If V36010 causes issues:
+1. Restore the previous uploaded backup from Drive/GitHub.
+2. Restore:
+   - backend/main.py
+   - frontend/index.html
+3. Redeploy backend and frontend.
+4. Test:
+   - /health
+   - /run
+   - /db-status
+   - frontend load
+
+Rollback trigger:
+- /run breaks
+- frontend fails to load
+- existing V35130 pages disappear
+- database page breaks

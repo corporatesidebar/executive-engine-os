@@ -1,0 +1,31 @@
+V36010 MACRO TEST CHECKLIST
+
+Backend:
+[ ] /health works
+[ ] /debug works
+[ ] /providers works
+[ ] /test-report-json works
+[ ] /db-status works
+[ ] /operating-layer-state works
+[ ] POST /operating-layer returns structured output
+
+Frontend:
+[ ] New Operating Layer nav item appears
+[ ] Operating Layer page loads
+[ ] Run Operating Layer works
+[ ] Today/Tomorrow/Risk sections populate
+[ ] Decision Queue populates
+[ ] Execution Queue populates
+[ ] Meeting Intelligence populates
+[ ] Push to Action Queue works
+[ ] Existing Run Command still works
+[ ] Existing Database page still works
+
+Macro test inputs:
+1. I have a meeting tomorrow with a potential client and need prep, risks, strategy, and follow-up.
+2. Leads are coming in but sales are not closing. Build the operating layer.
+3. I have too many priorities this week and need the system to decide what matters.
+4. Build a proposal plan for an Ontario dealership that needs SEO and Google Ads CPA under $100.
+
+Classify:
+HOLD / FIX / PROMOTE / ROLLBACK

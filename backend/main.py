@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "35130-real-executive-workflow"
+VERSION = "36010-merge-safe-executive-operating-layer"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2090,4 +2090,170 @@ def quality_state():
         "claude_temporarily_disabled": True,
         "provider_mode": "openai-first",
         "workspace": ws
+    }
+
+
+# ---------------------------------------------------------------------
+# V36010 — Merge-Safe Executive Operating Layer
+# Additive routes only. Existing V35130 /run, DB, operator, workspace,
+# diagnostics, and save routes remain intact.
+# ---------------------------------------------------------------------
+
+class V36010OperatingRequest(BaseModel):
+    input: str = ""
+    mode: str = "command"
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36010_as_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36010_clean(value):
+    return clean_text(str(value or "")).strip() if "clean_text" in globals() else str(value or "").strip()
+
+def _v36010_make_operating_layer(input_text, mode, base):
+    asset = base.get("asset") or {}
+    workspace = base.get("workspace") or {}
+    actions = _v36010_as_list(base.get("actions"))
+
+    decision = _v36010_clean(base.get("decision") or workspace.get("next_executive_decision") or "Move the highest-leverage work into execution with a clear owner and deadline.")
+    next_move = _v36010_clean(base.get("next_move") or base.get("what_to_do_now") or workspace.get("operator_recommendation") or "Confirm the immediate next action, owner, and expected outcome.")
+    risk = _v36010_clean(base.get("risk") or "Execution risk increases if the work is not converted into owned tasks, deadlines, and follow-ups.")
+    priority = _v36010_clean(base.get("priority") or "High")
+    summary = _v36010_clean(asset.get("summary") or base.get("executive_summary") or decision)
+
+    if not actions:
+        actions = [
+            "Define the exact executive outcome required.",
+            "Assign one owner to the next move.",
+            "Create the first execution task with a deadline.",
+            "Identify the primary risk or blocker.",
+            "Schedule the follow-up or review point."
+        ]
+
+    input_lower = input_text.lower()
+    meeting_mode = mode == "meeting" or "meeting" in input_lower or "client" in input_lower
+    proposal_mode = mode == "proposal" or "proposal" in input_lower or "offer" in input_lower
+    strategy_mode = mode == "strategy" or "strategy" in input_lower or "market" in input_lower
+
+    payload = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36010_operating_layer",
+        "mode": mode,
+        "executive_summary": summary,
+        "what_to_do_now": next_move,
+        "today": actions[:4],
+        "tomorrow": [
+            "Review whether the next move created measurable progress.",
+            "Close open loops created by today's decision.",
+            "Promote, fix, or rollback based on the macro-test result."
+        ],
+        "decision_queue": [
+            decision,
+            "Confirm whether this workstream should be promoted, fixed, parked, or delegated.",
+            "Confirm the success metric before additional work is added."
+        ],
+        "execution_queue": actions,
+        "meeting_intelligence": [
+            "Define the meeting outcome before entering the room.",
+            "Identify who has approval authority, who influences the decision, and what objection will slow the deal.",
+            "Prepare the close: decision, owner, deadline, next step."
+        ] if meeting_mode else [
+            "No specific meeting detected. If this becomes a meeting, convert the output into objective, objections, close, and follow-up."
+        ],
+        "proposal_opportunities": [
+            "Turn the business problem into a clear value proposition.",
+            "Define scope, proof, terms, risk reversal, and the next approval step.",
+            "Prepare a follow-up message that moves the proposal to decision."
+        ] if proposal_mode else [
+            "No proposal-specific request detected. If this becomes revenue work, convert the output into offer, proof, scope, and close."
+        ],
+        "strategy_insights": [
+            "Identify the highest-leverage path, not the longest list of options.",
+            "Choose the option that increases speed, control, revenue, or risk reduction fastest.",
+            "Convert the strategic choice into a 7-day execution plan."
+        ] if strategy_mode else [
+            "The leverage point is not more ideas; it is converting the current situation into owned execution.",
+            "The system should reduce executive thinking load by pushing the next move, risk, and follow-up.",
+            "Macro-test this by checking whether the output changes what you do next."
+        ],
+        "risk_watch": [
+            risk,
+            "Avoid turning the operating layer into a passive dashboard.",
+            "Avoid adding features that do not create a decision, action, asset, or follow-up."
+        ],
+        "follow_ups": _v36010_as_list(base.get("follow_up")) or [
+            "Send a short follow-up confirming decision, owner, deadline, and next step."
+        ],
+        "delegation": [
+            "Executive owns the decision.",
+            "Operator/system owns task structure, follow-up, and visibility.",
+            "Assigned owner owns execution and deadline."
+        ],
+        "memory_to_store": [
+            f"Input: {input_text[:220]}",
+            f"Decision: {decision[:220]}",
+            f"Next move: {next_move[:220]}",
+            f"Priority: {priority}"
+        ],
+        "decision": decision,
+        "next_move": next_move,
+        "actions": actions,
+        "risk": risk,
+        "priority": priority,
+        "owner": base.get("owner") or "Executive owner",
+        "timeline": base.get("timeline") or "Today",
+        "success_metric": base.get("success_metric") or "The next move is executed, assigned, or scheduled with a clear follow-up.",
+        "provider_used": base.get("provider_used", "v36010-wrapper"),
+        "base_result": base,
+        "active_context": dict(ACTIVE_CONTEXT),
+        "workspace": get_workspace(),
+        "operator_state": scan_operator_state(),
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind": "operating_layer", "payload": payload, "created_at": now()})
+    db_insert("operating_layer", payload)
+    return payload
+
+@app.post("/operating-layer")
+def v36010_operating_layer(req: V36010OperatingRequest):
+    """Macro-test endpoint: creates a full operating layer without replacing /run."""
+    base_req = RunRequest(
+        input=req.input,
+        mode=req.mode if req.mode else "command",
+        brain="operating_layer",
+        output_type="operating_layer",
+        depth="deep",
+        provider="auto",
+        category="operator"
+    )
+    base = run_engine(base_req)
+    return _v36010_make_operating_layer(req.input, req.mode, base)
+
+@app.post("/daily-operating-layer")
+def v36010_daily_operating_layer(req: V36010OperatingRequest):
+    req.mode = "command"
+    return v36010_operating_layer(req)
+
+@app.get("/operating-layer-state")
+def v36010_operating_layer_state():
+    events = MEMORY.get("operator_events", [])
+    operating = [e for e in events if e.get("kind") == "operating_layer"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(operating),
+        "latest": operating[:10],
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT,
+        "memory_counts": {
+            k: len(v) if isinstance(v, list) else len(v.keys()) if isinstance(v, dict) else 0
+            for k, v in MEMORY.items()
+        }
     }
