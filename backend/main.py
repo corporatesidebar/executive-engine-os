@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36150-action-detail-command-flow"
+VERSION = "36170-layout-lock-clean-frontend"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
