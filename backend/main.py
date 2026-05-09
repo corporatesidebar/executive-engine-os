@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36040-executive-intelligence-refinement"
+VERSION = "36050-pressure-attention-engine"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2524,3 +2524,182 @@ def v36040_executive_intelligence(req: dict):
     }
     MEMORY.setdefault("operator_events", []).insert(0, {"kind":"executive_intelligence","payload":result,"created_at":now()})
     return result
+
+
+# ---------------------------------------------------------------------
+# V36050 — Executive Pressure + Attention Engine
+# Built for managers, operators, founders, and small/mid-sized companies
+# with too much moving at once.
+# Additive only. Does not replace /run.
+# ---------------------------------------------------------------------
+
+class V36050PressureRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36050_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36050_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36050_score_text(text):
+    t = (text or "").lower()
+    score = 0
+    weights = {
+        "urgent": 14, "deadline": 13, "client": 12, "customer": 11,
+        "sales": 12, "revenue": 14, "cash": 15, "margin": 12,
+        "meeting": 9, "proposal": 10, "follow up": 9, "follow-up": 9,
+        "team": 7, "staff": 7, "hiring": 8, "manager": 6,
+        "risk": 12, "problem": 8, "stuck": 10, "behind": 10,
+        "too much": 12, "overwhelmed": 12, "priorities": 10,
+        "operations": 8, "delivery": 10, "complaint": 13
+    }
+    for key, val in weights.items():
+        if key in t:
+            score += val
+    if len(t) > 180:
+        score += 8
+    if "?" in t:
+        score += 3
+    return min(score, 100)
+
+def _v36050_pressure_level(score):
+    if score >= 75:
+        return "Critical"
+    if score >= 50:
+        return "High"
+    if score >= 25:
+        return "Medium"
+    return "Low"
+
+def _v36050_attention_items(text):
+    t = (text or "").lower()
+    items = []
+    if any(x in t for x in ["client", "customer", "meeting"]):
+        items.append("Client/customer communication needs immediate clarity: outcome, owner, next step.")
+    if any(x in t for x in ["sales", "revenue", "proposal", "lead"]):
+        items.append("Revenue movement needs a specific close path, follow-up time, and decision point.")
+    if any(x in t for x in ["team", "staff", "hiring", "manager"]):
+        items.append("Team execution needs ownership clarity so the manager is not the bottleneck.")
+    if any(x in t for x in ["too much", "overwhelmed", "priorities", "busy"]):
+        items.append("Priority overload detected: reduce to one must-win move and two support actions.")
+    if any(x in t for x in ["risk", "problem", "stuck", "behind", "complaint"]):
+        items.append("Risk or stalled workflow detected: escalate the blocker and define a recovery action.")
+    if not items:
+        items.append("No extreme pressure detected; convert the request into one decision, one action, and one follow-up.")
+    return items
+
+def _v36050_next_best_action(text, level):
+    t = (text or "").lower()
+    if any(x in t for x in ["client", "customer", "meeting"]):
+        return "Prepare the client-facing outcome first: objective, decision needed, likely objection, and follow-up."
+    if any(x in t for x in ["sales", "revenue", "proposal", "lead"]):
+        return "Move the closest revenue opportunity forward before doing lower-value operational work."
+    if any(x in t for x in ["too much", "overwhelmed", "priorities"]):
+        return "Cut the list down to the one move that prevents the biggest downside or creates the most movement today."
+    if level in ["Critical", "High"]:
+        return "Address the highest-pressure item before starting new work."
+    return "Create one concrete next action with an owner and deadline."
+
+def _v36050_build_response(input_text, base=None):
+    base = base or {}
+    score = _v36050_score_text(input_text)
+    level = _v36050_pressure_level(score)
+    attention = _v36050_attention_items(input_text)
+    next_action = _v36050_next_best_action(input_text, level)
+
+    actions = _v36050_list(base.get("actions"))
+    if not actions:
+        actions = [
+            "Write the one outcome that must happen today.",
+            "Identify the person or task creating the biggest bottleneck.",
+            "Send or prepare the communication that closes the most important loop.",
+            "Assign one owner and deadline.",
+            "Review by end of day: moved, stalled, next."
+        ]
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36050_pressure_attention_engine",
+        "target_user": "manager_operator_smb",
+        "pressure_score": score,
+        "pressure_level": level,
+        "executive_summary": "The system compressed the situation into pressure, attention, next-best-action, risk, delegation, and follow-up.",
+        "what_matters_now": next_action,
+        "attention_required": attention,
+        "next_best_action": next_action,
+        "do_not_do": [
+            "Do not treat every task as equal.",
+            "Do not start new work before closing the highest-pressure loop.",
+            "Do not leave ownership or next step vague."
+        ],
+        "delegate_or_delay": [
+            "Delegate admin/status tracking.",
+            "Delay non-revenue, non-client, non-risk work.",
+            "Keep decision-making with the accountable operator."
+        ],
+        "follow_up_before_end_of_day": [
+            "Send one message confirming decision, owner, deadline, and next step.",
+            "Update the action queue with what moved and what stalled."
+        ],
+        "top_3_actions": actions[:3],
+        "risk_watch": [
+            _v36050_text(base.get("risk") or "The manager stays the bottleneck if decisions, ownership, and follow-up are not explicit."),
+            "Busy work may hide the true pressure point.",
+            "Unclosed loops create tomorrow's workload."
+        ],
+        "daily_use": {
+            "morning": "Run Pressure + Attention before checking low-value work.",
+            "midday": "Check whether the next-best-action moved.",
+            "end_of_day": "Close or reschedule open loops."
+        },
+        "base_result": base,
+        "created_at": now()
+    }
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind": "pressure_attention", "payload": result, "created_at": now()})
+    try:
+        db_insert("pressure_attention", result)
+    except Exception:
+        pass
+    return result
+
+@app.post("/pressure-attention")
+def v36050_pressure_attention(req: V36050PressureRequest):
+    base = {}
+    try:
+        run_req = RunRequest(
+            input=req.input or "Assess my current executive pressure and attention priorities.",
+            mode="command",
+            brain="pressure_attention_engine",
+            output_type="pressure_attention",
+            depth="standard",
+            provider="auto",
+            category="operator"
+        )
+        base = run_engine(run_req)
+    except Exception:
+        base = {}
+    return _v36050_build_response(req.input, base)
+
+@app.get("/pressure-attention-state")
+def v36050_pressure_attention_state():
+    events = MEMORY.get("operator_events", [])
+    pressure = [e for e in events if e.get("kind") == "pressure_attention"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(pressure),
+        "latest": pressure[:10],
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT
+    }
