@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36030-cleanup-stabilization"
+VERSION = "36040-executive-intelligence-refinement"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2422,3 +2422,105 @@ def v36020_how_to_use():
         ],
         "promote_standard": "Use it daily if it saves time, reduces thinking load, improves preparedness, or closes loops faster."
     }
+
+
+# ---------------------------------------------------------------------
+# V36040 — Executive Intelligence Refinement
+# Smarter prioritization, pressure scoring, delegation, follow-up logic.
+# ---------------------------------------------------------------------
+
+EXECUTIVE_INTELLIGENCE_SYSTEM = """
+You are an elite executive operating intelligence layer.
+You reduce cognitive load.
+You identify leverage, pressure, delegation, hidden risk, timing, and next action.
+Never sound generic.
+Never explain obvious business concepts.
+Prioritize speed, clarity, pressure reduction, preparedness, and execution.
+Outputs should feel like a wartime COO/chief of staff.
+"""
+
+def _v36040_priority_score(text):
+    t = (text or "").lower()
+    score = 0
+    keywords = {
+        "revenue": 5,
+        "client": 4,
+        "meeting": 4,
+        "deadline": 5,
+        "investor": 5,
+        "board": 5,
+        "cash": 5,
+        "risk": 4,
+        "urgent": 5,
+        "sales": 4,
+        "proposal": 3,
+        "hire": 3,
+        "lawsuit": 5,
+        "press": 4,
+    }
+    for k,v in keywords.items():
+        if k in t:
+            score += v
+    if score >= 15:
+        return "Critical"
+    if score >= 8:
+        return "High"
+    if score >= 4:
+        return "Medium"
+    return "Low"
+
+def _v36040_followup_logic(text):
+    t=(text or "").lower()
+    items=[]
+    if "meeting" in t or "client" in t:
+        items.append("Send post-meeting summary with decision, owner, and next step within 30 minutes.")
+    if "proposal" in t:
+        items.append("Schedule proposal follow-up before sending the proposal.")
+    if "sales" in t or "revenue" in t:
+        items.append("Review stalled deals and identify the exact objection blocking movement.")
+    if "team" in t or "hire" in t:
+        items.append("Clarify ownership gaps before adding more workstreams.")
+    if not items:
+        items.append("Close one open executive loop before end of day.")
+    return items
+
+def _v36040_delegation_logic(text):
+    t=(text or "").lower()
+    delegations=[]
+    if "meeting" in t:
+        delegations.append("Delegate meeting prep research and briefing assembly.")
+    if "proposal" in t:
+        delegations.append("Delegate formatting, proofreading, and asset collection.")
+    if "operations" in t or "execution" in t:
+        delegations.append("Delegate status tracking and deadline follow-up.")
+    if not delegations:
+        delegations.append("Delegate low-leverage administrative coordination.")
+    return delegations
+
+@app.post("/executive-intelligence")
+def v36040_executive_intelligence(req: dict):
+    input_text = req.get("input","")
+    priority = _v36040_priority_score(input_text)
+    result = {
+        "status":"ok",
+        "version": VERSION,
+        "module":"v36040_executive_intelligence",
+        "executive_summary":"The system identified the highest-leverage pressure points and converted them into immediate executive action.",
+        "priority":priority,
+        "what_matters_now":"Protect executive attention and move the highest-value business outcome first.",
+        "pressure_points":[
+            "Too many parallel priorities reduce execution quality.",
+            "Unclear ownership creates executive bottlenecks.",
+            "Delayed follow-up compounds operational drag."
+        ],
+        "hidden_risks":[
+            "The executive becomes the routing layer for unresolved decisions.",
+            "Meetings without defined outcomes create false progress."
+        ],
+        "delegation_moves":_v36040_delegation_logic(input_text),
+        "follow_up_moves":_v36040_followup_logic(input_text),
+        "executive_recommendation":"Simplify the day to the one move that creates measurable business momentum.",
+        "created_at": now()
+    }
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind":"executive_intelligence","payload":result,"created_at":now()})
+    return result

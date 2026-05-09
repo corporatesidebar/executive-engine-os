@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36030</title>
+<title>Executive Engine OS · V36040</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36030-cleanup-stabilization';
+const VERSION='36040-executive-intelligence-refinement';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -126,7 +126,7 @@ async function runDailyUse(){
       actions:data.actions,
       risk:data.risk_to_watch,
       priority:data.priority,
-      asset:{title:'V36030 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36040 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
     },input);
     save();
     render();
@@ -234,6 +234,27 @@ async function runChat(){const input=$('chatInput').value.trim();if(!input)retur
 async function saveDecision(name){try{await api('/save-decision',{method:'POST',body:JSON.stringify({page:name,decision:`Decision saved from ${name}`,priority:'High',created_at:new Date().toISOString()})});toast('Decision saved')}catch(e){toast('Decision saved locally')}}
 async function saveAction(name){state.tasks.unshift({task:`Advance ${copy[name]?.[0]||name}: confirm owner, deadline, and next output.`,priority:'Medium',status:'open'});try{await api('/save-action',{method:'POST',body:JSON.stringify(state.tasks[0])})}catch(e){}render();toast('Action saved')}
 render();bootstrap();
+
+async function runExecutiveIntelligence(){
+  const input = prompt("Enter executive situation:");
+  if(!input) return;
+  try{
+    const res = await fetch(API_BASE + "/executive-intelligence",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input})
+    });
+    const data = await res.json();
+    alert(
+      "Priority: " + data.priority + "\n\n" +
+      "What Matters Now:\n" + data.what_matters_now + "\n\n" +
+      "Executive Recommendation:\n" + data.executive_recommendation
+    );
+  }catch(e){
+    alert("Executive Intelligence failed.");
+  }
+}
+
 </script>
-</body>
+<button onclick="runExecutiveIntelligence()" style="position:fixed;bottom:20px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:700;z-index:9999">Executive Intelligence</button></body>
 </html>
