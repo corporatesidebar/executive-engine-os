@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36060-first-load-ux-backend-weight"
+VERSION = "36070-daily-operating-flow"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2723,4 +2723,159 @@ def v36060_first_load():
         "risk": "No active risk yet.",
         "mode": "first_load",
         "backend_weight": "lightweight_no_ai_no_db"
+    }
+
+
+# ---------------------------------------------------------------------
+# V36070 — Daily Operating Flow
+# Practical daily loop: start day, attention, first move, top 3,
+# meeting prep, follow-ups, end-of-day review, tomorrow prep.
+# Additive only. Does not replace /run.
+# ---------------------------------------------------------------------
+
+class V36070DailyFlowRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36070_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36070_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36070_base_run(input_text):
+    try:
+        req = RunRequest(
+            input=input_text,
+            mode="command",
+            brain="daily_operating_flow",
+            output_type="daily_flow",
+            depth="deep",
+            provider="auto",
+            category="operator"
+        )
+        return run_engine(req)
+    except TypeError:
+        req = RunRequest(
+            input=input_text,
+            mode="command",
+            brain="daily_operating_flow",
+            output_type="daily_flow",
+            depth="deep"
+        )
+        return run_engine(req)
+    except Exception as e:
+        return {
+            "decision": "Run the day through a simple operating loop.",
+            "next_move": "Identify what has your attention and choose the first move.",
+            "actions": [
+                "Write what has your attention.",
+                "Choose the one priority that creates the most movement.",
+                "Complete or prepare the most important asset or follow-up.",
+                "Check meetings and risks.",
+                "End the day with moved, stalled, tomorrow."
+            ],
+            "risk": str(e),
+            "priority": "High",
+            "asset": {"summary": "Daily flow fallback."}
+        }
+
+def _v36070_build_flow(input_text, base):
+    asset = base.get("asset") or {}
+    actions = _v36070_list(base.get("actions"))
+    if not actions:
+        actions = [
+            "Identify the single highest-leverage outcome today.",
+            "Complete the first move before opening new work.",
+            "Prepare the most important meeting or conversation.",
+            "Send one follow-up that closes an open loop.",
+            "Review what moved, what stalled, and what must happen tomorrow."
+        ]
+
+    decision = _v36070_text(base.get("decision") or "Run today through one clear operating sequence.")
+    next_move = _v36070_text(base.get("next_move") or base.get("what_to_do_now") or actions[0])
+    risk = _v36070_text(base.get("risk") or "The day becomes reactive if attention is not converted into sequence, ownership, and follow-up.")
+    priority = _v36070_text(base.get("priority") or "High")
+    summary = _v36070_text(asset.get("summary") or base.get("executive_summary") or "Daily operating flow created.")
+
+    flow = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36070_daily_operating_flow",
+        "greeting": "Hey Will, let’s Rock n Roll today.",
+        "executive_summary": summary,
+        "start_day": [
+            "Write what has your attention.",
+            "Name the one outcome that makes today a win.",
+            "Check meetings, follow-ups, revenue/client pressure, and open loops."
+        ],
+        "what_has_attention": input_text or "No input provided yet.",
+        "what_matters_first": next_move,
+        "top_3_actions": actions[:3],
+        "meeting_prep": [
+            "Define the meeting outcome before the meeting.",
+            "Prepare the likely objection or blocker.",
+            "Write the follow-up before the meeting starts."
+        ],
+        "follow_up_queue": [
+            "Send one follow-up that confirms owner, deadline, and next step.",
+            "Close one open loop before adding new work.",
+            "Escalate anything stalled longer than 24 hours."
+        ],
+        "end_of_day_review": [
+            "What moved today?",
+            "What stalled?",
+            "Who is waiting on me?",
+            "What must be prepared for tomorrow?",
+            "What should be delegated or dropped?"
+        ],
+        "tomorrow_prep": [
+            "Prepare the first meeting or client conversation.",
+            "Move unfinished critical work into tomorrow’s top 3.",
+            "Identify one risk before it becomes urgent."
+        ],
+        "decision": decision,
+        "next_move": next_move,
+        "actions": actions,
+        "risk": risk,
+        "priority": priority,
+        "owner": base.get("owner") or "Executive owner",
+        "timeline": base.get("timeline") or "Today",
+        "success_metric": base.get("success_metric") or "The day ends with at least one important loop closed and tomorrow’s first move clear.",
+        "base_result": base,
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind": "daily_operating_flow", "payload": flow, "created_at": now()})
+    try:
+        db_insert("daily_operating_flow", flow)
+    except Exception:
+        pass
+    return flow
+
+@app.post("/daily-flow")
+def v36070_daily_flow(req: V36070DailyFlowRequest):
+    input_text = req.input or "Build my daily operating flow: what has my attention, what matters first, top 3, meeting prep, follow-ups, end-of-day review, and tomorrow prep."
+    base = _v36070_base_run(input_text)
+    return _v36070_build_flow(input_text, base)
+
+@app.get("/daily-flow-state")
+def v36070_daily_flow_state():
+    events = MEMORY.get("operator_events", [])
+    flows = [e for e in events if e.get("kind") == "daily_operating_flow"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(flows),
+        "latest": flows[:10],
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT
     }
