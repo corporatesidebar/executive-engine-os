@@ -1,88 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executive Engine</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Executive Engine</title><link rel="stylesheet" href="./styles.css"/>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="left-nav">
-      <div class="brand">
-        <div class="brand-logo">EE</div>
-        <div>
-          <div class="brand-title">Executive Engine</div>
-          <div class="brand-sub">V36210 Engine Top</div>
+<div class="app-shell">
+  <aside class="left-nav">
+    <div class="brand"><div class="brand-logo">EE</div><div><div class="brand-title">Executive Engine</div><div class="brand-sub">V36300 Intelligence</div></div></div>
+    <nav class="nav-list">
+      <button class="nav-item active"><span>⌂</span><strong>The Engine</strong></button>
+      <button class="nav-item"><span>□</span><strong>Meetings</strong></button>
+      <button class="nav-item"><span>▣</span><strong>Proposals</strong></button>
+      <button class="nav-item"><span>◌</span><strong>Strategy</strong></button>
+      <button class="nav-item"><span>↗</span><strong>Follow-Ups</strong></button>
+      <button class="nav-item"><span>☑</span><strong>Tasks</strong></button>
+      <button class="nav-item"><span>▤</span><strong>Documents</strong></button>
+      <button class="nav-item"><span>◎</span><strong>Contacts</strong></button>
+      <button class="nav-item"><span>▢</span><strong>Calendar</strong></button>
+      <button class="nav-item"><span>⌕</span><strong>Search</strong></button>
+    </nav>
+    <div class="nav-bottom"><button class="notification-row"><span>♢ Notifications</span><em id="notificationCount">0</em></button><div class="user-card"><div class="avatar">WS</div><div><strong>Will Stewart</strong><small>Executive</small></div></div></div>
+  </aside>
+  <main class="main-panel">
+    <header class="top-header"><h1>Executive Engine</h1><div class="backend-pill" id="backendStatus">Checking backend</div></header>
+    <section class="center-scroll">
+      <section class="engine-card">
+        <div class="engine-kicker">THE ENGINE</div>
+        <h2>What are we building and let’s make it happen.</h2>
+        <p>Your Strategic Operator</p>
+        <div class="command-box">
+          <textarea id="commandInput" placeholder="Type or speak your what we need to do"></textarea>
+          <div class="command-footer"><div class="command-tools"><span>⌘</span><span>🎙</span><span class="divider"></span><span>✦ AI Assistant</span></div><button id="runCommand" class="send-btn">↑</button></div>
         </div>
-      </div>
-
-      <nav class="nav-list">
-        <button class="nav-item active" data-view="engine"><span>⌂</span><strong>The Engine</strong></button>
-        <button class="nav-item" data-view="meetings"><span>□</span><strong>Meetings</strong></button>
-        <button class="nav-item" data-view="proposals"><span>▣</span><strong>Proposals</strong></button>
-        <button class="nav-item" data-view="strategy"><span>◌</span><strong>Strategy</strong></button>
-        <button class="nav-item" data-view="followups"><span>↗</span><strong>Follow-Ups</strong></button>
-        <button class="nav-item" data-view="tasks"><span>☑</span><strong>Tasks</strong></button>
-        <button class="nav-item" data-view="documents"><span>▤</span><strong>Documents</strong></button>
-        <button class="nav-item" data-view="contacts"><span>◎</span><strong>Contacts</strong></button>
-        <button class="nav-item" data-view="calendar"><span>▢</span><strong>Calendar</strong></button>
-        <button class="nav-item" data-view="search"><span>⌕</span><strong>Search</strong></button>
-      </nav>
-
-      <div class="nav-bottom">
-        <button class="notification-row"><span>♢ Notifications</span><em id="notificationCount">0</em></button>
-        <div class="user-card">
-          <div class="avatar">WS</div>
-          <div><strong>Will Stewart</strong><small>Executive</small></div>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main-panel">
-      <header class="top-header">
-        <h1>Executive Engine</h1>
-        <div class="backend-pill" id="backendStatus">Checking backend</div>
-      </header>
-
-      <section class="thread-shell">
-        <div class="command-top">
-          <div class="command-card">
-            <div class="engine-kicker">THE ENGINE</div>
-            <div class="command-title">What are we building and let’s make it happen.</div>
-            <div class="command-sub">Your Strategic Operator</div>
-
-            <div class="command-box">
-              <textarea id="commandInput" placeholder="Type or speak your what we need to do"></textarea>
-              <div class="command-footer">
-                <div class="command-tools">
-                  <span>⌘</span>
-                  <span>🎙</span>
-                  <span class="divider"></span>
-                  <span>✦ AI Assistant</span>
-                </div>
-                <button id="runCommand" class="send-btn">↑</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="threadStream" class="thread-stream"></div>
       </section>
-    </main>
-
-    <aside class="right-actions">
-      <div class="actions-header">
-        <h2>ACTIONS</h2>
-        <button id="viewAllActions">View All</button>
-      </div>
-      <div class="action-search">
-        <input id="actionSearch" placeholder="Search actions..." />
-        <button>≡</button>
-      </div>
-      <div id="actionsRail" class="actions-rail"></div>
-    </aside>
-  </div>
-  <script src="./app.js"></script>
-</body>
-</html>
+      <section class="thread-feed" id="threadFeed">
+        <div class="empty-thread"><div class="section-label">OPERATING THREAD</div><h3>Responses will appear here in order.</h3><p>Use The Engine above. Every response becomes an ACTION thread with next move, risk, recommendations, and editable detail.</p></div>
+      </section>
+    </section>
+  </main>
+  <aside class="right-actions">
+    <div class="actions-header"><h2>ACTIONS</h2><button id="viewAllActions">View All</button></div>
+    <div class="action-search"><input id="actionSearch" placeholder="Search actions..."/><button>≡</button></div>
+    <div id="actionsRail" class="actions-rail"></div>
+  </aside>
+</div>
+<script src="./app.js"></script>
+</body></html>

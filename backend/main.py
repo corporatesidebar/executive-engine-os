@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36210-engine-box-top-thread-below"
+VERSION = "36300-executive-operating-intelligence"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3955,3 +3955,125 @@ def v36200_thread_state():
         "count": len(MEMORY.get("thread_events", [])),
         "latest": MEMORY.get("thread_events", [])[:20]
     }
+
+# ---------------------------------------------------------------------
+# V36300 — Executive Operating Intelligence
+# ---------------------------------------------------------------------
+
+class V36300EngineRequest(BaseModel):
+    input: str = ""
+    action_id: str = ""
+    title: str = ""
+    category: str = "auto"
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36300_category(text):
+    t = (text or "").lower()
+    if any(x in t for x in ["meeting", "met with", "call", "office", "thursday", "next week"]): return "meeting"
+    if any(x in t for x in ["proposal", "quote", "contract", "retainer", "pricing", "scope"]): return "proposal"
+    if any(x in t for x in ["follow up", "follow-up", "reply", "email", "send"]): return "follow_up"
+    if any(x in t for x in ["strategy", "marketing", "sales", "growth", "ads", "advertising", "conversion"]): return "strategy"
+    return "action"
+
+def _v36300_title(text, category):
+    text = str(text or "").strip()
+    low = text.lower()
+    if "bob" in low and ("auto" in low or "loan" in low): return "Bob — Auto Loan Strategy"
+    if category == "meeting": return "Meeting — " + " ".join(text.split()[:5])
+    if category == "proposal": return "Proposal — " + " ".join(text.split()[:5])
+    if category == "follow_up": return "Follow-Up — " + " ".join(text.split()[:5])
+    if category == "strategy": return "Strategy — " + " ".join(text.split()[:5])
+    return " ".join(text.split()[:7])[:86] or "New Action"
+
+def _v36300_intel(text, category):
+    what = "This is now an active ACTION. The system captured the context and converted it into an operating thread."
+    next_move = "Clarify the next decision, owner, and deadline."
+    why = "Execution improves when loose thoughts become one organized thread with next steps and follow-up."
+    risk = "This can stall if it remains a loose note with no owner, due date, or output."
+    rec = ["Confirm the objective.", "Define the next move.", "Create the needed draft or follow-up."]
+    missing = []
+
+    if category == "meeting":
+        what = "Meeting signal detected. This needs prep, talking points, and a follow-up path."
+        next_move = "Prepare the meeting brief and decide what must be confirmed before the meeting ends."
+        why = "The value of the meeting is created by the next step, not the conversation itself."
+        risk = "The meeting may create motion but no result if budget, decision-maker, or follow-up is not confirmed."
+        rec = ["Prepare 3 talking points.", "Identify what decision is needed.", "Draft the follow-up before the meeting."]
+        missing = ["contact/company", "meeting goal", "timing"] if "with" not in (text or "").lower() else []
+
+    if category == "proposal":
+        what = "Proposal opportunity detected. Scope and pricing need to be shaped before this becomes client-ready."
+        next_move = "Build the proposal overview and identify missing pricing, scope, timeline, and decision details."
+        why = "Fast proposal structure increases close probability and prevents the opportunity from drifting."
+        risk = "The proposal may become vague or underpriced if scope, timing, and success metrics are not confirmed."
+        rec = ["Draft proposal overview.", "List missing scope/pricing details.", "Prepare client-ready next step."]
+        missing = ["budget/investment range", "scope", "timeline"]
+
+    if category == "strategy":
+        what = "Strategy signal detected. This needs to become a decision and an execution path."
+        next_move = "Turn the strategy into one clear move, one owner, and one measurable result."
+        why = "Strategy is only valuable when it creates action, leverage, or a decision."
+        risk = "This can stay abstract if it is not tied to an immediate operational move."
+        rec = ["Define the strategic objective.", "Pick the first move.", "Identify the constraint."]
+
+    draft = f"""ACTION BRIEF
+
+WHAT MATTERS
+{what}
+
+NEXT MOVE
+{next_move}
+
+WHY IT MATTERS
+{why}
+
+RISK
+{risk}
+
+RECOMMENDED ACTIONS
+- """ + "\n- ".join(rec) + f"""
+
+CONTEXT
+{text}
+"""
+
+    return {"what_matters": what, "next_move": next_move, "why_it_matters": why, "risk": risk, "recommended_actions": rec, "missing_info": missing, "draft": draft}
+
+@app.post("/engine-operate")
+def v36300_engine_operate(req: V36300EngineRequest):
+    text = str(req.input or "").strip()
+    category = req.category if req.category and req.category != "auto" else _v36300_category(text)
+    title = req.title or _v36300_title(text, category)
+    action_id = req.action_id or str(uuid.uuid4())
+    intel = _v36300_intel(text, category)
+
+    payload = {
+        "status": "ok",
+        "version": VERSION,
+        "action_id": action_id,
+        "title": title,
+        "category": category,
+        "priority": "High" if category in ["meeting", "proposal"] else "Medium",
+        "input": text,
+        "short": {
+            "what_matters": intel["what_matters"],
+            "next_move": intel["next_move"],
+            "risk": intel["risk"]
+        },
+        "why_it_matters": intel["why_it_matters"],
+        "recommended_actions": intel["recommended_actions"],
+        "missing_info": intel["missing_info"],
+        "draft": intel["draft"],
+        "created_at": now()
+    }
+    MEMORY.setdefault("engine_operating_events", []).insert(0, payload)
+    try:
+        db_insert("engine_operate", payload)
+    except Exception:
+        pass
+    return payload
+
+@app.get("/engine-operating-state")
+def v36300_engine_operating_state():
+    return {"status": "ok", "version": VERSION, "events": len(MEMORY.get("engine_operating_events", [])), "latest": MEMORY.get("engine_operating_events", [])[:10]}
