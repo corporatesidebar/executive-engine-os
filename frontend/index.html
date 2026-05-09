@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36090</title>
+<title>Executive Engine OS · V36100</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36090-usefulness-flow-consolidation';
+const VERSION='36100-memory-context-relevance';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -72,7 +72,7 @@ function dailyFlowPage(){
   const f=state.dailyFlow||{};
   return `<section class="grid2">
     <div class="hero">
-      <span class="kicker">V36090 / Daily Operating Flow</span>
+      <span class="kicker">V36100 / Daily Operating Flow</span>
       <h3>${esc(clean(f.greeting||'Hey Will, let’s Rock n Roll today.'))}</h3>
       <p>${esc(clean(f.executive_summary||'Start here each morning. Tell the system what’s on your plate. It will help prioritize the day.'))}</p>
       <div class="cockpit">
@@ -125,7 +125,7 @@ async function runDailyFlow(){
       actions:data.top_3_actions||data.actions,
       risk:data.risk,
       priority:data.priority,
-      asset:{title:'V36090 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36100 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
     },input);
     save();render();toast('Daily Flow ready');
   }catch(e){toast('Daily Flow failed: '+e.message)}
@@ -196,7 +196,7 @@ async function runDailyUse(){
       actions:data.actions,
       risk:data.risk_to_watch,
       priority:data.priority,
-      asset:{title:'V36090 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36100 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
     },input);
     save();
     render();
@@ -348,7 +348,7 @@ async function runPressureAttention(){
 }
 
 
-async function loadFirstMessageV36090(){
+async function loadFirstMessageV36100(){
   try{
     const res = await fetch(API_BASE + "/first-load", {cache:"no-store"});
     const data = await res.json();
@@ -364,7 +364,7 @@ async function loadFirstMessageV36090(){
     if(el) el.textContent = "Hey Will, let’s Rock n Roll today.";
   }
 }
-setTimeout(loadFirstMessageV36090, 250);
+setTimeout(loadFirstMessageV36100, 250);
 
 
 async function runQualityPolish(){
@@ -432,6 +432,45 @@ async function runUsefulnessFlow(){
 
   }catch(e){
     alert("Usefulness Flow failed.");
+  }
+}
+
+
+async function runMemoryContext(){
+  const input = document.getElementById("masterFlowInput")?.value?.trim()
+    || prompt("What should I connect to recent work?");
+  if(!input) return;
+
+  try{
+    const res = await fetch(API_BASE + "/memory-context",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input,account_id:"default",user_id:"owner"})
+    });
+    const data = await res.json();
+
+    const out = document.getElementById("masterFlowOutput");
+    const html = `
+      <div class="card">
+        <span class="kicker">MEMORY + CONTEXT</span>
+        <h3>${data.what_to_continue || "Continue from recent work."}</h3>
+
+        <span class="kicker" style="margin-top:18px;display:block">CARRY FORWARD</span>
+        <ul>${(data.carry_forward_priorities||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+
+        <span class="kicker" style="margin-top:18px;display:block">UNFINISHED LOOPS</span>
+        <ul>${(data.unfinished_loops||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
+
+        <span class="kicker" style="margin-top:18px;display:block">RELEVANT MEMORY</span>
+        <ul>${(data.relevant_context||[]).map(x=>`<li>${x.summary}</li>`).join("") || "<li>No relevant memory yet.</li>"}</ul>
+      </div>
+    `;
+
+    if(out){ out.innerHTML = html; }
+    else { alert("Memory Context ready. Relevant items: " + data.relevant_count); }
+
+  }catch(e){
+    alert("Memory Context failed: " + e.message);
   }
 }
 

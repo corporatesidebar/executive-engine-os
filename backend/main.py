@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36090-usefulness-flow-consolidation"
+VERSION = "36100-memory-context-relevance"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3075,3 +3075,188 @@ def v36090_usefulness_flow(req: V36090FlowRequest):
     })
 
     return result
+
+
+# ---------------------------------------------------------------------
+# V36100 — Memory + Context Relevance
+# Lightweight relevance layer: remembers recent pressures, unfinished loops,
+# decisions, and follow-ups so each run does not start from zero.
+# Additive only. Does not replace /run.
+# ---------------------------------------------------------------------
+
+class V36100MemoryContextRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36100_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36100_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36100_event_payload(event):
+    if not isinstance(event, dict):
+        return {}
+    payload = event.get("payload") or event.get("output") or event
+    return payload if isinstance(payload, dict) else {}
+
+def _v36100_keywords(text):
+    text = (text or "").lower()
+    words = re.findall(r"[a-zA-Z0-9]+", text)
+    stop = set(["the","and","for","with","that","this","have","from","what","need","today","tomorrow","about","into","your","you","are","too","many","will","they","them","our","their"])
+    return [w for w in words if len(w) > 3 and w not in stop][:30]
+
+def _v36100_score_relevance(input_text, payload):
+    keys = set(_v36100_keywords(input_text))
+    blob = json.dumps(payload, default=str).lower()
+    score = 0
+    for k in keys:
+        if k in blob:
+            score += 8
+    for high in ["client","meeting","proposal","sales","revenue","follow","risk","team","priority","deadline"]:
+        if high in (input_text or "").lower() and high in blob:
+            score += 12
+    return min(score, 100)
+
+def _v36100_recent_events(limit=25):
+    events = []
+    try:
+        events.extend(MEMORY.get("operator_events", [])[:limit])
+    except Exception:
+        pass
+    try:
+        for r in MEMORY.get("runs", [])[:limit]:
+            events.append({"kind": "run", "payload": r, "created_at": r.get("created_at") if isinstance(r, dict) else now()})
+    except Exception:
+        pass
+    return events[:limit]
+
+def _v36100_relevant_context(input_text):
+    events = _v36100_recent_events()
+    scored = []
+    for e in events:
+        payload = _v36100_event_payload(e)
+        score = _v36100_score_relevance(input_text, payload)
+        if score > 0:
+            scored.append({"score": score, "kind": e.get("kind","memory"), "created_at": e.get("created_at",""), "payload": payload})
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored[:8]
+
+def _v36100_extract_open_loops(events):
+    loops = []
+    for e in events:
+        p = e.get("payload", {})
+        for key in ["follow_up", "follow_ups", "follow_up_moves", "follow_up_before_end_of_day", "follow_up_queue"]:
+            for item in _v36100_list(p.get(key)):
+                if item and len(loops) < 8:
+                    loops.append(_v36100_text(item))
+        for key in ["execution_queue", "actions", "top_3", "top_3_actions"]:
+            for item in _v36100_list(p.get(key)):
+                s = _v36100_text(item)
+                if s and any(x in s.lower() for x in ["send", "confirm", "prepare", "schedule", "review", "assign", "close"]) and len(loops) < 8:
+                    loops.append(s)
+    # de-dupe
+    clean = []
+    seen = set()
+    for l in loops:
+        k = l.lower()[:80]
+        if k not in seen:
+            seen.add(k)
+            clean.append(l)
+    return clean[:8]
+
+def _v36100_extract_priorities(events):
+    priorities = []
+    for e in events:
+        p = e.get("payload", {})
+        for key in ["what_matters_first", "what_matters_now", "next_best_action", "next_move", "do_this_first"]:
+            val = _v36100_text(p.get(key))
+            if val:
+                priorities.append(val)
+    clean = []
+    seen = set()
+    for x in priorities:
+        k = x.lower()[:80]
+        if k not in seen:
+            seen.add(k)
+            clean.append(x)
+    return clean[:6]
+
+@app.post("/memory-context")
+def v36100_memory_context(req: V36100MemoryContextRequest):
+    input_text = req.input or "What should I remember and continue from recent work?"
+    relevant = _v36100_relevant_context(input_text)
+    open_loops = _v36100_extract_open_loops(relevant)
+    priorities = _v36100_extract_priorities(relevant)
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36100_memory_context_relevance",
+        "input": input_text,
+        "relevant_count": len(relevant),
+        "relevant_context": [
+            {
+                "score": r["score"],
+                "kind": r["kind"],
+                "created_at": r["created_at"],
+                "summary": _v36100_text(
+                    r["payload"].get("what_matters_first")
+                    or r["payload"].get("what_to_do_now")
+                    or r["payload"].get("next_move")
+                    or r["payload"].get("decision")
+                    or r["payload"].get("executive_summary")
+                    or r["kind"]
+                )[:220]
+            }
+            for r in relevant
+        ],
+        "carry_forward_priorities": priorities or ["No strong previous priority found. Start with today's highest-pressure item."],
+        "unfinished_loops": open_loops or ["No unfinished loops detected from recent memory."],
+        "memory_recommendation": "Use recent context to continue the same workstream instead of restarting from zero.",
+        "what_to_continue": (priorities[0] if priorities else "Enter the current pressure and create a new operating loop."),
+        "what_to_avoid": [
+            "Do not restart the same work as a new conversation if there is a relevant open loop.",
+            "Do not add new tasks until the highest-relevance follow-up is closed.",
+            "Do not let memory become noise; only carry forward what affects the next action."
+        ],
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "memory_context",
+        "payload": result,
+        "created_at": now()
+    })
+
+    try:
+        db_insert("memory_context", result)
+    except Exception:
+        pass
+
+    return result
+
+@app.get("/memory-context-state")
+def v36100_memory_context_state():
+    events = MEMORY.get("operator_events", [])
+    context_events = [e for e in events if e.get("kind") == "memory_context"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(context_events),
+        "latest": context_events[:10],
+        "memory_counts": {
+            k: len(v) if isinstance(v, list) else len(v.keys()) if isinstance(v, dict) else 0
+            for k, v in MEMORY.items()
+        },
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT
+    }
