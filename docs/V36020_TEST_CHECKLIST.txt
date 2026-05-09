@@ -1,0 +1,16 @@
+V36020 TEST CHECKLIST
+
+[ ] Frontend loads
+[ ] Daily Use nav appears
+[ ] Build Today works
+[ ] Top 3 appears
+[ ] Follow Up Now appears
+[ ] Asset To Create appears
+[ ] Decision Needed appears
+[ ] Risk To Watch appears
+[ ] End Of Day Review appears
+[ ] Push Top 3 to Action Queue works
+[ ] Existing Operating Layer still works
+[ ] Existing Run Command still works
+[ ] /how-to-use works
+[ ] /daily-use-state works

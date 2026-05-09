@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36010</title>
+<title>Executive Engine OS · V36020</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36010-merge-safe-executive-operating-layer';
+const VERSION='36020-daily-utility-layer';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -44,9 +44,10 @@ const state={page:'today',backend:{},db:{},dbItems:[],operator:{},workspace:{},r
  {task:'Run DB test write and confirm Supabase persistence.',priority:'Medium',status:'open'},
  {task:'Turn the next client conversation into a saved workspace.',priority:'Medium',status:'open'}],assets:JSON.parse(localStorage.getItem('ee_assets_v35130')||'[]'),notes:JSON.parse(localStorage.getItem('ee_notes_v35130')||'[]')};
 state.operating=JSON.parse(localStorage.getItem('ee_operating_v36010')||'null')||{};
-const groups=[['COMMAND',[['operating','⬢','Operating Layer',1],['today','✦','Today',3],['daily','☀','Daily Brief',1],['run','⌘','Run Command',0],['meeting','◴','Meeting Prep',0],['decisions','◆','Decisions',0]]],['WORKFLOW',[['workspace','▣','Workspace',0],['actions','☑','Action Queue',state.tasks.filter(t=>t.status!=='done').length],['assets','▤','Assets',state.assets.length],['followups','✉','Follow-Ups',1],['notes','✎','Notes',state.notes.length]]],['INTELLIGENCE',[['operator','◎','Operator Intelligence',0],['risk','⚠','Risk Monitor',1],['strategy','↗','Strategy Board',0],['team','◌','Team Pulse',0],['finance','$','Financial Snapshot',0]]],['SYSTEM',[['database','◫','Database',0],['status','●','System Status',0]]]];
-const copy={operating:['Operating Layer','Push-based command layer: now, today, tomorrow, decisions, execution, risks, and follow-ups.'],today:['Today','Executive cockpit: pressure, priority, decision, actions, and follow-up.'],daily:['Daily Brief','Start here before the day gets noisy.'],run:['Run Command','Deeper ChatGPT-style work room with saved run history.'],meeting:['Meeting Prep','Turn meetings into decisions before they happen.'],decisions:['Decisions','Save the call, tradeoff, risk, and next owner.'],workspace:['Workspace','The active client/project operating file.'],actions:['Action Queue','Executable work, not vague tasks.'],assets:['Assets','Generated proposals, emails, briefs, plans, and scripts.'],followups:['Follow-Ups','Messages that move conversations forward.'],notes:['Notes','Fast capture for context and memory.'],operator:['Operator Intelligence','Pressure, open loops, and next-best action.'],risk:['Risk Monitor','What could slow, block, or weaken execution.'],strategy:['Strategy Board','Bigger moves, market angles, and decision gates.'],team:['Team Pulse','People, owners, dependencies, and blockers.'],finance:['Financial Snapshot','Revenue, cost, pipeline, and execution impact.'],database:['Database','Supabase status, writes, reads, and persistence.'],status:['System Status','Routes, providers, version, and diagnostics.']};
-function save(){localStorage.setItem('ee_runs_v35130',JSON.stringify(state.runs.slice(0,30)));localStorage.setItem('ee_tasks_v35130',JSON.stringify(state.tasks));localStorage.setItem('ee_assets_v35130',JSON.stringify(state.assets.slice(0,50)));localStorage.setItem('ee_notes_v35130',JSON.stringify(state.notes.slice(0,60)));localStorage.setItem('ee_operating_v36010',JSON.stringify(state.operating||{}));}
+state.dailyUse=JSON.parse(localStorage.getItem('ee_daily_use_v36020')||'null')||{};
+const groups=[['COMMAND',[['dailyuse','▶','Daily Use',1],['operating','⬢','Operating Layer',1],['today','✦','Today',3],['daily','☀','Daily Brief',1],['run','⌘','Run Command',0],['meeting','◴','Meeting Prep',0],['decisions','◆','Decisions',0]]],['WORKFLOW',[['workspace','▣','Workspace',0],['actions','☑','Action Queue',state.tasks.filter(t=>t.status!=='done').length],['assets','▤','Assets',state.assets.length],['followups','✉','Follow-Ups',1],['notes','✎','Notes',state.notes.length]]],['INTELLIGENCE',[['operator','◎','Operator Intelligence',0],['risk','⚠','Risk Monitor',1],['strategy','↗','Strategy Board',0],['team','◌','Team Pulse',0],['finance','$','Financial Snapshot',0]]],['SYSTEM',[['database','◫','Database',0],['status','●','System Status',0]]]];
+const copy={dailyuse:['Daily Use','Start here: what to do first, top 3 moves, follow-up, asset, risk, and end-of-day review.'],operating:['Operating Layer','Push-based command layer: now, today, tomorrow, decisions, execution, risks, and follow-ups.'],today:['Today','Executive cockpit: pressure, priority, decision, actions, and follow-up.'],daily:['Daily Brief','Start here before the day gets noisy.'],run:['Run Command','Deeper ChatGPT-style work room with saved run history.'],meeting:['Meeting Prep','Turn meetings into decisions before they happen.'],decisions:['Decisions','Save the call, tradeoff, risk, and next owner.'],workspace:['Workspace','The active client/project operating file.'],actions:['Action Queue','Executable work, not vague tasks.'],assets:['Assets','Generated proposals, emails, briefs, plans, and scripts.'],followups:['Follow-Ups','Messages that move conversations forward.'],notes:['Notes','Fast capture for context and memory.'],operator:['Operator Intelligence','Pressure, open loops, and next-best action.'],risk:['Risk Monitor','What could slow, block, or weaken execution.'],strategy:['Strategy Board','Bigger moves, market angles, and decision gates.'],team:['Team Pulse','People, owners, dependencies, and blockers.'],finance:['Financial Snapshot','Revenue, cost, pipeline, and execution impact.'],database:['Database','Supabase status, writes, reads, and persistence.'],status:['System Status','Routes, providers, version, and diagnostics.']};
+function save(){localStorage.setItem('ee_runs_v35130',JSON.stringify(state.runs.slice(0,30)));localStorage.setItem('ee_tasks_v35130',JSON.stringify(state.tasks));localStorage.setItem('ee_assets_v35130',JSON.stringify(state.assets.slice(0,50)));localStorage.setItem('ee_notes_v35130',JSON.stringify(state.notes.slice(0,60)));localStorage.setItem('ee_operating_v36010',JSON.stringify(state.operating||{}));localStorage.setItem('ee_daily_use_v36020',JSON.stringify(state.dailyUse||{}));}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
 async function api(path,opts={}){const res=await fetch(API+path,{headers:{'Content-Type':'application/json','Accept':'application/json'},...opts});if(!res.ok)throw new Error(path+' '+res.status);return await res.json()}
 function setPage(id){state.page=id;render()}
@@ -64,6 +65,80 @@ function renderListV36010(value){
   const arr=Array.isArray(value)?value:(value?[value]:[]);
   return arr.length?`<ul>${arr.map(x=>`<li>${esc(clean(typeof x==='string'?x:JSON.stringify(x)))}</li>`).join('')}</ul>`:'<p style="color:var(--muted)">Run the operating layer to populate this section.</p>';
 }
+
+function dailyUsePage(){
+  const d=state.dailyUse||{};
+  return `<section class="grid2">
+    <div class="hero">
+      <span class="kicker">V36020 / Start Here</span>
+      <h3>${esc(clean(d.do_this_first||'Tell the system what is on your plate today. It will tell you what to do first.'))}</h3>
+      <p>${esc(clean(d.executive_summary||'This page turns Executive Engine into something you can use daily: priority, top 3 actions, meeting prep, follow-up, asset, risk, and end-of-day review.'))}</p>
+      <div class="cockpit">
+        <div class="dial"><small>Priority</small><strong>${esc(clean(d.priority||'—'))}</strong><p>Today load</p></div>
+        <div class="dial"><small>Top Moves</small><strong>${(d.top_3||[]).length||0}</strong><p>Do first</p></div>
+        <div class="dial"><small>Review</small><strong>${(d.end_of_day_review||[]).length||0}</strong><p>Close loops</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="kicker">Daily Use</span>
+      <h3>Make this useful today.</h3>
+      <p>Enter your real pressure, meetings, client work, revenue issue, or decision. The system will compress it into a daily operating plan.</p>
+      <input id="dailyUseInput" placeholder="Example: I have client follow-ups, a proposal to prepare, and too many priorities today." />
+      <div class="actions"><button class="btn orange" onclick="runDailyUse()">Build Today</button><button class="btn" onclick="fillDailyExample()">Use Example</button></div>
+    </div>
+  </section>
+  <section class="grid3" style="margin-top:18px">
+    <div class="card"><span class="kicker">Top 3</span>${renderListV36010(d.top_3||d.actions)}</div>
+    <div class="card"><span class="kicker">Follow Up Now</span>${renderListV36010(d.follow_up_now)}</div>
+    <div class="card"><span class="kicker">Asset To Create</span>${renderListV36010(d.asset_to_create)}</div>
+  </section>
+  <section class="section" style="margin-top:18px">
+    <div class="canvas">
+      <div class="sectionHeader"><div><span class="kicker">Daily Operating Plan</span><h3>Use this, then enhance.</h3></div><button class="btn green" onclick="saveDailyActions()">Push Top 3 to Action Queue</button></div>
+      <div class="grid2">
+        <div class="card"><span class="kicker">Decision Needed</span><p>${esc(clean(d.decision_needed||'Run Daily Use to surface the decision.'))}</p></div>
+        <div class="card"><span class="kicker">Risk To Watch</span><p>${esc(clean(d.risk_to_watch||'Run Daily Use to surface the risk.'))}</p></div>
+        <div class="card"><span class="kicker">Meeting Prep</span>${renderListV36010(d.meeting_prep)}</div>
+        <div class="card"><span class="kicker">End Of Day Review</span>${renderListV36010(d.end_of_day_review)}</div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="kicker">How to use it</span>
+      <h3>Do not overthink the system.</h3>
+      <p>Start the day here. Tell it what is on your plate. Execute the first move. Push useful actions to the queue. At the end of the day, review what moved, stalled, and needs prep tomorrow.</p>
+    </div>
+  </section>`;
+}
+function fillDailyExample(){
+  const el=$('dailyUseInput');
+  if(el) el.value='I have client follow-ups, a proposal to prepare, meetings coming up, and too many priorities. Tell me what to do first today.';
+}
+async function runDailyUse(){
+  const input=$('dailyUseInput')?.value?.trim()||'Build my daily executive operating plan: priorities, meetings, follow-ups, risks, assets, and end-of-day review.';
+  toast('Building daily utility layer...');
+  try{
+    const data=await api('/daily-use',{method:'POST',body:JSON.stringify({input,account_id:'default',user_id:'owner'})});
+    state.dailyUse=data;
+    state.operating=data.base_result||state.operating||{};
+    consumeRun({
+      decision:data.decision_needed,
+      next_move:data.do_this_first,
+      actions:data.actions,
+      risk:data.risk_to_watch,
+      priority:data.priority,
+      asset:{title:'V36020 Daily Utility Layer',type:'daily_use',content:JSON.stringify(data,null,2)}
+    },input);
+    save();
+    render();
+    toast('Daily plan ready');
+  }catch(e){toast('Daily Use failed: '+e.message)}
+}
+function saveDailyActions(){
+  const d=state.dailyUse||{};
+  (d.top_3||d.actions||[]).slice(0,3).reverse().forEach(a=>state.tasks.unshift({task:clean(typeof a==='string'?a:JSON.stringify(a)),priority:d.priority||'High',status:'open',owner:'Executive',due:'Today'}));
+  save();render();toast('Top 3 pushed to Action Queue');
+}
+
 function operatingPage(){
   const op=state.operating||{};
   return `<section class="grid2">
@@ -143,7 +218,7 @@ function saveOperatingActions(){
   render();toast('Operating actions pushed to queue');
 }
 
-function renderPages(){let html='';Object.keys(copy).forEach(id=>{html+=`<div class="page ${state.page===id?'active':''}">${id==='operating'?operatingPage():id==='today'?todayPage():id==='run'?commandPage():sectionPage(id)}</div>`});$('pages').innerHTML=html;}
+function renderPages(){let html='';Object.keys(copy).forEach(id=>{html+=`<div class="page ${state.page===id?'active':''}">${id==='dailyuse'?dailyUsePage():id==='operating'?operatingPage():id==='today'?todayPage():id==='run'?commandPage():sectionPage(id)}</div>`});$('pages').innerHTML=html;}
 function renderRail(){const b=brief();$('rail').innerHTML=`<h2>Operator Radar</h2><p>Push-based intelligence: pressure, next move, counts, and system state.</p><div class="radar"></div><div class="railSec"><div class="railCard orange"><strong>Do Now</strong><span>${esc(b.next)}</span></div><div class="railCard red"><strong>Risk</strong><span>${esc(b.top)}</span></div><div class="railCard green"><strong>Progress</strong><span>${state.tasks.filter(t=>t.status==='done').length} complete · ${state.tasks.filter(t=>t.status!=='done').length} open</span></div></div><div class="railSec"><div class="railCard"><strong>Runs</strong><span>${state.runs.length} saved locally</span></div><div class="railCard"><strong>Assets</strong><span>${state.assets.length} ready</span></div><div class="railCard"><strong>DB</strong><span>${state.db.configured?'Connected':'Memory mode / configure Supabase'}</span></div></div>`;}
 function toggleTask(i){state.tasks[i].status=state.tasks[i].status==='done'?'open':'done';render()}
 function addSampleAction(){state.tasks.unshift({task:'Confirm owner, deadline, and decision path for current workstream.',priority:'High',status:'open'});render();toast('Action added')}

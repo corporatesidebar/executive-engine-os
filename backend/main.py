@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36010-merge-safe-executive-operating-layer"
+VERSION = "36020-daily-utility-layer"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2256,4 +2256,169 @@ def v36010_operating_layer_state():
             k: len(v) if isinstance(v, list) else len(v.keys()) if isinstance(v, dict) else 0
             for k, v in MEMORY.items()
         }
+    }
+
+
+# ---------------------------------------------------------------------
+# V36020 — Daily Utility Layer
+# Purpose: make EE OS immediately useful daily before deeper enhancement.
+# Additive only. Does not replace /run or V36010 operating-layer routes.
+# ---------------------------------------------------------------------
+
+class V36020DailyUseRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36020_list(value):
+    if isinstance(value, list):
+        return value
+    if value in (None, ""):
+        return []
+    return [str(value)]
+
+def _v36020_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+def _v36020_run_base(input_text, mode="command"):
+    try:
+        req = RunRequest(
+            input=input_text,
+            mode=mode,
+            brain="daily_utility_layer",
+            output_type="daily_utility",
+            depth="deep",
+            provider="auto",
+            category="operator"
+        )
+        return run_engine(req)
+    except TypeError:
+        req = RunRequest(
+            input=input_text,
+            mode=mode,
+            brain="daily_utility_layer",
+            output_type="daily_utility",
+            depth="deep"
+        )
+        return run_engine(req)
+    except Exception as e:
+        return {
+            "decision": "Daily utility fallback triggered.",
+            "next_move": "Use the fallback daily operating plan and check backend logs.",
+            "actions": [
+                "Write the top outcome required today.",
+                "Identify the one meeting, client, or decision that matters most.",
+                "Create the first asset or follow-up needed to move it.",
+                "Assign owner and deadline.",
+                "Review at end of day."
+            ],
+            "risk": str(e),
+            "priority": "High",
+            "asset": {"summary": "Fallback daily utility output."}
+        }
+
+def _v36020_build_daily_use(input_text, base):
+    asset = base.get("asset") or {}
+    actions = _v36020_list(base.get("actions"))
+    decision = _v36020_text(base.get("decision") or "Focus the day around the one move that creates measurable business progress.")
+    next_move = _v36020_text(base.get("next_move") or base.get("what_to_do_now") or "Choose the single highest-leverage action and execute it first.")
+    risk = _v36020_text(base.get("risk") or "The day becomes reactive if priorities are not converted into an execution sequence.")
+    priority = _v36020_text(base.get("priority") or "High")
+    summary = _v36020_text(asset.get("summary") or base.get("executive_summary") or decision)
+
+    if not actions:
+        actions = [
+            "Define the one outcome that makes today successful.",
+            "Complete or prepare the highest-value asset first.",
+            "Close one open loop that is blocking progress.",
+            "Prepare for the next important meeting or conversation.",
+            "End the day with what moved, what stalled, and what is next."
+        ]
+
+    daily_plan = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36020_daily_utility_layer",
+        "executive_summary": summary,
+        "do_this_first": next_move,
+        "today_win": "Create measurable movement on the highest-leverage executive priority.",
+        "top_3": actions[:3],
+        "meeting_prep": [
+            "Identify the desired outcome before the conversation.",
+            "Prepare the decision, objection, and close.",
+            "Write the follow-up before the meeting starts."
+        ],
+        "follow_up_now": [
+            "Send one follow-up that closes an open loop.",
+            "Confirm owner, deadline, and next step in writing."
+        ],
+        "asset_to_create": [
+            "Create the message, brief, proposal, or decision note needed to move the priority forward."
+        ],
+        "decision_needed": decision,
+        "risk_to_watch": risk,
+        "end_of_day_review": [
+            "What moved today?",
+            "What stalled?",
+            "Who is waiting on me?",
+            "What must be prepared for tomorrow?"
+        ],
+        "actions": actions,
+        "priority": priority,
+        "owner": base.get("owner") or "Executive owner",
+        "timeline": base.get("timeline") or "Today",
+        "success_metric": base.get("success_metric") or "At least one meaningful executive loop is closed today.",
+        "base_result": base,
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {"kind": "daily_utility", "payload": daily_plan, "created_at": now()})
+    db_insert("daily_utility", daily_plan)
+    return daily_plan
+
+@app.post("/daily-use")
+def v36020_daily_use(req: V36020DailyUseRequest):
+    """Daily practical layer: tells the executive what to use the system for today."""
+    input_text = req.input or "Build my daily executive operating plan: priorities, meetings, follow-ups, risks, assets, and end-of-day review."
+    base = _v36020_run_base(input_text, "command")
+    return _v36020_build_daily_use(input_text, base)
+
+@app.get("/daily-use-state")
+def v36020_daily_use_state():
+    events = MEMORY.get("operator_events", [])
+    daily = [e for e in events if e.get("kind") == "daily_utility"]
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(daily),
+        "latest": daily[:10],
+        "workspace": get_workspace(),
+        "operator_state": scan_operator_state(),
+        "active_context": ACTIVE_CONTEXT
+    }
+
+@app.get("/how-to-use")
+def v36020_how_to_use():
+    return {
+        "version": VERSION,
+        "purpose": "Use Executive Engine OS as a daily executive operating layer, not a chatbot.",
+        "daily_sequence": [
+            "Start with Daily Use or Operating Layer.",
+            "Enter the real pressure, meeting, decision, client, or revenue issue.",
+            "Let the system produce what to do first, top 3 actions, risk, follow-up, and asset to create.",
+            "Push useful actions into the Action Queue.",
+            "Use Meeting, Strategy, Proposal, or Execution when you need a specialist brain.",
+            "End the day by reviewing moved/stalled/open loops."
+        ],
+        "best_inputs": [
+            "I have a client meeting tomorrow and need prep, risks, strategy, and follow-up.",
+            "Leads are coming in but sales are not closing. Build the operating plan.",
+            "I have too many priorities this week. Decide what matters and what to do first.",
+            "Create a proposal plan for this opportunity.",
+            "What am I missing before tomorrow?"
+        ],
+        "promote_standard": "Use it daily if it saves time, reduces thinking load, improves preparedness, or closes loops faster."
     }
