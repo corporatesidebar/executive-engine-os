@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36100-memory-context-relevance"
+VERSION = "36110-context-profile-setup"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3260,3 +3260,158 @@ def v36100_memory_context_state():
         "operator_state": scan_operator_state(),
         "active_context": ACTIVE_CONTEXT
     }
+
+
+# ---------------------------------------------------------------------
+# V36110 — Context Profile + Setup
+# Makes the system more useful by capturing operating context:
+# role, company, current priorities, risks, people, goals, style.
+# Additive only. Does not replace /run.
+# ---------------------------------------------------------------------
+
+class V36110ProfileRequest(BaseModel):
+    role: str = ""
+    company: str = ""
+    company_type: str = ""
+    current_priorities: str = ""
+    active_projects: str = ""
+    key_people: str = ""
+    current_risks: str = ""
+    goals_30_days: str = ""
+    communication_style: str = "direct"
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36110_split_lines(value):
+    if not value:
+        return []
+    if isinstance(value, list):
+        return value
+    text = str(value)
+    parts = re.split(r'[\n,;]+', text)
+    return [p.strip() for p in parts if p.strip()][:20]
+
+def _v36110_profile_summary(profile):
+    role = profile.get("role") or "operator"
+    company = profile.get("company") or "the company"
+    priorities = _v36110_split_lines(profile.get("current_priorities"))
+    risks = _v36110_split_lines(profile.get("current_risks"))
+    goals = _v36110_split_lines(profile.get("goals_30_days"))
+    return {
+        "identity": f"{role} operating inside {company}",
+        "current_priorities": priorities,
+        "current_risks": risks,
+        "goals_30_days": goals,
+        "operating_style": profile.get("communication_style") or "direct",
+        "system_instruction": "Use this profile to make outputs more relevant, less generic, and more operational."
+    }
+
+@app.post("/profile-setup")
+def v36110_profile_setup(req: V36110ProfileRequest):
+    profile = req.dict()
+    summary = _v36110_profile_summary(profile)
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36110_context_profile_setup",
+        "profile": profile,
+        "summary": summary,
+        "what_changes_now": [
+            "Future runs should reference current priorities, risks, and goals.",
+            "Daily Flow should rank work against the profile.",
+            "Memory relevance should prefer matching projects, people, and risks.",
+            "Outputs should use the selected communication style."
+        ],
+        "recommended_next_input": "Run Daily Flow using this profile and today’s real pressure.",
+        "created_at": now()
+    }
+
+    ACTIVE_CONTEXT["profile"] = profile
+    ACTIVE_CONTEXT["profile_summary"] = summary
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "profile_setup",
+        "payload": result,
+        "created_at": now()
+    })
+
+    try:
+        db_insert("profile_setup", result)
+    except Exception:
+        pass
+
+    return result
+
+@app.get("/profile-state")
+def v36110_profile_state():
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "profile": ACTIVE_CONTEXT.get("profile", {}),
+        "profile_summary": ACTIVE_CONTEXT.get("profile_summary", {}),
+        "has_profile": bool(ACTIVE_CONTEXT.get("profile")),
+        "active_context": ACTIVE_CONTEXT
+    }
+
+@app.post("/profile-aware-flow")
+def v36110_profile_aware_flow(req: dict):
+    input_text = req.get("input", "")
+    profile = ACTIVE_CONTEXT.get("profile", {})
+    profile_summary = ACTIVE_CONTEXT.get("profile_summary", {})
+
+    profile_context = f"""
+PROFILE:
+{json.dumps(profile_summary, default=str)}
+
+USER INPUT:
+{input_text}
+"""
+
+    try:
+        base_req = RunRequest(
+            input=profile_context,
+            mode="command",
+            brain="profile_aware_daily_flow",
+            output_type="profile_aware_flow",
+            depth="deep",
+            provider="auto",
+            category="operator"
+        )
+        base = run_engine(base_req)
+    except Exception as e:
+        base = {
+            "decision": "Use the saved profile to prioritize today's work.",
+            "next_move": "Run the highest-profile priority first.",
+            "actions": [
+                "Review saved priorities.",
+                "Check active risks.",
+                "Choose one must-win action.",
+                "Send one follow-up.",
+                "Review at end of day."
+            ],
+            "risk": str(e),
+            "priority": "High"
+        }
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36110_profile_aware_flow",
+        "profile_used": bool(profile),
+        "profile_summary": profile_summary,
+        "base_result": base,
+        "what_matters_first": base.get("next_move") or base.get("decision") or "Use the profile to choose the first move.",
+        "top_3": base.get("actions", [])[:3] if isinstance(base.get("actions"), list) else [],
+        "risk": base.get("risk", "No risk returned."),
+        "priority": base.get("priority", "High"),
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "profile_aware_flow",
+        "payload": result,
+        "created_at": now()
+    })
+
+    return result
