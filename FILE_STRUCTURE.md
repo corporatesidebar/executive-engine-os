@@ -1,29 +1,33 @@
-# V36030 Changelog
+# V36030 Rollback
 
-## Added
+If cleanup causes problems:
 
-- Clean repository structure
-- Consolidated documentation
-- Single source docs folder
-- Version label updated to `36030-cleanup-stabilization`
-- Cleanup checklist
-- Rollback documentation
-- Product vision snapshot
+1. Go to GitHub repo history.
+2. Restore previous working files:
+   - `backend/main.py`
+   - `backend/requirements.txt`
+   - `frontend/index.html`
+   - `render.yaml`
+3. Redeploy Render backend.
+4. Redeploy Render frontend.
+5. Test:
+   - `/health`
+   - `/run`
+   - frontend load
 
-## Preserved
+## Rollback triggers
 
-- Backend logic
-- Frontend logic
-- Render deployment config
-- Supabase schema location
-- V36020 Daily Use layer
-- V36010 Operating Layer
-- V35130 Real Executive Workflow foundation
+Rollback if:
 
-## Not changed intentionally
+- frontend does not load
+- backend does not deploy
+- `/run` breaks
+- protected routes disappear
+- database status breaks unexpectedly
 
-- No Supabase schema changes
-- No route removals
-- No frontend redesign
-- No backend architecture rewrite
-- No provider routing rewrite
+## Expected safe state
+
+Current project backup remains available:
+- Drive backup
+- uploaded project ZIP
+- GitHub history

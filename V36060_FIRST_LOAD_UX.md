@@ -1,20 +1,26 @@
 
-# V36040 — Executive Intelligence Refinement
+# V36050 — Executive Pressure + Attention Engine
 
-Focus:
-- stronger prioritization
-- smarter follow-up generation
-- delegation logic
-- executive pressure reduction
-- quieter outputs
-- operator-style recommendations
+Target user refined:
+- managers
+- operators
+- founders
+- small/mid-sized companies
+- people with too much moving at once
 
-Added:
-- POST /executive-intelligence
-- executive pressure scoring
-- delegation recommendations
-- follow-up intelligence
-- executive recommendation engine
+Purpose:
+Make Executive Engine useful before it becomes perfect.
 
-Goal:
-Make Executive Engine feel less like software and more like an operator.
+Adds:
+- POST /pressure-attention
+- GET /pressure-attention-state
+- pressure score
+- attention required
+- next-best-action
+- do-not-do list
+- delegate/delay recommendations
+- follow-up before end of day
+- simple frontend test button
+
+Macro test:
+"I have too many client follow-ups, a proposal due, sales are not closing, and my team needs direction. What matters first?"

@@ -1,58 +1,20 @@
-# Executive Engine OS — Product Vision Snapshot
+# Upload Instructions
 
-Executive Engine OS is not a chatbot.
+1. Backup current GitHub repo.
+2. Download this ZIP.
+3. Extract locally.
+4. Upload/replace repo files with this clean structure.
+5. Commit with message:
 
-It is a push-based executive operating layer for CEOs, COOs, Presidents, CMOs, CFOs, Directors, founders, and senior operators.
+```text
+V36030 cleanup stabilization
+```
 
-## Core philosophy
+6. Wait for Render deploy.
+7. Test backend routes.
+8. Test frontend.
+9. Classify result:
 
-Push > Pull.
-
-The system should proactively surface:
-
-- what matters now
-- what to do first
-- what is at risk
-- what needs follow-up
-- what meeting prep is missing
-- what decision is waiting
-- what asset should be created
-- what should be remembered
-
-## Executive value
-
-The system must reduce cognitive load and increase:
-
-- speed
-- clarity
-- control
-- leverage
-- preparedness
-- follow-through
-- decision confidence
-
-## Product rule
-
-If a feature does not create one of these, it does not belong:
-
-- decision
-- action
-- asset
-- follow-up
-- risk visibility
-- preparation
-- memory
-
-## Avoid
-
-- generic AI dashboard
-- feature soup
-- fake analytics
-- unnecessary charts
-- noisy widgets
-- passive productivity software
-
-## Direction
-
-Get the system useful first.
-Enhance after daily utility is proven.
+```text
+HOLD / FIX / PROMOTE / ROLLBACK
+```

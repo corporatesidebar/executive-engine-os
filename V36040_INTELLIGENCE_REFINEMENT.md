@@ -1,33 +1,33 @@
-# V36030 Rollback
+# V36030 File Structure
 
-If cleanup causes problems:
+```text
+/backend
+  main.py
+  requirements.txt
 
-1. Go to GitHub repo history.
-2. Restore previous working files:
-   - `backend/main.py`
-   - `backend/requirements.txt`
-   - `frontend/index.html`
-   - `render.yaml`
-3. Redeploy Render backend.
-4. Redeploy Render frontend.
-5. Test:
-   - `/health`
-   - `/run`
-   - frontend load
+/frontend
+  index.html
 
-## Rollback triggers
+/database
+  supabase_schema.sql
 
-Rollback if:
+/docs
+  README.md
+  CHANGELOG.md
+  TEST_CHECKLIST.md
+  ROLLBACK.md
+  PRODUCT_VISION.md
+  FILE_STRUCTURE.md
 
-- frontend does not load
-- backend does not deploy
-- `/run` breaks
-- protected routes disappear
-- database status breaks unexpectedly
+render.yaml
+```
 
-## Expected safe state
+## Rules
 
-Current project backup remains available:
-- Drive backup
-- uploaded project ZIP
-- GitHub history
+- Keep root clean.
+- Do not store old ZIP files in repo.
+- Do not store screenshots in repo unless needed.
+- Do not create multiple duplicate recovery docs.
+- Keep version notes inside `/docs`.
+- Keep active app files in `/backend` and `/frontend`.
+- Keep database files in `/database`.

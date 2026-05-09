@@ -1,50 +1,58 @@
-# V36030 Test Checklist
+# Executive Engine OS — Product Vision Snapshot
 
-## Backend
+Executive Engine OS is not a chatbot.
 
-- [ ] `/health` returns online
-- [ ] `/debug` returns version and config status
-- [ ] `/providers` returns provider config
-- [ ] `/test-report-json` returns pass/warn checks
-- [ ] `/run` returns structured output
-- [ ] `/db-status` works if present
-- [ ] `/demo-state` works if present
-- [ ] `/operating-layer-state` works if present
-- [ ] `/daily-use-state` works if present
-- [ ] `/how-to-use` works if present
+It is a push-based executive operating layer for CEOs, COOs, Presidents, CMOs, CFOs, Directors, founders, and senior operators.
 
-## Frontend
+## Core philosophy
 
-- [ ] Frontend loads
-- [ ] Existing navigation works
-- [ ] Today page works
-- [ ] Daily Use page works
-- [ ] Operating Layer page works
-- [ ] Run Command works
-- [ ] Action Queue works
-- [ ] Assets page still displays
-- [ ] Database/system status still displays
-- [ ] No major layout break
+Push > Pull.
 
-## Macro test
+The system should proactively surface:
 
-Use:
+- what matters now
+- what to do first
+- what is at risk
+- what needs follow-up
+- what meeting prep is missing
+- what decision is waiting
+- what asset should be created
+- what should be remembered
 
-```text
-I have client follow-ups, a proposal to prepare, meetings coming up, and too many priorities. Tell me what to do first today.
-```
+## Executive value
 
-Expected:
+The system must reduce cognitive load and increase:
 
-- clear first move
-- useful top 3
-- follow-up suggestion
-- asset to create
-- risk
-- end-of-day review
+- speed
+- clarity
+- control
+- leverage
+- preparedness
+- follow-through
+- decision confidence
 
-## Classification
+## Product rule
 
-- PROMOTE if cleanup deploys and core system still works
-- FIX if minor UI or route issue
-- ROLLBACK if `/run` or frontend fails
+If a feature does not create one of these, it does not belong:
+
+- decision
+- action
+- asset
+- follow-up
+- risk visibility
+- preparation
+- memory
+
+## Avoid
+
+- generic AI dashboard
+- feature soup
+- fake analytics
+- unnecessary charts
+- noisy widgets
+- passive productivity software
+
+## Direction
+
+Get the system useful first.
+Enhance after daily utility is proven.

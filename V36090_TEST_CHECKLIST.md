@@ -1,22 +1,21 @@
 
-# V36070 Test Checklist
+# V36080 Test Checklist
 
 Backend:
-- [ ] /health
-- [ ] /test-report-json
-- [ ] /daily-flow
-- [ ] /daily-flow-state
+- /health
+- /test-report-json
+- /quality-polish
 
 Frontend:
-- [ ] Daily Flow nav appears
-- [ ] Build Daily Flow works
-- [ ] What Matters First populates
-- [ ] Top 3 populates
-- [ ] Meeting Prep populates
-- [ ] Follow-Up Queue populates
-- [ ] End-of-Day Review populates
-- [ ] Tomorrow Prep populates
-- [ ] Push Top 3 to Action Queue works
+- Polish button appears
+- Prompt works
+- Output is shorter and sharper
+- Daily Flow copy feels cleaner
 
-Macro Input:
-I have client follow-ups, a proposal due, team issues, meetings coming up, and too many priorities today. Tell me what matters first.
+Macro test:
+'I have too many client follow-ups, a proposal due, and internal team issues.'
+
+Expected:
+- direct what matters first
+- practical Top 3
+- concise follow-up

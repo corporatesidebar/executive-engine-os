@@ -1,21 +1,22 @@
 
-# V36060 Test Checklist
+# V36070 Test Checklist
 
 Backend:
-- [ ] /health works
-- [ ] /test-report-json works
-- [ ] /first-load works
-- [ ] /run still works
-- [ ] /pressure-attention still works
+- [ ] /health
+- [ ] /test-report-json
+- [ ] /daily-flow
+- [ ] /daily-flow-state
 
 Frontend:
-- [ ] First page loads
-- [ ] Blue/dark hero box says: Hey Will, let’s Rock n Roll today.
-- [ ] It does not switch back to: Create or advance a workspace.
-- [ ] Run OS still works
-- [ ] Pressure button still works if present
+- [ ] Daily Flow nav appears
+- [ ] Build Daily Flow works
+- [ ] What Matters First populates
+- [ ] Top 3 populates
+- [ ] Meeting Prep populates
+- [ ] Follow-Up Queue populates
+- [ ] End-of-Day Review populates
+- [ ] Tomorrow Prep populates
+- [ ] Push Top 3 to Action Queue works
 
-Promote if:
-- deploy is stable
-- first-load text is clean
-- existing routes are intact
+Macro Input:
+I have client follow-ups, a proposal due, team issues, meetings coming up, and too many priorities today. Tell me what matters first.

@@ -1,22 +1,20 @@
 
-# V36070 — Daily Operating Flow
+# V36080 — Output Quality + Real Use Polish
 
-## Purpose
-Make Executive Engine OS useful as a daily operating rhythm.
+Focus:
+- shorter outputs
+- sharper language
+- practical Top 3
+- less template feel
+- stronger what-matters-first logic
+- direct operator tone
 
-## Adds
-- POST /daily-flow
-- GET /daily-flow-state
-- Frontend page: Daily Flow
-- Daily sequence:
-  1. Start Day
-  2. What has my attention
-  3. What matters first
-  4. Top 3 actions
-  5. Meeting prep
-  6. Follow-up queue
-  7. End-of-day review
-  8. Tomorrow prep
+Adds:
+- POST /quality-polish
+- frontend Polish button
+- output compression logic
+- practical Top 3 generator
+- cleaner frontend copy
 
-## Promotion Standard
-The system should make the user want to open it every morning.
+Goal:
+Make the system feel more useful and less generic.

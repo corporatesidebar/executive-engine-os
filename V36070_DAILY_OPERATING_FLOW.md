@@ -1,26 +1,28 @@
 
-# V36050 — Executive Pressure + Attention Engine
+# V36060 — First-Load UX + Backend Weight Reduction
 
-Target user refined:
-- managers
-- operators
-- founders
-- small/mid-sized companies
-- people with too much moving at once
+## Goal
+Make first page load feel human, fast, and usable.
 
-Purpose:
-Make Executive Engine useful before it becomes perfect.
+## Changes
+- Replaced generic first-load copy:
+  - From: `Create or advance a workspace.`
+  - To: `Hey Will, let’s Rock n Roll today.`
+- Added lightweight backend route:
+  - `GET /first-load`
+- `/first-load` does not call OpenAI.
+- `/first-load` does not call Supabase.
+- Added frontend first-load fetch to stabilize the greeting after operator state loads.
+- Preserved all existing routes and features.
 
-Adds:
-- POST /pressure-attention
-- GET /pressure-attention-state
-- pressure score
-- attention required
-- next-best-action
-- do-not-do list
-- delegate/delay recommendations
-- follow-up before end of day
-- simple frontend test button
+## Why
+The previous first-load state was technically correct but poor UX.
+The system should feel ready, human, confident, and direct immediately.
 
-Macro test:
-"I have too many client follow-ups, a proposal due, sales are not closing, and my team needs direction. What matters first?"
+## Later
+Add rotating personalized greetings:
+- fun
+- positive
+- contextual
+- pressure-aware
+- unique by day

@@ -1,16 +1,21 @@
 
-# V36050 Test Checklist
+# V36060 Test Checklist
 
 Backend:
-- /health
-- /test-report-json
-- /pressure-attention
-- /pressure-attention-state
+- [ ] /health works
+- [ ] /test-report-json works
+- [ ] /first-load works
+- [ ] /run still works
+- [ ] /pressure-attention still works
 
 Frontend:
-- Pressure + Attention button appears
-- Prompt accepts real situation
-- Alert returns pressure level, next action, top 3, follow-up
+- [ ] First page loads
+- [ ] Blue/dark hero box says: Hey Will, let’s Rock n Roll today.
+- [ ] It does not switch back to: Create or advance a workspace.
+- [ ] Run OS still works
+- [ ] Pressure button still works if present
 
-Promotion standard:
-The output must make a busy manager/operator know what to do first.
+Promote if:
+- deploy is stable
+- first-load text is clean
+- existing routes are intact

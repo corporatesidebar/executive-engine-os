@@ -1,15 +1,61 @@
--- Executive Engine OS V35120 Supabase persistence table
-create extension if not exists pgcrypto;
+# Executive Engine OS — V36030 Cleanup + Architecture Stabilization
 
-create table if not exists public.items (
-  id uuid primary key default gen_random_uuid(),
-  kind text not null,
-  payload jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now()
-);
+This package is a cleanup/stabilization build.
 
-create index if not exists items_kind_idx on public.items(kind);
-create index if not exists items_created_at_idx on public.items(created_at desc);
+It is intentionally **not** a feature expansion.
 
--- For easiest private backend access, use SUPABASE_SERVICE_ROLE_KEY in Render.
--- Do not expose the service role key in frontend code.
+## Purpose
+
+Keep the project from becoming messy while preserving the current working system.
+
+## Clean structure
+
+```text
+/backend
+  main.py
+  requirements.txt
+
+/frontend
+  index.html
+
+/database
+  supabase_schema.sql
+
+/docs
+  README.md
+  CHANGELOG.md
+  TEST_CHECKLIST.md
+  ROLLBACK.md
+  PRODUCT_VISION.md
+  FILE_STRUCTURE.md
+
+render.yaml
+```
+
+## Preserved
+
+The build preserves the active backend, active frontend, Render config, and database folder.
+
+Protected backend routes remain:
+
+```text
+/run
+/health
+/debug
+/providers
+/test-report-json
+/db-status
+/demo-state
+/memory
+/operating-layer
+/daily-use
+/how-to-use
+```
+
+## Removed from package
+
+This cleanup package excludes old duplicate recovery docs, extra generated notes, temporary files, and old build clutter.
+
+## Upload rule
+
+Upload this ZIP as the clean repo structure only after backing up the current GitHub repo.

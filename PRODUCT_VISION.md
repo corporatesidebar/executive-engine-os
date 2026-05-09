@@ -1,61 +1,50 @@
-# Executive Engine OS — V36030 Cleanup + Architecture Stabilization
+# V36030 Test Checklist
 
-This package is a cleanup/stabilization build.
+## Backend
 
-It is intentionally **not** a feature expansion.
+- [ ] `/health` returns online
+- [ ] `/debug` returns version and config status
+- [ ] `/providers` returns provider config
+- [ ] `/test-report-json` returns pass/warn checks
+- [ ] `/run` returns structured output
+- [ ] `/db-status` works if present
+- [ ] `/demo-state` works if present
+- [ ] `/operating-layer-state` works if present
+- [ ] `/daily-use-state` works if present
+- [ ] `/how-to-use` works if present
 
-## Purpose
+## Frontend
 
-Keep the project from becoming messy while preserving the current working system.
+- [ ] Frontend loads
+- [ ] Existing navigation works
+- [ ] Today page works
+- [ ] Daily Use page works
+- [ ] Operating Layer page works
+- [ ] Run Command works
+- [ ] Action Queue works
+- [ ] Assets page still displays
+- [ ] Database/system status still displays
+- [ ] No major layout break
 
-## Clean structure
+## Macro test
 
-```text
-/backend
-  main.py
-  requirements.txt
-
-/frontend
-  index.html
-
-/database
-  supabase_schema.sql
-
-/docs
-  README.md
-  CHANGELOG.md
-  TEST_CHECKLIST.md
-  ROLLBACK.md
-  PRODUCT_VISION.md
-  FILE_STRUCTURE.md
-
-render.yaml
-```
-
-## Preserved
-
-The build preserves the active backend, active frontend, Render config, and database folder.
-
-Protected backend routes remain:
+Use:
 
 ```text
-/run
-/health
-/debug
-/providers
-/test-report-json
-/db-status
-/demo-state
-/memory
-/operating-layer
-/daily-use
-/how-to-use
+I have client follow-ups, a proposal to prepare, meetings coming up, and too many priorities. Tell me what to do first today.
 ```
 
-## Removed from package
+Expected:
 
-This cleanup package excludes old duplicate recovery docs, extra generated notes, temporary files, and old build clutter.
+- clear first move
+- useful top 3
+- follow-up suggestion
+- asset to create
+- risk
+- end-of-day review
 
-## Upload rule
+## Classification
 
-Upload this ZIP as the clean repo structure only after backing up the current GitHub repo.
+- PROMOTE if cleanup deploys and core system still works
+- FIX if minor UI or route issue
+- ROLLBACK if `/run` or frontend fails

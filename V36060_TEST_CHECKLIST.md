@@ -1,16 +1,16 @@
 
-# V36040 Tests
+# V36050 Test Checklist
 
 Backend:
 - /health
 - /test-report-json
-- /executive-intelligence
+- /pressure-attention
+- /pressure-attention-state
 
 Frontend:
-- Executive Intelligence button appears
-- Prompt opens
-- Response returns
+- Pressure + Attention button appears
+- Prompt accepts real situation
+- Alert returns pressure level, next action, top 3, follow-up
 
-Macro Test:
-Input:
-'I am running a multi-billion dollar company and have too many priorities today. I need the system to tell me what matters first, what risk I am missing, what to delegate, and what follow-up must happen before end of day.'
+Promotion standard:
+The output must make a busy manager/operator know what to do first.

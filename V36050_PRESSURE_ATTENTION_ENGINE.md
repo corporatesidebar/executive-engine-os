@@ -1,33 +1,20 @@
-# V36030 File Structure
 
-```text
-/backend
-  main.py
-  requirements.txt
+# V36040 — Executive Intelligence Refinement
 
-/frontend
-  index.html
+Focus:
+- stronger prioritization
+- smarter follow-up generation
+- delegation logic
+- executive pressure reduction
+- quieter outputs
+- operator-style recommendations
 
-/database
-  supabase_schema.sql
+Added:
+- POST /executive-intelligence
+- executive pressure scoring
+- delegation recommendations
+- follow-up intelligence
+- executive recommendation engine
 
-/docs
-  README.md
-  CHANGELOG.md
-  TEST_CHECKLIST.md
-  ROLLBACK.md
-  PRODUCT_VISION.md
-  FILE_STRUCTURE.md
-
-render.yaml
-```
-
-## Rules
-
-- Keep root clean.
-- Do not store old ZIP files in repo.
-- Do not store screenshots in repo unless needed.
-- Do not create multiple duplicate recovery docs.
-- Keep version notes inside `/docs`.
-- Keep active app files in `/backend` and `/frontend`.
-- Keep database files in `/database`.
+Goal:
+Make Executive Engine feel less like software and more like an operator.

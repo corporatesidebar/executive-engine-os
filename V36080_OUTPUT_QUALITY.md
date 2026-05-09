@@ -1,28 +1,22 @@
 
-# V36060 — First-Load UX + Backend Weight Reduction
+# V36070 — Daily Operating Flow
 
-## Goal
-Make first page load feel human, fast, and usable.
+## Purpose
+Make Executive Engine OS useful as a daily operating rhythm.
 
-## Changes
-- Replaced generic first-load copy:
-  - From: `Create or advance a workspace.`
-  - To: `Hey Will, let’s Rock n Roll today.`
-- Added lightweight backend route:
-  - `GET /first-load`
-- `/first-load` does not call OpenAI.
-- `/first-load` does not call Supabase.
-- Added frontend first-load fetch to stabilize the greeting after operator state loads.
-- Preserved all existing routes and features.
+## Adds
+- POST /daily-flow
+- GET /daily-flow-state
+- Frontend page: Daily Flow
+- Daily sequence:
+  1. Start Day
+  2. What has my attention
+  3. What matters first
+  4. Top 3 actions
+  5. Meeting prep
+  6. Follow-up queue
+  7. End-of-day review
+  8. Tomorrow prep
 
-## Why
-The previous first-load state was technically correct but poor UX.
-The system should feel ready, human, confident, and direct immediately.
-
-## Later
-Add rotating personalized greetings:
-- fun
-- positive
-- contextual
-- pressure-aware
-- unique by day
+## Promotion Standard
+The system should make the user want to open it every morning.
