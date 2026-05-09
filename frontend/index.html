@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Executive Engine OS · V36070</title>
+<title>Executive Engine OS · V36080</title>
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
 <style>
 :root{
@@ -34,7 +34,7 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='https://executive-engine-os.onrender.com';
-const VERSION='36070-daily-operating-flow';
+const VERSION='36080-output-quality-real-use-polish';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const clean=s=>String(s??'').replace(/Build executive workspace for/gi,'Executive Workspace').replace(/\s+/g,' ').trim();
@@ -72,9 +72,9 @@ function dailyFlowPage(){
   const f=state.dailyFlow||{};
   return `<section class="grid2">
     <div class="hero">
-      <span class="kicker">V36070 / Daily Operating Flow</span>
+      <span class="kicker">V36080 / Daily Operating Flow</span>
       <h3>${esc(clean(f.greeting||'Hey Will, let’s Rock n Roll today.'))}</h3>
-      <p>${esc(clean(f.executive_summary||'Start here each morning. Tell the system what has your attention. It will identify what matters first, the top 3 actions, meeting prep, follow-up, end-of-day review, and tomorrow prep.'))}</p>
+      <p>${esc(clean(f.executive_summary||'Start here each morning. Tell the system what’s on your plate. It will help prioritize the day.'))}</p>
       <div class="cockpit">
         <div class="dial"><small>Priority</small><strong>${esc(clean(f.priority||'Ready'))}</strong><p>Daily load</p></div>
         <div class="dial"><small>Top 3</small><strong>${(f.top_3_actions||[]).length||0}</strong><p>First moves</p></div>
@@ -84,7 +84,7 @@ function dailyFlowPage(){
     <div class="card">
       <span class="kicker">Start Day</span>
       <h3>What has your attention?</h3>
-      <p>Enter the real pressure: meetings, clients, staff, revenue, operations, proposals, follow-ups, or priority overload.</p>
+      <p>Enter what’s on your plate right now.</p>
       <input id="dailyFlowInput" placeholder="Example: I have client follow-ups, a proposal due, team issues, and too many priorities today." />
       <div class="actions"><button class="btn orange" onclick="runDailyFlow()">Build Daily Flow</button><button class="btn" onclick="fillDailyFlowExample()">Use Example</button></div>
     </div>
@@ -106,7 +106,7 @@ function dailyFlowPage(){
         <div class="card"><span class="kicker">Success Metric</span><p>${esc(clean(f.success_metric||'Close one important loop and know tomorrow’s first move.'))}</p></div>
       </div>
     </div>
-    <div class="card"><span class="kicker">Daily Rule</span><h3>Do not use this like a chatbot.</h3><p>Use it like an operating rhythm: start day, execute, follow up, close loops, prep tomorrow.</p></div>
+    <div class="card"><span class="kicker">Daily Rule</span><h3>Do not use this like a chatbot.</h3><p>Start day. Execute. Follow up. Close loops. Prep tomorrow.</p></div>
   </section>`;
 }
 function fillDailyFlowExample(){
@@ -125,7 +125,7 @@ async function runDailyFlow(){
       actions:data.top_3_actions||data.actions,
       risk:data.risk,
       priority:data.priority,
-      asset:{title:'V36070 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36080 Daily Operating Flow',type:'daily_flow',content:JSON.stringify(data,null,2)}
     },input);
     save();render();toast('Daily Flow ready');
   }catch(e){toast('Daily Flow failed: '+e.message)}
@@ -196,7 +196,7 @@ async function runDailyUse(){
       actions:data.actions,
       risk:data.risk_to_watch,
       priority:data.priority,
-      asset:{title:'V36070 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
+      asset:{title:'V36080 Cleanup Stabilization',type:'daily_use',content:JSON.stringify(data,null,2)}
     },input);
     save();
     render();
@@ -348,7 +348,7 @@ async function runPressureAttention(){
 }
 
 
-async function loadFirstMessageV36070(){
+async function loadFirstMessageV36080(){
   try{
     const res = await fetch(API_BASE + "/first-load", {cache:"no-store"});
     const data = await res.json();
@@ -364,8 +364,36 @@ async function loadFirstMessageV36070(){
     if(el) el.textContent = "Hey Will, let’s Rock n Roll today.";
   }
 }
-setTimeout(loadFirstMessageV36070, 250);
+setTimeout(loadFirstMessageV36080, 250);
+
+
+async function runQualityPolish(){
+  const input = prompt("Describe your situation briefly.");
+  if(!input) return;
+
+  try{
+    const res = await fetch(API_BASE + "/quality-polish",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({input})
+    });
+
+    const data = await res.json();
+
+    alert(
+      "WHAT MATTERS FIRST\n\n" +
+      data.what_matters_first +
+      "\n\nTOP 3\n- " +
+      (data.top_3 || []).join("\n- ") +
+      "\n\nFOLLOW-UP\n- " +
+      (data.follow_up || []).join("\n- ")
+    );
+
+  }catch(e){
+    alert("Quality Polish failed.");
+  }
+}
 
 </script>
-<button onclick="runExecutiveIntelligence()" style="position:fixed;bottom:20px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:700;z-index:9999">Intel</button><button onclick="runPressureAttention()" style="position:fixed;bottom:72px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#f97316;color:#fff;font-weight:800;z-index:9999">Pressure</button></body>
+<button onclick="runExecutiveIntelligence()" style="position:fixed;bottom:20px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#111;color:#fff;font-weight:700;z-index:9999">Intel</button><button onclick="runPressureAttention()" style="position:fixed;bottom:72px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#f97316;color:#fff;font-weight:800;z-index:9999">Pressure</button><button onclick="runQualityPolish()" style="position:fixed;bottom:124px;right:20px;padding:14px 18px;border:none;border-radius:12px;background:#111827;color:#fff;font-weight:800;z-index:9999">Polish</button></body>
 </html>

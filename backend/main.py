@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36070-daily-operating-flow"
+VERSION = "36080-output-quality-real-use-polish"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2879,3 +2879,103 @@ def v36070_daily_flow_state():
         "operator_state": scan_operator_state(),
         "active_context": ACTIVE_CONTEXT
     }
+
+
+# ---------------------------------------------------------------------
+# V36080 — Output Quality + Real Use Polish
+# Sharper outputs. Less generic language. More operator style.
+# ---------------------------------------------------------------------
+
+WEAK_PHRASES = [
+    "leverage", "synergy", "stakeholders", "optimize", "moving forward",
+    "alignment", "best practice", "operational excellence"
+]
+
+def _v36080_shorten(text):
+    if not text:
+        return ""
+    text = str(text).strip()
+    for p in WEAK_PHRASES:
+        text = text.replace(p, "")
+    text = re.sub(r'\s+', ' ', text).strip()
+    if len(text) > 180:
+        text = text[:177].rstrip() + "..."
+    return text
+
+def _v36080_top3(input_text):
+    t = (input_text or "").lower()
+
+    if "client" in t or "meeting" in t:
+        return [
+            "Prepare the outcome and likely objection before the meeting.",
+            "Send the follow-up within 30 minutes after the call.",
+            "Move the next decision into a deadline."
+        ]
+
+    if "sales" in t or "proposal" in t or "revenue" in t:
+        return [
+            "Advance the closest revenue opportunity first.",
+            "Remove the exact blocker stopping the deal.",
+            "Schedule the next touchpoint before ending the conversation."
+        ]
+
+    if "team" in t or "staff" in t or "manager" in t:
+        return [
+            "Clarify ownership before adding more work.",
+            "Escalate the stalled task immediately.",
+            "Reduce unnecessary approvals."
+        ]
+
+    return [
+        "Handle the highest-pressure item first.",
+        "Close one open loop before starting new work.",
+        "End the day knowing tomorrow’s first move."
+    ]
+
+def _v36080_what_matters(input_text):
+    t = (input_text or "").lower()
+
+    if "client" in t:
+        return "Protect the client relationship and move the next decision forward."
+
+    if "sales" in t or "revenue" in t:
+        return "Focus on revenue movement before internal noise."
+
+    if "team" in t:
+        return "Fix the ownership bottleneck before adding more tasks."
+
+    if "overwhelmed" in t or "too many" in t:
+        return "Cut the day down to one must-win move."
+
+    return "Handle the highest-pressure item first."
+
+@app.post("/quality-polish")
+def v36080_quality_polish(req: dict):
+    input_text = req.get("input","")
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36080_output_quality_real_use_polish",
+        "what_matters_first": _v36080_what_matters(input_text),
+        "top_3": _v36080_top3(input_text),
+        "follow_up": [
+            "Confirm owner, deadline, and next step in writing.",
+            "Close one open loop before end of day."
+        ],
+        "do_not_do": [
+            "Do not treat every task as urgent.",
+            "Do not leave next steps vague.",
+            "Do not start new work before closing critical loops."
+        ],
+        "tone": "short_direct_operator",
+        "created_at": now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "quality_polish",
+        "payload": result,
+        "created_at": now()
+    })
+
+    return result
