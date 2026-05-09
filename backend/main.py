@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36120-actions-operating-ux"
+VERSION = "36150-action-detail-command-flow"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3655,3 +3655,136 @@ def v36120_action_lite(action_id: str):
     if not action:
         return {"status": "missing", "action_id": action_id, "version": VERSION}
     return {"status": "ok", "action": action, "version": VERSION}
+
+
+# ---------------------------------------------------------------------
+# V36130 — Action Workspace Engine
+# ---------------------------------------------------------------------
+
+@app.post("/action-followup-scan")
+def v36130_followup_scan():
+    actions = MEMORY.get("actions_index", {})
+    items = list(actions.values()) if isinstance(actions, dict) else []
+    feed = []
+
+    for item in items[:25]:
+        title = item.get("title", "Action")
+        category = item.get("category", "general")
+
+        if category == "meeting":
+            suggestion = f"You met with a contact regarding '{title}'. Suggested next move: send recap and confirm next meeting step."
+        elif category == "proposal":
+            suggestion = f"Proposal action '{title}' appears active. Suggested next move: finalize pricing/scope and send client-ready draft."
+        else:
+            suggestion = f"Review '{title}' and close open loops."
+
+        feed.append({
+            "title": title,
+            "category": category,
+            "suggestion": suggestion,
+            "priority": "High" if category in ["proposal", "meeting"] else "Medium"
+        })
+
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "count": len(feed),
+        "followups": feed
+    }
+
+@app.get("/action-workspace-state")
+def v36130_workspace_state():
+    actions = MEMORY.get("actions_index", {})
+    count = len(actions) if isinstance(actions, dict) else 0
+
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "workspace_engine": True,
+        "active_actions": count,
+        "features": [
+            "short executive summary",
+            "expandable detail view",
+            "editable documents",
+            "timeline continuity",
+            "follow-up intelligence",
+            "persistent action memory"
+        ]
+    }
+
+
+# ---------------------------------------------------------------------
+# V36150 — Action Detail + Command Flow
+# Keeps design stable. Adds stronger action detail structure.
+# ---------------------------------------------------------------------
+
+class V36150ActionCommandRequest(BaseModel):
+    action_id: str = ""
+    command: str = ""
+    current_draft: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36150_text(value):
+    try:
+        return clean_text(str(value or "")).strip()
+    except Exception:
+        return str(value or "").strip()
+
+@app.post("/action-command")
+def v36150_action_command(req: V36150ActionCommandRequest):
+    command = _v36150_text(req.command)
+    draft = _v36150_text(req.current_draft)
+    lower = command.lower()
+
+    result = {
+        "status": "ok",
+        "version": VERSION,
+        "module": "v36150_action_detail_command_flow",
+        "action_id": req.action_id,
+        "command": command,
+        "short": {
+            "summary": "Command applied to the active ACTION.",
+            "next_move": "Review the updated draft and decide whether it is ready, needs detail, or should become client-ready.",
+            "risk": "If the draft is not reviewed, the ACTION may stay unfinished."
+        },
+        "updated_draft": draft,
+        "suggested_next_steps": [
+            "Confirm the decision or missing detail.",
+            "Send follow-up or prepare the client-ready version.",
+            "Keep the ACTION active until the next step is closed."
+        ],
+        "created_at": now()
+    }
+
+    if "short" in lower or "summarize" in lower:
+        result["updated_draft"] = "\n".join([line for line in draft.splitlines() if line.strip()][:8])
+        result["short"]["summary"] = "Draft shortened for executive review."
+    elif "client" in lower or "ready" in lower:
+        result["updated_draft"] = "CLIENT-READY VERSION\n\n" + draft + "\n\nNext Step:\nPlease confirm the preferred direction, timing, and scope."
+        result["short"]["summary"] = "Draft converted into a client-ready direction."
+    elif "proposal" in lower:
+        result["updated_draft"] = draft + "\n\nPROPOSAL DIRECTION\n- Problem\n- Recommended scope\n- Timeline\n- Investment range\n- Next step"
+        result["short"]["summary"] = "Proposal structure added."
+    elif "follow" in lower:
+        result["updated_draft"] = draft + "\n\nFOLLOW-UP DRAFT\nThanks for the conversation. I’ll prepare the next-step overview and send over a clear direction with recommended actions, timing, and scope."
+        result["short"]["summary"] = "Follow-up draft added."
+    elif "expand" in lower or "detail" in lower:
+        result["updated_draft"] = draft + "\n\nDETAILS TO ADD\n- Current situation\n- Business objective\n- Constraints\n- Decision needed\n- Timing\n- Owner"
+        result["short"]["summary"] = "Detail structure added."
+    else:
+        result["updated_draft"] = draft + "\n\nEXECUTIVE NOTE\n" + command
+        result["short"]["summary"] = "Executive note added to the ACTION."
+
+    MEMORY.setdefault("operator_events", []).insert(0, {
+        "kind": "action_command",
+        "payload": result,
+        "created_at": now()
+    })
+
+    try:
+        db_insert("action_command", result)
+    except Exception:
+        pass
+
+    return result

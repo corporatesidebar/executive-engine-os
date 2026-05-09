@@ -3,18 +3,35 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Executive Engine OS V36120</title>
+<title>Executive Engine OS V36150</title>
 <style>
 :root{--bg:#f7f8fb;--panel:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--nav:#0b1220;--blue:#2563eb;--orange:#f97316;--green:#16a34a;--shadow:0 18px 45px rgba(15,23,42,.08)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);height:100vh;overflow:hidden}.app{display:grid;grid-template-columns:300px 1fr;height:100vh}.sidebar{background:var(--nav);color:#fff;display:flex;flex-direction:column}.sideTop{padding:18px;border-bottom:1px solid rgba(255,255,255,.08)}.brand{display:flex;gap:10px;align-items:center}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),#60a5fa);display:grid;place-items:center;font-weight:950}.brand h1{font-size:15px;margin:0}.brand p{font-size:11px;margin:3px 0 0;color:#aab8cf}.newBtn{width:100%;margin-top:16px;border:0;border-radius:12px;background:var(--orange);color:#fff;font-weight:900;padding:12px;cursor:pointer}.search{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.08)}.search input{width:100%;background:#111827;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:10px;padding:11px;outline:none}.label{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#8fa0bd;font-weight:950;margin:12px 18px 8px}.actionList{overflow:auto;padding:0 12px 12px;flex:1}.actionItem{padding:12px;border-radius:12px;cursor:pointer;margin-bottom:8px;border:1px solid transparent}.actionItem:hover,.actionItem.active{background:#16233a;border-color:rgba(255,255,255,.08)}.actionItem strong{display:block;font-size:13px;line-height:1.25}.actionItem span{display:block;color:#9fb0cc;font-size:11px;margin-top:5px}.sideFoot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#9fb0cc}.main{height:100vh;display:flex;flex-direction:column;min-width:0}.topbar{height:72px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex:0 0 auto}.title h2{margin:0;font-size:21px;letter-spacing:-.04em}.title p{margin:4px 0 0;color:var(--muted);font-size:12px}.status{font-size:12px;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:999px;padding:8px 12px;font-weight:900}.content{flex:1;overflow:auto;padding:24px 24px 170px}.wrap{max-width:1080px;margin:0 auto}.hero{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;border-radius:24px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}.hero h3{font-size:30px;margin:8px 0;letter-spacing:-.06em}.hero p{color:#dbeafe;line-height:1.45;margin:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}.card.click{cursor:pointer}.card.click:hover{border-color:#93c5fd;transform:translateY(-1px)}.kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:950}.card h3{margin:8px 0;font-size:18px;letter-spacing:-.03em}.card p{color:var(--muted);line-height:1.45}.actionHeader{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}.actionHeader h2{font-size:30px;letter-spacing:-.06em;margin:0}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;color:var(--muted);font-weight:900;background:#fff}.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.shortCard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.shortCard h4{margin:8px 0;font-size:16px}.shortCard p{color:var(--muted)}.detailToggle{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}.detail{display:none}.detail.show{display:block}.editorGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.editor{min-height:340px;width:100%;border:1px solid var(--line);border-radius:16px;padding:16px;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical;outline:none}.thread{max-height:390px;overflow:auto}.msg{padding:12px 14px;border-radius:14px;margin-bottom:10px;line-height:1.45;font-size:14px}.user{background:#eff6ff;margin-left:30px}.system{background:#fff;border:1px solid var(--line);margin-right:30px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}.btn.orange{background:var(--orange);color:#fff;border-color:var(--orange)}.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}.inputDock{position:fixed;left:300px;right:0;bottom:0;background:rgba(247,248,251,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:14px 22px}.inputBox{max-width:980px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:12px}textarea#capture{width:100%;min-height:62px;border:0;outline:none;resize:none;font-family:inherit;font-size:15px;line-height:1.45}.chips{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}.chip{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 10px;font-weight:850;font-size:12px;cursor:pointer}.send{margin-left:auto;background:var(--nav);color:#fff;border-color:var(--nav)}@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.inputDock{left:0}.grid,.summaryGrid,.editorGrid{grid-template-columns:1fr}.content{padding:18px 14px 170px}}
+
+.timeline{
+margin-top:16px;
+}
+.timelineItem{
+padding:12px 0;
+border-bottom:1px solid #e2e8f0;
+font-size:14px;
+font-weight:600;
+}
+.timelineItem:last-child{
+border-bottom:none;
+}
+.followups{
+margin-top:16px;
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="sideTop">
-      <div class="brand"><div class="logo">EE</div><div><h1>Executive Engine OS</h1><p>V36120 ACTIONS UX</p></div></div>
-      <button class="newBtn" onclick="newAction()">+ New Action</button>
+      <div class="brand"><div class="logo">EE</div><div><h1>Executive Engine OS</h1><p>V36150 ACTIONS UX</p></div></div>
+      
     </div>
     <div class="search"><input id="search" placeholder="Search actions..." oninput="renderSidebar()"/></div>
     <div class="label">ACTIONS</div>
@@ -24,15 +41,29 @@
 
   <main class="main">
     <header class="topbar">
-      <div class="title"><h2 id="pageTitle">Command Centre</h2><p id="pageSub">Here’s what needs your attention.</p></div>
+      <div class="title"><h2 id="pageTitle">Executive Engine</h2><p id="pageSub">What are we building today?</p></div>
       <div class="status" id="status">Checking backend</div>
     </header>
 
-    <section class="content" id="content"></section>
+    <section class="content" id="content">
+<div class="timeline card">
+<h3>Operational Timeline</h3>
+<div class="timelineItem">Meeting booked</div>
+<div class="timelineItem">Proposal requested</div>
+<div class="timelineItem">Follow-up pending</div>
+<div class="timelineItem">Waiting on executive decision</div>
+</div>
+
+<div class="followups card">
+<h3>Suggested Follow-Up</h3>
+<p>The system detected an active proposal opportunity. Suggested next move: send recap + strategy outline before next meeting.</p>
+</div>
+
+</section>
 
     <div class="inputDock">
       <div class="inputBox">
-        <textarea id="capture" placeholder="Quick capture: meeting notes, proposal idea, client issue, task, follow-up, strategy..."></textarea>
+        <textarea id="capture" placeholder="Type or speak your what we need to do"></textarea>
         <div class="chips">
           <button class="chip" onclick="setType('meeting')">Meeting</button>
           <button class="chip" onclick="setType('proposal')">Proposal</button>
@@ -49,7 +80,7 @@
 
 <script>
 const API_BASE="https://executive-engine-os.onrender.com";
-const VERSION="36120-actions-operating-ux";
+const VERSION="36150-action-detail-command-flow";
 let selectedType="general";
 let activeId=null;
 let actions=JSON.parse(localStorage.getItem("ee_actions_v36120")||"[]");
@@ -68,18 +99,18 @@ function renderSidebar(){
 }
 function renderCommand(){
   activeId=null;
-  document.getElementById("pageTitle").textContent="Command Centre";
-  document.getElementById("pageSub").textContent="Here’s what needs your attention.";
+  document.getElementById("pageTitle").textContent="Executive Engine";
+  document.getElementById("pageSub").textContent="What are we building today?";
   const recent=actions.slice(0,4);
   document.getElementById("content").innerHTML=`<div class="wrap">
     <div class="hero">
-      <span class="kicker">Command Centre</span>
-      <h3>Hey Will, let’s Rock n Roll today.</h3>
-      <p>Drop messy notes, meeting context, proposals, follow-ups, or ideas. I’ll turn them into ACTIONS with short summary, editable draft, and next move.</p>
+      <span class="kicker">The Engine</span>
+      <h3>What are we building and let’s make it happen.</h3>
+      <p>Your Strategic Operator</p>
     </div>
     <div class="grid">
       <div class="card click" onclick="document.getElementById('capture').focus()"><span class="kicker">Start</span><h3>Quick Capture</h3><p>Type the messy note. The system organizes it.</p></div>
-      <div class="card click" onclick="document.getElementById('capture').value='Meeting notes auto loan client. Met with Bob. He wants to up ad spend to 50k/mo. Website changes: make form smoother, change button to orange, future redesign. Meeting next week 3pm at his office to strategize quality leads and conversion rate. He asked for proposal.';document.getElementById('capture').focus()"><span class="kicker">Example</span><h3>Auto Loan Client Notes</h3><p>Load the Bob meeting example.</p></div>
+      
       ${recent.map(w=>`<div class="card click" onclick="openAction('${w.id}')"><span class="kicker">${esc(w.category)}</span><h3>${esc(w.title)}</h3><p>${esc(w.short?.next_move||w.short?.summary||'Continue action')}</p></div>`).join("")}
     </div>
   </div>`;
@@ -109,9 +140,9 @@ function openAction(id){
           <textarea class="editor" id="docEditor">${esc(w.details?.draft||w.input||'')}</textarea>
           <div class="actions">
             <button class="btn blue" onclick="saveDoc()">Save</button>
-            <button class="btn" onclick="aiPolish()">AI Polish</button>
-            <button class="btn" onclick="clientReady()">Client Ready</button>
-            <button class="btn" onclick="shortenDoc()">Shorten</button>
+            <button class="btn" onclick="runActionCommand('polish and improve this')">AI Polish</button>
+            <button class="btn" onclick="runActionCommand('make this client ready')">Client Ready</button>
+            <button class="btn" onclick="runActionCommand('shorten this for executive review')">Shorten</button><button class="btn" onclick="runActionCommand('create follow-up draft')">Follow-Up</button><button class="btn" onclick="runActionCommand('add proposal structure')">Proposal</button>
           </div>
         </div>
         <div class="card">
@@ -151,6 +182,35 @@ function clientReady(){const ed=document.getElementById("docEditor");ed.value="C
 function shortenDoc(){const ed=document.getElementById("docEditor");ed.value=ed.value.split(/\n/).filter(Boolean).slice(0,8).join("\n");saveDoc()}
 async function health(){try{const r=await fetch(API_BASE+"/health",{cache:"no-store"});const d=await r.json();document.getElementById("status").textContent=d.status==="ok"||d.status==="online"?"Backend Online":"Check Backend"}catch(e){document.getElementById("status").textContent="Offline"}}
 health();renderCommand();
+
+async function runActionCommand(command){
+  const w=current && current();
+  if(!w){alert("Open an ACTION first.");return}
+  const ed=document.getElementById("docEditor");
+  const draft=ed?ed.value:(w.details?.draft||"");
+  const cmd=command || prompt("Tell The Engine what to do with this ACTION.");
+  if(!cmd)return;
+  try{
+    const res=await fetch(API_BASE+"/action-command",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action_id:w.id,command:cmd,current_draft:draft,account_id:"default",user_id:"owner"})
+    });
+    const data=await res.json();
+    if(ed){ed.value=data.updated_draft||draft}
+    w.details=w.details||{};
+    w.details.draft=data.updated_draft||draft;
+    w.short=w.short||{};
+    w.short.summary=data.short?.summary||w.short.summary;
+    w.short.next_move=data.short?.next_move||w.short.next_move;
+    w.updated_at=new Date().toISOString();
+    save();renderSidebar();
+    alert(data.short?.summary || "Updated.");
+  }catch(e){
+    alert("Action command failed: "+e.message);
+  }
+}
+
 </script>
 </body>
 </html>
