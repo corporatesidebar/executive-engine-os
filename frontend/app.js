@@ -1,5 +1,5 @@
 const API_BASE = "https://executive-engine-os.onrender.com";
-const VERSION = "36200-conversational-executive-operating-system";
+const VERSION = "36210-engine-box-top-thread-below";
 
 const seedActions = [
   { id:"abc-roofing-proposal", title:"ABC Roofing Proposal", subtitle:"Proposal draft ready for review", priority:"High", due:"Due today", age:"2h ago", category:"proposal", thread:[] },
@@ -52,7 +52,7 @@ function renderThread() {
         <h2>What are we building and let’s make it happen.</h2>
         <p>Start with a messy note, meeting, proposal, follow-up, idea, or task. The Engine will turn it into an ACTION thread.</p>
       </div>`;
-    scrollThreadBottom();
+    // scroll preserved; engine box remains top
     return;
   }
 
@@ -65,7 +65,7 @@ function renderThread() {
     </div>
     ${messages.map((m, i) => renderMessage(m, i)).join("")}
   `;
-  scrollThreadBottom();
+  // scroll preserved; engine box remains top
 }
 
 function renderMessage(m, i) {

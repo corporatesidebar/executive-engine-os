@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36200-conversational-executive-operating-system"
+VERSION = "36210-engine-box-top-thread-below"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
