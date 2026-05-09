@@ -5,7 +5,7 @@ Clean active repository package.
 Current build:
 
 ```text
-V36030 — Cleanup + Architecture Stabilization
+V36060 — First-Load UX + Backend Weight Reduction
 ```
 
 Start with:

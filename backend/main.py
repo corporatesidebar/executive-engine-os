@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36050-pressure-attention-engine"
+VERSION = "36060-first-load-ux-backend-weight"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -670,8 +670,8 @@ def scan_operator_state():
     if incomplete_workflows:
         attention.append({"type": "workflow", "title": incomplete_workflows[0]["title"], "priority": "Medium"})
 
-    top_priority = attention[0]["title"] if attention else "No urgent operator pressure detected."
-    next_best_action = "Open the highest-pressure workspace and complete the next follow-up." if attention else "Create or advance a workspace."
+    top_priority = attention[0]["title"] if attention else "Ready when you are."
+    next_best_action = "Open the highest-pressure workspace and complete the next follow-up." if attention else "Hey Will, let’s Rock n Roll today."
 
     state = {
         "mode": "active",
@@ -2702,4 +2702,25 @@ def v36050_pressure_attention_state():
         "latest": pressure[:10],
         "operator_state": scan_operator_state(),
         "active_context": ACTIVE_CONTEXT
+    }
+
+
+# ---------------------------------------------------------------------
+# V36060 — First-Load UX + Backend Weight Reduction
+# Lightweight startup endpoint. No AI call. No DB dependency.
+# ---------------------------------------------------------------------
+
+@app.get("/first-load")
+def v36060_first_load():
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "greeting": "Hey Will, let’s Rock n Roll today.",
+        "subtext": "Tell me what has your attention and I’ll help turn it into movement.",
+        "what_to_do_now": "Start with the one thing that has your attention.",
+        "next_best_action": "Enter today’s pressure, meeting, client issue, proposal, or priority overload.",
+        "priority": "Ready",
+        "risk": "No active risk yet.",
+        "mode": "first_load",
+        "backend_weight": "lightweight_no_ai_no_db"
     }
