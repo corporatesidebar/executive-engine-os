@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36250-executive-operational-intelligence-layer"
+VERSION = "36210-engine-box-top-thread-below"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -3954,53 +3954,4 @@ def v36200_thread_state():
         "version": VERSION,
         "count": len(MEMORY.get("thread_events", [])),
         "latest": MEMORY.get("thread_events", [])[:20]
-    }
-
-
-# ---------------------------------------------------------------------
-# V36250 OPERATIONAL INTELLIGENCE
-# ---------------------------------------------------------------------
-
-def v36250_operational_response(text: str):
-    t = (text or "").lower()
-
-    what_matters = "Information captured and organized into an operational ACTION."
-    next_move = "Review the draft, clarify the objective, and close the next step."
-    why_it_matters = "Execution speed improves when meetings, follow-ups, and decisions are structured immediately."
-    risks = [
-        "No owner or deadline confirmed.",
-        "Proposal scope may still be unclear.",
-    ]
-    recommended = [
-        "Identify the next decision.",
-        "Assign ownership.",
-        "Prepare the follow-up before the conversation ends."
-    ]
-
-    if "meeting" in t or "met with" in t:
-        what_matters = "Meeting context captured. Opportunity and next-step signals detected."
-        next_move = "Prepare talking points, clarify decision-maker, and define the follow-up."
-        why_it_matters = "Most meetings lose value because the next operational step is never formalized."
-        recommended = [
-            "Prepare 3 strategic talking points.",
-            "Confirm budget/timeline.",
-            "Draft follow-up before the meeting ends."
-        ]
-
-    if "proposal" in t:
-        what_matters = "Proposal opportunity detected."
-        next_move = "Build proposal structure and identify missing pricing/scope details."
-        why_it_matters = "Fast proposal turnaround increases close probability and executive responsiveness."
-        risks = [
-            "Pricing unclear.",
-            "Scope not finalized.",
-            "Timeline not confirmed."
-        ]
-
-    return {
-        "what_matters": what_matters,
-        "next_move": next_move,
-        "why_it_matters": why_it_matters,
-        "risks": risks,
-        "recommended_actions": recommended
     }
