@@ -1,5 +1,5 @@
 const API_BASE = "https://executive-engine-os.onrender.com";
-const VERSION = "36210-engine-box-top-thread-below";
+const VERSION = "36250-executive-operational-intelligence-layer";
 
 const seedActions = [
   { id:"abc-roofing-proposal", title:"ABC Roofing Proposal", subtitle:"Proposal draft ready for review", priority:"High", due:"Due today", age:"2h ago", category:"proposal", thread:[] },
@@ -82,10 +82,36 @@ function renderMessage(m, i) {
     <div class="assistant-msg">
       <div class="msg-kicker">SHORT VERSION</div>
       <h3>${escapeHtml(s.summary || "Action organized.")}</h3>
-      <div class="short-grid">
-        <div class="short-tile"><strong>Next Move</strong><span>${escapeHtml(s.next_move || "Review and continue.")}</span></div>
-        <div class="short-tile"><strong>Risk</strong><span>${escapeHtml(s.risk || "Loose notes create missed follow-up.")}</span></div>
-        <div class="short-tile"><strong>Top Actions</strong><span>${escapeHtml(top.slice(0,3).join(" · ") || "Close the loop.")}</span></div>
+      <div class="executive-block">
+        <div class="exec-row">
+          <div class="exec-label">WHAT MATTERS</div>
+          <div class="exec-value">${escapeHtml(s.summary || "Action organized.")}</div>
+        </div>
+
+        <div class="exec-row">
+          <div class="exec-label">NEXT MOVE</div>
+          <div class="exec-value">${escapeHtml(s.next_move || "Review and continue.")}</div>
+        </div>
+
+        <div class="exec-row">
+          <div class="exec-label">WHY IT MATTERS</div>
+          <div class="exec-value">Execution quality improves when decisions, follow-ups, and ownership are clarified immediately.</div>
+        </div>
+
+        <div class="exec-row">
+          <div class="exec-label">RISKS</div>
+          <ul class="exec-list">
+            <li>${escapeHtml(s.risk || "Loose notes create missed follow-up.")}</li>
+            <li>Operational continuity may stall without a clear next step.</li>
+          </ul>
+        </div>
+
+        <div class="exec-row">
+          <div class="exec-label">RECOMMENDED ACTIONS</div>
+          <ul class="exec-list">
+            ${(top.slice(0,3).map(a => `<li>${escapeHtml(a)}</li>`).join(""))}
+          </ul>
+        </div>
       </div>
       <button class="expand-btn" onclick="toggleDetail('${id}')">View Detailed Brief</button>
     </div>
