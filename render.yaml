@@ -1,17 +1,13 @@
-# Executive Engine OS
+services:
+  - type: web
+    name: executive-engine-os
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
 
-Clean active repository package.
-
-Current build:
-
-```text
-V36060 — First-Load UX + Backend Weight Reduction
-```
-
-Start with:
-
-```text
-/docs/README.md
-/docs/UPLOAD_INSTRUCTIONS.md
-/docs/TEST_CHECKLIST.md
-```
+  - type: static
+    name: executive-engine-frontend
+    rootDir: frontend
+    buildCommand: ""
+    staticPublishPath: .
