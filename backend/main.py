@@ -8,7 +8,7 @@ import os, json, re
 import urllib.request, urllib.error
 from datetime import datetime
 
-VERSION = "36080-output-quality-real-use-polish"
+VERSION = "36090-usefulness-flow-consolidation"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -2976,6 +2976,102 @@ def v36080_quality_polish(req: dict):
         "kind": "quality_polish",
         "payload": result,
         "created_at": now()
+    })
+
+    return result
+
+
+# ---------------------------------------------------------------------
+# V36090 — Usefulness Flow Consolidation
+# One clean flow. One input. Consolidated usefulness response.
+# ---------------------------------------------------------------------
+
+class V36090FlowRequest(BaseModel):
+    input: str = ""
+    account_id: str = "default"
+    user_id: str = "owner"
+
+def _v36090_detect_focus(text):
+    t = (text or "").lower()
+    if any(x in t for x in ["client","meeting","customer"]):
+        return "client_meeting"
+    if any(x in t for x in ["sales","proposal","revenue","lead"]):
+        return "revenue"
+    if any(x in t for x in ["team","staff","manager","hire"]):
+        return "team"
+    if any(x in t for x in ["overwhelmed","too many","busy","priorities"]):
+        return "priority_overload"
+    return "general"
+
+@app.post("/usefulness-flow")
+def v36090_usefulness_flow(req: V36090FlowRequest):
+    text = req.input or "Help me prioritize my day."
+    focus = _v36090_detect_focus(text)
+
+    what = "Handle the highest-pressure item first."
+    top3 = [
+        "Close one important loop before noon.",
+        "Move one key conversation or decision forward.",
+        "End the day knowing tomorrow’s first move."
+    ]
+
+    if focus == "client_meeting":
+        what = "Protect the client relationship and move the next decision forward."
+        top3 = [
+            "Prepare the meeting outcome and objection first.",
+            "Send the follow-up within 30 minutes after the conversation.",
+            "Move the next decision into a deadline."
+        ]
+
+    elif focus == "revenue":
+        what = "Move revenue before internal noise."
+        top3 = [
+            "Advance the closest revenue opportunity first.",
+            "Remove the blocker slowing the deal.",
+            "Schedule the next touchpoint immediately."
+        ]
+
+    elif focus == "team":
+        what = "Fix ownership and bottlenecks before adding more work."
+        top3 = [
+            "Clarify who owns what.",
+            "Escalate the stalled task immediately.",
+            "Reduce unnecessary approvals."
+        ]
+
+    elif focus == "priority_overload":
+        what = "Cut the day down to one must-win move."
+        top3 = [
+            "Ignore low-value busy work.",
+            "Complete the highest-pressure item first.",
+            "Delay anything that does not move revenue, clients, or risk."
+        ]
+
+    result = {
+        "status":"ok",
+        "version":VERSION,
+        "module":"v36090_usefulness_flow",
+        "greeting":"Hey Will, let’s Rock n Roll today.",
+        "focus":focus,
+        "what_matters_first":what,
+        "top_3":top3,
+        "follow_up":[
+            "Confirm owner, deadline, and next step.",
+            "Close one open loop before end of day."
+        ],
+        "end_of_day":[
+            "What moved?",
+            "What stalled?",
+            "What must happen tomorrow?"
+        ],
+        "tone":"clean_operator",
+        "created_at":now()
+    }
+
+    MEMORY.setdefault("operator_events", []).insert(0,{
+        "kind":"usefulness_flow",
+        "payload":result,
+        "created_at":now()
     })
 
     return result
