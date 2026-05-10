@@ -1,74 +1,95 @@
-# Executive Engine OS — V36330 Clean Stable Recovery Baseline
+# Executive Engine OS — V36330 Stable Merge Recovery
 
-## Backend Origin
-This is a clean recovery baseline created from the recovery requirements. It is not confirmed as the original V35060 backend source code.
-
-Reason: the verified V35060 source package was not available in this session, so this baseline was rebuilt to match the required stable behavior and required endpoint contract.
-
-## Frontend API URL
-The frontend is configured to call:
-
-https://executive-engine-os.onrender.com
-
-If the live backend URL changes, update `API_BASE` in `/frontend/index.html`.
+## Version
+V36330 — Stable Merge Recovery
 
 ## Included Files
 
-/frontend/index.html  
-/backend/main.py  
-/backend/requirements.txt  
+```text
+/frontend/index.html
+/backend/main.py
+/backend/requirements.txt
 README.md
+```
 
-## Required Backend Tests
+## Purpose
+This is a recovery build focused on restoring a known-stable operating baseline. It removes experimental frontend complexity and uses a hardened FastAPI backend that always returns valid structured JSON from `/run`.
 
-GET /  
-GET /health  
-GET /debug  
-POST /run  
+## Deployment Instructions For Render
 
-## Required Frontend Tests
-
-- Frontend loads
-- Frontend connects to backend
-- Command sends POST request to /run
-- Structured response displays in this order:
-  1. NEXT MOVE
-  2. DECISION
-  3. ACTION STEPS
-  4. RISK
-  5. PRIORITY
-- Clear loading state
-- Clear error state
-
-## Deployment Instructions — Render
-
-### Backend
-1. Upload repo files to GitHub.
-2. Create or update Render Web Service.
+### Backend Web Service
+1. Upload this ZIP contents to GitHub.
+2. In Render, create or update the backend service.
 3. Root directory: `backend`
-4. Start command:
-   `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add environment variable:
-   `OPENAI_API_KEY`
-6. Optional:
-   `CLAUDE_API_KEY`
-7. Deploy latest commit.
+4. Build command:
+   ```text
+   pip install -r requirements.txt
+   ```
+5. Start command:
+   ```text
+   uvicorn main:app --host 0.0.0.0 --port $PORT
+   ```
+6. Environment variables:
+   ```text
+   OPENAI_API_KEY=your_key
+   OPENAI_MODEL=gpt-4o-mini
+   ANTHROPIC_API_KEY=optional
+   ANTHROPIC_MODEL=claude-3-5-sonnet-latest
+   ```
 
-### Frontend
-1. Create or update Render Static Site.
-2. Root directory: `frontend`
-3. Publish directory: `.`
-4. Deploy latest commit.
+### Frontend Static Site
+1. Root directory: `frontend`
+2. Publish directory: `.`
+3. The frontend is configured to call:
+   ```text
+   https://executive-engine-os.onrender.com
+   ```
+
+## Test Checklist
+
+Backend:
+
+```text
+GET /
+GET /health
+GET /debug
+POST /run
+```
+
+Required `/run` response shape:
+
+```json
+{
+  "decision": "...",
+  "next_move": "...",
+  "actions": ["...", "...", "..."],
+  "risk": "...",
+  "priority": "High",
+  "provider_used": "...",
+  "status": "success"
+}
+```
+
+Frontend:
+
+```text
+Loads successfully
+Connects to backend
+Sends command to /run
+Displays NEXT MOVE first
+Displays DECISION second
+Displays ACTION STEPS third
+Displays RISK fourth
+Displays PRIORITY fifth
+Shows loading state
+Shows clear API/backend error state
+```
 
 ## Known Limitations
 
-- This is a recovery baseline, not a feature build.
 - No Supabase changes.
 - No memory expansion.
-- No advanced workflow modules.
-- Claude cannot break `/run`; OpenAI-first/fallback logic is used.
-- If no API key is available, `/run` returns a valid fallback JSON response.
-
-## Stability Rule
-
-This version is stable only if POST /run returns valid JSON in the required shape and the frontend displays the structured response.
+- No advanced dashboard features.
+- If OpenAI is unavailable, the backend returns a local structured fallback so `/run` does not crash.
+- Claude is fallback only and cannot break `/run`.
+- The frontend is intentionally simple to support recovery testing.
