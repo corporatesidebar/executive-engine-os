@@ -1,49 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Executive Engine</title><link rel="stylesheet" href="./styles.css"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engine</title><link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<div class="app-shell">
-  <aside class="left-nav">
-    <div class="brand"><div class="brand-logo">EE</div><div><div class="brand-title">Executive Engine</div><div class="brand-sub">V36300 Intelligence</div></div></div>
-    <nav class="nav-list">
-      <button class="nav-item active"><span>⌂</span><strong>The Engine</strong></button>
-      <button class="nav-item"><span>□</span><strong>Meetings</strong></button>
-      <button class="nav-item"><span>▣</span><strong>Proposals</strong></button>
-      <button class="nav-item"><span>◌</span><strong>Strategy</strong></button>
-      <button class="nav-item"><span>↗</span><strong>Follow-Ups</strong></button>
-      <button class="nav-item"><span>☑</span><strong>Tasks</strong></button>
-      <button class="nav-item"><span>▤</span><strong>Documents</strong></button>
-      <button class="nav-item"><span>◎</span><strong>Contacts</strong></button>
-      <button class="nav-item"><span>▢</span><strong>Calendar</strong></button>
-      <button class="nav-item"><span>⌕</span><strong>Search</strong></button>
-    </nav>
-    <div class="nav-bottom"><button class="notification-row"><span>♢ Notifications</span><em id="notificationCount">0</em></button><div class="user-card"><div class="avatar">WS</div><div><strong>Will Stewart</strong><small>Executive</small></div></div></div>
-  </aside>
-  <main class="main-panel">
-    <header class="top-header"><h1>Executive Engine</h1><div class="backend-pill" id="backendStatus">Checking backend</div></header>
-    <section class="center-scroll">
-      <section class="engine-card">
-        <div class="engine-kicker">THE ENGINE</div>
-        <h2>What are we building and let’s make it happen.</h2>
-        <p>Your Strategic Operator</p>
-        <div class="command-box">
-          <textarea id="commandInput" placeholder="Type or speak your what we need to do"></textarea>
-          <div class="command-footer"><div class="command-tools"><span>⌘</span><span>🎙</span><span class="divider"></span><span>✦ AI Assistant</span></div><button id="runCommand" class="send-btn">↑</button></div>
-        </div>
-      </section>
-      <section class="thread-feed" id="threadFeed">
-        <div class="empty-thread"><div class="section-label">OPERATING THREAD</div><h3>Responses will appear here in order.</h3><p>Use The Engine above. Every response becomes an ACTION thread with next move, risk, recommendations, and editable detail.</p></div>
-      </section>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="mark"><span>E</span><span>E</span></div></div>
+  <nav class="nav">
+    <button class="nav-btn active" data-page="command"><span>⌂</span>Command Centre</button>
+    <button class="nav-btn" data-page="meetings"><span>□</span>Meetings</button>
+    <button class="nav-btn" data-page="proposals"><span>▣</span>Proposals</button>
+    <button class="nav-btn" data-page="strategy"><span>◌</span>Strategy</button>
+    <button class="nav-btn" data-page="followups"><span>↗</span>Follow-Ups</button>
+    <button class="nav-btn" data-page="tasks"><span>☑</span>Tasks</button>
+    <button class="nav-btn" data-page="documents"><span>▤</span>Documents</button>
+    <button class="nav-btn" data-page="contacts"><span>◎</span>Contacts</button>
+    <button class="nav-btn" data-page="calendar"><span>▢</span>Calendar</button>
+    <button class="nav-btn" data-page="search"><span>⌕</span>Search</button>
+  </nav>
+  <div class="side-bottom">
+    <button class="notice">♢ Notifications <b id="noticeCount">0</b></button>
+    <div class="profile"><div class="avatar">WS</div><div><strong>Will Stewart</strong><small>Executive</small></div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <header><div><h1 id="pageTitle">Command Centre</h1><p id="pageSub">What would you like to accomplish?</p></div><button class="bell">♢</button></header>
+  <section class="scroll">
+    <section class="command-card">
+      <div class="kicker">COMMAND CENTRE</div>
+      <h2>What are we building?</h2>
+      <p>Your Strategic Operator</p>
+      <div class="input-card">
+        <textarea id="commandInput" placeholder="Type or speak your directive..."></textarea>
+        <div class="input-footer"><div class="tools"><span>⌘</span><span>🎙</span><i></i><span>✦ AI Assistant</span></div><button id="runCommand">Let's make it happen</button></div>
+      </div>
     </section>
-  </main>
-  <aside class="right-actions">
-    <div class="actions-header"><h2>ACTIONS</h2><button id="viewAllActions">View All</button></div>
-    <div class="action-search"><input id="actionSearch" placeholder="Search actions..."/><button>≡</button></div>
-    <div id="actionsRail" class="actions-rail"></div>
-  </aside>
+
+    <section class="examples">
+      <div class="kicker">EXAMPLES YOU CAN TRY</div>
+      <div class="chips">
+        <button data-example="Meeting with Bob Thursday 3PM">Meeting with Bob Thursday 3PM</button>
+        <button data-example="Need proposal for ABC Roofing">Need proposal for ABC Roofing</button>
+        <button data-example="Client upset about lead quality">Client upset about lead quality</button>
+        <button data-example="Q4 sales strategy">Q4 sales strategy</button>
+        <button data-example="Follow up with investor">Follow up with investor</button>
+        <button data-example="Plan marketing for next month">Plan marketing for next month</button>
+      </div>
+    </section>
+
+    <section id="thread" class="thread"></section>
+
+    <section class="priorities">
+      <div class="kicker">TOP PRIORITIES</div>
+      <div id="priorityList"></div>
+    </section>
+
+    <footer>Command Centre turns your thoughts into organized actions.</footer>
+  </section>
+</main>
+
+<aside class="actions">
+  <div class="actions-head"><h2>ACTIONS</h2><button id="viewAll">View All</button></div>
+  <div class="search-row"><div class="search"><span>⌕</span><input id="actionSearch" placeholder="Search actions..."></div><button class="filter">≡</button></div>
+  <div id="actionsList" class="actions-list"></div>
+  <button id="viewAllBottom" class="view-bottom">View All Actions <span>→</span></button>
+</aside>
 </div>
 <script src="./app.js"></script>
 </body></html>

@@ -1,0 +1,1 @@
+V36310 locks the frontend to a working dark UI: clickable left nav, working command input, ACTIONS rail, examples, top priorities, and action threads. Backend logic unchanged except version.
