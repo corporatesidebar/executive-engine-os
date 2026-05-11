@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -11,7 +12,7 @@ try:
 except Exception:  # pragma: no cover
     OpenAI = None
 
-VERSION = "V35150-real-output-contract"
+VERSION = "V35150A-restore-test-report"
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
 
@@ -209,6 +210,148 @@ def health() -> Dict[str, Any]:
         "version": VERSION,
         "contract": REQUIRED_KEYS,
     }
+
+
+
+
+@app.get("/debug")
+def debug() -> Dict[str, Any]:
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "endpoints": ["/", "/health", "/debug", "/run", "/test-report"],
+        "contract": REQUIRED_KEYS,
+    }
+
+
+@app.get("/test-report", response_class=HTMLResponse)
+def test_report() -> str:
+    return """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Executive Engine OS Backend Test Report</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fb; color: #0b1220; }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 18px; }
+    .card { background: #fff; border: 1px solid #dbe3ef; border-radius: 14px; padding: 22px; box-shadow: 0 10px 30px rgba(11,18,32,.08); }
+    h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.03em; }
+    .sub { color: #526173; margin: 0 0 18px; }
+    .grid { display: grid; gap: 10px; margin-top: 18px; }
+    .row { display: grid; grid-template-columns: 1fr 110px; gap: 12px; align-items: center; border: 1px solid #edf1f7; border-radius: 10px; padding: 12px 14px; }
+    .name { font-weight: 700; }
+    .detail { font-size: 13px; color: #526173; margin-top: 4px; word-break: break-word; }
+    .status { text-align: center; font-weight: 800; border-radius: 999px; padding: 7px 10px; font-size: 13px; }
+    .pending { background: #eef2f7; color: #526173; }
+    .pass { background: #e8f7ee; color: #126b35; }
+    .fail { background: #fdecec; color: #a21c1c; }
+    .skip { background: #fff6df; color: #875a00; }
+    button { background: #f97316; color: #fff; border: 0; border-radius: 10px; padding: 11px 15px; font-weight: 800; cursor: pointer; }
+    pre { white-space: pre-wrap; background: #0b1220; color: #e5edf8; padding: 14px; border-radius: 10px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <h1>Executive Engine OS Backend Test Report</h1>
+      <p class="sub">V35150A backend-only test page. Checks backend endpoints, output contract, and frontend reachability.</p>
+      <button onclick="runTests()">Run Tests</button>
+      <div id="results" class="grid"></div>
+      <h2>Contract</h2>
+      <pre>next_move\ndecision\naction_steps\nready_assets\nrisk\npriority\nrecommended_command</pre>
+    </section>
+  </main>
+<script>
+const REQUIRED_KEYS = ["next_move", "decision", "action_steps", "ready_assets", "risk", "priority", "recommended_command"];
+const FRONTEND_URL = "https://executive-engine-frontend.onrender.com/";
+const BACKEND_URL = "https://executive-engine-os.onrender.com";
+
+function renderRow(id, name, detail) {
+  const wrap = document.getElementById("results");
+  const row = document.createElement("div");
+  row.className = "row";
+  row.id = id;
+  row.innerHTML = `<div><div class="name">${name}</div><div class="detail">${detail || ""}</div></div><div class="status pending">PENDING</div>`;
+  wrap.appendChild(row);
+}
+
+function setStatus(id, status, detail) {
+  const row = document.getElementById(id);
+  const badge = row.querySelector(".status");
+  const detailEl = row.querySelector(".detail");
+  badge.className = "status " + status.toLowerCase();
+  badge.textContent = status;
+  if (detail) detailEl.textContent = detail;
+}
+
+async function checkGet(id, url, allowSkip404=false) {
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (allowSkip404 && res.status === 404) return setStatus(id, "SKIP", "Endpoint not present; skipped by design.");
+    if (!res.ok) return setStatus(id, "FAIL", `HTTP ${res.status}`);
+    setStatus(id, "PASS", `HTTP ${res.status}`);
+  } catch (err) {
+    setStatus(id, "FAIL", err.message || String(err));
+  }
+}
+
+async function checkRun() {
+  try {
+    const res = await fetch("/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input: "Test V35150A output contract", mode: "execution" })
+    });
+    if (!res.ok) return setStatus("post-run", "FAIL", `HTTP ${res.status}`);
+    const data = await res.json();
+    const keys = Object.keys(data);
+    const missing = REQUIRED_KEYS.filter(k => !(k in data));
+    const extra = keys.filter(k => !REQUIRED_KEYS.includes(k));
+    const arraysOk = Array.isArray(data.action_steps) && Array.isArray(data.ready_assets);
+    const priorityOk = ["High", "Medium", "Low"].includes(data.priority);
+    if (missing.length || extra.length || !arraysOk || !priorityOk) {
+      return setStatus("post-run", "FAIL", `missing=${missing.join(",") || "none"}; extra=${extra.join(",") || "none"}; arraysOk=${arraysOk}; priorityOk=${priorityOk}`);
+    }
+    setStatus("post-run", "PASS", "HTTP 200; exact V35150 contract confirmed.");
+  } catch (err) {
+    setStatus("post-run", "FAIL", err.message || String(err));
+  }
+}
+
+async function checkReachability(id, url) {
+  try {
+    await fetch(url, { method: "GET", mode: "no-cors", cache: "no-store" });
+    setStatus(id, "PASS", `Reachability request completed: ${url}`);
+  } catch (err) {
+    setStatus(id, "FAIL", err.message || String(err));
+  }
+}
+
+async function runTests() {
+  const wrap = document.getElementById("results");
+  wrap.innerHTML = "";
+  renderRow("get-root", "GET /", "Backend root endpoint");
+  renderRow("get-health", "GET /health", "Backend health endpoint");
+  renderRow("get-debug", "GET /debug", "Debug endpoint if present");
+  renderRow("post-run", "POST /run", "V35150 exact output contract");
+  renderRow("frontend", "Frontend URL reachability", FRONTEND_URL);
+  renderRow("backend-url", "Backend URL reachability", BACKEND_URL);
+
+  await checkGet("get-root", "/");
+  await checkGet("get-health", "/health");
+  await checkGet("get-debug", "/debug", true);
+  await checkRun();
+  await checkReachability("frontend", FRONTEND_URL);
+  await checkReachability("backend-url", BACKEND_URL);
+}
+runTests();
+</script>
+</body>
+</html>
+"""
 
 
 @app.post("/run")
