@@ -1,29 +1,39 @@
-# Executive Engine OS — V35150A Test Page Restore
+# V35150A Test Checklist
 
-Backend-only package to restore the useful `/test-report` browser test console.
+## Deployment Rules
+- [ ] Backend only
+- [ ] Do not touch frontend
+- [ ] Do not touch DB
+- [ ] Do not touch Supabase
+- [ ] Do not touch Claude
+- [ ] Do not touch OpenAI routing
+- [ ] Do not change `/run` logic
+- [ ] Do not add V35160
+- [ ] Do not add memory/actions
 
-## Scope
-- Restores `/test-report` UI only.
-- Preserves `/run` output contract.
-- Does not include frontend files.
-- Does not include DB, Supabase, Claude, OpenAI routing, memory/actions, or V35160 features.
+## Endpoint Tests
+- [ ] `GET /` returns service metadata
+- [ ] `GET /health` returns status ok
+- [ ] `GET /debug` returns contract fields
+- [ ] `GET /test-report` loads browser test console
+- [ ] `GET /test-report-json` returns JSON report
+- [ ] `POST /run` returns HTTP 200
 
-## Required Contract
-- `next_move`
-- `decision`
-- `action_steps`
-- `ready_assets`
-- `risk`
-- `priority`
-- `recommended_command`
+## Test Page UI
+- [ ] Run Tests button exists
+- [ ] Copy Results button exists
+- [ ] PASS / FAIL rows display clearly
+- [ ] Endpoint checks display
+- [ ] Frontend reachability displays
+- [ ] Backend reachability displays
+- [ ] POST `/run` contract validation displays
+- [ ] Output contract fields display
 
-## Endpoints
-- `GET /`
-- `GET /health`
-- `GET /debug`
-- `POST /run`
-- `GET /test-report`
-- `GET /test-report-json`
-
-## Deploy
-Deploy the `backend/` folder only to the existing backend Render service.
+## Required `/run` Output Contract
+- [ ] `next_move`
+- [ ] `decision`
+- [ ] `action_steps`
+- [ ] `ready_assets`
+- [ ] `risk`
+- [ ] `priority`
+- [ ] `recommended_command`
