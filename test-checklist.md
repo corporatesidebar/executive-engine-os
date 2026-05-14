@@ -1,35 +1,35 @@
-# V35150A Test Checklist
+# V35150B Test Checklist
 
-## Deployment Rules
-- [ ] Backend only
-- [ ] Do not touch frontend
-- [ ] Do not touch DB
-- [ ] Do not touch Supabase
-- [ ] Do not touch Claude
-- [ ] Do not touch OpenAI routing
-- [ ] Do not change `/run` logic
-- [ ] Do not add V35160
-- [ ] Do not add memory/actions
+## Backend-only package check
+- [ ] ZIP contains `backend/main.py`
+- [ ] ZIP contains `backend/requirements.txt`
+- [ ] ZIP contains `README.md`
+- [ ] ZIP contains `test-checklist.md`
+- [ ] ZIP does not contain frontend files
+- [ ] ZIP does not contain database schema files
 
-## Endpoint Tests
-- [ ] `GET /` returns service metadata
-- [ ] `GET /health` returns status ok
-- [ ] `GET /debug` returns contract fields
-- [ ] `GET /test-report` loads browser test console
-- [ ] `GET /test-report-json` returns JSON report
-- [ ] `POST /run` returns HTTP 200
+## Route preservation
+After deploy, test:
+- [ ] GET `/`
+- [ ] GET `/health`
+- [ ] GET `/debug`
+- [ ] GET `/test-report`
+- [ ] GET `/test-report-json`
+- [ ] GET `/providers`
+- [ ] GET `/db-status`
+- [ ] GET `/workspace-state`
+- [ ] GET `/operator-scan`
+- [ ] GET `/save-flow-status`
+- [ ] POST `/save-action`
+- [ ] POST `/save-decision`
+- [ ] POST `/save-asset`
 
-## Test Page UI
-- [ ] Run Tests button exists
-- [ ] Copy Results button exists
-- [ ] PASS / FAIL rows display clearly
-- [ ] Endpoint checks display
-- [ ] Frontend reachability displays
-- [ ] Backend reachability displays
-- [ ] POST `/run` contract validation displays
-- [ ] Output contract fields display
+## Required /run contract
+POST `/run` with:
 
-## Required `/run` Output Contract
+`Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
+
+Confirm response includes:
 - [ ] `next_move`
 - [ ] `decision`
 - [ ] `action_steps`
@@ -37,3 +37,28 @@
 - [ ] `risk`
 - [ ] `priority`
 - [ ] `recommended_command`
+
+Confirm backward-compatible keys still exist:
+- [ ] `what_to_do_now`
+- [ ] `actions`
+- [ ] `asset`
+- [ ] `follow_up`
+- [ ] `provider_used`
+- [ ] `router`
+- [ ] `active_context`
+- [ ] `workspace`
+- [ ] `operator_state`
+
+## Quality check
+- [ ] Response is specific to the auto loan dealership input
+- [ ] Response is executive-grade and business-focused
+- [ ] No generic filler
+- [ ] No vague motivational language
+- [ ] Action steps are practical
+- [ ] Ready assets name a useful asset
+- [ ] Recommended command is usable
+
+## Decision after testing
+- [ ] HOLD if routes fail
+- [ ] FIX if contract fields are missing
+- [ ] PROMOTE if route surface and `/run` contract pass
