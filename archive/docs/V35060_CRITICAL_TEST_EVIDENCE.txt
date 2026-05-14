@@ -1,0 +1,67 @@
+EXECUTIVE ENGINE OS V35060 — VERIFIED EVIDENCE SUMMARY
+
+From recovered File Library artifacts:
+
+README_V35060 includes:
+- Backend OpenAI-first routing
+- Claude temporarily disabled until credits are restored
+- Output quality filtering
+- Workspace reset endpoints
+- Workspace stabilization endpoint
+- Deduplication for assets/tasks/follow-ups/warnings
+- Frontend persistent top command panel
+- Reset Workspace and Clean State controls
+- Quality State system test route
+
+Critical test report:
+- Started: 2026-05-07T07:04:04.747Z
+- Base: https://executive-engine-os.onrender.com
+- Root GET / PASS 200
+- Health GET /health PASS 200
+- Test Report JSON GET /test-report-json PASS 200
+- Providers GET /providers PASS 200
+- Debug GET /debug PASS 200
+- Final Summary: total 5, passed 5, failed 0
+
+Version:
+35060-executive-operating-flow-stabilization
+
+Restored routes included:
+/
+/health
+/debug
+/test-report
+/run
+/router-preview
+/create-workspace
+/workspace-state
+/workspace-summary
+/autonomous-package
+/operator-scan
+/operator-state
+/operator-next-action
+/daily-briefing
+/pressure-monitor
+/stalled-workflows
+/attention-feed
+/start-mission
+/mission-state
+/execute-step
+/next-step
+/complete-step
+/context-state
+/workflow-state
+/memory-state
+/memory-summary
+/continue-workflow
+/clear-memory
+/engine-state
+/save-action
+/save-decision
+/save-asset
+/save-flow-status
+/button-persistence-check
+/run-save-audit
+/stability-audit
+/version-lock
+/providers
