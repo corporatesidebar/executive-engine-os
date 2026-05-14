@@ -1,44 +1,29 @@
-# V35150 Backend Output Contract Test Checklist
+# Executive Engine OS — V35150A Test Page Restore
 
-## Backend-only verification
+Backend-only package to restore the useful `/test-report` browser test console.
 
-- [ ] ZIP contains `backend/main.py`.
-- [ ] ZIP contains `backend/requirements.txt`.
-- [ ] ZIP contains `README.md`.
-- [ ] ZIP contains `test-checklist.md`.
-- [ ] ZIP does not contain `frontend/index.html`.
-- [ ] No DB files included.
-- [ ] No Supabase files included.
-- [ ] No memory feature added.
-- [ ] No V35160 features added.
+## Scope
+- Restores `/test-report` UI only.
+- Preserves `/run` output contract.
+- Does not include frontend files.
+- Does not include DB, Supabase, Claude, OpenAI routing, memory/actions, or V35160 features.
 
-## Endpoint verification
+## Required Contract
+- `next_move`
+- `decision`
+- `action_steps`
+- `ready_assets`
+- `risk`
+- `priority`
+- `recommended_command`
 
-- [ ] `GET /` returns service status.
-- [ ] `GET /health` returns `status: ok`.
-- [ ] `POST /run` returns HTTP 200.
-- [ ] `POST /run` returns valid JSON.
-- [ ] `POST /run` returns exactly these keys:
-  - `next_move`
-  - `decision`
-  - `action_steps`
-  - `ready_assets`
-  - `risk`
-  - `priority`
-  - `recommended_command`
-- [ ] `action_steps` is always an array.
-- [ ] `ready_assets` is always an array.
-- [ ] `priority` is always `High`, `Medium`, or `Low`.
-- [ ] AI failure still returns the same JSON contract.
+## Endpoints
+- `GET /`
+- `GET /health`
+- `GET /debug`
+- `POST /run`
+- `GET /test-report`
+- `GET /test-report-json`
 
-## Test command
-
-```bash
-curl -X POST https://executive-engine-os.onrender.com/run \
-  -H "Content-Type: application/json" \
-  -d '{"input":"Prepare me for a revenue meeting tomorrow","mode":"meeting"}'
-```
-
-## Expected result
-
-A valid JSON object containing only the required V35150 fields.
+## Deploy
+Deploy the `backend/` folder only to the existing backend Render service.
