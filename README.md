@@ -1,21 +1,18 @@
-# Executive Engine OS — V35140 Frontend Layout Restore
+# Executive Engine OS — V35140 Frontend Chat Rendering Fix
 
 ## Version
-V35140 — Frontend Layout Restore / Layout-Locked Runtime Functionality
+V35140 — Frontend Layout Restore / Chat Workflow Rendering Patch
 
-## Deployment Type
+## Deployment type
 Frontend only.
 
-## Backend URL Preserved
+## Backend URL preserved
 https://executive-engine-os.onrender.com
 
-## Source of Truth
-This package uses the approved locked `frontend/index.html` as the base file. The layout was not recreated from a screenshot.
-
-## What Changed
-- Preserved the approved locked frontend layout.
-- Added/confirmed real command execution against `/run`.
-- Added structured assistant rendering in this order:
+## What was fixed
+- User commands now render as compact right-side message bubbles.
+- Assistant responses now render as compact left-side structured response cards.
+- `/run` response fields render inside the assistant card in the required order:
   1. NEXT MOVE
   2. DECISION
   3. ACTION STEPS
@@ -23,25 +20,20 @@ This package uses the approved locked `frontend/index.html` as the base file. Th
   5. RISK
   6. PRIORITY
   7. RECOMMENDED COMMAND
-- Updated live Executive Summary cards from the backend response.
-- Added Enter-to-submit behavior for the main command input.
-- Added Execute button behavior.
-- Added follow-up input submit behavior.
-- Preserved loading and error state behavior.
+- Response spacing was tightened to reduce vertical height.
+- Conversation history remains readable above the pinned follow-up input.
+- Follow-up input remains at the bottom of the workflow panel.
 
-## What Was Not Touched
-- Backend
-- Supabase
-- Database schema
-- Provider routing
-- API URL
-- `/run` output contract
-- Visual layout
-- Columns
-- Fonts
-- Colors
-- Spacing
-- Card structure
+## What was not changed
+- Backend was not changed.
+- Supabase was not changed.
+- Database was not changed.
+- Provider routing was not changed.
+- API URL was not changed.
+- `/run` contract was not changed.
+- Sidebar, header, Executive Summary column, Executive Intelligence column, and overall layout were preserved.
 
-## Deploy
-Upload the contents of the `frontend/` folder to the frontend static service only.
+## Files included
+- `frontend/index.html`
+- `README.md`
+- `test-checklist.md`
