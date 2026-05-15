@@ -1,31 +1,33 @@
-# V35140 Frontend Interactivity Test Checklist
+# V35140 Runtime JavaScript Fix Test Checklist
 
-## Must Pass
-- [ ] Frontend loads visually.
-- [ ] Command input allows typing.
-- [ ] Clear button clears the command input.
-- [ ] Execute button is clickable.
-- [ ] Execute button sends POST request to https://executive-engine-os.onrender.com/run.
-- [ ] POST /run returns 200 from locked backend.
-- [ ] Response renders in this order:
-  1. NEXT MOVE
-  2. DECISION
-  3. ACTION STEPS
-  4. READY ASSETS
-  5. RISK
-  6. PRIORITY
-  7. RECOMMENDED COMMAND
-- [ ] Sidebar items are clickable and switch active state.
-- [ ] Suggested command chips are clickable and populate the input.
+## Frontend runtime
+- [ ] Page loads visually with approved layout intact.
+- [ ] Command input accepts typing.
+- [ ] Pressing Enter in command input submits.
+- [ ] Execute button submits.
+- [ ] Clear button clears and refocuses command input.
+- [ ] Command chips populate command input.
 - [ ] Follow-up input accepts typing.
-- [ ] No console JavaScript errors.
-- [ ] No CORS errors.
+- [ ] Pressing Enter in follow-up input submits.
+- [ ] Follow-up send icon submits.
+- [ ] Sidebar nav items change active state.
+- [ ] Sidebar nav items focus/scroll to relevant workspace areas.
 
-## Not Touched
-- [ ] Backend unchanged.
-- [ ] API URL unchanged.
-- [ ] /run contract unchanged.
-- [ ] Supabase unchanged.
-- [ ] DB schema unchanged.
-- [ ] Provider routing unchanged.
-- [ ] Approved layout structure preserved.
+## Backend connection
+- [ ] POST request goes to https://executive-engine-os.onrender.com/run
+- [ ] Request body includes command/input/message for compatibility.
+- [ ] Response renders without console errors.
+
+## Output order
+- [ ] NEXT MOVE
+- [ ] DECISION
+- [ ] ACTION STEPS
+- [ ] READY ASSETS
+- [ ] RISK
+- [ ] PRIORITY
+- [ ] RECOMMENDED COMMAND
+
+## Guardrails
+- [ ] No backend files included.
+- [ ] No DB/Supabase files included.
+- [ ] No provider routing changes.

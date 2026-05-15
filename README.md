@@ -1,18 +1,22 @@
-# Executive Engine OS — V35140 Frontend Interactivity Fix
+# Executive Engine OS V35140 Runtime JavaScript Fix
 
-Frontend-only urgent functionality fix.
+Frontend-only package.
 
 ## Scope
-- Fixed browser interactivity only.
-- Preserved approved screenshot layout structure.
-- Preserved backend API URL: https://executive-engine-os.onrender.com
-- Preserved POST /run target: https://executive-engine-os.onrender.com/run
-- Preserved response display order.
+- Fixes real runtime JavaScript behavior for the approved V35140 frontend layout.
+- Preserves the approved screenshot layout and visual design.
+- Preserves backend API URL: https://executive-engine-os.onrender.com
+- Preserves POST /run behavior and output order.
 
-## Files Included
+## Files
 - frontend/index.html
 - README.md
 - test-checklist.md
 
-## Backend Status
-Backend was not touched. No backend files are included.
+## Not touched
+- Backend
+- Database
+- Supabase
+- Claude/OpenAI/provider routing
+- API URL
+- /run contract
