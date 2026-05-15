@@ -52,6 +52,18 @@
     .response-section ul{margin:0;padding-left:16px;display:grid;gap:2px}
     .response-section li{font-size:12.5px;line-height:1.32;color:#101828}
     .engine-loading{opacity:.72}
+    .message-stream{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;padding-bottom:8px}
+    .chat-empty{margin:auto;max-width:420px;text-align:center;color:#667085;border:1px dashed #d9e0ea;border-radius:14px;padding:18px;background:#fbfcfe;font-size:13px;line-height:1.45}
+    .chat-empty strong{display:block;color:#101828;font-size:14px;margin-bottom:5px}
+    .msg{margin:0}
+    .msg.user .message-content{width:max-content}
+    .msg.engine .message-content{width:min(100%,620px)}
+    .msg.engine .msg-head{font-size:12px;color:#475467}
+    .structured-response{display:grid;gap:5px}
+    .response-section{padding:5px 0 0}
+    .response-section h5{margin-bottom:2px}
+    .response-section p,.response-section li{font-size:12px;line-height:1.28}
+    .response-section ul{gap:1px}
     .follow{flex-shrink:0}
     .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
     @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
@@ -82,10 +94,10 @@
       <section class="capture"><textarea id="commandInput" placeholder="What are we trying to win today?"></textarea><div class="capture-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><button class="clear" id="clearButton">Clear</button><button class="execute" id="runButton">Execute →</button></div></section>
       <div class="chips"><button class="chip">Prepare for board meeting</button><button class="chip">Analyze market expansion</button><button class="chip">Review Q2 performance</button><button class="chip">Assess key risks</button></div>
       <div id="loading" class="statusline">Building the executive path…</div><div id="error" class="error"></div>
-      <section class="chat" id="chatFeed"><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:24 AM</span></div><p>I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:24 AM</span></div><p>Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Go-to-Market Strategy Framework</strong><span>Strategy Document · 12 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:48 AM</span></div><p>Now create a proposal based on that strategy.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:48 AM</span></div><p>Proposal created. It aligns with the strategy and includes scope, timeline, investment, and expected outcomes.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Client Proposal v1.0</strong><span>Proposal Document · 8 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>11:15 AM</span></div><p>Prepare me for the meeting and give me talking points and objections.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>11:15 AM</span></div><p>Meeting prep complete. Here are your talking points, key messages, objections to expect, and recommended responses.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Meeting Prep Pack</strong><span>Document · 9 pages</span></div><div class="download">⌄</div></div></div></div><div class="follow"><input placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div></section>
+      <section class="chat" id="chatFeed"><div id="messageStream" class="message-stream"><div id="emptyState" class="chat-empty"><strong>Ready for the next command.</strong><span>Your live workflow will appear here after you execute a command.</span></div></div><div class="follow"><input placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div></section>
     </main>
-    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub">Live updates from the conversation</p><div class="stack"><section class="summary-card orange"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span class="count">1</span></h4><p id="nextMove">Expand to new markets proposal and client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span class="count">1</span></h4><p id="decision">Approve strategy and proposal before client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span class="count">3</span></h4><ul id="actionSteps"><li>Finalize proposal</li><li>Schedule client meeting</li><li>Prepare presentation</li></ul><a class="add">+ Add note</a></section><section class="summary-card purple"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span class="count">3</span></h4><ul id="readyAssets"><li>Strategy Framework</li><li>Client Proposal v1.0</li><li>Meeting Prep Pack</li></ul><a class="add">+ Add note</a></section><section class="summary-card red"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span class="count">2</span></h4><ul id="risk"><li>Competitor aggressive pricing</li><li>Market entry barriers</li></ul><a class="add">+ Add note</a></section><section class="summary-card gold"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span class="count">High</span></h4><p id="priority">Client meeting preparation and proposal approval.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span class="count">1</span></h4><p id="recommendedCommand">Review proposal and confirm meeting agenda.</p><a class="add">+ Add note</a></section><section class="summary-card"><h4><span class="circle" style="background:#475467">□</span>Tomorrow / Upcoming<span class="count">2</span></h4><p>Board meeting<br>May 27, 2026 · 10:00 AM</p><a class="link">View schedule →</a></section><div class="split"><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">✓</span>Recent Decisions</h4><p>Approved Q2 budget reallocation<br>Greenlit market expansion study</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>System Status</h4><p>All systems operating normally<br><span style="color:#667085">Last updated: 2 min ago</span></p></section></div></div></aside>
-    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Search files, notes, and context…"></div><div class="filter">☷</div></div><div class="stack"><section class="intel-card"><h4>💡 Key Insight</h4><p>Expanding to new markets could increase revenue by 20–30% with strong positioning.</p><a class="link">View insight →</a></section><section class="intel-card"><h4>□ Memory</h4><p>You prefer concise proposals with clear ROI and risk analysis.</p><a class="link">View all memory →</a></section><section class="intel-card"><h4>▣ Upcoming Priorities</h4><div class="priority"><div class="num">1</div><div><strong>Board Meeting</strong><span>May 27, 2026 · 10:00 AM</span></div></div><div class="priority"><div class="num">2</div><div><strong>Investor Update</strong><span>May 30, 2026 · 1:00 PM</span></div></div><div class="priority"><div class="num">3</div><div><strong>Strategy Review</strong><span>June 2, 2026 · 9:00 AM</span></div></div><a class="link">View all →</a></section><section class="intel-card"><h4>♙ Team Pulse</h4><div class="pulse"><span>Sales</span><strong class="good">On Track</strong></div><div class="pulse"><span>Marketing</span><strong class="good">On Track</strong></div><div class="pulse"><span>Operations</span><strong class="bad">At Risk</strong></div><a class="link">View team pulse →</a></section><section class="intel-card"><h4>Executive Summary</h4><p>Revenue up 12% this quarter. Expansion strategy on track. Focus: execution and de-risking.</p><a class="link">View full summary →</a></section></div></aside>
+    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub">Live updates from the conversation</p><div class="stack"><section class="summary-card orange"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span id="nextMoveCount" class="count">0</span></h4><p id="nextMove">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span id="decisionCount" class="count">0</span></h4><p id="decision">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span id="actionStepsCount" class="count">0</span></h4><ul id="actionSteps"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card purple"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span id="readyAssetsCount" class="count">0</span></h4><ul id="readyAssets"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card red"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span id="riskCount" class="count">0</span></h4><ul id="risk"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card gold"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span id="priorityCount" class="count">—</span></h4><p id="priority">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span id="recommendedCommandCount" class="count">0</span></h4><p id="recommendedCommand">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card"><h4><span class="circle" style="background:#475467">□</span>Tomorrow / Upcoming<span class="count">0</span></h4><p id="tomorrowUpcoming">Updates after runtime context is returned.</p><a class="link">View schedule →</a></section><div class="split"><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">✓</span>Recent Decisions</h4><p id="recentDecisions">No runtime decisions yet.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>System Status</h4><p>Runtime ready<br><span id="systemUpdated" style="color:#667085">Waiting for command</span></p></section></div></div></aside>
+    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Search files, notes, and context…"></div><div class="filter">☷</div></div><div class="stack"><section class="intel-card"><h4>💡 Key Insight</h4><p id="keyInsight">Waiting for the latest command response.</p><a class="link">View insight →</a></section><section class="intel-card"><h4>□ Memory</h4><p id="memoryInsight">Runtime context will appear here when returned.</p><a class="link">View all memory →</a></section><section class="intel-card"><h4>▣ Upcoming Priorities</h4><div id="upcomingPriorities"><div class="priority"><div class="num">1</div><div><strong>Waiting for runtime priorities</strong><span>Submit a command to update this panel.</span></div></div></div><a class="link">View all →</a></section><section class="intel-card"><h4>♙ Team Pulse</h4><div id="teamPulse"><div class="pulse"><span>Runtime state</span><strong class="good">Ready</strong></div></div><a class="link">View team pulse →</a></section><section class="intel-card"><h4>Executive Summary</h4><p id="intelExecutiveSummary">No live summary yet.</p><a class="link">View full summary →</a></section></div></aside>
   </div><div class="footer"></div>
   <script>
     const API_URL = "https://executive-engine-os.onrender.com";
@@ -95,16 +107,19 @@
     const loading = document.getElementById("loading");
     const errorBox = document.getElementById("error");
     const chatFeed = document.getElementById("chatFeed");
+    const messageStream = document.getElementById("messageStream");
+    const emptyState = document.getElementById("emptyState");
     const followInput = chatFeed ? chatFeed.querySelector(".follow input") : null;
     const followSend = chatFeed ? chatFeed.querySelector(".follow svg:last-child") : null;
+    const history = [];
 
     const FIELD_ORDER = [
       { label: "NEXT MOVE", target: "nextMove", keys: ["next_move", "nextMove", "what_to_do_now", "next", "recommendation"] },
       { label: "DECISION", target: "decision", keys: ["decision", "recommended_decision"] },
-      { label: "ACTION STEPS", target: "actionSteps", keys: ["action_steps", "actions", "steps", "next_steps"], list: true },
-      { label: "READY ASSETS", target: "readyAssets", keys: ["ready_assets", "assets", "prepared_assets", "deliverables"], list: true },
-      { label: "RISK", target: "risk", keys: ["risk", "risks", "active_risks"], list: true },
-      { label: "PRIORITY", target: "priority", keys: ["priority", "urgency"] },
+      { label: "ACTION STEPS", target: "actionSteps", count: "actionStepsCount", keys: ["action_steps", "actions", "steps", "next_steps"], list: true },
+      { label: "READY ASSETS", target: "readyAssets", count: "readyAssetsCount", keys: ["ready_assets", "assets", "prepared_assets", "deliverables"], list: true },
+      { label: "RISK", target: "risk", count: "riskCount", keys: ["risk", "risks", "active_risks"], list: true },
+      { label: "PRIORITY", target: "priority", count: "priorityCount", keys: ["priority", "urgency"] },
       { label: "RECOMMENDED COMMAND", target: "recommendedCommand", keys: ["recommended_command", "follow_up_command", "command", "next_command"] }
     ];
 
@@ -115,28 +130,28 @@
       return "";
     }
 
-    function normalizeItems(v, fallback){
-      if(v === null || v === undefined || v === "") return [fallback];
-      if(Array.isArray(v)) return v.map(formatValue).filter(Boolean);
-      if(typeof v === "object") return [formatValue(v)];
-      const raw = String(v);
-      const split = raw.split(/\n|;|•/).map(x => x.trim()).filter(Boolean);
-      return split.length ? split : [raw];
-    }
-
     function formatValue(v){
       if(v === null || v === undefined || v === "") return "";
       if(Array.isArray(v)) return v.map(formatValue).filter(Boolean).join("\n");
       if(typeof v === "object"){
-        const preferred = v.title || v.name || v.label || v.text || v.summary || v.description || v.action || v.step;
+        const preferred = v.title || v.name || v.label || v.text || v.summary || v.description || v.action || v.step || v.value;
         if(preferred) return String(preferred);
         return Object.entries(v).map(([k,val]) => `${k.replace(/_/g," ")}: ${formatValue(val)}`).join("; ");
       }
       return String(v);
     }
 
+    function normalizeItems(v, fallback){
+      if(v === null || v === undefined || v === "") return [fallback];
+      if(Array.isArray(v)) return v.map(formatValue).filter(Boolean).slice(0, 5);
+      if(typeof v === "object") return [formatValue(v)].filter(Boolean);
+      const raw = String(v).trim();
+      const split = raw.split(/\n|;|•/).map(x => x.replace(/^[-*]\s*/, "").trim()).filter(Boolean).slice(0, 5);
+      return split.length ? split : [raw];
+    }
+
     function text(v, fallback){
-      const formatted = formatValue(v);
+      const formatted = formatValue(v).trim();
       return formatted || fallback;
     }
 
@@ -144,23 +159,66 @@
       return String(s).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
     }
 
+    function updateCount(id, value){
+      const el = document.getElementById(id);
+      if(el) el.textContent = value;
+    }
+
     function updateList(target, v, fallback){
       const el = document.getElementById(target);
       if(!el) return;
       const lines = normalizeItems(v, fallback);
       el.innerHTML = lines.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+      updateCount(`${target}Count`, lines[0] === fallback ? 0 : lines.length);
+      return lines;
     }
 
     function setText(target, v, fallback){
       const el = document.getElementById(target);
-      if(el) el.textContent = text(v, fallback);
+      const rendered = text(v, fallback);
+      if(el) el.textContent = rendered;
+      return rendered;
+    }
+
+    function setPanelText(id, content){
+      const el = document.getElementById(id);
+      if(el) el.textContent = content;
     }
 
     function renderSummary(data){
-      for(const field of FIELD_ORDER){
-        const raw = value(data, field.keys);
-        if(field.list) updateList(field.target, raw, "Not returned yet.");
-        else setText(field.target, raw, "Not returned yet.");
+      const nextMove = setText("nextMove", value(data, FIELD_ORDER[0].keys), "Not returned yet.");
+      const decision = setText("decision", value(data, FIELD_ORDER[1].keys), "Not returned yet.");
+      const actions = updateList("actionSteps", value(data, FIELD_ORDER[2].keys), "Not returned yet.");
+      const assets = updateList("readyAssets", value(data, FIELD_ORDER[3].keys), "Not returned yet.");
+      const risks = updateList("risk", value(data, FIELD_ORDER[4].keys), "Not returned yet.");
+      const priority = setText("priority", value(data, FIELD_ORDER[5].keys), "Not returned yet.");
+      const recommended = setText("recommendedCommand", value(data, FIELD_ORDER[6].keys), "Not returned yet.");
+      updateCount("nextMoveCount", nextMove === "Not returned yet." ? 0 : 1);
+      updateCount("decisionCount", decision === "Not returned yet." ? 0 : 1);
+      updateCount("priorityCount", priority === "Not returned yet." ? "—" : priority.split(/\s+/)[0]);
+      updateCount("recommendedCommandCount", recommended === "Not returned yet." ? 0 : 1);
+      setPanelText("recentDecisions", decision === "Not returned yet." ? "No runtime decisions yet." : decision);
+      setPanelText("tomorrowUpcoming", recommended === "Not returned yet." ? nextMove : recommended);
+      setPanelText("systemUpdated", `Updated ${new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}`);
+      renderIntelligence({data, nextMove, decision, actions, assets, risks, priority, recommended});
+    }
+
+    function renderIntelligence(view){
+      const insight = text(value(view.data, ["key_insight", "insight", "executive_insight", "summary"]), view.nextMove);
+      const memory = text(value(view.data, ["memory", "active_context", "context", "workspace"]), "No explicit memory/context returned from backend.");
+      const executiveSummary = [view.nextMove, view.decision, `Priority: ${view.priority}`].filter(Boolean).join(" ");
+      setPanelText("keyInsight", insight);
+      setPanelText("memoryInsight", memory);
+      setPanelText("intelExecutiveSummary", executiveSummary);
+      const priorities = [view.recommended, ...(view.actions || [])].filter(Boolean).slice(0, 3);
+      const upcoming = document.getElementById("upcomingPriorities");
+      if(upcoming){
+        upcoming.innerHTML = priorities.length ? priorities.map((item, index) => `<div class="priority"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item)}</strong><span>From latest response</span></div></div>`).join("") : `<div class="priority"><div class="num">1</div><div><strong>Waiting for runtime priorities</strong><span>Submit a command to update this panel.</span></div></div>`;
+      }
+      const pulse = document.getElementById("teamPulse");
+      if(pulse){
+        const riskState = view.risks && view.risks[0] !== "Not returned yet." ? "At Risk" : "On Track";
+        pulse.innerHTML = `<div class="pulse"><span>Execution</span><strong class="good">Active</strong></div><div class="pulse"><span>Priority</span><strong class="good">${escapeHtml(view.priority)}</strong></div><div class="pulse"><span>Risk</span><strong class="${riskState === "At Risk" ? "bad" : "good"}">${riskState}</strong></div>`;
       }
     }
 
@@ -176,14 +234,22 @@
     }
 
     function addMessage(role, body){
+      if(emptyState) emptyState.remove();
       const msg = document.createElement("div");
       msg.className = `msg ${role === "engine" ? "engine" : "user"}`;
       const time = new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
       const safeBody = role === "engine" && typeof body === "object" ? structuredHtml(body) : `<p>${escapeHtml(body)}</p>`;
       msg.innerHTML = `<div class="bubble-avatar">${role === "engine" ? "E" : "W"}</div><div class="message-content"><div class="msg-head"><strong>${role === "engine" ? "Executive Engine" : "You"}</strong><span>${time}</span></div>${safeBody}</div>`;
-      const follow = chatFeed.querySelector(".follow");
-      chatFeed.insertBefore(msg, follow);
-      msg.scrollIntoView({block:"nearest"});
+      messageStream.appendChild(msg);
+      messageStream.scrollTop = messageStream.scrollHeight;
+      return msg;
+    }
+
+    function addLoadingMessage(){
+      const msg = addMessage("engine", {});
+      msg.classList.add("engine-loading");
+      msg.querySelector(".message-content").innerHTML = `<div class="msg-head"><strong>Executive Engine</strong><span>Working</span></div><p>Building the executive response…</p>`;
+      return msg;
     }
 
     async function runCommand(source){
@@ -198,18 +264,22 @@
       errorBox.classList.remove("active");
       runButton.disabled = true;
       addMessage("user", input);
+      const loadingMsg = addLoadingMessage();
       try{
         const response = await fetch(`${API_URL}/run`, {
           method: "POST",
           headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ input, command: input, message: input })
+          body: JSON.stringify({ input, command: input, message: input, history: history.slice(-6) })
         });
         if(!response.ok) throw new Error(`Backend returned ${response.status}`);
         const data = await response.json();
         renderSummary(data);
+        loadingMsg.remove();
         addMessage("engine", data);
+        history.push({role:"user", content: input}, {role:"assistant", content: data});
         field.value = "";
       }catch(err){
+        loadingMsg.remove();
         errorBox.textContent = `Command failed: ${err.message}`;
         errorBox.classList.add("active");
       }finally{

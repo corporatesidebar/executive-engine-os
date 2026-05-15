@@ -1,18 +1,20 @@
-# Executive Engine OS — V35140 Frontend Chat Rendering Fix
+# Executive Engine OS — V35140 Frontend Workflow Rendering Tightening
 
 ## Version
-V35140 — Frontend Layout Restore / Chat Workflow Rendering Patch
+V35140 — Chat / Workflow Rendering Functional Pass
 
-## Deployment type
+## Deployment Type
 Frontend only.
 
-## Backend URL preserved
+## Backend URL Preserved
 https://executive-engine-os.onrender.com
 
-## What was fixed
-- User commands now render as compact right-side message bubbles.
-- Assistant responses now render as compact left-side structured response cards.
-- `/run` response fields render inside the assistant card in the required order:
+## What Changed
+- Preserved the approved locked frontend layout and visual structure.
+- Replaced static demo conversation content with runtime conversation state.
+- User commands render as compact right-side message bubbles.
+- Assistant responses render as compact left-side structured response cards.
+- `/run` response fields render in this order:
   1. NEXT MOVE
   2. DECISION
   3. ACTION STEPS
@@ -20,20 +22,25 @@ https://executive-engine-os.onrender.com
   5. RISK
   6. PRIORITY
   7. RECOMMENDED COMMAND
-- Response spacing was tightened to reduce vertical height.
-- Conversation history remains readable above the pinned follow-up input.
-- Follow-up input remains at the bottom of the workflow panel.
+- Follow-up input remains pinned at the bottom of the workflow panel.
+- Executive Summary cards update from the latest runtime response.
+- Executive Intelligence cards update from latest runtime response/context.
+- Runtime loading and error states remain functional.
 
-## What was not changed
-- Backend was not changed.
-- Supabase was not changed.
-- Database was not changed.
-- Provider routing was not changed.
-- API URL was not changed.
-- `/run` contract was not changed.
-- Sidebar, header, Executive Summary column, Executive Intelligence column, and overall layout were preserved.
+## What Was Not Touched
+- Backend files
+- Supabase
+- DB schema
+- Provider routing
+- API URL
+- `/run` output contract
+- Sidebar layout
+- Columns
+- Fonts
+- Colors
+- Overall approved visual structure
 
-## Files included
+## Files Included
 - `frontend/index.html`
 - `README.md`
 - `test-checklist.md`

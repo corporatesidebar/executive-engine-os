@@ -1,46 +1,52 @@
-# Executive Engine OS — Frontend Chat Rendering Test Checklist
+# V35140 Frontend Workflow Rendering Test Checklist
 
-## Visual preservation
-1. Frontend loads successfully.
-2. Approved dark sidebar remains unchanged.
-3. Header remains unchanged.
-4. Main command area remains unchanged.
-5. Executive Summary column remains unchanged.
-6. Executive Intelligence column remains unchanged.
-7. Overall spacing, columns, cards, fonts, and colors remain visually consistent with the approved layout.
+## Package Inspection
+- [ ] ZIP contains `frontend/index.html`
+- [ ] ZIP contains `README.md`
+- [ ] ZIP contains `test-checklist.md`
+- [ ] ZIP contains no backend files
+- [ ] ZIP contains no Supabase or DB files
 
-## Chat/workflow rendering
-8. Enter a command in the top command box.
-9. Click Execute.
-10. Confirm the user command appears as a compact right-side message bubble.
-11. Confirm the assistant response appears as a left-side structured bubble/card.
-12. Confirm assistant output is compact and does not render as a long plain-text document.
-13. Confirm previous messages remain readable in the workflow panel.
-14. Confirm follow-up input remains pinned at the bottom of the workflow panel.
+## Layout Preservation
+- [ ] Approved dark sidebar is unchanged
+- [ ] Header/topbar is unchanged
+- [ ] Main command area is unchanged
+- [ ] Executive Summary column is preserved
+- [ ] Executive Intelligence column is preserved
+- [ ] Fonts, colors, spacing, columns, and card structure remain visually consistent with the approved layout
 
-## `/run` contract rendering order
-15. Confirm assistant response renders:
-    - NEXT MOVE
-    - DECISION
-    - ACTION STEPS
-    - READY ASSETS
-    - RISK
-    - PRIORITY
-    - RECOMMENDED COMMAND
+## Runtime Workflow
+- [ ] Main command input accepts text
+- [ ] Execute button submits command
+- [ ] Enter submits command from main input
+- [ ] Follow-up input stays pinned at bottom of workflow panel
+- [ ] Follow-up input submits on Enter
+- [ ] Follow-up send icon submits
+- [ ] Loading state appears while request is running
+- [ ] Error state appears if request fails
 
-## Functionality
-16. Confirm Enter submits from the main command box.
-17. Confirm Execute submits from the main command box.
-18. Confirm Enter submits from the follow-up input.
-19. Confirm the follow-up send icon submits.
-20. Confirm loading state appears while waiting.
-21. Confirm error state appears if backend request fails.
-22. Confirm POST goes to `https://executive-engine-os.onrender.com/run`.
+## Chat Rendering
+- [ ] User message appears as compact right-side bubble
+- [ ] Assistant message appears as left-side structured card/bubble
+- [ ] Conversation history remains readable
+- [ ] Assistant output does not render as pasted/plain document content
+- [ ] Vertical spacing inside assistant response is compact
 
-## Safety checks
-23. Backend not changed.
-24. API URL not changed.
-25. `/run` contract preserved.
-26. Supabase not changed.
-27. DB not changed.
-28. Provider routing not changed.
+## Backend Contract
+- [ ] POST goes to `https://executive-engine-os.onrender.com/run`
+- [ ] API URL is unchanged
+- [ ] `/run` contract is unchanged
+- [ ] Response renders in this order:
+  - [ ] NEXT MOVE
+  - [ ] DECISION
+  - [ ] ACTION STEPS
+  - [ ] READY ASSETS
+  - [ ] RISK
+  - [ ] PRIORITY
+  - [ ] RECOMMENDED COMMAND
+
+## State Panels
+- [ ] Executive Summary cards update from latest response
+- [ ] Executive Intelligence cards update from latest response/context
+- [ ] Static fake demo conversation is removed from the runtime workflow
+- [ ] No backend, provider routing, Supabase, or DB behavior changed
