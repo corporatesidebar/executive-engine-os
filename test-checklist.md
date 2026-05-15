@@ -1,23 +1,30 @@
-# V35140 Frontend Runtime Test Checklist
+# V35140 Layout Lock Runtime Restore — Test Checklist
 
-## Runtime Controls
+## Visual layout
+- [ ] Dark left sidebar preserved
+- [ ] White main workspace preserved
+- [ ] Original three-column layout preserved
+- [ ] Large center workflow/chat area preserved
+- [ ] Middle Executive Summary cards preserved
+- [ ] Right Executive Intelligence panel preserved
+- [ ] Orange Execute button preserved
+- [ ] Blue/orange/navy brand direction preserved
+
+## Runtime behavior
 - [ ] Command input allows typing
-- [ ] Enter key submits command
+- [ ] Enter submits command
 - [ ] Execute button submits command
+- [ ] POST goes to `https://executive-engine-os.onrender.com/run`
 - [ ] Loading state appears while waiting
 - [ ] Error state appears on failed request
-- [ ] Follow-up input submits command
+- [ ] Sidebar clicks switch active state and focus relevant area
 - [ ] Command chips populate command input
-- [ ] Sidebar nav switches visible sections or scrolls/focuses sections
+- [ ] Follow-up input submits with Enter
+- [ ] Follow-up send icon submits
+- [ ] Executive Summary updates from latest response
+- [ ] Executive Intelligence updates from latest response/context
 
-## Backend Contract
-- [ ] POST goes to `https://executive-engine-os.onrender.com/run`
-- [ ] Backend returns HTTP 200
-- [ ] No backend files included
-- [ ] API URL unchanged
-- [ ] `/run` contract unchanged
-
-## Output Rendering Order
+## Output order
 - [ ] NEXT MOVE
 - [ ] DECISION
 - [ ] ACTION STEPS
@@ -26,16 +33,9 @@
 - [ ] PRIORITY
 - [ ] RECOMMENDED COMMAND
 
-## Dynamic Panels
-- [ ] Executive Summary updates from latest response
-- [ ] Executive Intelligence updates from latest response
-- [ ] Ready Assets section updates
-- [ ] Active Risks section updates
-- [ ] Tomorrow / Upcoming updates from recommended command
-
-## Visual Scope
-- [ ] Dark sidebar preserved
-- [ ] White workspace preserved
-- [ ] Three-column desktop layout preserved
-- [ ] Orange action button preserved
-- [ ] No generic chatbot redesign
+## Non-touched areas
+- [ ] No backend files included
+- [ ] No API URL change
+- [ ] No `/run` contract change
+- [ ] No Supabase or DB changes
+- [ ] No provider routing changes

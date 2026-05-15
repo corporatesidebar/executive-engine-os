@@ -1,189 +1,280 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Executive Engine</title>
   <style>
     :root{
-      --navy:#07182f;--navy2:#0d2344;--blue:#2563eb;--orange:#f97316;--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#667085;--border:#e5eaf2;--soft:#f8fafc;--ok:#16a34a;--danger:#dc2626;--shadow:0 14px 40px rgba(15,23,42,.08)
+      --navy:#06162d; --navy2:#0b1f3d; --ink:#101828; --muted:#667085; --line:#e7ecf4;
+      --soft:#f7f9fc; --blue:#1f5eff; --orange:#ff6a00; --green:#17a86b; --red:#ef4444;
+      --purple:#7c3aed; --card:#fff; --shadow:0 14px 40px rgba(16,24,40,.07);
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    *{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:260px minmax(520px,1fr) 330px 330px;background:var(--bg)}
-    .sidebar{background:linear-gradient(180deg,var(--navy),#061226);color:white;padding:24px 18px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;z-index:2}.brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--orange),#ffb35d);display:grid;place-items:center;font-weight:900;color:#111827;box-shadow:0 10px 24px rgba(249,115,22,.25)}.brand h1{font-size:18px;margin:0;letter-spacing:-.02em}.brand p{margin:2px 0 0;font-size:12px;color:#a8b5c9}.nav-group{display:flex;flex-direction:column;gap:6px}.nav-title{font-size:11px;color:#7f91ad;letter-spacing:.12em;text-transform:uppercase;margin:8px 10px}.nav-btn{border:0;background:transparent;color:#c8d2e3;text-align:left;padding:11px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;transition:.16s ease}.nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.1);color:white}.nav-dot{width:8px;height:8px;border-radius:99px;background:#52647f}.nav-btn.active .nav-dot{background:var(--orange)}.status-card{margin-top:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:14px}.status-card strong{display:block;font-size:13px}.status-card span{font-size:12px;color:#a8b5c9}.main{padding:24px;display:flex;flex-direction:column;gap:18px}.topbar{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}.eyebrow{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:13px;margin-bottom:10px}.live{color:var(--ok);font-weight:800}.headline{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.headline h2{font-size:26px;line-height:1.1;margin:0;letter-spacing:-.04em}.headline p{margin:6px 0 0;color:var(--muted)}.capture{margin-top:16px;display:grid;grid-template-columns:1fr auto;gap:10px}.capture input,.follow input{border:1px solid var(--border);border-radius:15px;padding:14px 15px;background:#fff;outline:none;min-width:0}.capture input:focus,.follow input:focus{border-color:#93b4ff;box-shadow:0 0 0 4px rgba(37,99,235,.1)}.execute{border:0;background:linear-gradient(135deg,var(--orange),#fb8b2e);color:white;font-weight:800;border-radius:15px;padding:0 22px;box-shadow:0 10px 22px rgba(249,115,22,.22)}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{border:1px solid var(--border);background:var(--soft);color:#344054;border-radius:999px;padding:8px 11px;font-size:12px}.chip:hover{border-color:#fdba74;background:#fff7ed}.workspace{display:grid;grid-template-columns:1fr;gap:18px}.panel{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}.panel-h{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}.panel-h h3{margin:0;font-size:15px}.panel-h span{font-size:12px;color:var(--muted)}.panel-b{padding:18px}.chat-window{min-height:360px;display:flex;flex-direction:column;gap:12px}.welcome{background:linear-gradient(135deg,#eef5ff,#fff7ed);border:1px solid #e4ecf8;border-radius:18px;padding:16px}.welcome h4{margin:0 0 5px;font-size:16px}.welcome p{margin:0;color:var(--muted);line-height:1.45}.message{border:1px solid var(--border);border-radius:18px;padding:14px;background:#fff}.message.user{background:#0d2344;color:white;border-color:#0d2344;margin-left:30px}.message.engine{background:#fff;margin-right:14px}.message .label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:900;margin-bottom:7px}.message.user .label{color:#b6c4da}.output-grid{display:grid;gap:10px}.output-item{border:1px solid var(--border);border-radius:16px;padding:13px;background:#fbfcfe}.output-item h4{margin:0 0 7px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#344054}.output-item p,.output-item li{margin:0;color:#475467;line-height:1.45}.output-item ul{margin:0;padding-left:18px}.follow{border-top:1px solid var(--border);padding:14px 18px;display:grid;grid-template-columns:1fr auto;gap:10px}.summary,.intel{padding:24px 18px 18px;display:flex;flex-direction:column;gap:14px}.side-title{display:flex;justify-content:space-between;align-items:center}.side-title h3{margin:0;font-size:17px;letter-spacing:-.02em}.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:15px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.metric{font-size:12px;color:var(--muted);margin-bottom:8px}.value{font-weight:850;line-height:1.35}.small{font-size:13px;color:var(--muted);line-height:1.45}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:#eff6ff;color:#1d4ed8;padding:6px 9px;font-size:12px;font-weight:800}.risk{background:#fff7ed}.danger{background:#fef2f2}.ok{background:#f0fdf4}.section-page{display:none}.section-page.active{display:block}.loading{animation:pulse 1.1s infinite ease-in-out}@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}.error{border-color:#fecaca;background:#fff1f2;color:#991b1b}.scroll-target{scroll-margin-top:24px}@media(max-width:1280px){.app{grid-template-columns:230px minmax(460px,1fr) 300px}.intel{display:none}}@media(max-width:980px){.app{display:block}.sidebar{position:relative;height:auto}.main,.summary{padding:16px}.capture,.follow{grid-template-columns:1fr}.execute{height:48px}.summary{display:grid;grid-template-columns:1fr 1fr}.chat-window{min-height:280px}}@media(max-width:640px){.summary{display:flex}.headline{display:block}.app{background:#fff}.main{padding:12px}.topbar,.panel,.card{border-radius:18px}}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--font);color:var(--ink);background:#fff;min-height:100vh;overflow:hidden}
+    .app{display:grid;grid-template-columns:315px minmax(560px,1fr)385px 405px;min-height:100vh;background:#fff}
+    .sidebar{height:100vh;background:linear-gradient(180deg,#071a33 0%,#041326 100%);color:#eaf2ff;padding:34px 20px 18px;display:flex;flex-direction:column;gap:24px;border-right:1px solid rgba(255,255,255,.07)}
+    .brand{display:flex;align-items:center;gap:18px;padding:0 10px 34px}
+    .mark{width:58px;height:58px;position:relative;transform:skewX(-14deg)}
+    .mark:before,.mark:after,.mark i{content:"";position:absolute;left:0;width:58px;height:13px;border-radius:3px;background:linear-gradient(90deg,#c8943d,#f2c36e);box-shadow:0 12px 24px rgba(242,195,110,.18)}
+    .mark:before{top:4px}.mark i{top:23px}.mark:after{top:42px;width:42px}
+    .brand h1{font-size:21px;line-height:1.02;margin:0;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#fff}
+    .brand span{display:block;margin-top:6px;color:#90a3c3;text-transform:uppercase;font-size:11px;letter-spacing:.16em;font-weight:800}
+    .nav-section{display:grid;gap:6px}.nav-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850;margin:0 12px 8px}
+    .nav-item{cursor:pointer;height:40px;border-radius:7px;padding:0 14px;display:flex;align-items:center;gap:14px;color:#dce7f7;font-size:15px;font-weight:760;border:1px solid transparent}
+    .nav-item svg{width:18px;height:18px;stroke-width:2}.nav-item.active{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:inset 3px 0 0 var(--orange);color:#fff}.nav-item.active svg{color:#ffb26d}
+    .project-title{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.09);padding-top:18px}.project-title span:first-child{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850}.project-title span:last-child{font-size:22px;color:#b9c8e1}
+    .project{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;padding:7px 10px;color:#dce7f7;font-size:13px}.project small{display:block;color:#3dd483;font-size:11px;margin-top:2px}.project svg{width:15px;height:15px;margin-top:2px;color:#aec0dc}
+    .side-user{margin-top:auto;border-top:1px solid rgba(255,255,255,.09);padding-top:20px;display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fde4c9,#c77a31);display:grid;place-items:center;color:#071a33;font-weight:900}.side-user strong{display:block;font-size:14px;color:#fff}.side-user span{font-size:12px;color:#94a8c7}.collapse{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#aebfda}.copyright{font-size:11px;color:#90a3c3;margin-top:16px}
+    .workspace{height:100vh;overflow:auto;padding:24px 18px 32px 34px;border-right:1px solid var(--line);background:#fff}.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.greeting h2{margin:0;font-size:22px;letter-spacing:-.03em}.greeting p{margin:6px 0 0;color:#667085;font-size:13px}.profile{display:flex;gap:14px;align-items:center}.bell{position:relative;font-size:20px;color:#344054}.bell:after{content:"";position:absolute;right:1px;top:0;width:7px;height:7px;background:var(--orange);border-radius:50%}.profile .avatar{width:38px;height:38px}.profile strong{font-size:13px;display:block}.profile span{font-size:11px;color:#667085;font-weight:700}
+    .capture{border:1.5px solid #ff9f55;border-radius:9px;padding:20px 20px 14px;margin-bottom:14px;box-shadow:0 18px 50px rgba(16,24,40,.06)}.capture textarea{width:100%;height:58px;border:0;outline:0;resize:none;font-family:var(--font);font-size:15px;color:#344054}.capture-actions{display:flex;align-items:center;gap:22px;color:#344054}.capture-actions svg{width:18px;height:18px}.clear{cursor:pointer;margin-left:auto;border:0;background:transparent;color:#667085;font-weight:700}.execute{border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),#ff861f);height:36px;padding:0 22px;color:white;font-weight:850;box-shadow:0 12px 24px rgba(255,106,0,.22);cursor:pointer}.execute:disabled{opacity:.55;cursor:not-allowed}.chips{display:flex;gap:10px;margin:0 20px 13px}.chip{cursor:pointer;height:27px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#344054;padding:0 18px;font-size:12px;font-weight:800}.chat{border:1px solid var(--line);border-radius:9px;padding:18px 20px 16px;min-height:650px;display:flex;flex-direction:column;gap:17px}.msg{display:grid;grid-template-columns:36px 1fr;gap:14px}.msg .bubble-avatar{width:34px;height:34px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:13px;font-weight:850;color:#344054}.msg.engine .bubble-avatar{background:#06162d;color:#f4b65e}.msg-head{font-size:13px;margin-bottom:6px}.msg-head strong{margin-right:8px}.msg-head span{color:#667085;font-size:12px}.msg p{margin:0;color:#101828;font-size:14px;line-height:1.5}.runtime-output p{margin:0 0 12px}.runtime-output strong{font-size:11px;letter-spacing:.06em;color:#667085}.asset{margin-top:12px;border:1px solid var(--line);border-radius:8px;height:54px;display:flex;align-items:center;gap:12px;max-width:430px;padding:0 15px}.doc-icon{width:25px;height:25px;border:1px solid #ffb08a;border-radius:5px;color:var(--orange);display:grid;place-items:center}.asset strong{display:block;font-size:13px}.asset span{font-size:12px;color:#667085}.download{margin-left:auto;color:#315bc9}.follow{margin-top:auto;height:58px;border:1px solid var(--line);border-radius:8px;padding:0 16px;display:flex;align-items:center;gap:13px}.follow input{border:0;outline:0;font-size:14px;flex:1}.follow svg{width:18px;height:18px;color:#667085;cursor:pointer}.follow input{min-width:0}.statusline{display:none;color:var(--orange);font-size:12px;font-weight:850;margin:8px 0 0 20px}.statusline.active{display:block}.error{display:none;color:#b42318;background:#fff2f0;border:1px solid #ffdad5;border-radius:8px;font-size:12px;font-weight:800;margin:8px 0 0;padding:10px}.error.active{display:block}
+    .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
+    @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
+    @media(max-width:850px){.app{display:block}.sidebar{min-height:auto}.workspace,.summary,.intel{padding:20px}.chips{flex-wrap:wrap;margin-left:0}.chat{min-height:500px}.split{grid-template-columns:1fr}.profile{display:none}}
   </style>
 </head>
 <body>
-  <div class="app" id="app">
+  <div class="app">
     <aside class="sidebar">
-      <div class="brand"><div class="mark">E</div><div><h1>Executive Engine</h1><p>Private operating system</p></div></div>
-      <div class="nav-group" id="nav">
-        <div class="nav-title">Operate</div>
-        <button class="nav-btn active" data-target="today"><span class="nav-dot"></span>Today Command</button>
-        <button class="nav-btn" data-target="workflow"><span class="nav-dot"></span>Workflow</button>
-        <button class="nav-btn" data-target="decisions"><span class="nav-dot"></span>Decisions</button>
-        <button class="nav-btn" data-target="assets"><span class="nav-dot"></span>Ready Assets</button>
-        <button class="nav-btn" data-target="risks"><span class="nav-dot"></span>Risk Monitor</button>
-        <div class="nav-title">Focus</div>
-        <button class="nav-btn" data-target="upcoming"><span class="nav-dot"></span>Tomorrow</button>
-        <button class="nav-btn" data-target="system"><span class="nav-dot"></span>System Status</button>
-      </div>
-      <div class="status-card"><strong id="sideStatus">System ready</strong><span id="sideStatusDetail">Backend locked. Frontend controls active.</span></div>
+      <div class="brand"><div class="mark"><i></i></div><div><h1>Executive<br>Engine</h1><span>Executive Engine</span></div></div>
+      <nav class="nav-section">
+        <div class="nav-title">Executive Engine</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Command</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Daily Brief</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Decisions</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .54V22a2 2 0 1 1-4 0v-.09a1.8 1.8 0 0 0-1-.54 1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.54-1H2a2 2 0 1 1 0-4h.09a1.8 1.8 0 0 0 .54-1 1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 9 4.6a1.8 1.8 0 0 0 1-.54V2a2 2 0 1 1 4 0v.09a1.8 1.8 0 0 0 1 .54 1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.4 9c.2.36.38.72.54 1H22a2 2 0 1 1 0 4h-.09a1.8 1.8 0 0 0-.51 1z"/></svg>Meeting Prep</div>
+      </nav>
+      <nav class="nav-section"><div class="nav-title">Intelligence</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Insights</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Strategy Board</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Risk Monitor</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team Pulse</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16V8M12 16v-5M17 16V6"/></svg>Financial Snapshot</div></nav>
+      <nav class="nav-section"><div class="nav-title">Resources</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Active Projects</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Files</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Notes</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>Upload Context</div></nav>
+      <div class="project-title"><span>Project Chats</span><span>+</span></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Market Expansion Strategy<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Q2 Board Preparation<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Pricing Optimization<small>Active</small></div></div>
+      <div class="side-user"><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><div class="collapse">‹</div></div><div class="copyright">© 2026 Executive Engine. All rights reserved.</div>
     </aside>
-
-    <main class="main">
-      <section class="topbar scroll-target" id="today">
-        <div class="eyebrow"><span>Good morning Will — you’re covered.</span><span class="live">● LIVE</span></div>
-        <div class="headline"><div><h2>Today Command Center</h2><p>Quick capture, clean decisioning, and next action clarity.</p></div><span class="pill" id="modePill">Execution</span></div>
-        <form class="capture" id="commandForm"><input id="commandInput" autocomplete="off" placeholder="What are we trying to win today?" /><button class="execute" type="submit" id="executeBtn">Execute</button></form>
-        <div class="chips" id="chips">
-          <button class="chip" data-command="Prepare for board meeting and summarize the next executive move.">Meeting</button>
-          <button class="chip" data-command="Build a proposal with next move, decision path, action steps, risks, and ready assets.">Proposal</button>
-          <button class="chip" data-command="Review pricing strategy and recommend the strongest revenue move.">Revenue</button>
-          <button class="chip" data-command="Create an execution plan for today with risks and recommended command.">Execution</button>
-          <button class="chip" data-command="Help make a clear executive decision with tradeoffs and next action.">Decision</button>
-          <button class="chip" data-command="Create a strategy brief with priorities, risks, assets, and next move.">Strategy</button>
-        </div>
-      </section>
-
-      <section class="panel section-page active scroll-target" id="workflow" data-section="workflow">
-        <div class="panel-h"><h3>Chat / Workflow Area</h3><span id="runtimeStatus">Ready</span></div>
-        <div class="panel-b"><div class="chat-window" id="chatWindow"><div class="welcome"><h4>Next move is ready.</h4><p>Capture a command above. The engine will return the operating path in the locked executive order.</p></div></div></div>
-        <form class="follow" id="followForm"><input id="followInput" autocomplete="off" placeholder="Add a follow-up command or adjustment…" /><button class="execute" type="submit">Run</button></form>
-      </section>
-
-      <section class="panel section-page scroll-target" id="decisions" data-section="decisions"><div class="panel-h"><h3>Recent Decisions</h3><span>Latest response</span></div><div class="panel-b" id="decisionsBody">Decision path is clear once you run a command.</div></section>
-      <section class="panel section-page scroll-target" id="assets" data-section="assets"><div class="panel-h"><h3>Ready Assets</h3><span>Generated support</span></div><div class="panel-b" id="assetsBody">Ready assets will appear here from the latest run.</div></section>
-      <section class="panel section-page scroll-target" id="risks" data-section="risks"><div class="panel-h"><h3>Active Risks</h3><span>Risk monitor</span></div><div class="panel-b" id="risksBody">Risks will update after execution.</div></section>
-      <section class="panel section-page scroll-target" id="upcoming" data-section="upcoming"><div class="panel-h"><h3>Tomorrow / Upcoming</h3><span>Forward view</span></div><div class="panel-b" id="upcomingBody">Upcoming priorities update from current context and recommended command.</div></section>
-      <section class="panel section-page scroll-target" id="system" data-section="system"><div class="panel-h"><h3>System Status</h3><span>Frontend runtime</span></div><div class="panel-b"><p class="small"><strong>API:</strong> https://executive-engine-os.onrender.com</p><p class="small"><strong>Runtime:</strong> JavaScript controls active. Backend untouched.</p></div></section>
+    <main class="workspace">
+      <div class="topbar"><div class="greeting"><h2>Welcome back, Will.</h2><p>Here’s your Executive Engine.</p></div><div class="profile"><div class="bell">♧</div><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><span>⌄</span></div></div>
+      <section class="capture"><textarea id="commandInput" placeholder="What are we trying to win today?"></textarea><div class="capture-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><button class="clear" id="clearButton">Clear</button><button class="execute" id="runButton">Execute →</button></div></section>
+      <div class="chips"><button class="chip">Prepare for board meeting</button><button class="chip">Analyze market expansion</button><button class="chip">Review Q2 performance</button><button class="chip">Assess key risks</button></div>
+      <div id="loading" class="statusline">Building the executive path…</div><div id="error" class="error"></div>
+      <section class="chat" id="chatFeed"><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:24 AM</span></div><p>I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:24 AM</span></div><p>Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Go-to-Market Strategy Framework</strong><span>Strategy Document · 12 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:48 AM</span></div><p>Now create a proposal based on that strategy.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:48 AM</span></div><p>Proposal created. It aligns with the strategy and includes scope, timeline, investment, and expected outcomes.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Client Proposal v1.0</strong><span>Proposal Document · 8 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>11:15 AM</span></div><p>Prepare me for the meeting and give me talking points and objections.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>11:15 AM</span></div><p>Meeting prep complete. Here are your talking points, key messages, objections to expect, and recommended responses.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Meeting Prep Pack</strong><span>Document · 9 pages</span></div><div class="download">⌄</div></div></div></div><div class="follow"><input placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div></section>
     </main>
-
-    <aside class="summary scroll-target" id="summary">
-      <div class="side-title"><h3>Executive Summary</h3><span class="pill">Current</span></div>
-      <div class="card ok"><div class="metric">Next Move</div><div class="value" id="summaryNext">Everything important is organized.</div></div>
-      <div class="card"><div class="metric">Decision</div><div class="value" id="summaryDecision">Decision path is clear.</div></div>
-      <div class="card"><div class="metric">Priority</div><div class="value" id="summaryPriority">Ready when you are.</div></div>
-      <div class="card risk"><div class="metric">Risk</div><div class="value" id="summaryRisk">No active risk from the current session.</div></div>
-    </aside>
-
-    <aside class="intel scroll-target" id="intelligence">
-      <div class="side-title"><h3>Executive Intelligence</h3><span class="pill">Live context</span></div>
-      <div class="card"><div class="metric">Recommended Command</div><div class="value" id="intelCommand">Run your first command.</div></div>
-      <div class="card"><div class="metric">Action Steps</div><div class="small" id="intelActions">Action steps will populate from the engine response.</div></div>
-      <div class="card"><div class="metric">Ready Assets</div><div class="small" id="intelAssets">Assets will populate from the engine response.</div></div>
-      <div class="card"><div class="metric">Operating Signal</div><div class="small" id="intelSignal">Frontend is interactive. Backend V35150B remains locked.</div></div>
-    </aside>
-  </div>
-
+    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub">Live updates from the conversation</p><div class="stack"><section class="summary-card orange"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span class="count">1</span></h4><p id="nextMove">Expand to new markets proposal and client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span class="count">1</span></h4><p id="decision">Approve strategy and proposal before client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span class="count">3</span></h4><ul id="actionSteps"><li>Finalize proposal</li><li>Schedule client meeting</li><li>Prepare presentation</li></ul><a class="add">+ Add note</a></section><section class="summary-card purple"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span class="count">3</span></h4><ul id="readyAssets"><li>Strategy Framework</li><li>Client Proposal v1.0</li><li>Meeting Prep Pack</li></ul><a class="add">+ Add note</a></section><section class="summary-card red"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span class="count">2</span></h4><ul id="risk"><li>Competitor aggressive pricing</li><li>Market entry barriers</li></ul><a class="add">+ Add note</a></section><section class="summary-card gold"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span class="count">High</span></h4><p id="priority">Client meeting preparation and proposal approval.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span class="count">1</span></h4><p id="recommendedCommand">Review proposal and confirm meeting agenda.</p><a class="add">+ Add note</a></section><section class="summary-card"><h4><span class="circle" style="background:#475467">□</span>Tomorrow / Upcoming<span class="count">2</span></h4><p>Board meeting<br>May 27, 2026 · 10:00 AM</p><a class="link">View schedule →</a></section><div class="split"><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">✓</span>Recent Decisions</h4><p>Approved Q2 budget reallocation<br>Greenlit market expansion study</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>System Status</h4><p>All systems operating normally<br><span style="color:#667085">Last updated: 2 min ago</span></p></section></div></div></aside>
+    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Search files, notes, and context…"></div><div class="filter">☷</div></div><div class="stack"><section class="intel-card"><h4>💡 Key Insight</h4><p>Expanding to new markets could increase revenue by 20–30% with strong positioning.</p><a class="link">View insight →</a></section><section class="intel-card"><h4>□ Memory</h4><p>You prefer concise proposals with clear ROI and risk analysis.</p><a class="link">View all memory →</a></section><section class="intel-card"><h4>▣ Upcoming Priorities</h4><div class="priority"><div class="num">1</div><div><strong>Board Meeting</strong><span>May 27, 2026 · 10:00 AM</span></div></div><div class="priority"><div class="num">2</div><div><strong>Investor Update</strong><span>May 30, 2026 · 1:00 PM</span></div></div><div class="priority"><div class="num">3</div><div><strong>Strategy Review</strong><span>June 2, 2026 · 9:00 AM</span></div></div><a class="link">View all →</a></section><section class="intel-card"><h4>♙ Team Pulse</h4><div class="pulse"><span>Sales</span><strong class="good">On Track</strong></div><div class="pulse"><span>Marketing</span><strong class="good">On Track</strong></div><div class="pulse"><span>Operations</span><strong class="bad">At Risk</strong></div><a class="link">View team pulse →</a></section><section class="intel-card"><h4>Executive Summary</h4><p>Revenue up 12% this quarter. Expansion strategy on track. Focus: execution and de-risking.</p><a class="link">View full summary →</a></section></div></aside>
+  </div><div class="footer"></div>
   <script>
     (() => {
-      'use strict';
-      const API_URL = 'https://executive-engine-os.onrender.com';
-      const ORDER = [
-        ['next_move','NEXT MOVE'],['decision','DECISION'],['action_steps','ACTION STEPS'],['ready_assets','READY ASSETS'],['risk','RISK'],['priority','PRIORITY'],['recommended_command','RECOMMENDED COMMAND']
+      "use strict";
+      const API_URL = "https://executive-engine-os.onrender.com";
+      const OUTPUT_ORDER = [
+        ["NEXT MOVE", ["next_move", "nextMove", "what_to_do_now", "next", "recommendation"]],
+        ["DECISION", ["decision", "recommended_decision"]],
+        ["ACTION STEPS", ["action_steps", "actions", "steps", "next_steps"]],
+        ["READY ASSETS", ["ready_assets", "assets", "prepared_assets", "deliverables"]],
+        ["RISK", ["risk", "risks", "active_risks"]],
+        ["PRIORITY", ["priority", "urgency"]],
+        ["RECOMMENDED COMMAND", ["recommended_command", "follow_up_command", "command", "next_command"]]
       ];
-      const $ = (id) => document.getElementById(id);
-      const state = { lastCommand:'', lastResponse:null, busy:false };
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+      const commandInput = $("#commandInput");
+      const runButton = $("#runButton");
+      const clearButton = $("#clearButton");
+      const loading = $("#loading");
+      const errorBox = $("#error");
+      const chatFeed = $("#chatFeed");
+      let runtimeBound = false;
 
-      function setStatus(text, detail){
-        $('runtimeStatus').textContent = text;
-        $('sideStatus').textContent = text;
-        if(detail) $('sideStatusDetail').textContent = detail;
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
       }
-      function normalizeValue(v){
-        if(v === null || v === undefined || v === '') return 'Not provided by current response.';
-        if(Array.isArray(v)) return v;
-        if(typeof v === 'object') return Object.entries(v).map(([k,val]) => `${k}: ${Array.isArray(val) ? val.join(', ') : val}`);
-        return String(v);
+      function firstValue(data, keys) {
+        for (const key of keys) {
+          const value = data && data[key];
+          if (value !== undefined && value !== null && value !== "") return value;
+        }
+        return "";
       }
-      function htmlEscape(s){return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-      function renderValue(v){
-        const val = normalizeValue(v);
-        if(Array.isArray(val)) return '<ul>' + val.map(x => `<li>${htmlEscape(x)}</li>`).join('') + '</ul>';
-        const text = htmlEscape(val).replace(/\n/g,'<br>');
-        return `<p>${text}</p>`;
+      function toText(value, fallback = "") {
+        if (value === undefined || value === null || value === "") return fallback;
+        if (Array.isArray(value)) return value.map(item => typeof item === "object" ? JSON.stringify(item) : String(item)).join("\n");
+        if (typeof value === "object") return JSON.stringify(value, null, 2);
+        return String(value);
       }
-      function appendMessage(role, content, isHtml=false){
-        const msg = document.createElement('div');
-        msg.className = `message ${role}`;
-        msg.innerHTML = `<div class="label">${role === 'user' ? 'Command' : 'Engine'}</div>${isHtml ? content : `<p>${htmlEscape(content)}</p>`}`;
-        $('chatWindow').appendChild(msg);
-        msg.scrollIntoView({behavior:'smooth',block:'nearest'});
+      function toLines(value, fallback) {
+        return toText(value, fallback).split(/\n|;|•|\d+\.\s+/).map(line => line.trim()).filter(Boolean);
       }
-      function responseHtml(data){
-        return `<div class="output-grid">${ORDER.map(([key,label]) => `<div class="output-item"><h4>${label}</h4>${renderValue(data[key])}</div>`).join('')}</div>`;
+      function setText(id, value, fallback) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = toText(value, fallback);
       }
-      function updateSidePanels(data){
-        $('summaryNext').textContent = Array.isArray(normalizeValue(data.next_move)) ? normalizeValue(data.next_move).join(' ') : normalizeValue(data.next_move);
-        $('summaryDecision').textContent = Array.isArray(normalizeValue(data.decision)) ? normalizeValue(data.decision).join(' ') : normalizeValue(data.decision);
-        $('summaryPriority').textContent = Array.isArray(normalizeValue(data.priority)) ? normalizeValue(data.priority).join(' ') : normalizeValue(data.priority);
-        $('summaryRisk').textContent = Array.isArray(normalizeValue(data.risk)) ? normalizeValue(data.risk).join(' ') : normalizeValue(data.risk);
-        $('intelCommand').textContent = Array.isArray(normalizeValue(data.recommended_command)) ? normalizeValue(data.recommended_command).join(' ') : normalizeValue(data.recommended_command);
-        $('intelActions').innerHTML = renderValue(data.action_steps);
-        $('intelAssets').innerHTML = renderValue(data.ready_assets);
-        $('intelSignal').textContent = `Latest command processed: ${state.lastCommand || 'Current session'}`;
-        $('decisionsBody').innerHTML = renderValue(data.decision);
-        $('assetsBody').innerHTML = renderValue(data.ready_assets);
-        $('risksBody').innerHTML = renderValue(data.risk);
-        $('upcomingBody').innerHTML = renderValue(data.recommended_command);
+      function setList(id, value, fallback) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = toLines(value, fallback).map(line => `<li>${escapeHtml(line)}</li>`).join("");
       }
-      async function runCommand(command, source='command'){
-        const clean = String(command || '').trim();
-        if(!clean || state.busy) return;
-        state.busy = true;
-        state.lastCommand = clean;
-        $('executeBtn').disabled = true;
-        setStatus('Running…','Waiting for backend response.');
-        appendMessage('user', clean);
-        const loading = document.createElement('div');
-        loading.className = 'message engine loading';
-        loading.innerHTML = '<div class="label">Engine</div><p>Building executive response…</p>';
-        $('chatWindow').appendChild(loading);
-        try{
-          const res = await fetch(`${API_URL}/run`, {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ command: clean, input: clean, prompt: clean, mode: source })
-          });
-          if(!res.ok) throw new Error(`Request failed: ${res.status}`);
-          const data = await res.json();
-          state.lastResponse = data;
-          loading.remove();
-          appendMessage('engine', responseHtml(data), true);
-          updateSidePanels(data);
-          setStatus('Response ready','Latest executive output rendered.');
-          showSection('workflow', false);
-        }catch(err){
-          loading.remove();
-          const errorHtml = `<div class="output-item error"><h4>ERROR</h4><p>${htmlEscape(err.message || 'Request failed.')}</p></div>`;
-          appendMessage('engine', errorHtml, true);
-          setStatus('Request failed','Check backend availability or browser console.');
-        }finally{
-          state.busy = false;
-          $('executeBtn').disabled = false;
+      function addMessage(role, body, data = null) {
+        if (!chatFeed) return;
+        const msg = document.createElement("div");
+        msg.className = `msg ${role === "engine" ? "engine" : "user"}`;
+        const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+        const title = role === "engine" ? "Executive Engine" : "You";
+        const avatar = role === "engine" ? "E" : "W";
+        let content = `<p>${escapeHtml(body)}</p>`;
+        if (role === "engine" && data) {
+          content = `<div class="runtime-output">${OUTPUT_ORDER.map(([label, keys]) => {
+            const text = toText(firstValue(data, keys), "—");
+            return `<p><strong>${label}</strong><br>${escapeHtml(text).replace(/\n/g, "<br>")}</p>`;
+          }).join("")}</div>`;
+        }
+        msg.innerHTML = `<div class="bubble-avatar">${avatar}</div><div><div class="msg-head"><strong>${title}</strong><span>${time}</span></div>${content}</div>`;
+        const follow = $(".follow", chatFeed);
+        chatFeed.insertBefore(msg, follow || null);
+        msg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      function updateSummary(data) {
+        const next = firstValue(data, ["next_move", "nextMove", "what_to_do_now", "next", "recommendation"]);
+        const decision = firstValue(data, ["decision", "recommended_decision"]);
+        const actions = firstValue(data, ["action_steps", "actions", "steps", "next_steps"]);
+        const assets = firstValue(data, ["ready_assets", "assets", "prepared_assets", "deliverables"]);
+        const risk = firstValue(data, ["risk", "risks", "active_risks"]);
+        const priority = firstValue(data, ["priority", "urgency"]);
+        const rec = firstValue(data, ["recommended_command", "follow_up_command", "command", "next_command"]);
+        setText("nextMove", next, "Next move is ready.");
+        setText("decision", decision, "Decision path is clear.");
+        setList("actionSteps", actions, "Confirm the next action.\nAssign owner.\nMove now.");
+        setList("readyAssets", assets, "Executive brief.\nDecision notes.\nAction plan.");
+        setList("risk", risk, "No major risk returned.");
+        setText("priority", priority, "High");
+        setText("recommendedCommand", rec, "Run the next highest-leverage command.");
+        const insight = $(".intel-card:nth-of-type(1) p");
+        if (insight) insight.textContent = toText(next || decision, "Next move is ready.");
+        const memory = $(".intel-card:nth-of-type(2) p");
+        if (memory) memory.textContent = `Latest context: ${toText(priority, "priority set after run")}.`;
+        const fullSummary = $(".intel-card:nth-of-type(5) p");
+        if (fullSummary) fullSummary.textContent = `${toText(decision, "Decision path is clear.")} Focus: ${toText(rec, "execute the next command")}.`;
+      }
+      function setLoading(active) {
+        if (loading) loading.classList.toggle("active", active);
+        if (runButton) {
+          runButton.disabled = active;
+          runButton.textContent = active ? "Executing…" : "Execute →";
         }
       }
-      function showSection(target, scroll=true){
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.target === target));
-        document.querySelectorAll('.section-page').forEach(sec => sec.classList.toggle('active', sec.id === target || (target === 'today' && sec.id === 'workflow')));
-        const el = $(target) || $('workflow');
-        if(scroll && el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      function showError(message) {
+        if (!errorBox) return;
+        errorBox.textContent = message;
+        errorBox.classList.add("active");
       }
-      document.addEventListener('DOMContentLoaded', () => {
-        $('commandInput').disabled = false; $('followInput').disabled = false;
-        $('commandForm').addEventListener('submit', e => { e.preventDefault(); runCommand($('commandInput').value, $('modePill').textContent); });
-        $('followForm').addEventListener('submit', e => { e.preventDefault(); const v = $('followInput').value.trim(); if(v){ $('followInput').value=''; runCommand(v, 'follow-up'); }});
-        $('nav').addEventListener('click', e => { const btn = e.target.closest('.nav-btn'); if(!btn) return; showSection(btn.dataset.target); });
-        $('chips').addEventListener('click', e => {
-          const chip = e.target.closest('.chip'); if(!chip) return;
-          e.preventDefault();
-          $('modePill').textContent = chip.textContent.trim();
-          $('commandInput').value = chip.dataset.command || chip.textContent.trim();
-          $('commandInput').focus();
+      function clearError() {
+        if (!errorBox) return;
+        errorBox.textContent = "";
+        errorBox.classList.remove("active");
+      }
+      async function runCommand(rawCommand, source = "command") {
+        const command = String(rawCommand ?? "").trim();
+        if (!command) {
+          showError("Enter the win first.");
+          commandInput && commandInput.focus();
+          return;
+        }
+        clearError();
+        setLoading(true);
+        addMessage("user", command);
+        try {
+          const response = await fetch(`${API_URL}/run`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: command, command, source })
+          });
+          if (!response.ok) throw new Error(`Backend returned ${response.status}`);
+          const data = await response.json();
+          updateSummary(data);
+          const next = firstValue(data, ["next_move", "nextMove", "what_to_do_now", "recommendation"]);
+          addMessage("engine", toText(next, "Next move is ready."), data);
+          if (commandInput) commandInput.value = "";
+        } catch (err) {
+          showError(`Command failed: ${err.message}`);
+          addMessage("engine", `Runtime error: ${err.message}`);
+        } finally {
+          setLoading(false);
+          commandInput && commandInput.focus();
+        }
+      }
+      function focusArea(label) {
+        const normalized = label.toLowerCase();
+        let target = chatFeed;
+        if (normalized.includes("decision")) target = $("#decision")?.closest(".summary-card") || chatFeed;
+        if (normalized.includes("risk")) target = $("#risk")?.closest(".summary-card") || chatFeed;
+        if (normalized.includes("insight") || normalized.includes("strategy") || normalized.includes("team") || normalized.includes("financial")) target = $(".intel") || chatFeed;
+        if (normalized.includes("file") || normalized.includes("note") || normalized.includes("project") || normalized.includes("upload")) target = $(".intel") || chatFeed;
+        if (normalized.includes("command") || normalized.includes("brief") || normalized.includes("meeting")) target = commandInput || chatFeed;
+        target && target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (target === commandInput) commandInput.focus();
+      }
+      function bindRuntime() {
+        if (runtimeBound) return;
+        runtimeBound = true;
+        if (runButton) runButton.addEventListener("click", () => runCommand(commandInput?.value, "execute-button"));
+        if (clearButton) clearButton.addEventListener("click", () => { if (commandInput) commandInput.value = ""; clearError(); commandInput && commandInput.focus(); });
+        if (commandInput) {
+          commandInput.removeAttribute("disabled");
+          commandInput.removeAttribute("readonly");
+          commandInput.addEventListener("keydown", event => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              runCommand(commandInput.value, "enter-key");
+            }
+          });
+        }
+        $$(".chip").forEach(chip => {
+          chip.addEventListener("click", () => {
+            const text = chip.textContent.trim();
+            if (commandInput) {
+              commandInput.value = text;
+              commandInput.focus();
+            }
+          });
         });
-        $('commandInput').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); $('commandForm').requestSubmit(); }});
-        setStatus('System ready','Frontend runtime active.');
-      });
+        $$(".nav-item").forEach(item => {
+          item.addEventListener("click", () => {
+            $$(".nav-item").forEach(nav => nav.classList.remove("active"));
+            item.classList.add("active");
+            focusArea(item.textContent.trim());
+          });
+        });
+        const followInput = $(".follow input");
+        if (followInput) {
+          followInput.removeAttribute("disabled");
+          followInput.removeAttribute("readonly");
+          followInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              const value = followInput.value.trim();
+              if (value) {
+                followInput.value = "";
+                runCommand(value, "follow-up");
+              }
+            }
+          });
+        }
+        const followSend = $$(".follow svg").pop();
+        if (followSend) {
+          followSend.addEventListener("click", () => {
+            const input = $(".follow input");
+            const value = input?.value.trim();
+            if (value) {
+              input.value = "";
+              runCommand(value, "follow-up-send");
+            } else if (input) {
+              input.focus();
+            }
+          });
+        }
+      }
+      document.addEventListener("DOMContentLoaded", bindRuntime);
+      if (document.readyState !== "loading") bindRuntime();
     })();
   </script>
 </body>

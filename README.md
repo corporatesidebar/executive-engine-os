@@ -1,30 +1,16 @@
-# Executive Engine OS — V35140 Runtime Functionality Layer
+# Executive Engine OS V35140 — Layout Lock Runtime Restore
 
-Frontend-only build.
+Frontend-only package.
+
+## Purpose
+Restores the approved screenshot layout while preserving the runtime functionality layer.
 
 ## Scope
-This package rebuilds the frontend runtime behavior while preserving the approved layout direction and locked backend connection.
+- `frontend/index.html` only
+- Backend URL preserved: `https://executive-engine-os.onrender.com`
+- POST target preserved: `/run`
+- No backend files included
+- No DB, Supabase, provider routing, or API contract changes
 
-## Files
-- `frontend/index.html`
-- `README.md`
-- `test-checklist.md`
-
-## Preserved
-- Backend API URL: `https://executive-engine-os.onrender.com`
-- POST route: `/run`
-- Output order:
-  1. NEXT MOVE
-  2. DECISION
-  3. ACTION STEPS
-  4. READY ASSETS
-  5. RISK
-  6. PRIORITY
-  7. RECOMMENDED COMMAND
-
-## Not touched
-- Backend
-- Supabase
-- DB schema
-- Provider routing
-- OpenAI / Claude routing
+## Deploy
+Upload the `frontend/` folder to the frontend service/repo only.
