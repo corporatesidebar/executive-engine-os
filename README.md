@@ -1,48 +1,72 @@
-# Executive Engine OS — V35150 Selective /run Quality Patch
+# Executive Engine OS — V35150B Backend Fix
 
-## Decision
-MERGE SELECTIVELY.
+Backend-only package for **V35150B — Selective /run Response Quality Contract Patch**.
 
-## Baseline preserved
-Current backend route surface from V35130R is preserved. This package does not include frontend files, database schema files, Supabase keys, Render configuration, or provider routing changes.
+## Scope
 
-## Reference used
-`executive-engine-os-v35150-real-output-contract.zip` was used as a selective patch reference only.
+This package restores backend version consistency and verification endpoints only.
 
-## What changed
-- Updated backend version label to `35150-selective-run-quality-on-v35130r`.
-- Strengthened the `/run` system prompt with the V35150 required output contract.
-- Added required contract enforcement for:
-  - `next_move`
-  - `decision`
-  - `action_steps`
-  - `ready_assets`
-  - `risk`
-  - `priority`
-  - `recommended_command`
-- Preserved backward-compatible keys including:
-  - `what_to_do_now`
-  - `actions`
-  - `asset`
-  - `follow_up`
-  - `provider_used`
-  - `router`
-  - `active_context`
-  - `workspace`
-  - `operator_state`
-- Added JSON normalization helpers for `action_steps`, `ready_assets`, `priority`, and `recommended_command`.
-- Updated `/test-report-json` schema metadata to expose the required `/run` contract.
+Included:
+- `backend/main.py`
+- `backend/requirements.txt`
+- `README.md`
+- `test-checklist.md`
 
-## What was not touched
-- Frontend files were not created.
-- Supabase keys were not touched.
-- DB schema was not touched.
-- Provider routing was not changed.
-- API URL was not changed.
-- Workspace/save/test routes were preserved.
+Not included:
+- frontend files
+- Supabase changes
+- DB schema changes
+- deployment setting changes
+- memory features
+- V35160 features
 
-## Diagnosis
-The V35130R backend already had strong route coverage and workspace/save/DB support, but `/run` responses did not always expose the V35150 contract fields expected by the frontend and recovery path. The existing payload used `actions` and `asset`, but did not reliably guarantee `action_steps`, `ready_assets`, or `recommended_command`.
+## Endpoint Target
 
-## Recommended version name
-V35150B — Selective /run Response Quality Contract Patch
+Live backend URL:
+
+`https://executive-engine-os.onrender.com`
+
+## Version Target
+
+All backend endpoints report:
+
+`V35150B`
+
+## Restored / Fixed Endpoints
+
+- `GET /`
+- `GET /health`
+- `GET /debug`
+- `GET /test-report`
+- `GET /test-report-json`
+- `POST /run`
+
+## /run Contract
+
+Every successful `POST /run` response returns exactly:
+
+- `next_move`
+- `decision`
+- `action_steps`
+- `ready_assets`
+- `risk`
+- `priority`
+- `recommended_command`
+
+`action_steps` and `ready_assets` are always arrays. `priority` is always `High`, `Medium`, or `Low`.
+
+## Test Page
+
+Open:
+
+`https://executive-engine-os.onrender.com/test-report`
+
+The page includes:
+- Run Tests button
+- Copy JSON button
+- PASS / FAIL status display
+- Raw JSON output
+
+## Deployment Notes
+
+Deploy as backend service only. Do not deploy to the frontend Render service.

@@ -1,64 +1,46 @@
-# V35150B Test Checklist
+# V35150B Backend Test Checklist
 
-## Backend-only package check
+## Backend-only verification
+
 - [ ] ZIP contains `backend/main.py`
 - [ ] ZIP contains `backend/requirements.txt`
 - [ ] ZIP contains `README.md`
 - [ ] ZIP contains `test-checklist.md`
-- [ ] ZIP does not contain frontend files
-- [ ] ZIP does not contain database schema files
+- [ ] ZIP contains no frontend files
 
-## Route preservation
-After deploy, test:
-- [ ] GET `/`
-- [ ] GET `/health`
-- [ ] GET `/debug`
-- [ ] GET `/test-report`
-- [ ] GET `/test-report-json`
-- [ ] GET `/providers`
-- [ ] GET `/db-status`
-- [ ] GET `/workspace-state`
-- [ ] GET `/operator-scan`
-- [ ] GET `/save-flow-status`
-- [ ] POST `/save-action`
-- [ ] POST `/save-decision`
-- [ ] POST `/save-asset`
+## Endpoint verification
 
-## Required /run contract
-POST `/run` with:
+- [ ] `GET /` returns 200
+- [ ] `GET /` reports version `V35150B`
+- [ ] `GET /health` returns 200
+- [ ] `GET /health` reports version `V35150B`
+- [ ] `GET /debug` returns 200
+- [ ] `GET /debug` reports version `V35150B`
+- [ ] `GET /test-report` returns browser page
+- [ ] `GET /test-report-json` returns JSON report
+- [ ] `POST /run` returns 200
 
-`Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
+## /run output contract
 
-Confirm response includes:
-- [ ] `next_move`
-- [ ] `decision`
-- [ ] `action_steps`
-- [ ] `ready_assets`
-- [ ] `risk`
-- [ ] `priority`
-- [ ] `recommended_command`
+- [ ] `next_move` present
+- [ ] `decision` present
+- [ ] `action_steps` present and array
+- [ ] `ready_assets` present and array
+- [ ] `risk` present
+- [ ] `priority` present and is `High`, `Medium`, or `Low`
+- [ ] `recommended_command` present
 
-Confirm backward-compatible keys still exist:
-- [ ] `what_to_do_now`
-- [ ] `actions`
-- [ ] `asset`
-- [ ] `follow_up`
-- [ ] `provider_used`
-- [ ] `router`
-- [ ] `active_context`
-- [ ] `workspace`
-- [ ] `operator_state`
+## Test page tools
 
-## Quality check
-- [ ] Response is specific to the auto loan dealership input
-- [ ] Response is executive-grade and business-focused
-- [ ] No generic filler
-- [ ] No vague motivational language
-- [ ] Action steps are practical
-- [ ] Ready assets name a useful asset
-- [ ] Recommended command is usable
+- [ ] `/test-report` has Run Tests button
+- [ ] `/test-report` has Copy JSON button
+- [ ] PASS / FAIL results display clearly
+- [ ] Raw JSON output displays clearly
 
-## Decision after testing
-- [ ] HOLD if routes fail
-- [ ] FIX if contract fields are missing
-- [ ] PROMOTE if route surface and `/run` contract pass
+## Do-not-touch checks
+
+- [ ] Frontend not changed
+- [ ] Supabase not changed
+- [ ] DB schema not changed
+- [ ] API URL unchanged
+- [ ] Provider routing remains OpenAI-first
