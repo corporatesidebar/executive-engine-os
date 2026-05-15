@@ -1,52 +1,43 @@
-# V35140 Frontend Workflow Rendering Test Checklist
+# V35140 Frontend Workflow State Model Test Checklist
 
-## Package Inspection
-- [ ] ZIP contains `frontend/index.html`
-- [ ] ZIP contains `README.md`
-- [ ] ZIP contains `test-checklist.md`
-- [ ] ZIP contains no backend files
-- [ ] ZIP contains no Supabase or DB files
+## Scope
+Frontend only.
 
-## Layout Preservation
-- [ ] Approved dark sidebar is unchanged
-- [ ] Header/topbar is unchanged
-- [ ] Main command area is unchanged
-- [ ] Executive Summary column is preserved
-- [ ] Executive Intelligence column is preserved
-- [ ] Fonts, colors, spacing, columns, and card structure remain visually consistent with the approved layout
-
-## Runtime Workflow
-- [ ] Main command input accepts text
-- [ ] Execute button submits command
-- [ ] Enter submits command from main input
-- [ ] Follow-up input stays pinned at bottom of workflow panel
-- [ ] Follow-up input submits on Enter
-- [ ] Follow-up send icon submits
-- [ ] Loading state appears while request is running
-- [ ] Error state appears if request fails
-
-## Chat Rendering
-- [ ] User message appears as compact right-side bubble
-- [ ] Assistant message appears as left-side structured card/bubble
-- [ ] Conversation history remains readable
-- [ ] Assistant output does not render as pasted/plain document content
-- [ ] Vertical spacing inside assistant response is compact
-
-## Backend Contract
-- [ ] POST goes to `https://executive-engine-os.onrender.com/run`
-- [ ] API URL is unchanged
-- [ ] `/run` contract is unchanged
-- [ ] Response renders in this order:
-  - [ ] NEXT MOVE
-  - [ ] DECISION
-  - [ ] ACTION STEPS
-  - [ ] READY ASSETS
-  - [ ] RISK
-  - [ ] PRIORITY
-  - [ ] RECOMMENDED COMMAND
-
-## State Panels
-- [ ] Executive Summary cards update from latest response
-- [ ] Executive Intelligence cards update from latest response/context
-- [ ] Static fake demo conversation is removed from the runtime workflow
-- [ ] No backend, provider routing, Supabase, or DB behavior changed
+## Must Pass
+1. Frontend loads successfully.
+2. Approved layout remains visually intact.
+3. Dark sidebar is preserved.
+4. Main command area is preserved.
+5. Executive Summary column is preserved.
+6. Executive Intelligence column is preserved.
+7. API URL remains `https://executive-engine-os.onrender.com`.
+8. Main command submits to `/run`.
+9. Enter submits the main command.
+10. Execute button submits the main command.
+11. User command appears as a compact right-side bubble.
+12. Assistant response appears as a compact left-side structured card.
+13. Assistant card renders sections in this exact order:
+    - NEXT MOVE
+    - DECISION
+    - ACTION STEPS
+    - READY ASSETS
+    - RISK
+    - PRIORITY
+    - RECOMMENDED COMMAND
+14. Response output does not render as pasted/plain document-style text.
+15. Next Action button appears after assistant response.
+16. Next Action button loads recommended command into the follow-up input.
+17. Follow-up input remains pinned at the bottom of the workflow panel.
+18. Follow-up input submits and continues the same conversation thread.
+19. Command sidebar view shows live conversation.
+20. Decisions sidebar view shows runtime decisions.
+21. Action Workspace sidebar view shows runtime action steps.
+22. Ready Assets sidebar view shows runtime assets.
+23. Risk Monitor sidebar view shows runtime risks.
+24. Context sidebar view shows active command/context.
+25. Executive Summary updates from latest response.
+26. Executive Intelligence updates from latest response/context.
+27. Static/fake runtime content is removed or replaced with runtime state.
+28. Backend was not touched.
+29. Supabase/DB were not touched.
+30. Provider routing was not touched.
