@@ -1,60 +1,42 @@
-# Executive Engine OS — Frontend Runtime Test Checklist
+# Executive Engine OS — V35140 Frontend Layout Restore Test Checklist
 
-## Deployment Type
+## Frontend Visual Lock
+1. Frontend loads.
+2. Approved layout is preserved.
+3. Dark left sidebar is preserved.
+4. Main command/workspace column is preserved.
+5. Executive Summary middle column is preserved.
+6. Executive Intelligence right column is preserved.
+7. Fonts are unchanged.
+8. Colors are unchanged.
+9. Card structure is unchanged.
+10. Spacing/columns are unchanged.
 
-Frontend only.
+## Runtime Functionality
+11. Command input works.
+12. Enter submits from the main command input.
+13. Execute button submits.
+14. User command renders in the conversation stream.
+15. Loading state appears while request is running.
+16. POST goes to https://executive-engine-os.onrender.com/run.
+17. Error state appears if request fails.
+18. Assistant response renders in the conversation stream.
+19. Executive Summary cards update from the backend response.
+20. Follow-up input submits.
 
-## Do Not Touch
+## Output Contract Rendering Order
+21. NEXT MOVE renders.
+22. DECISION renders.
+23. ACTION STEPS renders.
+24. READY ASSETS renders.
+25. RISK renders.
+26. PRIORITY renders.
+27. RECOMMENDED COMMAND renders.
 
-- Backend
-- API URL
-- /run contract
-- Supabase
-- DB schema
-- Provider routing
-
-## Test Steps
-
-1. Deploy `frontend/index.html` to the frontend service.
-2. Open https://executive-engine-frontend.onrender.com/
-3. Confirm approved layout is preserved:
-   - Dark left sidebar
-   - White main workspace
-   - Three-column structure
-   - Main workflow/chat area
-   - Executive Summary column
-   - Executive Intelligence right panel
-   - Orange Execute button
-4. Type a command into the main input.
-5. Press Enter.
-6. Confirm the user command appears as a right-side message bubble.
-7. Confirm loading state appears as an assistant-side bubble.
-8. Confirm Network tab shows POST to:
-   - https://executive-engine-os.onrender.com/run
-9. Confirm assistant response appears as a left-side structured message bubble.
-10. Confirm response renders in this exact order:
-   - NEXT MOVE
-   - DECISION
-   - ACTION STEPS
-   - READY ASSETS
-   - RISK
-   - PRIORITY
-   - RECOMMENDED COMMAND
-11. Type a follow-up command.
-12. Confirm follow-up appears in the same conversation thread.
-13. Confirm Executive Summary updates from latest response.
-14. Confirm Executive Intelligence updates from latest response/context.
-15. Click sidebar sections:
-   - Today Command
-   - Decisions
-   - Action Workspace
-   - Ready Assets
-   - Risk Monitor
-   - Context
-16. Confirm each sidebar section shows real state-derived content, not static filler.
-17. Disable backend or block request temporarily.
-18. Confirm visible error state appears.
-
-## Expected Result
-
-PASS if the frontend behaves like real software, posts to the locked backend, displays real runtime state, and preserves the approved layout.
+## Preservation Checks
+28. Backend not changed.
+29. API URL not changed.
+30. `/run` contract preserved.
+31. Supabase not touched.
+32. DB schema not touched.
+33. Provider routing not touched.
