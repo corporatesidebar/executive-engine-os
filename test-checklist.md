@@ -1,24 +1,23 @@
-# V35140 Runtime JavaScript Fix Test Checklist
+# V35140 Frontend Runtime Test Checklist
 
-## Frontend runtime
-- [ ] Page loads visually with approved layout intact.
-- [ ] Command input accepts typing.
-- [ ] Pressing Enter in command input submits.
-- [ ] Execute button submits.
-- [ ] Clear button clears and refocuses command input.
-- [ ] Command chips populate command input.
-- [ ] Follow-up input accepts typing.
-- [ ] Pressing Enter in follow-up input submits.
-- [ ] Follow-up send icon submits.
-- [ ] Sidebar nav items change active state.
-- [ ] Sidebar nav items focus/scroll to relevant workspace areas.
+## Runtime Controls
+- [ ] Command input allows typing
+- [ ] Enter key submits command
+- [ ] Execute button submits command
+- [ ] Loading state appears while waiting
+- [ ] Error state appears on failed request
+- [ ] Follow-up input submits command
+- [ ] Command chips populate command input
+- [ ] Sidebar nav switches visible sections or scrolls/focuses sections
 
-## Backend connection
-- [ ] POST request goes to https://executive-engine-os.onrender.com/run
-- [ ] Request body includes command/input/message for compatibility.
-- [ ] Response renders without console errors.
+## Backend Contract
+- [ ] POST goes to `https://executive-engine-os.onrender.com/run`
+- [ ] Backend returns HTTP 200
+- [ ] No backend files included
+- [ ] API URL unchanged
+- [ ] `/run` contract unchanged
 
-## Output order
+## Output Rendering Order
 - [ ] NEXT MOVE
 - [ ] DECISION
 - [ ] ACTION STEPS
@@ -27,7 +26,16 @@
 - [ ] PRIORITY
 - [ ] RECOMMENDED COMMAND
 
-## Guardrails
-- [ ] No backend files included.
-- [ ] No DB/Supabase files included.
-- [ ] No provider routing changes.
+## Dynamic Panels
+- [ ] Executive Summary updates from latest response
+- [ ] Executive Intelligence updates from latest response
+- [ ] Ready Assets section updates
+- [ ] Active Risks section updates
+- [ ] Tomorrow / Upcoming updates from recommended command
+
+## Visual Scope
+- [ ] Dark sidebar preserved
+- [ ] White workspace preserved
+- [ ] Three-column desktop layout preserved
+- [ ] Orange action button preserved
+- [ ] No generic chatbot redesign
