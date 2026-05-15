@@ -1,46 +1,41 @@
-# V35150B Backend Test Checklist
+# V35140 Frontend Test Checklist
 
-## Backend-only verification
-
-- [ ] ZIP contains `backend/main.py`
-- [ ] ZIP contains `backend/requirements.txt`
+## Scope Guard
+- [ ] ZIP contains `frontend/index.html`
 - [ ] ZIP contains `README.md`
 - [ ] ZIP contains `test-checklist.md`
-- [ ] ZIP contains no frontend files
+- [ ] ZIP does not contain backend files
+- [ ] ZIP does not contain DB/Supabase files
 
-## Endpoint verification
+## Visual Layout
+- [ ] Dark left sidebar preserved
+- [ ] White main workspace preserved
+- [ ] Three-column desktop layout preserved
+- [ ] Top Quick Capture / Control input visible
+- [ ] Chat/workflow area visible
+- [ ] Executive Summary middle column visible
+- [ ] Executive Intelligence right column visible
+- [ ] Orange Execute button visible
+- [ ] Blue/orange/navy brand direction preserved
+- [ ] No Command Cockpit wording
+- [ ] No Command Center wording
+- [ ] No cockpit/airplane wording
 
-- [ ] `GET /` returns 200
-- [ ] `GET /` reports version `V35150B`
-- [ ] `GET /health` returns 200
-- [ ] `GET /health` reports version `V35150B`
-- [ ] `GET /debug` returns 200
-- [ ] `GET /debug` reports version `V35150B`
-- [ ] `GET /test-report` returns browser page
-- [ ] `GET /test-report-json` returns JSON report
-- [ ] `POST /run` returns 200
+## Backend Connection
+- [ ] Backend API URL remains `https://executive-engine-os.onrender.com`
+- [ ] POST `/run` is called from the frontend
+- [ ] POST `/run` returns 200
+- [ ] No CORS errors
+- [ ] No console errors blocking usage
 
-## /run output contract
+## Output Order
+- [ ] NEXT MOVE displays first
+- [ ] DECISION displays second
+- [ ] ACTION STEPS displays third
+- [ ] READY ASSETS displays fourth
+- [ ] RISK displays fifth
+- [ ] PRIORITY displays sixth
+- [ ] RECOMMENDED COMMAND displays seventh
 
-- [ ] `next_move` present
-- [ ] `decision` present
-- [ ] `action_steps` present and array
-- [ ] `ready_assets` present and array
-- [ ] `risk` present
-- [ ] `priority` present and is `High`, `Medium`, or `Low`
-- [ ] `recommended_command` present
-
-## Test page tools
-
-- [ ] `/test-report` has Run Tests button
-- [ ] `/test-report` has Copy JSON button
-- [ ] PASS / FAIL results display clearly
-- [ ] Raw JSON output displays clearly
-
-## Do-not-touch checks
-
-- [ ] Frontend not changed
-- [ ] Supabase not changed
-- [ ] DB schema not changed
-- [ ] API URL unchanged
-- [ ] Provider routing remains OpenAI-first
+## Recommended Live Test Command
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
