@@ -65,6 +65,28 @@
     .response-section p,.response-section li{font-size:12px;line-height:1.28}
     .response-section ul{gap:1px}
     .follow{flex-shrink:0}
+
+
+    /* V35140 guided workflow layer: behavior-only polish inside the locked layout. */
+    .workflow-response{display:grid;gap:8px}
+    .answer-block{border:1px solid #edf1f7;background:#fbfcff;border-radius:12px;padding:9px 10px}
+    .answer-block span,.workflow-next small,.saved-preview span,.view-title{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#667085;font-weight:950;margin-bottom:3px}
+    .answer-block p{margin:0;color:#101828;font-size:12.5px;line-height:1.32;font-weight:650}
+    .workflow-next{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffdfc8;background:#fff8f3;border-radius:12px;padding:9px 10px}
+    .workflow-next strong{display:block;color:#101828;font-size:12.5px;line-height:1.25}
+    .workflow-next button,.next-action button{border:0;border-radius:999px;background:#06162d;color:#fff;font-size:11px;font-weight:900;padding:7px 10px;white-space:nowrap;cursor:pointer}
+    .response-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .response-grid .response-section{border:1px solid #eef2f7;border-radius:10px;padding:7px 8px;background:#fff}
+    .response-grid .response-section.wide{grid-column:1/-1}
+    .saved-preview{border:1px solid #eef2f7;border-radius:12px;padding:8px 10px;background:#fff;display:grid;gap:6px}
+    .saved-row{display:grid;grid-template-columns:76px 1fr;gap:8px;align-items:start;font-size:11.5px;line-height:1.28;color:#344054}
+    .saved-row b{color:#101828;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+    .next-action{display:none}
+    .workflow-card,.workflow-empty{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 14px;box-shadow:0 8px 22px rgba(16,24,40,.04)}
+    .workflow-card h4{margin:0 0 6px;font-size:14px;letter-spacing:-.01em}.workflow-card p{margin:0;color:#344054;font-size:12.5px;line-height:1.38}
+    .workspace-list{display:grid;gap:8px}.workspace-item{display:grid;grid-template-columns:22px 1fr auto;gap:9px;align-items:start;border:1px solid #edf1f7;border-radius:12px;padding:9px;background:#fbfcfe}.workspace-item .num{width:22px;height:22px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:11px;font-weight:900;color:#344054}.workspace-item strong{display:block;font-size:12.5px;color:#101828;line-height:1.25}.workspace-item span{display:block;margin-top:3px;font-size:11px;color:#667085}.workspace-item em{font-style:normal;color:#667085;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:900}.workflow-empty strong{display:block;font-size:13px;margin-bottom:4px}.workflow-empty span{display:block;font-size:12px;color:#667085;line-height:1.35}
+    @media(max-width:1500px){.response-grid{grid-template-columns:1fr}}
+
     .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
     @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
     @media(max-width:850px){.app{display:block}.sidebar{min-height:auto}.workspace,.summary,.intel{padding:20px}.chips{flex-wrap:wrap;margin-left:0}.chat{min-height:500px}.split{grid-template-columns:1fr}.profile{display:none}}
@@ -106,7 +128,6 @@
     const errorBox = document.getElementById("error");
     const chatFeed = document.getElementById("chatFeed");
     const messageStream = document.getElementById("messageStream");
-    const emptyState = document.getElementById("emptyState");
     const followInput = chatFeed ? chatFeed.querySelector(".follow input") : null;
     const followSend = chatFeed ? chatFeed.querySelector(".follow svg:last-child") : null;
     const navItems = Array.from(document.querySelectorAll(".nav-item[data-view]"));
@@ -120,13 +141,14 @@
       assets: [],
       risks: [],
       context: [],
-      lastCommand: ""
+      lastCommand: "",
+      threadObjective: ""
     };
 
     const FIELD_ORDER = [
-      { label: "NEXT MOVE", target: "nextMove", keys: ["next_move", "nextMove", "what_to_do_now", "next", "recommendation"] },
+      { label: "NEXT MOVE", target: "nextMove", keys: ["next_move", "nextMove", "what_to_do_now", "next", "recommendation", "answer", "summary"] },
       { label: "DECISION", target: "decision", keys: ["decision", "recommended_decision"] },
-      { label: "ACTION STEPS", target: "actionSteps", count: "actionStepsCount", keys: ["action_steps", "actions", "steps", "next_steps"], list: true },
+      { label: "ACTION STEPS", target: "actionSteps", count: "actionStepsCount", keys: ["action_steps", "actions", "steps", "next_steps", "tasks"], list: true },
       { label: "READY ASSETS", target: "readyAssets", count: "readyAssetsCount", keys: ["ready_assets", "assets", "prepared_assets", "deliverables", "asset"], list: true },
       { label: "RISK", target: "risk", count: "riskCount", keys: ["risk", "risks", "active_risks"], list: true },
       { label: "PRIORITY", target: "priority", count: "priorityCount", keys: ["priority", "urgency"] },
@@ -144,7 +166,7 @@
       if(v === null || v === undefined || v === "") return "";
       if(Array.isArray(v)) return v.map(formatValue).filter(Boolean).join("\n");
       if(typeof v === "object"){
-        const preferred = v.title || v.name || v.label || v.text || v.summary || v.description || v.action || v.step || v.value;
+        const preferred = v.title || v.name || v.label || v.text || v.summary || v.description || v.action || v.step || v.value || v.content;
         if(preferred) return String(preferred);
         return Object.entries(v).map(([k,val]) => `${k.replace(/_/g," ")}: ${formatValue(val)}`).join("; ");
       }
@@ -153,10 +175,10 @@
 
     function normalizeItems(v, fallback){
       if(v === null || v === undefined || v === "") return fallback ? [fallback] : [];
-      if(Array.isArray(v)) return v.map(formatValue).filter(Boolean).slice(0, 7);
+      if(Array.isArray(v)) return v.map(formatValue).map(x=>x.trim()).filter(Boolean).slice(0, 6);
       if(typeof v === "object") return [formatValue(v)].filter(Boolean);
       const raw = String(v).trim();
-      const split = raw.split(/\n|;|•/).map(x => x.replace(/^[-*\d.)\s]+/, "").trim()).filter(Boolean).slice(0, 7);
+      const split = raw.split(/\n|;|•/).map(x => x.replace(/^[-*\d.)\s]+/, "").trim()).filter(Boolean).slice(0, 6);
       return split.length ? split : (raw ? [raw] : (fallback ? [fallback] : []));
     }
 
@@ -169,9 +191,29 @@
       return String(s).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
     }
 
-    function listHtml(items){
-      if(!items || !items.length) return `<p>No runtime items yet.</p>`;
-      return `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    function plainForHistory(body){
+      if(typeof body === "string") return body;
+      const view = getView(body);
+      return [view.clearAnswer, view.nextAction, view.decision].filter(Boolean).join(" | ");
+    }
+
+    function cleanFallback(v){
+      return v && v !== "Not returned yet." ? v : "Not specified by backend.";
+    }
+
+    function getView(data){
+      const rawAnswer = value(data, ["clear_answer", "answer", "response", "output", "message", "summary"]);
+      const nextMove = text(value(data, FIELD_ORDER[0].keys), text(rawAnswer, "Not returned yet."));
+      const decision = text(value(data, FIELD_ORDER[1].keys), "Not returned yet.");
+      const actions = normalizeItems(value(data, FIELD_ORDER[2].keys), "Not returned yet.");
+      const assets = normalizeItems(value(data, FIELD_ORDER[3].keys), "Not returned yet.");
+      const risks = normalizeItems(value(data, FIELD_ORDER[4].keys), "Not returned yet.");
+      const priority = text(value(data, FIELD_ORDER[5].keys), "Not returned yet.");
+      let recommended = text(value(data, FIELD_ORDER[6].keys), "");
+      if(!recommended) recommended = actions.find(x => x !== "Not returned yet.") || nextMove || "Continue this workflow";
+      const clearAnswer = text(rawAnswer, nextMove || decision || "Backend returned a response. Review the workflow sections below.");
+      const nextAction = actions.find(x => x !== "Not returned yet.") || nextMove || recommended || "Continue this workflow.";
+      return {data, clearAnswer, nextMove, decision, actions, assets, risks, priority, recommended, nextAction};
     }
 
     function setText(target, v, fallback){
@@ -186,12 +228,13 @@
       if(el) el.textContent = value;
     }
 
-    function updateList(target, v, fallback){
+    function updateList(target, items, fallback){
       const el = document.getElementById(target);
-      const lines = normalizeItems(v, fallback);
-      if(el) el.innerHTML = lines.map(x => `<li>${escapeHtml(x)}</li>`).join("");
-      updateCount(`${target}Count`, lines[0] === fallback ? 0 : lines.length);
-      return lines;
+      const lines = Array.isArray(items) ? items : normalizeItems(items, fallback);
+      const usable = lines.filter(x => x && x !== "Not returned yet.");
+      if(el) el.innerHTML = (usable.length ? usable : [fallback || "Not returned yet."]).map(x => `<li>${escapeHtml(x)}</li>`).join("");
+      updateCount(`${target}Count`, usable.length);
+      return usable;
     }
 
     function setPanelText(id, content){
@@ -199,77 +242,87 @@
       if(el) el.textContent = content;
     }
 
-    function getView(data){
-      const nextMove = text(value(data, FIELD_ORDER[0].keys), "Not returned yet.");
-      const decision = text(value(data, FIELD_ORDER[1].keys), "Not returned yet.");
-      const actions = normalizeItems(value(data, FIELD_ORDER[2].keys), "Not returned yet.");
-      const assets = normalizeItems(value(data, FIELD_ORDER[3].keys), "Not returned yet.");
-      const risks = normalizeItems(value(data, FIELD_ORDER[4].keys), "Not returned yet.");
-      const priority = text(value(data, FIELD_ORDER[5].keys), "Not returned yet.");
-      const recommended = text(value(data, FIELD_ORDER[6].keys), "Not returned yet.");
-      return {data, nextMove, decision, actions, assets, risks, priority, recommended};
-    }
-
     function renderSummary(data){
       const view = getView(data);
       setText("nextMove", view.nextMove, "Not returned yet.");
       setText("decision", view.decision, "Not returned yet.");
-      updateList("actionSteps", view.actions, "Not returned yet.");
-      updateList("readyAssets", view.assets, "Not returned yet.");
-      updateList("risk", view.risks, "Not returned yet.");
+      const actions = updateList("actionSteps", view.actions, "Not returned yet.");
+      const assets = updateList("readyAssets", view.assets, "Not returned yet.");
+      const risks = updateList("risk", view.risks, "Not returned yet.");
       setText("priority", view.priority, "Not returned yet.");
-      setText("recommendedCommand", view.recommended, "Not returned yet.");
+      setText("recommendedCommand", view.recommended, "Continue this workflow");
       updateCount("nextMoveCount", view.nextMove === "Not returned yet." ? 0 : 1);
-      updateCount("decisionCount", view.decision === "Not returned yet." ? 0 : state.decisions.length || 1);
-      updateCount("priorityCount", view.priority === "Not returned yet." ? "—" : view.priority.split(/\s+/)[0]);
-      updateCount("recommendedCommandCount", view.recommended === "Not returned yet." ? 0 : 1);
+      updateCount("decisionCount", state.decisions.length);
+      updateCount("priorityCount", view.priority === "Not returned yet." ? "—" : "Set");
+      updateCount("recommendedCommandCount", view.recommended ? 1 : 0);
       setPanelText("recentDecisions", state.decisions.length ? state.decisions.slice(-2).join(" • ") : "No runtime decisions yet.");
-      setPanelText("tomorrowUpcoming", view.recommended === "Not returned yet." ? view.nextMove : view.recommended);
+      setPanelText("tomorrowUpcoming", `Next: ${cleanFallback(view.nextAction)}`);
       setPanelText("systemUpdated", `Updated ${new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}`);
-      renderIntelligence(view);
+      renderIntelligence(view, actions, assets, risks);
       updateRuntimeSidebar();
     }
 
-    function renderIntelligence(view){
-      const insight = view.nextMove !== "Not returned yet." ? view.nextMove : text(value(view.data, ["key_insight", "insight", "executive_insight", "summary"]), "No runtime insight yet.");
-      const memory = state.context.length ? state.context.slice(-3).join(" • ") : text(value(view.data, ["memory", "active_context", "context", "workspace"]), "No explicit memory/context returned from backend.");
-      const executiveSummary = [view.nextMove, view.decision, `Priority: ${view.priority}`].filter(x => x && x !== "Not returned yet.").join(" ") || "No live summary yet.";
-      setPanelText("keyInsight", insight);
-      setPanelText("memoryInsight", memory);
-      setPanelText("intelExecutiveSummary", executiveSummary);
-      const priorities = [view.recommended, ...view.actions].filter(x => x && x !== "Not returned yet.").slice(0, 3);
+    function renderIntelligence(view, actions, assets, risks){
+      const currentFocus = state.lastCommand || "Waiting for command.";
+      const activeRisk = risks[0] || "No active runtime risk returned.";
+      const recommendedMove = view.nextMove !== "Not returned yet." ? view.nextMove : view.nextAction;
+      const followUp = view.recommended || "Continue this workflow.";
+      setPanelText("keyInsight", `Current focus: ${currentFocus}`);
+      setPanelText("memoryInsight", `Active risk: ${activeRisk}`);
+      setPanelText("intelExecutiveSummary", `Recommended next move: ${recommendedMove} Follow-up: ${followUp}`);
+      const priorities = [view.nextAction, followUp, ...actions].filter(x => x && x !== "Not returned yet.").slice(0, 3);
       const upcoming = document.getElementById("upcomingPriorities");
       if(upcoming){
-        upcoming.innerHTML = priorities.length ? priorities.map((item, index) => `<div class="priority"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item)}</strong><span>From latest response</span></div></div>`).join("") : `<div class="priority"><div class="num">1</div><div><strong>No runtime priorities yet</strong><span>Submit a command to update this panel.</span></div></div>`;
+        upcoming.innerHTML = priorities.length ? priorities.map((item, index) => `<div class="priority"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item)}</strong><span>Runtime workflow item</span></div></div>`).join("") : `<div class="priority"><div class="num">1</div><div><strong>No runtime priorities yet</strong><span>Submit a command to update this panel.</span></div></div>`;
       }
       const pulse = document.getElementById("teamPulse");
       if(pulse){
-        const hasRisk = view.risks.some(x => x && x !== "Not returned yet.");
-        pulse.innerHTML = `<div class="pulse"><span>Workflow</span><strong class="good">Active</strong></div><div class="pulse"><span>Actions</span><strong class="good">${state.actions.length}</strong></div><div class="pulse"><span>Risk</span><strong class="${hasRisk ? "bad" : "good"}">${hasRisk ? "Review" : "Clear"}</strong></div>`;
+        pulse.innerHTML = `<div class="pulse"><span>Thread</span><strong class="good">Active</strong></div><div class="pulse"><span>Actions</span><strong class="good">${state.actions.length}</strong></div><div class="pulse"><span>Assets</span><strong class="good">${state.assets.length}</strong></div><div class="pulse"><span>Risk</span><strong class="${risks.length ? "bad" : "good"}">${risks.length ? "Review" : "Clear"}</strong></div>`;
       }
     }
 
+    function sectionHtml(label, content, list, wide){
+      const usable = list ? normalizeItems(content, "Not specified by backend.").filter(Boolean) : [];
+      const body = list
+        ? `<ul>${usable.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+        : `<p>${escapeHtml(cleanFallback(text(content, "Not specified by backend.")))}</p>`;
+      return `<section class="response-section ${wide ? "wide" : ""}"><h5>${label}</h5>${body}</section>`;
+    }
+
     function structuredHtml(data){
-      const sections = FIELD_ORDER.map(field => {
-        const raw = value(data, field.keys);
-        const content = field.list
-          ? `<ul>${normalizeItems(raw, "Not returned yet.").map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
-          : `<p>${escapeHtml(text(raw, "Not returned yet."))}</p>`;
-        return `<section class="response-section"><h5>${field.label}</h5>${content}</section>`;
-      }).join("");
-      const recommended = text(value(data, FIELD_ORDER[6].keys), "Continue this workflow");
-      return `<div class="structured-response">${sections}<div class="next-action"><strong>Next Action</strong><button type="button" data-next-command="${escapeHtml(recommended)}">${escapeHtml(recommended)}</button></div></div>`;
+      const view = getView(data);
+      const sections = [
+        sectionHtml("NEXT MOVE", view.nextMove, false, false),
+        sectionHtml("DECISION", view.decision, false, false),
+        sectionHtml("ACTION STEPS", view.actions, true, true),
+        sectionHtml("READY ASSETS", view.assets, true, false),
+        sectionHtml("RISK", view.risks, true, false),
+        sectionHtml("PRIORITY", view.priority, false, false),
+        sectionHtml("RECOMMENDED COMMAND", view.recommended, false, false)
+      ].join("");
+      const saved = [
+        ["Decision", view.decision],
+        ["Action", view.actions.find(x => x !== "Not returned yet.") || "No action saved yet."],
+        ["Asset", view.assets.find(x => x !== "Not returned yet.") || "No asset saved yet."]
+      ].map(([label, val]) => `<div class="saved-row"><b>${label}</b><span>${escapeHtml(cleanFallback(val))}</span></div>`).join("");
+      return `<div class="workflow-response">
+        <div class="answer-block"><span>Clear answer</span><p>${escapeHtml(cleanFallback(view.clearAnswer))}</p></div>
+        <div class="workflow-next"><div><small>Next action</small><strong>${escapeHtml(cleanFallback(view.nextAction))}</strong></div><button type="button" data-next-command="${escapeHtml(view.recommended)}">Continue →</button></div>
+        <div class="response-grid">${sections}</div>
+        <div class="saved-preview"><span>Saved workflow preview</span>${saved}</div>
+      </div>`;
     }
 
     function messageHtml(item){
       const time = item.time || new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
       const safeBody = item.role === "engine" && typeof item.body === "object" ? structuredHtml(item.body) : `<p>${escapeHtml(item.body)}</p>`;
-      return `<div class="msg ${item.role === "engine" ? "engine" : "user"}"><div class="bubble-avatar">${item.role === "engine" ? "E" : "W"}</div><div class="message-content"><div class="msg-head"><strong>${item.role === "engine" ? "Executive Engine" : "You"}</strong><span>${time}</span></div>${safeBody}</div></div>`;
+      const loadingClass = item.loading ? " engine-loading" : "";
+      return `<div class="msg ${item.role === "engine" ? "engine" : "user"}${loadingClass}"><div class="bubble-avatar">${item.role === "engine" ? "E" : "W"}</div><div class="message-content"><div class="msg-head"><strong>${item.role === "engine" ? "Executive Engine" : "You"}</strong><span>${time}</span></div>${safeBody}</div></div>`;
     }
 
     function renderCommandView(){
       if(!state.messages.length){
-        messageStream.innerHTML = `<div class="chat-empty"><strong>Ready for the next command.</strong><span>Your live workflow will appear here after you execute a command.</span></div>`;
+        messageStream.innerHTML = `<div class="chat-empty"><strong>Ready for the next command.</strong><span>Your live executive workflow will appear here after you execute a command.</span></div>`;
       }else{
         messageStream.innerHTML = state.messages.map(messageHtml).join("");
       }
@@ -277,31 +330,22 @@
       bindNextActionButtons();
     }
 
+    function workspaceList(items, type){
+      if(!items.length) return `<div class="workflow-empty"><strong>No runtime items yet.</strong><span>This workspace populates only from live backend responses and follow-up commands.</span></div>`;
+      return `<div class="workspace-list">${items.map((item, index) => `<div class="workspace-item"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item.title || item)}</strong><span>${escapeHtml(item.source || `From command: ${state.lastCommand || "runtime"}`)}</span></div><em>${escapeHtml(type)}</em></div>`).join("")}</div>`;
+    }
+
     function renderStateView(view){
-      const titleMap = {
-        decisions: "Decision History",
-        actions: "Action Workspace",
-        assets: "Ready Assets",
-        risks: "Risk Monitor",
-        context: "Active Context"
-      };
-      const dataMap = {
-        decisions: state.decisions,
-        actions: state.actions,
-        assets: state.assets,
-        risks: state.risks,
-        context: state.context
-      };
-      const items = dataMap[view] || [];
       const latest = state.responses[state.responses.length - 1];
       const latestView = latest ? getView(latest) : null;
-      let lead = "Submit a command to create runtime state.";
-      if(view === "actions" && latestView) lead = latestView.nextMove;
-      if(view === "decisions" && latestView) lead = latestView.decision;
-      if(view === "assets" && latestView) lead = latestView.recommended;
-      if(view === "risks" && latestView) lead = latestView.priority;
-      if(view === "context" && state.lastCommand) lead = `Active command: ${state.lastCommand}`;
-      messageStream.innerHTML = `<div class="workflow-card"><div class="view-title">${titleMap[view] || "Workflow"}</div><h4>${escapeHtml(titleMap[view] || "Workflow")}</h4><p>${escapeHtml(lead)}</p></div>${items.length ? `<div class="workflow-card">${listHtml(items)}</div>` : `<div class="workflow-empty"><strong>No runtime items yet.</strong><span>This view will populate from actual backend responses and follow-up commands.</span></div>`}`;
+      const config = {
+        decisions: { title: "Decision History", lead: latestView ? latestView.decision : "Submit a command to create decision history.", items: state.decisions, type: "Decision" },
+        actions: { title: "Action Workspace", lead: latestView ? latestView.nextAction : "Submit a command to create action tasks.", items: state.actions, type: "Task" },
+        assets: { title: "Ready Assets", lead: latestView ? latestView.recommended : "Submit a command to create assets.", items: state.assets, type: "Asset" },
+        risks: { title: "Risk Monitor", lead: latestView ? (latestView.risks[0] || latestView.priority) : "Submit a command to create risk context.", items: state.risks, type: "Risk" },
+        context: { title: "Active Context", lead: state.lastCommand ? `Objective: ${state.lastCommand}` : "Submit a command to create context.", items: state.context, type: "Context" }
+      }[view] || { title: "Workflow", lead: "Submit a command to create runtime state.", items: [], type: "Item" };
+      messageStream.innerHTML = `<div class="workflow-card"><div class="view-title">${escapeHtml(config.type)} workspace</div><h4>${escapeHtml(config.title)}</h4><p>${escapeHtml(config.lead || "No runtime lead yet.")}</p></div>${workspaceList(config.items, config.type)}`;
       messageStream.scrollTop = 0;
     }
 
@@ -325,7 +369,7 @@
     }
 
     function addLoadingMessage(){
-      const item = {role:"engine", body:"Building the executive response…", time:"Working", loading:true};
+      const item = {role:"engine", body:"Building the executive workflow…", time:"Working", loading:true};
       state.messages.push(item);
       renderCommandView();
       return item;
@@ -341,25 +385,26 @@
       const view = getView(data);
       state.responses.push(data);
       state.lastCommand = input;
-      state.context.push(input);
+      state.threadObjective = state.threadObjective || input;
+      state.context.push(`Latest command: ${input}`);
       if(view.decision && view.decision !== "Not returned yet.") state.decisions.push(view.decision);
       state.actions.push(...view.actions.filter(x => x && x !== "Not returned yet."));
       state.assets.push(...view.assets.filter(x => x && x !== "Not returned yet."));
       state.risks.push(...view.risks.filter(x => x && x !== "Not returned yet."));
-      state.decisions = state.decisions.slice(-10);
-      state.actions = state.actions.slice(-20);
-      state.assets = state.assets.slice(-20);
-      state.risks = state.risks.slice(-20);
-      state.context = state.context.slice(-10);
+      state.decisions = [...new Set(state.decisions)].slice(-10);
+      state.actions = [...new Set(state.actions)].slice(-20);
+      state.assets = [...new Set(state.assets)].slice(-20);
+      state.risks = [...new Set(state.risks)].slice(-20);
+      state.context = [...new Set(state.context)].slice(-10);
     }
 
     function updateRuntimeSidebar(){
       const one = document.getElementById("runtimeThreadOne");
       const two = document.getElementById("runtimeThreadTwo");
       const three = document.getElementById("runtimeThreadThree");
-      if(one) one.querySelector("div").innerHTML = `${escapeHtml(state.lastCommand || "No active command")}<small>${state.lastCommand ? "Active" : "Waiting"}</small>`;
-      if(two) two.querySelector("div").innerHTML = `Decision history<small>${state.decisions.length} item${state.decisions.length === 1 ? "" : "s"}</small>`;
-      if(three) three.querySelector("div").innerHTML = `Action workspace<small>${state.actions.length} item${state.actions.length === 1 ? "" : "s"}</small>`;
+      if(one) one.querySelector("div").innerHTML = `${escapeHtml(state.lastCommand || "No active command")}<small>${state.lastCommand ? "Active thread" : "Waiting"}</small>`;
+      if(two) two.querySelector("div").innerHTML = `Decisions<small>${state.decisions.length} runtime item${state.decisions.length === 1 ? "" : "s"}</small>`;
+      if(three) three.querySelector("div").innerHTML = `Action workspace<small>${state.actions.length} task${state.actions.length === 1 ? "" : "s"}</small>`;
     }
 
     function bindNextActionButtons(){
@@ -367,7 +412,7 @@
         button.addEventListener("click", () => {
           const command = button.getAttribute("data-next-command") || "Continue this workflow";
           if(followInput){ followInput.value = command; followInput.focus(); }
-          else commandInput.value = command;
+          else { commandInput.value = command; commandInput.focus(); }
         });
       });
     }
@@ -389,7 +434,7 @@
         const response = await fetch(`${API_URL}/run`, {
           method: "POST",
           headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ input, command: input, message: input, history: state.messages.slice(-8).map(m => ({role:m.role, content:m.body})) })
+          body: JSON.stringify({ input, command: input, message: input, objective: state.threadObjective || input, history: state.messages.slice(-8).map(m => ({role:m.role, content:plainForHistory(m.body)})) })
         });
         if(!response.ok) throw new Error(`Backend returned ${response.status}`);
         const data = await response.json();
