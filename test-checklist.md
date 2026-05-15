@@ -1,41 +1,31 @@
-# V35140 Frontend Test Checklist
+# V35140 Frontend Interactivity Test Checklist
 
-## Scope Guard
-- [ ] ZIP contains `frontend/index.html`
-- [ ] ZIP contains `README.md`
-- [ ] ZIP contains `test-checklist.md`
-- [ ] ZIP does not contain backend files
-- [ ] ZIP does not contain DB/Supabase files
+## Must Pass
+- [ ] Frontend loads visually.
+- [ ] Command input allows typing.
+- [ ] Clear button clears the command input.
+- [ ] Execute button is clickable.
+- [ ] Execute button sends POST request to https://executive-engine-os.onrender.com/run.
+- [ ] POST /run returns 200 from locked backend.
+- [ ] Response renders in this order:
+  1. NEXT MOVE
+  2. DECISION
+  3. ACTION STEPS
+  4. READY ASSETS
+  5. RISK
+  6. PRIORITY
+  7. RECOMMENDED COMMAND
+- [ ] Sidebar items are clickable and switch active state.
+- [ ] Suggested command chips are clickable and populate the input.
+- [ ] Follow-up input accepts typing.
+- [ ] No console JavaScript errors.
+- [ ] No CORS errors.
 
-## Visual Layout
-- [ ] Dark left sidebar preserved
-- [ ] White main workspace preserved
-- [ ] Three-column desktop layout preserved
-- [ ] Top Quick Capture / Control input visible
-- [ ] Chat/workflow area visible
-- [ ] Executive Summary middle column visible
-- [ ] Executive Intelligence right column visible
-- [ ] Orange Execute button visible
-- [ ] Blue/orange/navy brand direction preserved
-- [ ] No Command Cockpit wording
-- [ ] No Command Center wording
-- [ ] No cockpit/airplane wording
-
-## Backend Connection
-- [ ] Backend API URL remains `https://executive-engine-os.onrender.com`
-- [ ] POST `/run` is called from the frontend
-- [ ] POST `/run` returns 200
-- [ ] No CORS errors
-- [ ] No console errors blocking usage
-
-## Output Order
-- [ ] NEXT MOVE displays first
-- [ ] DECISION displays second
-- [ ] ACTION STEPS displays third
-- [ ] READY ASSETS displays fourth
-- [ ] RISK displays fifth
-- [ ] PRIORITY displays sixth
-- [ ] RECOMMENDED COMMAND displays seventh
-
-## Recommended Live Test Command
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+## Not Touched
+- [ ] Backend unchanged.
+- [ ] API URL unchanged.
+- [ ] /run contract unchanged.
+- [ ] Supabase unchanged.
+- [ ] DB schema unchanged.
+- [ ] Provider routing unchanged.
+- [ ] Approved layout structure preserved.
