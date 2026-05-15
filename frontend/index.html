@@ -3,461 +3,776 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executive Engine</title>
+  <title>The Executive Engine</title>
   <style>
-    :root{
-      --navy:#06162d; --navy2:#0b1f3d; --ink:#101828; --muted:#667085; --line:#e7ecf4;
-      --soft:#f7f9fc; --blue:#1f5eff; --orange:#ff6a00; --green:#17a86b; --red:#ef4444;
-      --purple:#7c3aed; --card:#fff; --shadow:0 14px 40px rgba(16,24,40,.07);
-      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --line: #e2e8f0;
+      --nav: #0b1220;
+      --nav-2: #111827;
+      --nav-line: rgba(255,255,255,0.08);
+      --orange: #f97316;
+      --orange-dark: #ea580c;
+      --orange-soft: #fff7ed;
+      --green: #16a34a;
+      --red: #dc2626;
+      --yellow: #ca8a04;
+      --blue: #2563eb;
+      --shadow: 0 18px 55px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:var(--font);color:var(--ink);background:#fff;min-height:100vh;overflow:hidden}
-    .app{display:grid;grid-template-columns:315px minmax(560px,1fr)385px 405px;min-height:100vh;background:#fff}
-    .sidebar{height:100vh;background:linear-gradient(180deg,#071a33 0%,#041326 100%);color:#eaf2ff;padding:34px 20px 18px;display:flex;flex-direction:column;gap:24px;border-right:1px solid rgba(255,255,255,.07)}
-    .brand{display:flex;align-items:center;gap:18px;padding:0 10px 34px}
-    .mark{width:58px;height:58px;position:relative;transform:skewX(-14deg)}
-    .mark:before,.mark:after,.mark i{content:"";position:absolute;left:0;width:58px;height:13px;border-radius:3px;background:linear-gradient(90deg,#c8943d,#f2c36e);box-shadow:0 12px 24px rgba(242,195,110,.18)}
-    .mark:before{top:4px}.mark i{top:23px}.mark:after{top:42px;width:42px}
-    .brand h1{font-size:21px;line-height:1.02;margin:0;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#fff}
-    .brand span{display:block;margin-top:6px;color:#90a3c3;text-transform:uppercase;font-size:11px;letter-spacing:.16em;font-weight:800}
-    .nav-section{display:grid;gap:6px}.nav-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850;margin:0 12px 8px}
-    .nav-item{cursor:pointer;height:40px;border-radius:7px;padding:0 14px;display:flex;align-items:center;gap:14px;color:#dce7f7;font-size:15px;font-weight:760;border:1px solid transparent}
-    .nav-item svg{width:18px;height:18px;stroke-width:2}.nav-item.active{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:inset 3px 0 0 var(--orange);color:#fff}.nav-item.active svg{color:#ffb26d}
-    .project-title{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.09);padding-top:18px}.project-title span:first-child{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850}.project-title span:last-child{font-size:22px;color:#b9c8e1}
-    .project{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;padding:7px 10px;color:#dce7f7;font-size:13px}.project small{display:block;color:#3dd483;font-size:11px;margin-top:2px}.project svg{width:15px;height:15px;margin-top:2px;color:#aec0dc}
-    .side-user{margin-top:auto;border-top:1px solid rgba(255,255,255,.09);padding-top:20px;display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fde4c9,#c77a31);display:grid;place-items:center;color:#071a33;font-weight:900}.side-user strong{display:block;font-size:14px;color:#fff}.side-user span{font-size:12px;color:#94a8c7}.collapse{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#aebfda}.copyright{font-size:11px;color:#90a3c3;margin-top:16px}
-    .workspace{height:100vh;overflow:auto;padding:24px 18px 32px 34px;border-right:1px solid var(--line);background:#fff}.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.greeting h2{margin:0;font-size:22px;letter-spacing:-.03em}.greeting p{margin:6px 0 0;color:#667085;font-size:13px}.profile{display:flex;gap:14px;align-items:center}.bell{position:relative;font-size:20px;color:#344054}.bell:after{content:"";position:absolute;right:1px;top:0;width:7px;height:7px;background:var(--orange);border-radius:50%}.profile .avatar{width:38px;height:38px}.profile strong{font-size:13px;display:block}.profile span{font-size:11px;color:#667085;font-weight:700}
-    .capture{border:1.5px solid #ff9f55;border-radius:9px;padding:20px 20px 14px;margin-bottom:14px;box-shadow:0 18px 50px rgba(16,24,40,.06)}.capture textarea{width:100%;height:58px;border:0;outline:0;resize:none;font-family:var(--font);font-size:15px;color:#344054}.capture-actions{display:flex;align-items:center;gap:22px;color:#344054}.capture-actions svg{width:18px;height:18px}.clear{cursor:pointer;margin-left:auto;border:0;background:transparent;color:#667085;font-weight:700}.execute{border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),#ff861f);height:36px;padding:0 22px;color:white;font-weight:850;box-shadow:0 12px 24px rgba(255,106,0,.22);cursor:pointer}.execute:disabled{opacity:.55;cursor:not-allowed}.chips{display:flex;gap:10px;margin:0 20px 13px}.chip{cursor:pointer;height:27px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#344054;padding:0 18px;font-size:12px;font-weight:800}.chat{border:1px solid var(--line);border-radius:9px;padding:18px 20px 16px;min-height:650px;display:flex;flex-direction:column;gap:17px}.msg{display:grid;grid-template-columns:36px 1fr;gap:14px}.msg .bubble-avatar{width:34px;height:34px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:13px;font-weight:850;color:#344054}.msg.engine .bubble-avatar{background:#06162d;color:#f4b65e}.msg-head{font-size:13px;margin-bottom:6px}.msg-head strong{margin-right:8px}.msg-head span{color:#667085;font-size:12px}.msg p{margin:0;color:#101828;font-size:14px;line-height:1.5}.runtime-output p{margin:0 0 12px}.runtime-output strong{font-size:11px;letter-spacing:.06em;color:#667085}.asset{margin-top:12px;border:1px solid var(--line);border-radius:8px;height:54px;display:flex;align-items:center;gap:12px;max-width:430px;padding:0 15px}.doc-icon{width:25px;height:25px;border:1px solid #ffb08a;border-radius:5px;color:var(--orange);display:grid;place-items:center}.asset strong{display:block;font-size:13px}.asset span{font-size:12px;color:#667085}.download{margin-left:auto;color:#315bc9}.follow{margin-top:auto;height:58px;border:1px solid var(--line);border-radius:8px;padding:0 16px;display:flex;align-items:center;gap:13px}.follow input{border:0;outline:0;font-size:14px;flex:1}.follow svg{width:18px;height:18px;color:#667085;cursor:pointer}.follow input{min-width:0}.statusline{display:none;color:var(--orange);font-size:12px;font-weight:850;margin:8px 0 0 20px}.statusline.active{display:block}.error{display:none;color:#b42318;background:#fff2f0;border:1px solid #ffdad5;border-radius:8px;font-size:12px;font-weight:800;margin:8px 0 0;padding:10px}.error.active{display:block}
-    .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
 
-    .controller-panel{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:9px;background:#fbfcff;padding:15px 16px;margin-bottom:14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}
-    .controller-panel h3{margin:0 0 7px;font-size:14px;letter-spacing:.01em}
-    .controller-panel p{margin:0 0 10px;font-size:13px;color:#475467;line-height:1.45}
-    .controller-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-    .controller-tile{border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;font-size:12px;color:#344054}
-    .controller-tile strong{display:block;color:#101828;margin-bottom:4px;font-size:12px}
-    .successline{display:none;color:#027a48;background:#ecfdf3;border:1px solid #abefc6;border-radius:8px;font-size:12px;font-weight:850;margin:8px 0 0;padding:10px}
-    .successline.active{display:block}
-    .nav-item:focus,.execute:focus,.chip:focus,.clear:focus{outline:2px solid rgba(255,106,0,.45);outline-offset:2px}
-    button,.nav-item,.chip,.follow svg{pointer-events:auto}
-    @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
-    @media(max-width:850px){.app{display:block}.sidebar{min-height:auto}.workspace,.summary,.intel{padding:20px}.chips{flex-wrap:wrap;margin-left:0}.chat{min-height:500px}.split{grid-template-columns:1fr}.profile{display:none}}
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      background: linear-gradient(135deg, #f7f9fc 0%, #eef3fa 100%);
+    }
+
+    .sidebar {
+      background: radial-gradient(circle at top left, #172554 0%, var(--nav) 42%, #050816 100%);
+      color: white;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 4px 22px;
+      border-bottom: 1px solid var(--nav-line);
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #fb923c, #f97316);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: 0 14px 34px rgba(249, 115, 22, 0.28);
+    }
+
+    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand-sub { color: #9ca3af; font-size: 12px; margin-top: 2px; }
+
+    .nav-group { margin-bottom: 22px; }
+    .nav-label {
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      margin: 0 8px 9px;
+    }
+
+    .nav-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      border-radius: 14px;
+      padding: 12px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 3px 0;
+      transition: background .16s ease, color .16s ease, transform .16s ease;
+      text-align: left;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
+    .nav-item.active { background: rgba(249,115,22,0.16); color: white; box-shadow: inset 3px 0 0 var(--orange); }
+    .nav-item span:first-child { font-size: 14px; font-weight: 650; }
+    .nav-count {
+      color: #94a3b8;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--nav-line);
+      padding-top: 16px;
+    }
+
+    .status-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .status-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: #cbd5e1; margin: 6px 0; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--green); box-shadow: 0 0 0 4px rgba(22,163,74,.15); }
+
+    .workspace {
+      min-width: 0;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 26px;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      z-index: 5;
+    }
+
+    .eyebrow { color: var(--orange); font-size: 12px; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+    .title { font-size: 25px; font-weight: 850; letter-spacing: -0.04em; margin-top: 3px; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .pill {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .main-grid {
+      min-height: 0;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(430px, 1.12fr) 340px 360px;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      background: var(--surface);
+      border: 1px solid rgba(226,232,240,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .panel-head {
+      padding: 19px 20px 15px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .panel-title { font-size: 16px; font-weight: 850; letter-spacing: -0.02em; }
+    .panel-sub { color: var(--muted); font-size: 12px; margin-top: 4px; line-height: 1.4; }
+    .section-badge { background: var(--orange-soft); color: var(--orange-dark); border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 850; white-space: nowrap; }
+
+    .messages {
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+    }
+
+    .empty-state {
+      height: 100%;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      padding: 34px;
+      color: var(--muted);
+    }
+    .empty-icon { width: 58px; height: 58px; border-radius: 20px; background: var(--orange-soft); color: var(--orange); display: grid; place-items: center; font-size: 24px; margin-bottom: 14px; }
+    .empty-state strong { color: var(--ink); font-size: 18px; letter-spacing: -0.02em; }
+    .empty-state p { max-width: 420px; line-height: 1.55; margin: 8px 0 0; }
+
+    .message-row { display: flex; width: 100%; }
+    .message-row.user { justify-content: flex-end; }
+    .message-row.assistant { justify-content: flex-start; }
+    .bubble {
+      max-width: min(680px, 88%);
+      border-radius: 20px;
+      padding: 14px 15px;
+      line-height: 1.5;
+      font-size: 14px;
+      animation: rise .18s ease both;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .user .bubble { background: #172033; color: white; border-bottom-right-radius: 7px; box-shadow: 0 14px 34px rgba(15,23,42,.16); }
+    .assistant .bubble { background: #f8fafc; border: 1px solid var(--line); color: var(--ink); border-bottom-left-radius: 7px; }
+    .bubble.error { background: #fff1f2; border-color: #fecdd3; color: #9f1239; }
+    .bubble.loading { color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #cbd5e1; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .structured-response { display: grid; gap: 11px; }
+    .response-block { background: white; border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
+    .response-label { color: var(--orange-dark); font-size: 11px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 6px; }
+    .response-value { color: var(--ink); font-size: 14px; line-height: 1.52; }
+    .response-value ul { margin: 6px 0 0; padding-left: 18px; }
+
+    .composer {
+      border-top: 1px solid var(--line);
+      background: white;
+      padding: 14px;
+    }
+    .chips { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 10px; }
+    .chip { border: 1px solid var(--line); background: #fff; color: var(--muted); border-radius: 999px; padding: 8px 11px; font-size: 12px; font-weight: 750; white-space: nowrap; transition: all .16s ease; }
+    .chip:hover { border-color: #fdba74; color: var(--orange-dark); background: var(--orange-soft); }
+    .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+    textarea {
+      width: 100%;
+      resize: none;
+      min-height: 50px;
+      max-height: 138px;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      outline: none;
+      background: #fbfdff;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    textarea:focus { border-color: #fb923c; box-shadow: 0 0 0 4px rgba(249,115,22,.11); background: white; }
+    .execute {
+      min-height: 50px;
+      border: 0;
+      border-radius: 17px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      color: white;
+      padding: 0 18px;
+      font-weight: 900;
+      box-shadow: 0 14px 31px rgba(249,115,22,.28);
+    }
+    .execute:disabled { opacity: .62; cursor: not-allowed; }
+
+    .summary, .intel { display: grid; grid-template-rows: auto 1fr; }
+    .summary-body, .intel-body { padding: 16px; overflow-y: auto; min-height: 0; }
+    .metric-grid { display: grid; gap: 12px; }
+    .metric-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #fbfdff);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .metric-label { color: var(--muted); font-size: 11px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 7px; }
+    .metric-value { color: var(--ink); font-size: 14px; line-height: 1.45; font-weight: 650; }
+    .metric-value.soft { color: var(--muted); font-weight: 550; }
+
+    .timeline { display: grid; gap: 12px; }
+    .intel-card { border: 1px solid var(--line); border-radius: 18px; padding: 14px; background: #fff; }
+    .intel-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .intel-title { font-size: 13px; font-weight: 850; }
+    .tag { border-radius: 999px; padding: 4px 8px; font-size: 11px; font-weight: 850; background: #eff6ff; color: #1d4ed8; }
+    .tag.orange { background: var(--orange-soft); color: var(--orange-dark); }
+    .tag.red { background: #fef2f2; color: var(--red); }
+    .tag.green { background: #f0fdf4; color: var(--green); }
+    .intel-text { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .section-view { display: none; height: 100%; }
+    .section-view.active { display: grid; }
+    .section-content { padding: 18px; overflow-y: auto; }
+    .section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .large-card { border: 1px solid var(--line); border-radius: 20px; background: white; padding: 18px; box-shadow: var(--shadow); }
+    .large-card h3 { margin: 0 0 8px; font-size: 16px; letter-spacing: -0.02em; }
+    .large-card p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 14px; }
+    .list { display: grid; gap: 10px; margin-top: 14px; }
+    .list-item { border: 1px solid var(--line); border-radius: 14px; padding: 11px; background: var(--surface-soft); font-size: 13px; line-height: 1.45; }
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+
+    @media (max-width: 1280px) {
+      .main-grid { grid-template-columns: minmax(420px, 1fr) 320px; }
+      .intel { display: none; }
+    }
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .app { height: auto; min-height: 100vh; grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .workspace { height: auto; min-height: 100vh; }
+      .main-grid { grid-template-columns: 1fr; height: auto; overflow: visible; }
+      .workflow { min-height: 760px; }
+      .summary, .intel { display: grid; min-height: 420px; }
+      .topbar { position: sticky; top: 0; }
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="brand"><div class="mark"><i></i></div><div><h1>Executive<br>Engine</h1><span>Executive Engine</span></div></div>
-      <nav class="nav-section">
-        <div class="nav-title">Executive Engine</div>
-        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Command</div>
-        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Daily Brief</div>
-        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Decisions</div>
-        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .54V22a2 2 0 1 1-4 0v-.09a1.8 1.8 0 0 0-1-.54 1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.54-1H2a2 2 0 1 1 0-4h.09a1.8 1.8 0 0 0 .54-1 1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 9 4.6a1.8 1.8 0 0 0 1-.54V2a2 2 0 1 1 4 0v.09a1.8 1.8 0 0 0 1 .54 1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.4 9c.2.36.38.72.54 1H22a2 2 0 1 1 0 4h-.09a1.8 1.8 0 0 0-.51 1z"/></svg>Meeting Prep</div>
-      </nav>
-      <nav class="nav-section"><div class="nav-title">Intelligence</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Insights</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Strategy Board</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Risk Monitor</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team Pulse</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16V8M12 16v-5M17 16V6"/></svg>Financial Snapshot</div></nav>
-      <nav class="nav-section"><div class="nav-title">Resources</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Active Projects</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Files</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Notes</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>Upload Context</div></nav>
-      <div class="project-title"><span>Project Chats</span><span>+</span></div>
-      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Market Expansion Strategy<small>Active</small></div></div>
-      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Q2 Board Preparation<small>Active</small></div></div>
-      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Pricing Optimization<small>Active</small></div></div>
-      <div class="side-user"><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><div class="collapse">‹</div></div><div class="copyright">© 2026 Executive Engine. All rights reserved.</div>
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <div class="brand-title">Executive Engine</div>
+          <div class="brand-sub">Operator workspace</div>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Command</div>
+        <button class="nav-item active" data-section="command"><span>Today Command</span><span class="nav-count" id="countMessages">0</span></button>
+        <button class="nav-item" data-section="decisions"><span>Decisions</span><span class="nav-count" id="countDecisions">0</span></button>
+        <button class="nav-item" data-section="actions"><span>Action Workspace</span><span class="nav-count" id="countActions">0</span></button>
+        <button class="nav-item" data-section="assets"><span>Ready Assets</span><span class="nav-count" id="countAssets">0</span></button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Intelligence</div>
+        <button class="nav-item" data-section="risks"><span>Risk Monitor</span><span class="nav-count" id="countRisks">0</span></button>
+        <button class="nav-item" data-section="context"><span>Context</span><span class="nav-count" id="countContext">Live</span></button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="status-card">
+          <div class="status-row"><span><span class="dot"></span>Backend</span><strong>V35150B</strong></div>
+          <div class="status-row"><span>Mode</span><strong id="modeStatus">Ready</strong></div>
+          <div class="status-row"><span>Last run</span><strong id="lastRun">None</strong></div>
+        </div>
+      </div>
     </aside>
+
     <main class="workspace">
-      <div class="topbar"><div class="greeting"><h2>Welcome back, Will.</h2><p>Here’s your Executive Engine.</p></div><div class="profile"><div class="bell">♧</div><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><span>⌄</span></div></div>
-      <section class="capture"><textarea id="commandInput" placeholder="What are we trying to win today?"></textarea><div class="capture-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><button class="clear" id="clearButton">Clear</button><button class="execute" id="runButton">Execute →</button></div></section>
-      <div class="chips"><button class="chip">Prepare for board meeting</button><button class="chip">Analyze market expansion</button><button class="chip">Review Q2 performance</button><button class="chip">Assess key risks</button></div>
-      <div id="loading" class="statusline">Building the executive path…</div><div id="success" class="successline">Done. Interface updated.</div><div id="error" class="error"></div>
-      <section class="chat" id="chatFeed"><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:24 AM</span></div><p>I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:24 AM</span></div><p>Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Go-to-Market Strategy Framework</strong><span>Strategy Document · 12 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>10:48 AM</span></div><p>Now create a proposal based on that strategy.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>10:48 AM</span></div><p>Proposal created. It aligns with the strategy and includes scope, timeline, investment, and expected outcomes.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Client Proposal v1.0</strong><span>Proposal Document · 8 pages</span></div><div class="download">⌄</div></div></div></div><div class="msg user"><div class="bubble-avatar">W</div><div><div class="msg-head"><strong>You</strong><span>11:15 AM</span></div><p>Prepare me for the meeting and give me talking points and objections.</p></div></div><div class="msg engine"><div class="bubble-avatar">E</div><div><div class="msg-head"><strong>Executive Engine</strong><span>11:15 AM</span></div><p>Meeting prep complete. Here are your talking points, key messages, objections to expect, and recommended responses.</p><div class="asset"><div class="doc-icon">▤</div><div><strong>Meeting Prep Pack</strong><span>Document · 9 pages</span></div><div class="download">⌄</div></div></div></div><div class="follow"><input placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div></section>
-    </main>
-    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub">Live updates from the conversation</p><div class="stack"><section class="summary-card orange"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span class="count">1</span></h4><p id="nextMove">Expand to new markets proposal and client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span class="count">1</span></h4><p id="decision">Approve strategy and proposal before client meeting.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span class="count">3</span></h4><ul id="actionSteps"><li>Finalize proposal</li><li>Schedule client meeting</li><li>Prepare presentation</li></ul><a class="add">+ Add note</a></section><section class="summary-card purple"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span class="count">3</span></h4><ul id="readyAssets"><li>Strategy Framework</li><li>Client Proposal v1.0</li><li>Meeting Prep Pack</li></ul><a class="add">+ Add note</a></section><section class="summary-card red"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span class="count">2</span></h4><ul id="risk"><li>Competitor aggressive pricing</li><li>Market entry barriers</li></ul><a class="add">+ Add note</a></section><section class="summary-card gold"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span class="count">High</span></h4><p id="priority">Client meeting preparation and proposal approval.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span class="count">1</span></h4><p id="recommendedCommand">Review proposal and confirm meeting agenda.</p><a class="add">+ Add note</a></section><section class="summary-card"><h4><span class="circle" style="background:#475467">□</span>Tomorrow / Upcoming<span class="count">2</span></h4><p>Board meeting<br>May 27, 2026 · 10:00 AM</p><a class="link">View schedule →</a></section><div class="split"><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">✓</span>Recent Decisions</h4><p>Approved Q2 budget reallocation<br>Greenlit market expansion study</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>System Status</h4><p>All systems operating normally<br><span style="color:#667085">Last updated: 2 min ago</span></p></section></div></div></aside>
-    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Search files, notes, and context…"></div><div class="filter">☷</div></div><div class="stack"><section class="intel-card"><h4>💡 Key Insight</h4><p>Expanding to new markets could increase revenue by 20–30% with strong positioning.</p><a class="link">View insight →</a></section><section class="intel-card"><h4>□ Memory</h4><p>You prefer concise proposals with clear ROI and risk analysis.</p><a class="link">View all memory →</a></section><section class="intel-card"><h4>▣ Upcoming Priorities</h4><div class="priority"><div class="num">1</div><div><strong>Board Meeting</strong><span>May 27, 2026 · 10:00 AM</span></div></div><div class="priority"><div class="num">2</div><div><strong>Investor Update</strong><span>May 30, 2026 · 1:00 PM</span></div></div><div class="priority"><div class="num">3</div><div><strong>Strategy Review</strong><span>June 2, 2026 · 9:00 AM</span></div></div><a class="link">View all →</a></section><section class="intel-card"><h4>♙ Team Pulse</h4><div class="pulse"><span>Sales</span><strong class="good">On Track</strong></div><div class="pulse"><span>Marketing</span><strong class="good">On Track</strong></div><div class="pulse"><span>Operations</span><strong class="bad">At Risk</strong></div><a class="link">View team pulse →</a></section><section class="intel-card"><h4>Executive Summary</h4><p>Revenue up 12% this quarter. Expansion strategy on track. Focus: execution and de-risking.</p><a class="link">View full summary →</a></section></div></aside>
-  </div><div class="footer"></div>
-  <script>
-    (() => {
-      "use strict";
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Command Centre</div>
+          <div class="title">The Executive Engine</div>
+        </div>
+        <div class="top-actions">
+          <div class="pill"><span class="dot"></span><span id="connectionLabel">Ready</span></div>
+          <div class="pill">/run locked</div>
+        </div>
+      </header>
 
-      const API_URL = "https://executive-engine-os.onrender.com";
-      const OUTPUT_ORDER = [
-        ["NEXT MOVE", ["next_move", "nextMove", "what_to_do_now", "next", "recommendation"]],
-        ["DECISION", ["decision", "recommended_decision"]],
-        ["ACTION STEPS", ["action_steps", "actions", "steps", "next_steps"]],
-        ["READY ASSETS", ["ready_assets", "assets", "prepared_assets", "deliverables"]],
-        ["RISK", ["risk", "risks", "active_risks"]],
-        ["PRIORITY", ["priority", "urgency"]],
-        ["RECOMMENDED COMMAND", ["recommended_command", "follow_up_command", "command", "next_command"]]
-      ];
-
-      const SECTION_COPY = {
-        "Command": {
-          title: "Command",
-          body: "Run the next executive command. Capture the goal, submit it, and the operating layer updates the workflow, summary, and intelligence panels.",
-          tiles: ["Quick Capture", "Run /run", "Update cockpit"]
-        },
-        "Daily Brief": {
-          title: "Daily Brief",
-          body: "Today's operating brief is assembled from the latest command, upcoming priorities, decisions, risks, and follow-up actions.",
-          tiles: ["Today", "Tomorrow", "Priority"]
-        },
-        "Decisions": {
-          title: "Decisions",
-          body: "Decision view focuses the summary column, recent decisions, risk notes, and the recommended command from the latest backend response.",
-          tiles: ["Decision", "Risk", "Approval"]
-        },
-        "Meeting Prep": {
-          title: "Meeting Prep",
-          body: "Meeting prep mode keeps the command input ready for agenda, objections, talk tracks, and follow-up assets.",
-          tiles: ["Agenda", "Talking Points", "Objections"]
-        },
-        "Insights": {
-          title: "Insights",
-          body: "Insights view highlights the right-side intelligence panel and updates it from the most recent /run context.",
-          tiles: ["Key Insight", "Memory", "Signals"]
-        },
-        "Strategy Board": {
-          title: "Strategy Board",
-          body: "Strategy view connects the current command to expansion moves, asset creation, execution steps, and strategic risk.",
-          tiles: ["Market", "Positioning", "Execution"]
-        },
-        "Risk Monitor": {
-          title: "Risk Monitor",
-          body: "Risk monitor pulls the active risk field from the latest response and keeps the risk card in focus.",
-          tiles: ["Active Risk", "Constraint", "Mitigation"]
-        },
-        "Team Pulse": {
-          title: "Team Pulse",
-          body: "Team pulse keeps operating status visible and lets the executive command layer update priorities without changing backend scope.",
-          tiles: ["Sales", "Marketing", "Operations"]
-        },
-        "Financial Snapshot": {
-          title: "Financial Snapshot",
-          body: "Financial snapshot focuses on revenue impact, priority level, and the recommended next command for momentum.",
-          tiles: ["Revenue", "Cost", "ROI"]
-        },
-        "Active Projects": {
-          title: "Active Projects",
-          body: "Projects view connects current command output to project movement, owners, assets, and next actions.",
-          tiles: ["Project", "Owner", "Next Move"]
-        },
-        "Files": {
-          title: "Files",
-          body: "Files view makes generated assets and ready deliverables visible from the workflow without adding storage features.",
-          tiles: ["Brief", "Proposal", "Prep Pack"]
-        },
-        "Notes": {
-          title: "Notes",
-          body: "Notes view treats quick capture and follow-up input as executive notes that can immediately run through /run.",
-          tiles: ["Capture", "Context", "Follow-up"]
-        },
-        "Upload Context": {
-          title: "Upload Context",
-          body: "Upload context remains a navigation state only. No backend, DB, Supabase, or storage behavior is added in this frontend fix.",
-          tiles: ["Context", "Files", "No backend change"]
-        }
-      };
-
-      const state = {
-        activeSection: "Command",
-        isLoading: false,
-        lastCommand: "",
-        lastResponse: null,
-        history: []
-      };
-
-      const $ = (selector, root = document) => root.querySelector(selector);
-      const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
-      let bound = false;
-
-      function refs() {
-        return {
-          commandInput: $("#commandInput"),
-          runButton: $("#runButton"),
-          clearButton: $("#clearButton"),
-          loading: $("#loading"),
-          success: $("#success"),
-          error: $("#error"),
-          chatFeed: $("#chatFeed"),
-          followInput: $(".follow input"),
-          followSend: $$(".follow svg").pop()
-        };
-      }
-
-      function escapeHtml(value) {
-        return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
-      }
-
-      function firstValue(data, keys) {
-        for (const key of keys) {
-          const value = data && data[key];
-          if (value !== undefined && value !== null && value !== "") return value;
-        }
-        return "";
-      }
-
-      function toText(value, fallback = "") {
-        if (value === undefined || value === null || value === "") return fallback;
-        if (Array.isArray(value)) {
-          return value.map(item => typeof item === "object" ? JSON.stringify(item) : String(item)).join("\n");
-        }
-        if (typeof value === "object") return JSON.stringify(value, null, 2);
-        return String(value);
-      }
-
-      function toLines(value, fallback) {
-        return toText(value, fallback).split(/\n|;|•|\d+\.\s+/).map(line => line.trim()).filter(Boolean).slice(0, 6);
-      }
-
-      function outputValue(data, label) {
-        const pair = OUTPUT_ORDER.find(([name]) => name === label);
-        return pair ? firstValue(data, pair[1]) : "";
-      }
-
-      function setText(id, value, fallback) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = toText(value, fallback);
-      }
-
-      function setList(id, value, fallback) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const lines = toLines(value, fallback);
-        el.innerHTML = lines.map(line => `<li>${escapeHtml(line)}</li>`).join("");
-      }
-
-      function setStatus(type, message = "") {
-        const { loading, success, error, runButton } = refs();
-        state.isLoading = type === "loading";
-        if (loading) loading.classList.toggle("active", type === "loading");
-        if (success) {
-          success.textContent = message || "Done. Interface updated.";
-          success.classList.toggle("active", type === "success");
-        }
-        if (error) {
-          error.textContent = message || "";
-          error.classList.toggle("active", type === "error");
-        }
-        if (runButton) {
-          runButton.disabled = state.isLoading;
-          runButton.textContent = state.isLoading ? "Executing…" : "Execute →";
-        }
-      }
-
-      function createControllerPanel(sectionName) {
-        const meta = SECTION_COPY[sectionName] || SECTION_COPY.Command;
-        const panel = document.createElement("section");
-        panel.className = "controller-panel";
-        panel.setAttribute("data-controller-panel", "true");
-        panel.innerHTML = `
-          <h3>${escapeHtml(meta.title)}</h3>
-          <p>${escapeHtml(meta.body)}</p>
-          <div class="controller-grid">
-            ${meta.tiles.map(tile => `<div class="controller-tile"><strong>${escapeHtml(tile)}</strong><span>${escapeHtml(tile === "Run /run" ? "Live backend command" : "Ready")}</span></div>`).join("")}
+      <section class="main-grid section-view active" id="section-command">
+        <div class="panel workflow">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Main Workflow</div>
+              <div class="panel-sub">Commands become live execution threads. Follow-ups continue the same conversation.</div>
+            </div>
+            <div class="section-badge" id="threadBadge">New thread</div>
           </div>
-        `;
-        return panel;
-      }
+          <div class="messages" id="messages">
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">↗</div>
+              <strong>What are we trying to win today?</strong>
+              <p>Send a command. The system will post to the locked backend, render the response contract, and update the executive panels from live state.</p>
+            </div>
+          </div>
+          <div class="composer">
+            <div class="chips">
+              <button class="chip" data-command="Build a proposal for an Ontario auto loan dealership with SEO and Google Ads CPA under $100.">Proposal</button>
+              <button class="chip" data-command="Prepare me for a leadership meeting and identify the highest-leverage next move.">Meeting prep</button>
+              <button class="chip" data-command="Turn today’s priorities into a focused execution plan with risks and ready assets.">Daily plan</button>
+              <button class="chip" data-command="Review this situation and give me the decision, action steps, and risk.">Decision</button>
+            </div>
+            <div class="input-row">
+              <textarea id="commandInput" placeholder="What are we trying to win today?" rows="1"></textarea>
+              <button class="execute" id="executeBtn">Execute</button>
+            </div>
+          </div>
+        </div>
 
-      function showSection(sectionName) {
-        const { chatFeed, commandInput } = refs();
-        state.activeSection = sectionName;
-        $$(".nav-item").forEach(nav => nav.classList.toggle("active", nav.textContent.trim() === sectionName));
-        if (!chatFeed) return;
-        const existing = $('[data-controller-panel="true"]', chatFeed);
-        if (existing) existing.remove();
-        const panel = createControllerPanel(sectionName);
-        const firstMsg = $(".msg", chatFeed);
-        chatFeed.insertBefore(panel, firstMsg || chatFeed.firstChild);
-        if (["Command", "Daily Brief", "Meeting Prep", "Notes"].includes(sectionName) && commandInput) {
-          commandInput.focus();
-        } else {
-          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        <aside class="panel summary">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Executive Summary</div>
+              <div class="panel-sub">Latest outcome from the active command.</div>
+            </div>
+          </div>
+          <div class="summary-body">
+            <div class="metric-grid" id="summaryGrid"></div>
+          </div>
+        </aside>
+
+        <aside class="panel intel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Executive Intelligence</div>
+              <div class="panel-sub">Context, pressure, risk, and follow-up signal.</div>
+            </div>
+          </div>
+          <div class="intel-body">
+            <div class="timeline" id="intelGrid"></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-view" id="section-decisions">
+        <div class="section-content"><div class="section-grid" id="decisionsGrid"></div></div>
+      </section>
+      <section class="section-view" id="section-actions">
+        <div class="section-content"><div class="section-grid" id="actionsGrid"></div></div>
+      </section>
+      <section class="section-view" id="section-assets">
+        <div class="section-content"><div class="section-grid" id="assetsGrid"></div></div>
+      </section>
+      <section class="section-view" id="section-risks">
+        <div class="section-content"><div class="section-grid" id="risksGrid"></div></div>
+      </section>
+      <section class="section-view" id="section-context">
+        <div class="section-content"><div class="section-grid" id="contextGrid"></div></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const API_URL = "https://executive-engine-os.onrender.com/run";
+    const CONTRACT_ORDER = [
+      ["next_move", "NEXT MOVE"],
+      ["decision", "DECISION"],
+      ["action_steps", "ACTION STEPS"],
+      ["ready_assets", "READY ASSETS"],
+      ["risk", "RISK"],
+      ["priority", "PRIORITY"],
+      ["recommended_command", "RECOMMENDED COMMAND"]
+    ];
+
+    const state = {
+      activeSection: "command",
+      messages: [],
+      responses: [],
+      latest: null,
+      loading: false,
+      error: null,
+      threadId: makeThreadId()
+    };
+
+    const els = {
+      messages: document.getElementById("messages"),
+      emptyState: document.getElementById("emptyState"),
+      input: document.getElementById("commandInput"),
+      execute: document.getElementById("executeBtn"),
+      summaryGrid: document.getElementById("summaryGrid"),
+      intelGrid: document.getElementById("intelGrid"),
+      threadBadge: document.getElementById("threadBadge"),
+      modeStatus: document.getElementById("modeStatus"),
+      connectionLabel: document.getElementById("connectionLabel"),
+      lastRun: document.getElementById("lastRun")
+    };
+
+    function makeThreadId() {
+      return "thread-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function autosizeTextarea() {
+      els.input.style.height = "auto";
+      els.input.style.height = Math.min(els.input.scrollHeight, 138) + "px";
+    }
+
+    function normalizeResponse(data) {
+      const normalized = {};
+      CONTRACT_ORDER.forEach(([key]) => {
+        normalized[key] = data && data[key] !== undefined && data[key] !== null && data[key] !== "" ? data[key] : "Not returned by backend.";
+      });
+      normalized.provider_used = data?.provider_used || data?.provider || "Backend";
+      normalized.raw = data || {};
+      normalized.receivedAt = new Date().toISOString();
+      return normalized;
+    }
+
+    function formatValue(value) {
+      if (Array.isArray(value)) {
+        return `<ul>${value.map(item => `<li>${escapeHtml(String(item))}</li>`).join("")}</ul>`;
+      }
+      if (typeof value === "object" && value !== null) {
+        return `<pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>`;
+      }
+      const text = String(value ?? "");
+      const lines = text.split(/\n+/).filter(Boolean);
+      const bulletish = lines.length > 1 && lines.every(line => /^[-•\d.)\s]+/.test(line.trim()) || line.trim().length > 12);
+      if (bulletish && lines.length > 1) {
+        return `<ul>${lines.map(line => `<li>${escapeHtml(line.replace(/^[-•\d.)\s]+/, "").trim())}</li>`).join("")}</ul>`;
+      }
+      return escapeHtml(text);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderStructuredResponse(response) {
+      return `<div class="structured-response">${CONTRACT_ORDER.map(([key, label]) => `
+        <div class="response-block">
+          <div class="response-label">${label}</div>
+          <div class="response-value">${formatValue(response[key])}</div>
+        </div>
+      `).join("")}</div>`;
+    }
+
+    function addMessage(role, content, options = {}) {
+      const message = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+        role,
+        content,
+        kind: options.kind || "text",
+        createdAt: new Date().toISOString()
+      };
+      state.messages.push(message);
+      renderMessages();
+      return message.id;
+    }
+
+    function removeMessage(id) {
+      state.messages = state.messages.filter(message => message.id !== id);
+      renderMessages();
+    }
+
+    function renderMessages() {
+      els.emptyState.classList.toggle("hidden", state.messages.length > 0);
+      const dynamicMessages = state.messages.map(message => {
+        let body = "";
+        let extraClass = "";
+        if (message.kind === "structured") body = renderStructuredResponse(message.content);
+        else if (message.kind === "loading") { body = `<span class="spinner"></span><span>${escapeHtml(message.content)}</span>`; extraClass = " loading"; }
+        else if (message.kind === "error") { body = escapeHtml(message.content); extraClass = " error"; }
+        else body = escapeHtml(message.content);
+        return `<div class="message-row ${message.role}"><div class="bubble${extraClass}">${body}</div></div>`;
+      }).join("");
+      els.messages.innerHTML = `${state.messages.length === 0 ? els.emptyState.outerHTML : ""}${dynamicMessages}`;
+      els.messages.scrollTop = els.messages.scrollHeight;
+      updateCounts();
+    }
+
+    function updateSummary() {
+      const latest = state.latest;
+      if (!latest) {
+        els.summaryGrid.innerHTML = [
+          ["Next Move", "Awaiting first command."],
+          ["Decision", "No live decision yet."],
+          ["Priority", "Not set."],
+          ["Recommended Command", "Send a command to begin."]
+        ].map(([label, value]) => metric(label, value, true)).join("");
+        return;
+      }
+      els.summaryGrid.innerHTML = [
+        ["Next Move", latest.next_move],
+        ["Decision", latest.decision],
+        ["Priority", latest.priority],
+        ["Risk", latest.risk],
+        ["Recommended Command", latest.recommended_command]
+      ].map(([label, value]) => metric(label, value)).join("");
+    }
+
+    function metric(label, value, soft = false) {
+      return `<div class="metric-card"><div class="metric-label">${escapeHtml(label)}</div><div class="metric-value ${soft ? "soft" : ""}">${formatValue(value)}</div></div>`;
+    }
+
+    function updateIntelligence() {
+      const latest = state.latest;
+      const lastUser = [...state.messages].reverse().find(m => m.role === "user");
+      if (!latest) {
+        els.intelGrid.innerHTML = intelCard("System Ready", "Live", "Backend URL is locked. Commands will update this panel from the latest response/context.", "green") +
+          intelCard("Conversation Context", "Empty", "No thread history yet. Follow-up commands will preserve the active thread in frontend state.", "orange");
+        return;
+      }
+      els.intelGrid.innerHTML = [
+        intelCard("Active Context", "Live", lastUser ? lastUser.content : "No command captured.", "green"),
+        intelCard("Pressure Signal", classifyPriority(latest.priority), summarizePressure(latest), "orange"),
+        intelCard("Risk Watch", riskTag(latest.risk), latest.risk, riskTag(latest.risk).toLowerCase() === "high" ? "red" : "orange"),
+        intelCard("Next Prompt", "Ready", latest.recommended_command, "green")
+      ].join("");
+    }
+
+    function intelCard(title, tag, text, color = "") {
+      return `<div class="intel-card"><div class="intel-top"><div class="intel-title">${escapeHtml(title)}</div><div class="tag ${color}">${escapeHtml(tag)}</div></div><div class="intel-text">${formatValue(text)}</div></div>`;
+    }
+
+    function classifyPriority(priority) {
+      const value = String(priority || "").toLowerCase();
+      if (value.includes("high") || value.includes("urgent") || value.includes("critical")) return "High";
+      if (value.includes("low")) return "Low";
+      return "Active";
+    }
+
+    function riskTag(risk) {
+      const value = String(risk || "").toLowerCase();
+      if (value.includes("critical") || value.includes("high") || value.includes("block")) return "High";
+      if (value.includes("none") || value.includes("low")) return "Low";
+      return "Watch";
+    }
+
+    function summarizePressure(latest) {
+      return `Priority is ${String(latest.priority || "active")}. The current next move is connected to the latest backend response, not static page content.`;
+    }
+
+    function updateSectionViews() {
+      renderCollection("decisionsGrid", "Decisions", state.responses.map(r => r.decision), "Every backend response adds a decision record here.");
+      renderCollection("actionsGrid", "Action Steps", state.responses.map(r => r.action_steps), "Action steps are pulled from the required /run contract.");
+      renderCollection("assetsGrid", "Ready Assets", state.responses.map(r => r.ready_assets), "Ready assets are stored from the latest execution flow.");
+      renderCollection("risksGrid", "Risks", state.responses.map(r => r.risk), "Risk monitor is connected to live response state.");
+      const contextItems = state.messages.filter(m => m.role === "user").map(m => m.content);
+      renderCollection("contextGrid", "Command Context", contextItems, "User commands and follow-ups persist in this frontend thread.");
+    }
+
+    function renderCollection(elementId, title, items, emptyCopy) {
+      const el = document.getElementById(elementId);
+      const cleanItems = items.filter(item => item !== undefined && item !== null && String(item).trim() !== "");
+      if (!cleanItems.length) {
+        el.innerHTML = `<div class="large-card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(emptyCopy)}</p></div>`;
+        return;
+      }
+      el.innerHTML = cleanItems.map((item, index) => `<div class="large-card"><h3>${escapeHtml(title)} ${index + 1}</h3><div class="list"><div class="list-item">${formatValue(item)}</div></div></div>`).join("");
+    }
+
+    function updateCounts() {
+      document.getElementById("countMessages").textContent = state.messages.filter(m => m.role === "user").length;
+      document.getElementById("countDecisions").textContent = state.responses.length;
+      document.getElementById("countActions").textContent = state.responses.length;
+      document.getElementById("countAssets").textContent = state.responses.length;
+      document.getElementById("countRisks").textContent = state.responses.length;
+      els.threadBadge.textContent = state.messages.length ? "Active thread" : "New thread";
+    }
+
+    function setLoading(isLoading) {
+      state.loading = isLoading;
+      els.execute.disabled = isLoading;
+      els.execute.textContent = isLoading ? "Running" : "Execute";
+      els.modeStatus.textContent = isLoading ? "Running" : "Ready";
+      els.connectionLabel.textContent = isLoading ? "Running" : "Ready";
+    }
+
+    async function submitCommand() {
+      const command = els.input.value.trim();
+      if (!command || state.loading) return;
+
+      addMessage("user", command);
+      els.input.value = "";
+      autosizeTextarea();
+      setLoading(true);
+      const loadingId = addMessage("assistant", "Executive Engine is running the command…", { kind: "loading" });
+
+      try {
+        const payload = {
+          command,
+          input: command,
+          message: command,
+          thread_id: state.threadId,
+          history: state.messages
+            .filter(m => m.kind !== "loading")
+            .slice(-12)
+            .map(m => ({ role: m.role, content: typeof m.content === "string" ? m.content : JSON.stringify(m.content) }))
+        };
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Backend returned ${response.status} ${response.statusText}`);
         }
-        updateRightPanelFromState();
-      }
 
-      function addMessage(role, body, data = null) {
-        const { chatFeed } = refs();
-        if (!chatFeed) return;
-        const msg = document.createElement("div");
-        msg.className = `msg ${role === "engine" ? "engine" : "user"}`;
-        const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-        const title = role === "engine" ? "Executive Engine" : "You";
-        const avatar = role === "engine" ? "E" : "W";
-        let content = `<p>${escapeHtml(body)}</p>`;
-        if (role === "engine" && data) {
-          content = `<div class="runtime-output">${OUTPUT_ORDER.map(([label, keys]) => {
-            const text = toText(firstValue(data, keys), "—");
-            return `<p><strong>${label}</strong><br>${escapeHtml(text).replace(/\n/g, "<br>")}</p>`;
-          }).join("")}</div>`;
-        }
-        msg.innerHTML = `<div class="bubble-avatar">${avatar}</div><div><div class="msg-head"><strong>${title}</strong><span>${time}</span></div>${content}</div>`;
-        const follow = $(".follow", chatFeed);
-        chatFeed.insertBefore(msg, follow || null);
-        msg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        const data = await response.json();
+        const normalized = normalizeResponse(data);
+        state.latest = normalized;
+        state.responses.push(normalized);
+        removeMessage(loadingId);
+        addMessage("assistant", normalized, { kind: "structured" });
+        els.lastRun.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        state.error = null;
+      } catch (error) {
+        state.error = error.message;
+        removeMessage(loadingId);
+        addMessage("assistant", `Request failed: ${error.message}. Confirm the backend is live and CORS allows this frontend.`, { kind: "error" });
+        els.connectionLabel.textContent = "Error";
+      } finally {
+        setLoading(false);
+        updateSummary();
+        updateIntelligence();
+        updateSectionViews();
       }
+    }
 
-      function updateSummary(data) {
-        setText("nextMove", outputValue(data, "NEXT MOVE"), "Next move is ready.");
-        setText("decision", outputValue(data, "DECISION"), "Decision path is clear.");
-        setList("actionSteps", outputValue(data, "ACTION STEPS"), "Confirm next action.\nAssign owner.\nMove now.");
-        setList("readyAssets", outputValue(data, "READY ASSETS"), "Executive brief.\nDecision notes.\nAction plan.");
-        setList("risk", outputValue(data, "RISK"), "No major risk returned.");
-        setText("priority", outputValue(data, "PRIORITY"), "High");
-        setText("recommendedCommand", outputValue(data, "RECOMMENDED COMMAND"), "Run the next highest-leverage command.");
-        updateRightPanelFromState();
+    function switchSection(section) {
+      state.activeSection = section;
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.dataset.section === section));
+      document.querySelectorAll(".section-view").forEach(view => view.classList.toggle("active", view.id === `section-${section}`));
+      updateSectionViews();
+    }
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => switchSection(item.dataset.section));
+    });
+
+    document.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        els.input.value = chip.dataset.command;
+        autosizeTextarea();
+        els.input.focus();
+      });
+      chip.addEventListener("dblclick", () => {
+        els.input.value = chip.dataset.command;
+        autosizeTextarea();
+        submitCommand();
+      });
+    });
+
+    els.execute.addEventListener("click", submitCommand);
+    els.input.addEventListener("input", autosizeTextarea);
+    els.input.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        submitCommand();
       }
+    });
 
-      function updateRightPanelFromState() {
-        const data = state.lastResponse || {};
-        const next = outputValue(data, "NEXT MOVE") || "Next move is ready.";
-        const decision = outputValue(data, "DECISION") || "Decision path is clear.";
-        const priority = outputValue(data, "PRIORITY") || state.activeSection;
-        const risk = outputValue(data, "RISK") || "No major risk flagged.";
-        const rec = outputValue(data, "RECOMMENDED COMMAND") || "Run the next command when ready.";
-        const cards = $$(".intel-card");
-        if (cards[0]) cards[0].querySelector("p").textContent = toText(next, "Next move is ready.");
-        if (cards[1]) cards[1].querySelector("p").textContent = `Current section: ${state.activeSection}. Latest priority: ${toText(priority, "set after run")}.`;
-        if (cards[2]) {
-          const first = cards[2].querySelector(".priority strong");
-          const firstSpan = cards[2].querySelector(".priority span");
-          if (first) first.textContent = state.lastCommand || "Run next executive command";
-          if (firstSpan) firstSpan.textContent = toText(rec, "Recommended command ready");
-        }
-        if (cards[3]) {
-          const ops = cards[3].querySelector(".pulse:nth-of-type(3) strong");
-          if (ops) {
-            ops.textContent = risk && !/no major|none|clear/i.test(toText(risk)) ? "At Risk" : "On Track";
-            ops.className = ops.textContent === "At Risk" ? "bad" : "good";
-          }
-        }
-        if (cards[4]) cards[4].querySelector("p").textContent = `${toText(decision, "Decision path is clear.")} Focus: ${toText(rec, "execute the next command")}.`;
-      }
-
-      async function runCommand(rawCommand, source = "command") {
-        const { commandInput } = refs();
-        const command = String(rawCommand ?? "").trim();
-        if (!command) {
-          setStatus("error", "Enter the win first.");
-          if (commandInput) commandInput.focus();
-          return;
-        }
-        state.lastCommand = command;
-        setStatus("loading");
-        addMessage("user", command);
-        updateRightPanelFromState();
-        try {
-          const response = await fetch(`${API_URL}/run`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ input: command, command, source, section: state.activeSection })
-          });
-          if (!response.ok) throw new Error(`Backend returned ${response.status}`);
-          const data = await response.json();
-          state.lastResponse = data;
-          state.history.push({ command, data, at: new Date().toISOString(), section: state.activeSection });
-          updateSummary(data);
-          addMessage("engine", toText(outputValue(data, "NEXT MOVE"), "Next move is ready."), data);
-          if (commandInput) commandInput.value = "";
-          setStatus("success", "Done. Workflow, summary, and intelligence updated.");
-        } catch (err) {
-          setStatus("error", `Command failed: ${err.message}`);
-          addMessage("engine", `Runtime error: ${err.message}`);
-        } finally {
-          const { commandInput: finalInput } = refs();
-          if (finalInput) finalInput.focus();
-        }
-      }
-
-      function applyChip(chip) {
-        const { commandInput } = refs();
-        const text = chip.textContent.trim();
-        if (commandInput) {
-          commandInput.value = text;
-          commandInput.focus();
-        }
-        state.lastCommand = text;
-        updateRightPanelFromState();
-        setStatus("success", "Command loaded. Press Enter or Execute to run it.");
-      }
-
-      function bindRuntime() {
-        if (bound) return;
-        bound = true;
-        const { commandInput, runButton, clearButton, followInput, followSend } = refs();
-        [commandInput, followInput].forEach(input => {
-          if (!input) return;
-          input.removeAttribute("disabled");
-          input.removeAttribute("readonly");
-          input.style.pointerEvents = "auto";
-        });
-        if (runButton) runButton.addEventListener("click", event => {
-          event.preventDefault();
-          runCommand(refs().commandInput?.value, "execute-button");
-        });
-        if (clearButton) clearButton.addEventListener("click", event => {
-          event.preventDefault();
-          const { commandInput } = refs();
-          if (commandInput) commandInput.value = "";
-          setStatus("idle");
-          if (commandInput) commandInput.focus();
-        });
-        if (commandInput) commandInput.addEventListener("keydown", event => {
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            runCommand(commandInput.value, "enter-key");
-          }
-        });
-        $$(".chip").forEach(chip => {
-          chip.setAttribute("tabindex", "0");
-          chip.addEventListener("click", () => applyChip(chip));
-          chip.addEventListener("dblclick", () => runCommand(chip.textContent.trim(), "chip-double-click"));
-          chip.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              applyChip(chip);
-            }
-          });
-        });
-        $$(".nav-item").forEach(item => {
-          item.setAttribute("tabindex", "0");
-          item.addEventListener("click", event => {
-            event.preventDefault();
-            showSection(item.textContent.trim());
-          });
-          item.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              showSection(item.textContent.trim());
-            }
-          });
-        });
-        if (followInput) followInput.addEventListener("keydown", event => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            const value = followInput.value.trim();
-            if (!value) return;
-            followInput.value = "";
-            runCommand(value, "follow-up-enter");
-          }
-        });
-        if (followSend) followSend.addEventListener("click", event => {
-          event.preventDefault();
-          const { followInput } = refs();
-          const value = followInput?.value.trim();
-          if (value) {
-            followInput.value = "";
-            runCommand(value, "follow-up-send");
-          } else if (followInput) {
-            followInput.focus();
-          }
-        });
-        updateRightPanelFromState();
-      }
-
-      document.addEventListener("DOMContentLoaded", bindRuntime);
-      if (document.readyState !== "loading") bindRuntime();
-    })();
+    updateSummary();
+    updateIntelligence();
+    updateSectionViews();
+    autosizeTextarea();
   </script>
 </body>
 </html>
