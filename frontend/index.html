@@ -40,6 +40,22 @@
     .msg{display:flex;gap:12px;align-items:flex-start}.msg.user{justify-content:flex-end}.msg.user .bubble-avatar{order:2;background:linear-gradient(135deg,#fde4c9,#c77a31);color:#071a33}.msg.user .message-body{order:1;background:#06162d;color:#fff;border-radius:16px 16px 4px 16px;padding:10px 13px;max-width:76%;box-shadow:0 8px 20px rgba(6,22,45,.13)}.msg.user .msg-head{color:#cbd6e8;margin-bottom:4px}.msg.user .msg-head span{color:#aebfda}.msg.user p{color:#fff;font-size:13px;line-height:1.42}
     .msg.engine .message-body{max-width:88%}.workflow-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 14px 34px rgba(16,24,40,.06);overflow:hidden}.workflow-answer{padding:13px 14px;border-bottom:1px solid var(--line);background:#fbfcff}.workflow-answer strong{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#ff6a00;margin-bottom:5px}.workflow-answer p{font-size:13px;line-height:1.42;margin:0;color:#101828}.next-action{margin:10px 14px;border:1px solid #ffd9bf;background:#fff7ef;border-radius:9px;padding:10px 11px}.next-action span{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#b54708;margin-bottom:4px}.next-action p{font-size:13px;margin:0;color:#101828;font-weight:750}.workflow-grid{display:grid;gap:8px;padding:0 14px 12px}.workflow-section{border:1px solid #edf1f7;border-radius:9px;padding:9px 10px;background:#fff}.workflow-section h5{margin:0 0 7px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#667085}.task-row,.asset-row{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:12px;line-height:1.35;margin:6px 0;color:#101828}.task-check{width:16px;height:16px;border-radius:50%;border:1px solid #c8d3e3;display:grid;place-items:center;color:#667085;font-size:10px}.asset-row{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fbfcff}.asset-mini{width:18px;height:18px;border-radius:5px;border:1px solid #ffb08a;color:var(--orange);display:grid;place-items:center;font-size:11px}.risk-card{border:1px solid #ffd3cc;background:#fff6f5;border-radius:9px;padding:9px 10px;font-size:12px;line-height:1.4;color:#912018}.recommended{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:10px 14px;background:#fbfcff}.recommended span{font-size:12px;color:#667085;line-height:1.35}.continue-btn,.send-follow{border:0;border-radius:7px;background:#06162d;color:#fff;height:32px;padding:0 12px;font-size:12px;font-weight:850;cursor:pointer;white-space:nowrap}.continue-btn:hover,.send-follow:hover{background:#0b1f3d}.workspace-view{border:1px solid var(--line);border-radius:10px;background:#fff;padding:13px 14px;box-shadow:0 10px 26px rgba(16,24,40,.04)}.workspace-view h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.workspace-view p,.workspace-view li{font-size:12px;line-height:1.45;margin:0;color:#101828}.workspace-view ul{margin:6px 0 0;padding-left:18px}.follow{flex-shrink:0;margin-top:auto}.follow button{margin-left:4px}.runtime-note{font-size:11px;color:#667085;margin-top:8px}.pill{display:inline-flex;align-items:center;height:22px;border-radius:999px;background:#f0f3f8;color:#667085;padding:0 8px;font-size:11px;font-weight:850;margin-top:6px}.count[data-hot="true"]{background:#fff0e6;color:#b54708}.intel-card.runtime h4,.summary-card.runtime h4{color:#101828}
 
+    /* V35140 runtime workflow usefulness pass: keeps layout, upgrades behavior/rendering only. */
+    .workflow-card{border-color:#dfe6f2}.workflow-answer{background:linear-gradient(180deg,#fff,#fbfcff)}
+    .workflow-answer strong{color:#06162d}.workflow-answer p{font-size:13px;line-height:1.45;color:#101828}
+    .next-action{position:relative}.next-action:before{content:"";position:absolute;left:-1px;top:-1px;bottom:-1px;width:4px;border-radius:9px 0 0 9px;background:var(--orange)}
+    .task-row{border:1px solid #edf1f7;border-radius:8px;padding:8px 9px;background:#fff;grid-template-columns:20px 1fr;align-items:start}
+    .task-row span:last-child{font-weight:700;color:#101828}.task-meta{display:block;margin-top:3px;font-size:10px;font-weight:850;color:#667085;text-transform:uppercase;letter-spacing:.04em}
+    .asset-row{grid-template-columns:22px 1fr auto}.asset-action{border:1px solid #dbe4f0;background:#fff;border-radius:6px;height:24px;padding:0 8px;font-size:10px;font-weight:900;color:#344054}
+    .risk-card strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#b42318;margin-bottom:4px}
+    .workflow-actions{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding:10px 14px;background:#fff}
+    .action-btn{border:0;border-radius:7px;height:31px;padding:0 10px;font-size:11px;font-weight:900;cursor:pointer;white-space:nowrap;background:#06162d;color:#fff}
+    .action-btn.secondary{background:#fff;color:#06162d;border:1px solid #dbe4f0}.action-btn.orange{background:linear-gradient(135deg,var(--orange),#ff861f);color:#fff}
+    .saved-preview{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:0 14px 12px}.saved-pill{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.saved-pill b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:4px}.saved-pill span{display:block;font-size:11px;line-height:1.35;color:#101828}
+    .workspace-view{margin-bottom:6px}.workspace-view .workspace-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.workspace-kpi{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.workspace-kpi b{display:block;font-size:15px}.workspace-kpi span{font-size:10px;color:#667085;text-transform:uppercase;font-weight:850}
+    .workspace-list{display:grid;gap:7px;margin-top:9px}.workspace-item{border:1px solid #edf1f7;border-radius:8px;padding:8px 9px;background:#fff;font-size:12px;line-height:1.4}.workspace-item strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:3px}
+    .mini-status{margin-top:8px;font-size:11px;font-weight:850;color:#099250}.project.runtime-project{cursor:default}.project.runtime-project small{color:#8fa2c1}
+
   </style>
 </head>
 <body>
@@ -83,118 +99,261 @@
     const followButton = document.getElementById("followButton");
 
     const state = {
-      thread: [], decisions: [], actions: [], assets: [], risks: [],
+      thread: [], decisions: [], actions: [], assets: [], risks: [], saved: [],
       latestCommand: "", latestResponse: null, recommendedCommand: "", activeWorkspace: "Command"
     };
 
-    function escapeHtml(s){return String(s ?? "").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]))}
-    function first(data, keys){for(const k of keys){if(data && data[k] !== undefined && data[k] !== null && data[k] !== "") return data[k]} return ""}
-    function asText(v, fallback=""){ if(v===null||v===undefined||v==="") return fallback; if(Array.isArray(v)) return v.map(item=>typeof item==="object" ? Object.values(item).filter(Boolean).join(" — ") : String(item)).join("
-"); if(typeof v==="object") return Object.entries(v).map(([k,val])=>`${k}: ${Array.isArray(val)?val.join(", "):val}`).join("
-"); return String(v); }
-    function asList(v, fallback=[]){ const text = asText(v, ""); const list = text.split(/
-|;|•|\|/).map(x=>x.trim()).filter(Boolean); return list.length ? list.slice(0,8) : fallback; }
-    function timeNow(){return new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}
-    function shortAnswer(data){
-      return asText(first(data,["clear_answer","answer","summary","next_move","what_to_do_now","recommendation","decision"]), "I organized the response into an executive workflow. Use the next action below to keep moving.");
+    function escapeHtml(value){
+      return String(value ?? "").replace(/[&<>'"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[ch]));
+    }
+    function timeNow(){ return new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}); }
+    function first(data, keys){
+      for(const key of keys){
+        if(data && data[key] !== undefined && data[key] !== null && String(data[key]).trim() !== "") return data[key];
+      }
+      return "";
+    }
+    function stringify(value){
+      if(value === null || value === undefined) return "";
+      if(Array.isArray(value)) return value.map(stringify).filter(Boolean).join("\n");
+      if(typeof value === "object") return Object.entries(value).map(([key,val]) => `${key}: ${stringify(val)}`).filter(Boolean).join("\n");
+      return String(value).trim();
+    }
+    function toList(value, fallback){
+      const text = stringify(value);
+      const pieces = text.split(/\n|\r|;|•|\||(?<=\.)\s+(?=[A-Z0-9])/).map(x => x.replace(/^[-*\d.)\s]+/, "").trim()).filter(Boolean);
+      const clean = [...new Set(pieces)].filter(x => x.length > 2);
+      return (clean.length ? clean : fallback).slice(0, 6);
+    }
+    function sentence(text, fallback){
+      const value = stringify(text) || fallback;
+      return value.replace(/\s+/g," ").trim();
+    }
+    function buildAnswer(data, nextMove, decision){
+      const raw = first(data, ["clear_answer", "answer", "summary", "response", "message", "what_to_do_now"]);
+      if(raw) return sentence(raw, "");
+      if(decision && decision !== "No explicit decision returned.") return `Recommended direction: ${decision}`;
+      return `Here is the operating path: ${nextMove}`;
     }
     function normalize(data){
-      const nextMove = asText(first(data,["next_move","nextMove","what_to_do_now","next","recommendation"]), "Move the workflow forward with the recommended command.");
-      const decision = asText(first(data,["decision","recommended_decision"]), "No explicit decision returned. Treat the next move as the working direction.");
-      const actions = asList(first(data,["action_steps","actions","steps","next_steps"]), [nextMove]);
-      const assets = asList(first(data,["ready_assets","assets","prepared_assets","deliverables"]), ["Working response package"]);
-      const risks = asList(first(data,["risk","risks","active_risks"]), ["Validate the response before acting externally."]);
-      const priority = asText(first(data,["priority","urgency"]), "High");
-      const recommended = asText(first(data,["recommended_command","follow_up_command","command","next_command"]), `Continue: ${nextMove}`);
-      return { raw:data, answer:shortAnswer(data), nextMove, decision, actions, assets, risks, priority, recommended };
+      const nextMove = sentence(first(data,["next_move","nextMove","what_to_do_now","next","recommendation"]), "Move forward with the highest-leverage next step.");
+      const decision = sentence(first(data,["decision","recommended_decision"]), "No explicit decision returned.");
+      const actions = toList(first(data,["action_steps","actions","steps","next_steps"]), [nextMove]);
+      const assets = toList(first(data,["ready_assets","assets","prepared_assets","deliverables","asset"]), ["Working brief", "Action plan outline"]);
+      const risks = toList(first(data,["risk","risks","active_risks"]), ["Validate the recommendation before sending or committing externally."]);
+      const priority = sentence(first(data,["priority","urgency"]), "High");
+      const recommended = sentence(first(data,["recommended_command","follow_up_command","next_command"]), `Continue and turn this into an execution plan: ${nextMove}`);
+      const answer = buildAnswer(data, nextMove, decision);
+      return { raw:data, answer, nextMove, decision, actions, assets, risks, priority, recommended };
     }
     function clearEmpty(){ const empty = messageStream.querySelector(".empty-state"); if(empty) empty.remove(); }
+    function scrollChat(){ const chat = document.getElementById("chatFeed"); chat.scrollTop = chat.scrollHeight; }
     function addUserMessage(text){
       clearEmpty();
-      const node=document.createElement("div"); node.className="msg user";
-      node.innerHTML=`<div class="bubble-avatar">W</div><div class="message-body"><div class="msg-head"><strong>You</strong><span>${timeNow()}</span></div><p>${escapeHtml(text)}</p></div>`;
+      const node = document.createElement("div"); node.className = "msg user";
+      node.innerHTML = `<div class="bubble-avatar">W</div><div class="message-body"><div class="msg-head"><strong>You</strong><span>${timeNow()}</span></div><p>${escapeHtml(text)}</p></div>`;
       messageStream.appendChild(node); scrollChat();
     }
-    function renderTaskRows(items){ return items.map((item,i)=>`<div class="task-row"><span class="task-check">${i+1}</span><span>${escapeHtml(item)}</span></div>`).join(""); }
-    function renderAssetRows(items){ return items.map(item=>`<div class="asset-row"><span class="asset-mini">▤</span><span>${escapeHtml(item)}</span></div>`).join(""); }
+    function taskRows(items){
+      return items.map((item, index) => `<div class="task-row"><span class="task-check">${index + 1}</span><span>${escapeHtml(item)}<em class="task-meta">Task · ready for action plan</em></span></div>`).join("");
+    }
+    function assetCards(items){
+      return items.map((item, index) => `<div class="asset-row"><span class="asset-mini">▤</span><span>${escapeHtml(item)}</span><button class="asset-action" data-asset-index="${index}">Draft</button></div>`).join("");
+    }
+    function showMiniStatus(text){
+      let el = document.getElementById("miniStatus");
+      if(!el){ el = document.createElement("div"); el.id = "miniStatus"; el.className = "mini-status"; document.querySelector(".capture").appendChild(el); }
+      el.textContent = text;
+      setTimeout(() => { if(el.textContent === text) el.textContent = ""; }, 2400);
+    }
     function addAssistantWorkflow(workflow){
       clearEmpty();
-      const node=document.createElement("div"); node.className="msg engine";
-      node.innerHTML=`<div class="bubble-avatar">E</div><div class="message-body"><div class="msg-head"><strong>Executive Engine</strong><span>${timeNow()}</span></div><div class="workflow-card"><div class="workflow-answer"><strong>Clear answer</strong><p>${escapeHtml(workflow.answer)}</p></div><div class="next-action"><span>Do this next</span><p>${escapeHtml(workflow.nextMove)}</p></div><div class="workflow-grid"><div class="workflow-section"><h5>Action Workspace</h5>${renderTaskRows(workflow.actions)}</div><div class="workflow-section"><h5>Ready Assets</h5>${renderAssetRows(workflow.assets)}</div><div class="workflow-section"><h5>Risk Monitor</h5><div class="risk-card">${escapeHtml(workflow.risks[0])}</div></div><div class="workflow-section"><h5>Decision</h5><p>${escapeHtml(workflow.decision)}</p><span class="pill">Priority: ${escapeHtml(workflow.priority)}</span></div></div><div class="recommended"><span><strong>Suggested follow-up:</strong><br>${escapeHtml(workflow.recommended)}</span><button class="continue-btn" data-command="${escapeHtml(workflow.recommended)}">Continue with recommended command</button></div></div></div>`;
+      const node = document.createElement("div"); node.className = "msg engine";
+      node.innerHTML = `
+        <div class="bubble-avatar">E</div>
+        <div class="message-body">
+          <div class="msg-head"><strong>Executive Engine</strong><span>${timeNow()}</span></div>
+          <div class="workflow-card">
+            <div class="workflow-answer"><strong>Clear answer</strong><p>${escapeHtml(workflow.answer)}</p></div>
+            <div class="next-action"><span>Do this next</span><p>${escapeHtml(workflow.nextMove)}</p></div>
+            <div class="workflow-grid">
+              <div class="workflow-section"><h5>Action Workspace</h5>${taskRows(workflow.actions)}</div>
+              <div class="workflow-section"><h5>Ready Assets</h5>${assetCards(workflow.assets)}</div>
+              <div class="workflow-section"><h5>Risk Monitor</h5><div class="risk-card"><strong>Watch this</strong>${escapeHtml(workflow.risks[0])}</div></div>
+              <div class="workflow-section"><h5>Decision</h5><p>${escapeHtml(workflow.decision)}</p><span class="pill">Priority: ${escapeHtml(workflow.priority)}</span></div>
+            </div>
+            <div class="saved-preview">
+              <div class="saved-pill"><b>Decision saved preview</b><span>${escapeHtml(workflow.decision)}</span></div>
+              <div class="saved-pill"><b>Actions captured</b><span>${workflow.actions.length} task${workflow.actions.length === 1 ? "" : "s"}</span></div>
+              <div class="saved-pill"><b>Assets ready</b><span>${workflow.assets.length} asset${workflow.assets.length === 1 ? "" : "s"}</span></div>
+            </div>
+            <div class="recommended"><span><strong>Suggested follow-up:</strong><br>${escapeHtml(workflow.recommended)}</span></div>
+            <div class="workflow-actions">
+              <button class="action-btn orange" data-action="continue">Continue with recommended command</button>
+              <button class="action-btn secondary" data-action="plan">Turn into action plan</button>
+              <button class="action-btn secondary" data-action="draft">Draft asset</button>
+              <button class="action-btn secondary" data-action="save">Save decision</button>
+            </div>
+          </div>
+        </div>`;
       messageStream.appendChild(node); scrollChat();
     }
-    function scrollChat(){ const chat = document.getElementById("chatFeed"); chat.scrollTop = chat.scrollHeight; }
-    function setList(id, items){ document.getElementById(id).innerHTML = items.length ? items.map(x=>`<li>${escapeHtml(x)}</li>`).join("") : `<li>None captured yet.</li>`; }
+    function setList(id, items){
+      const el = document.getElementById(id);
+      el.innerHTML = items.length ? items.map(x => `<li>${escapeHtml(x)}</li>`).join("") : `<li>None captured yet.</li>`;
+    }
+    function updateProjectRuntime(workflow){
+      const projects = document.querySelectorAll(".project");
+      const values = [
+        ["Active Workflow", state.latestCommand || workflow.nextMove],
+        ["Next Move", workflow.nextMove],
+        ["Ready Asset", workflow.assets[0] || "Asset pending"]
+      ];
+      projects.forEach((project, index) => {
+        project.classList.add("runtime-project");
+        const div = project.querySelector("div");
+        if(div && values[index]) div.innerHTML = `${escapeHtml(values[index][0])}<small>${escapeHtml(values[index][1]).slice(0, 44)}</small>`;
+      });
+    }
     function updateRuntime(workflow){
       state.latestResponse = workflow; state.recommendedCommand = workflow.recommended;
       state.decisions.unshift(workflow.decision); state.actions.unshift(...workflow.actions); state.assets.unshift(...workflow.assets); state.risks.unshift(...workflow.risks);
-      state.decisions = [...new Set(state.decisions)].slice(0,8); state.actions=[...new Set(state.actions)].slice(0,12); state.assets=[...new Set(state.assets)].slice(0,10); state.risks=[...new Set(state.risks)].slice(0,8);
+      state.decisions = [...new Set(state.decisions)].slice(0, 8);
+      state.actions = [...new Set(state.actions)].slice(0, 14);
+      state.assets = [...new Set(state.assets)].slice(0, 10);
+      state.risks = [...new Set(state.risks)].slice(0, 8);
+
       document.getElementById("nextMove").textContent = workflow.nextMove;
       document.getElementById("decision").textContent = workflow.decision;
-      setList("actionSteps", state.actions.slice(0,5)); setList("readyAssets", state.assets.slice(0,5)); setList("risk", state.risks.slice(0,4));
-      document.getElementById("priority").textContent = workflow.priority; document.getElementById("recommendedCommand").textContent = workflow.recommended;
-      document.getElementById("nextMoveCount").textContent = "1"; document.getElementById("decisionCount").textContent = String(state.decisions.length); document.getElementById("actionCount").textContent = String(state.actions.length); document.getElementById("assetCount").textContent = String(state.assets.length); document.getElementById("riskCount").textContent = String(state.risks.length); document.getElementById("priorityCount").textContent = workflow.priority; document.getElementById("recommendedCount").textContent = "1";
-      ["nextMoveCount","decisionCount","actionCount","assetCount","riskCount","recommendedCount"].forEach(id=>document.getElementById(id).dataset.hot="true");
-      document.getElementById("summarySub").textContent = `Updated from ${state.thread.length} message${state.thread.length===1?"":"s"}`;
-      document.getElementById("currentFocus").textContent = state.latestCommand || workflow.nextMove;
+      setList("actionSteps", state.actions.slice(0, 5));
+      setList("readyAssets", state.assets.slice(0, 5));
+      setList("risk", state.risks.slice(0, 4));
+      document.getElementById("priority").textContent = `${workflow.priority} — focus on the next move first.`;
+      document.getElementById("recommendedCommand").textContent = workflow.recommended;
+      document.getElementById("nextMoveCount").textContent = "1";
+      document.getElementById("decisionCount").textContent = String(state.decisions.length);
+      document.getElementById("actionCount").textContent = String(state.actions.length);
+      document.getElementById("assetCount").textContent = String(state.assets.length);
+      document.getElementById("riskCount").textContent = String(state.risks.length);
+      document.getElementById("priorityCount").textContent = workflow.priority;
+      document.getElementById("recommendedCount").textContent = "1";
+      ["nextMoveCount","decisionCount","actionCount","assetCount","riskCount","recommendedCount"].forEach(id => document.getElementById(id).dataset.hot = "true");
+      document.getElementById("summarySub").textContent = `Live operating state · ${state.thread.length} message${state.thread.length === 1 ? "" : "s"}`;
+
+      document.getElementById("currentFocus").textContent = `Focus: ${state.latestCommand || workflow.nextMove}`;
       document.getElementById("activeRisk").textContent = workflow.risks[0];
       document.getElementById("intelNextMove").textContent = workflow.nextMove;
       document.getElementById("intelRecommended").textContent = workflow.recommended;
       document.getElementById("threadCount").textContent = String(state.thread.length);
-      document.getElementById("threadTitle").textContent = state.latestCommand ? "Active workflow" : "No active thread";
-      document.getElementById("threadMeta").textContent = state.latestCommand || "Awaiting first command";
-      document.getElementById("threadContext").textContent = `Decision: ${workflow.decision}`;
-      document.getElementById("whatMatters").textContent = `${workflow.priority} priority. Next: ${workflow.nextMove}`;
+      document.getElementById("threadTitle").textContent = "Active workflow";
+      document.getElementById("threadMeta").textContent = state.latestCommand || "Runtime thread active";
+      document.getElementById("threadContext").textContent = `Current decision: ${workflow.decision}`;
+      document.getElementById("whatMatters").textContent = `${workflow.priority} priority. The next useful move is: ${workflow.nextMove}`;
+      updateProjectRuntime(workflow);
       renderWorkspace(state.activeWorkspace);
+    }
+    function workspaceItems(items, label){
+      return `<div class="workspace-list">${items.length ? items.map(x => `<div class="workspace-item"><strong>${label}</strong>${escapeHtml(x)}</div>`).join("") : `<div class="workspace-item"><strong>${label}</strong>No runtime data captured yet.</div>`}</div>`;
     }
     function workspaceContent(name){
       const w = state.latestResponse;
-      if(!w) return `<div class="workspace-view"><h4>${escapeHtml(name)}</h4><p>No runtime data yet. Run a command to populate this workspace.</p></div>`;
+      if(!w){
+        return `<div class="workspace-view"><h4>${escapeHtml(name)}</h4><p>Run a command to populate this workspace with live decisions, tasks, assets, risks, and context.</p></div>`;
+      }
+      const kpis = `<div class="workspace-kpis"><div class="workspace-kpi"><b>${state.decisions.length}</b><span>Decisions</span></div><div class="workspace-kpi"><b>${state.actions.length}</b><span>Tasks</span></div><div class="workspace-kpi"><b>${state.assets.length}</b><span>Assets</span></div></div>`;
       const map = {
-        "Command": `<div class="workspace-view"><h4>Live Conversation</h4><p>${escapeHtml(state.latestCommand)}</p><p class="runtime-note">Thread messages: ${state.thread.length}</p></div>`,
-        "Daily Brief": `<div class="workspace-view"><h4>Operating Brief</h4><p>${escapeHtml(w.answer)}</p><p class="runtime-note">Next: ${escapeHtml(w.nextMove)}</p></div>`,
-        "Decisions": `<div class="workspace-view"><h4>Decision History</h4><ul>${state.decisions.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
-        "Meeting Prep": `<div class="workspace-view"><h4>Meeting Prep</h4><p>${escapeHtml(w.nextMove)}</p><ul>${state.actions.slice(0,5).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
-        "Insights": `<div class="workspace-view"><h4>Insight</h4><p>${escapeHtml(w.answer)}</p></div>`,
-        "Strategy Board": `<div class="workspace-view"><h4>Strategy Board</h4><p>${escapeHtml(w.decision)}</p><p class="runtime-note">Priority: ${escapeHtml(w.priority)}</p></div>`,
-        "Risk Monitor": `<div class="workspace-view"><h4>Risk Monitor</h4><ul>${state.risks.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
-        "Team Pulse": `<div class="workspace-view"><h4>Team Pulse</h4><p>Execution load is driven by ${state.actions.length} active task${state.actions.length===1?"":"s"}.</p></div>`,
-        "Financial Snapshot": `<div class="workspace-view"><h4>Financial Snapshot</h4><p>No financial data returned by the current response. Use the recommended command to request numbers.</p></div>`,
-        "Active Projects": `<div class="workspace-view"><h4>Active Project</h4><p>${escapeHtml(state.latestCommand)}</p></div>`,
-        "Files": `<div class="workspace-view"><h4>Ready Assets</h4><ul>${state.assets.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
-        "Notes": `<div class="workspace-view"><h4>Runtime Notes</h4><p>${escapeHtml(w.answer)}</p></div>`,
-        "Upload Context": `<div class="workspace-view"><h4>Context</h4><p>Latest command: ${escapeHtml(state.latestCommand)}</p><p>Recommended: ${escapeHtml(w.recommended)}</p></div>`
+        "Command": `<div class="workspace-view"><h4>Live Conversation</h4><p>${escapeHtml(state.latestCommand)}</p>${kpis}<p class="runtime-note">Next: ${escapeHtml(w.nextMove)}</p></div>`,
+        "Daily Brief": `<div class="workspace-view"><h4>Operating Brief</h4><p>${escapeHtml(w.answer)}</p>${kpis}<p class="runtime-note">Recommended: ${escapeHtml(w.recommended)}</p></div>`,
+        "Decisions": `<div class="workspace-view"><h4>Decision History</h4>${workspaceItems(state.decisions,"Decision")}</div>`,
+        "Meeting Prep": `<div class="workspace-view"><h4>Meeting Prep</h4><p>${escapeHtml(w.nextMove)}</p>${workspaceItems(state.actions.slice(0,5),"Prep task")}</div>`,
+        "Insights": `<div class="workspace-view"><h4>Runtime Insight</h4><p>${escapeHtml(w.answer)}</p><p class="runtime-note">Risk: ${escapeHtml(w.risks[0])}</p></div>`,
+        "Strategy Board": `<div class="workspace-view"><h4>Strategy Board</h4><p>${escapeHtml(w.decision)}</p>${kpis}<p class="runtime-note">Priority: ${escapeHtml(w.priority)}</p></div>`,
+        "Risk Monitor": `<div class="workspace-view"><h4>Risk Monitor</h4>${workspaceItems(state.risks,"Risk")}</div>`,
+        "Team Pulse": `<div class="workspace-view"><h4>Execution Load</h4><p>${state.actions.length} active task${state.actions.length === 1 ? "" : "s"} captured from this workflow.</p>${workspaceItems(state.actions.slice(0,4),"Team task")}</div>`,
+        "Financial Snapshot": `<div class="workspace-view"><h4>Financial Snapshot</h4><p>No numeric financial data came back from this response. Use the suggested follow-up to request numbers, budget, timeline, or ROI.</p><p class="runtime-note">Suggested: ${escapeHtml(w.recommended)}</p></div>`,
+        "Active Projects": `<div class="workspace-view"><h4>Active Workflow</h4><p>${escapeHtml(state.latestCommand)}</p>${kpis}</div>`,
+        "Files": `<div class="workspace-view"><h4>Ready Assets</h4>${workspaceItems(state.assets,"Asset")}</div>`,
+        "Notes": `<div class="workspace-view"><h4>Runtime Notes</h4><p>${escapeHtml(w.answer)}</p><p class="runtime-note">Decision: ${escapeHtml(w.decision)}</p></div>`,
+        "Upload Context": `<div class="workspace-view"><h4>Context</h4><p>Latest command: ${escapeHtml(state.latestCommand)}</p><p>Recommended follow-up: ${escapeHtml(w.recommended)}</p><p>Thread messages: ${state.thread.length}</p></div>`
       };
       return map[name] || map.Command;
     }
     function renderWorkspace(name){
       state.activeWorkspace = name;
-      document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active", n.textContent.trim()===name));
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.textContent.trim() === name));
       const existing = messageStream.querySelector(".workspace-view"); if(existing) existing.remove();
-      if(name !== "Command") { const holder=document.createElement("div"); holder.innerHTML = workspaceContent(name); messageStream.prepend(holder.firstChild); }
+      if(name !== "Command"){
+        const holder = document.createElement("div"); holder.innerHTML = workspaceContent(name);
+        messageStream.prepend(holder.firstElementChild);
+      }
       scrollChat();
     }
+    function commandPayload(value){
+      return { input:value, command:value, thread:state.thread.slice(-10), context:{latest_command:state.latestCommand, decisions:state.decisions.slice(0,5), actions:state.actions.slice(0,6), assets:state.assets.slice(0,5), risks:state.risks.slice(0,4)} };
+    }
     async function submitCommand(input, source="command"){
-      const value = (input || "").trim(); if(!value){ errorBox.textContent="Enter the outcome first."; errorBox.classList.add("active"); return; }
+      const value = sentence(input, "");
+      if(!value){ errorBox.textContent = "Enter the outcome first."; errorBox.classList.add("active"); return; }
       state.latestCommand = value; state.thread.push({role:"user", content:value});
-      loading.classList.add("active"); errorBox.classList.remove("active"); runButton.disabled=true; followButton.disabled=true;
+      loading.classList.add("active"); errorBox.classList.remove("active"); runButton.disabled = true; followButton.disabled = true;
       addUserMessage(value);
       try{
-        const response = await fetch(`${API_URL}/run`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({input:value, command:value, thread:state.thread.slice(-8)})});
+        const response = await fetch(`${API_URL}/run`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(commandPayload(value)) });
         if(!response.ok) throw new Error(`Backend returned ${response.status}`);
         const data = await response.json();
-        const workflow = normalize(data); state.thread.push({role:"assistant", content:workflow.answer, workflow});
+        const workflow = normalize(data);
+        state.thread.push({role:"assistant", content:workflow.answer, workflow});
         addAssistantWorkflow(workflow); updateRuntime(workflow);
-        if(source==="command") commandInput.value=""; followInput.value="";
-      }catch(err){ errorBox.textContent=`Command failed: ${err.message}`; errorBox.classList.add("active"); }
-      finally{ loading.classList.remove("active"); runButton.disabled=false; followButton.disabled=false; }
+        commandInput.value = ""; followInput.value = "";
+      }catch(err){
+        errorBox.textContent = `Command failed: ${err.message}`; errorBox.classList.add("active");
+      }finally{
+        loading.classList.remove("active"); runButton.disabled = false; followButton.disabled = false;
+      }
     }
-    runButton.addEventListener("click",()=>submitCommand(commandInput.value,"command"));
-    followButton.addEventListener("click",()=>submitCommand(followInput.value || state.recommendedCommand,"follow"));
-    clearButton.addEventListener("click",()=>{ commandInput.value=""; followInput.value=""; errorBox.classList.remove("active"); });
-    commandInput.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); submitCommand(commandInput.value,"command"); }});
-    followInput.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); submitCommand(followInput.value || state.recommendedCommand,"follow"); }});
-    document.addEventListener("click",e=>{ const btn=e.target.closest(".continue-btn"); if(btn){ submitCommand(btn.dataset.command,"follow"); } const nav=e.target.closest(".nav-item"); if(nav){ renderWorkspace(nav.textContent.trim()); }});
+    function turnIntoActionPlan(){
+      if(!state.latestResponse) return;
+      const planCommand = `Turn this into a detailed action plan with owners, sequence, timing, and deliverables: ${state.latestResponse.nextMove}`;
+      submitCommand(planCommand, "follow");
+    }
+    function draftAsset(){
+      if(!state.latestResponse) return;
+      const asset = state.latestResponse.assets[0] || "executive asset";
+      const draftCommand = `Draft the ${asset} for this workflow. Make it ready to use.`;
+      submitCommand(draftCommand, "follow");
+    }
+    function saveDecision(){
+      if(!state.latestResponse) return;
+      const entry = { type:"decision", value:state.latestResponse.decision, at:new Date().toISOString() };
+      state.saved.unshift(entry);
+      if(!state.decisions.includes(entry.value)) state.decisions.unshift(entry.value);
+      updateRuntime(state.latestResponse);
+      showMiniStatus("Decision saved to runtime state.");
+    }
+    runButton.addEventListener("click", () => submitCommand(commandInput.value, "command"));
+    followButton.addEventListener("click", () => submitCommand(followInput.value || state.recommendedCommand, "follow"));
+    clearButton.addEventListener("click", () => { commandInput.value = ""; followInput.value = ""; errorBox.classList.remove("active"); });
+    commandInput.addEventListener("keydown", event => { if(event.key === "Enter" && !event.shiftKey){ event.preventDefault(); submitCommand(commandInput.value, "command"); } });
+    followInput.addEventListener("keydown", event => { if(event.key === "Enter"){ event.preventDefault(); submitCommand(followInput.value || state.recommendedCommand, "follow"); } });
+    document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => { commandInput.value = chip.textContent.trim(); commandInput.focus(); }));
+    document.addEventListener("click", event => {
+      const nav = event.target.closest(".nav-item"); if(nav){ renderWorkspace(nav.textContent.trim()); return; }
+      const action = event.target.closest("[data-action]");
+      if(action){
+        const type = action.dataset.action;
+        if(type === "continue") submitCommand(state.recommendedCommand, "follow");
+        if(type === "plan") turnIntoActionPlan();
+        if(type === "draft") draftAsset();
+        if(type === "save") saveDecision();
+        return;
+      }
+      const asset = event.target.closest("[data-asset-index]");
+      if(asset && state.latestResponse){
+        const item = state.latestResponse.assets[Number(asset.dataset.assetIndex)] || "asset";
+        submitCommand(`Draft this asset: ${item}`, "follow");
+      }
+    });
+
   </script>
 </body>
 </html>
