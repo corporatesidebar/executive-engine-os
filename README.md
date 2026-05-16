@@ -1,21 +1,23 @@
-# Executive Engine OS — V35140 Guided Workflow Layer Fix
+# Executive Engine OS — V35140 Functional Four-Column Frontend Fix
 
 Deployment type: Frontend only.
 
-Backend URL preserved: https://executive-engine-os.onrender.com
+Backend preserved: https://executive-engine-os.onrender.com
 
-## What changed
-- Added a guided frontend workflow layer inside the approved locked layout.
-- Main chat now shows a clear answer, next action, suggested follow-up command, compact /run sections, and saved workflow preview after each response.
-- User messages remain compact right-side bubbles.
-- Assistant responses remain left-side structured workflow cards.
-- Sidebar sections now render runtime state workspaces for Decisions, Action Workspace, Ready Assets, Risk Monitor, and Context.
-- Executive Summary now summarizes the latest operating state from runtime response data.
-- Executive Intelligence now shows current focus, active risk, recommended next move, and follow-up prompt from runtime state.
-- Static/fake runtime content is replaced by state-driven content.
+What changed:
+- Used the approved locked frontend as the base.
+- Preserved the four-column layout, sidebar, columns, fonts, colors, and visual structure.
+- Added a runtime workflow/state layer in the frontend only.
+- Connected command and follow-up flow to the existing /run endpoint.
+- Converted backend response fields into guided executive workflow cards.
+- Made sidebar sections switch to runtime workspaces.
+- Made Executive Summary and Executive Intelligence update from runtime state.
 
-## What was not touched
-- Backend files were not changed.
-- API URL was not changed.
-- /run contract was not changed.
-- Supabase, DB schema, provider routing, columns, sidebar, fonts, spacing, and approved layout were not changed.
+What was not changed:
+- Backend
+- API URL
+- /run contract
+- Supabase
+- DB schema
+- Provider routing
+- Approved layout structure

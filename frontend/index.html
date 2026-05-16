@@ -29,67 +29,17 @@
     .side-user{margin-top:auto;border-top:1px solid rgba(255,255,255,.09);padding-top:20px;display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fde4c9,#c77a31);display:grid;place-items:center;color:#071a33;font-weight:900}.side-user strong{display:block;font-size:14px;color:#fff}.side-user span{font-size:12px;color:#94a8c7}.collapse{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#aebfda}.copyright{font-size:11px;color:#90a3c3;margin-top:16px}
     .workspace{height:100vh;overflow:auto;padding:24px 18px 32px 34px;border-right:1px solid var(--line);background:#fff}.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.greeting h2{margin:0;font-size:22px;letter-spacing:-.03em}.greeting p{margin:6px 0 0;color:#667085;font-size:13px}.profile{display:flex;gap:14px;align-items:center}.bell{position:relative;font-size:20px;color:#344054}.bell:after{content:"";position:absolute;right:1px;top:0;width:7px;height:7px;background:var(--orange);border-radius:50%}.profile .avatar{width:38px;height:38px}.profile strong{font-size:13px;display:block}.profile span{font-size:11px;color:#667085;font-weight:700}
     .capture{border:1.5px solid #ff9f55;border-radius:9px;padding:20px 20px 14px;margin-bottom:14px;box-shadow:0 18px 50px rgba(16,24,40,.06)}.capture textarea{width:100%;height:58px;border:0;outline:0;resize:none;font-family:var(--font);font-size:15px;color:#344054}.capture-actions{display:flex;align-items:center;gap:22px;color:#344054}.capture-actions svg{width:18px;height:18px}.clear{margin-left:auto;border:0;background:transparent;color:#667085;font-weight:700}.execute{border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),#ff861f);height:36px;padding:0 22px;color:white;font-weight:850;box-shadow:0 12px 24px rgba(255,106,0,.22);cursor:pointer}.execute:disabled{opacity:.55;cursor:not-allowed}.chips{display:flex;gap:10px;margin:0 20px 13px}.chip{height:27px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#344054;padding:0 18px;font-size:12px;font-weight:800}.chat{border:1px solid var(--line);border-radius:9px;padding:18px 20px 16px;min-height:650px;display:flex;flex-direction:column;gap:17px}.msg{display:grid;grid-template-columns:36px 1fr;gap:14px}.msg .bubble-avatar{width:34px;height:34px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:13px;font-weight:850;color:#344054}.msg.engine .bubble-avatar{background:#06162d;color:#f4b65e}.msg-head{font-size:13px;margin-bottom:6px}.msg-head strong{margin-right:8px}.msg-head span{color:#667085;font-size:12px}.msg p{margin:0;color:#101828;font-size:14px;line-height:1.5}.asset{margin-top:12px;border:1px solid var(--line);border-radius:8px;height:54px;display:flex;align-items:center;gap:12px;max-width:430px;padding:0 15px}.doc-icon{width:25px;height:25px;border:1px solid #ffb08a;border-radius:5px;color:var(--orange);display:grid;place-items:center}.asset strong{display:block;font-size:13px}.asset span{font-size:12px;color:#667085}.download{margin-left:auto;color:#315bc9}.follow{margin-top:auto;height:58px;border:1px solid var(--line);border-radius:8px;padding:0 16px;display:flex;align-items:center;gap:13px}.follow input{border:0;outline:0;font-size:14px;flex:1}.follow svg{width:18px;height:18px;color:#667085}.statusline{display:none;color:var(--orange);font-size:12px;font-weight:850;margin:8px 0 0 20px}.statusline.active{display:block}.error{display:none;color:#b42318;background:#fff2f0;border:1px solid #ffdad5;border-radius:8px;font-size:12px;font-weight:800;margin:8px 0 0;padding:10px}.error.active{display:block}
-
-    /* Runtime chat rendering fix: compact right-side user bubbles and left-side structured engine cards. */
-    .chat{gap:12px}
-    .msg{display:flex;gap:10px;align-items:flex-start;width:100%}
-    .msg .bubble-avatar{flex:0 0 34px}
-    .msg.user{justify-content:flex-end;align-self:stretch}
-    .msg.user .bubble-avatar{display:none}
-    .msg.engine{justify-content:flex-start;align-self:stretch}
-    .msg>div:last-child,.message-content{max-width:86%}
-    .msg.user>div:last-child,.msg.user .message-content{max-width:74%;background:#06162d;color:#fff;border-radius:18px 18px 4px 18px;padding:9px 13px;box-shadow:0 8px 22px rgba(16,24,40,.08)}
-    .msg.engine>div:last-child,.msg.engine .message-content{max-width:88%;background:#fff;border:1px solid var(--line);border-radius:18px 18px 18px 4px;padding:10px 12px;box-shadow:0 8px 22px rgba(16,24,40,.045)}
-    .msg.user .msg-head{display:none}
-    .msg.engine .msg-head{margin-bottom:7px}
-    .msg.user p{color:#fff;font-size:13px;line-height:1.38}
-    .msg.engine p{font-size:13px;line-height:1.38}
-    .structured-response{display:grid;gap:6px}
-    .response-section{border-top:1px solid #eef2f7;padding-top:6px}
-    .response-section:first-child{border-top:0;padding-top:0}
-    .response-section h5{margin:0 0 3px;font-size:10px;line-height:1.1;letter-spacing:.08em;text-transform:uppercase;color:#344054;font-weight:950}
-    .response-section p{margin:0;font-size:12.5px;line-height:1.35;color:#101828}
-    .response-section ul{margin:0;padding-left:16px;display:grid;gap:2px}
-    .response-section li{font-size:12.5px;line-height:1.32;color:#101828}
-    .engine-loading{opacity:.72}
-    .message-stream{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;padding-bottom:8px}
-    .chat-empty{margin:auto;max-width:420px;text-align:center;color:#667085;border:1px dashed #d9e0ea;border-radius:14px;padding:18px;background:#fbfcfe;font-size:13px;line-height:1.45}
-    .chat-empty strong{display:block;color:#101828;font-size:14px;margin-bottom:5px}
-    .msg{margin:0}
-    .msg.user .message-content{width:max-content}
-    .msg.engine .message-content{width:min(100%,620px)}
-    .msg.engine .msg-head{font-size:12px;color:#475467}
-    .structured-response{display:grid;gap:5px}
-    .response-section{padding:5px 0 0}
-    .response-section h5{margin-bottom:2px}
-    .response-section p,.response-section li{font-size:12px;line-height:1.28}
-    .response-section ul{gap:1px}
-    .follow{flex-shrink:0}
-
-
-    /* V35140 guided workflow layer: behavior-only polish inside the locked layout. */
-    .workflow-response{display:grid;gap:8px}
-    .answer-block{border:1px solid #edf1f7;background:#fbfcff;border-radius:12px;padding:9px 10px}
-    .answer-block span,.workflow-next small,.saved-preview span,.view-title{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#667085;font-weight:950;margin-bottom:3px}
-    .answer-block p{margin:0;color:#101828;font-size:12.5px;line-height:1.32;font-weight:650}
-    .workflow-next{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffdfc8;background:#fff8f3;border-radius:12px;padding:9px 10px}
-    .workflow-next strong{display:block;color:#101828;font-size:12.5px;line-height:1.25}
-    .workflow-next button,.next-action button{border:0;border-radius:999px;background:#06162d;color:#fff;font-size:11px;font-weight:900;padding:7px 10px;white-space:nowrap;cursor:pointer}
-    .response-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-    .response-grid .response-section{border:1px solid #eef2f7;border-radius:10px;padding:7px 8px;background:#fff}
-    .response-grid .response-section.wide{grid-column:1/-1}
-    .saved-preview{border:1px solid #eef2f7;border-radius:12px;padding:8px 10px;background:#fff;display:grid;gap:6px}
-    .saved-row{display:grid;grid-template-columns:76px 1fr;gap:8px;align-items:start;font-size:11.5px;line-height:1.28;color:#344054}
-    .saved-row b{color:#101828;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
-    .next-action{display:none}
-    .workflow-card,.workflow-empty{border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px 14px;box-shadow:0 8px 22px rgba(16,24,40,.04)}
-    .workflow-card h4{margin:0 0 6px;font-size:14px;letter-spacing:-.01em}.workflow-card p{margin:0;color:#344054;font-size:12.5px;line-height:1.38}
-    .workspace-list{display:grid;gap:8px}.workspace-item{display:grid;grid-template-columns:22px 1fr auto;gap:9px;align-items:start;border:1px solid #edf1f7;border-radius:12px;padding:9px;background:#fbfcfe}.workspace-item .num{width:22px;height:22px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:11px;font-weight:900;color:#344054}.workspace-item strong{display:block;font-size:12.5px;color:#101828;line-height:1.25}.workspace-item span{display:block;margin-top:3px;font-size:11px;color:#667085}.workspace-item em{font-style:normal;color:#667085;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:900}.workflow-empty strong{display:block;font-size:13px;margin-bottom:4px}.workflow-empty span{display:block;font-size:12px;color:#667085;line-height:1.35}
-    @media(max-width:1500px){.response-grid{grid-template-columns:1fr}}
-
     .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
     @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
     @media(max-width:850px){.app{display:block}.sidebar{min-height:auto}.workspace,.summary,.intel{padding:20px}.chips{flex-wrap:wrap;margin-left:0}.chat{min-height:500px}.split{grid-template-columns:1fr}.profile{display:none}}
+
+    /* Functional workflow layer: scoped to existing chat/sidebar/panel zones only. */
+    .nav-item{cursor:pointer}.nav-item:focus{outline:2px solid rgba(255,106,0,.55);outline-offset:2px}
+    .chat{position:relative;overflow:auto}.message-stream{display:flex;flex-direction:column;gap:14px;min-height:520px;padding-bottom:8px}
+    .empty-state{border:1px dashed #d7deea;border-radius:9px;background:#fbfcff;padding:18px;color:#667085;font-size:13px;line-height:1.45}.empty-state strong{display:block;color:#101828;font-size:14px;margin-bottom:4px}
+    .msg{display:flex;gap:12px;align-items:flex-start}.msg.user{justify-content:flex-end}.msg.user .bubble-avatar{order:2;background:linear-gradient(135deg,#fde4c9,#c77a31);color:#071a33}.msg.user .message-body{order:1;background:#06162d;color:#fff;border-radius:16px 16px 4px 16px;padding:10px 13px;max-width:76%;box-shadow:0 8px 20px rgba(6,22,45,.13)}.msg.user .msg-head{color:#cbd6e8;margin-bottom:4px}.msg.user .msg-head span{color:#aebfda}.msg.user p{color:#fff;font-size:13px;line-height:1.42}
+    .msg.engine .message-body{max-width:88%}.workflow-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 14px 34px rgba(16,24,40,.06);overflow:hidden}.workflow-answer{padding:13px 14px;border-bottom:1px solid var(--line);background:#fbfcff}.workflow-answer strong{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#ff6a00;margin-bottom:5px}.workflow-answer p{font-size:13px;line-height:1.42;margin:0;color:#101828}.next-action{margin:10px 14px;border:1px solid #ffd9bf;background:#fff7ef;border-radius:9px;padding:10px 11px}.next-action span{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#b54708;margin-bottom:4px}.next-action p{font-size:13px;margin:0;color:#101828;font-weight:750}.workflow-grid{display:grid;gap:8px;padding:0 14px 12px}.workflow-section{border:1px solid #edf1f7;border-radius:9px;padding:9px 10px;background:#fff}.workflow-section h5{margin:0 0 7px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#667085}.task-row,.asset-row{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:12px;line-height:1.35;margin:6px 0;color:#101828}.task-check{width:16px;height:16px;border-radius:50%;border:1px solid #c8d3e3;display:grid;place-items:center;color:#667085;font-size:10px}.asset-row{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fbfcff}.asset-mini{width:18px;height:18px;border-radius:5px;border:1px solid #ffb08a;color:var(--orange);display:grid;place-items:center;font-size:11px}.risk-card{border:1px solid #ffd3cc;background:#fff6f5;border-radius:9px;padding:9px 10px;font-size:12px;line-height:1.4;color:#912018}.recommended{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:10px 14px;background:#fbfcff}.recommended span{font-size:12px;color:#667085;line-height:1.35}.continue-btn,.send-follow{border:0;border-radius:7px;background:#06162d;color:#fff;height:32px;padding:0 12px;font-size:12px;font-weight:850;cursor:pointer;white-space:nowrap}.continue-btn:hover,.send-follow:hover{background:#0b1f3d}.workspace-view{border:1px solid var(--line);border-radius:10px;background:#fff;padding:13px 14px;box-shadow:0 10px 26px rgba(16,24,40,.04)}.workspace-view h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.workspace-view p,.workspace-view li{font-size:12px;line-height:1.45;margin:0;color:#101828}.workspace-view ul{margin:6px 0 0;padding-left:18px}.follow{flex-shrink:0;margin-top:auto}.follow button{margin-left:4px}.runtime-note{font-size:11px;color:#667085;margin-top:8px}.pill{display:inline-flex;align-items:center;height:22px;border-radius:999px;background:#f0f3f8;color:#667085;padding:0 8px;font-size:11px;font-weight:850;margin-top:6px}.count[data-hot="true"]{background:#fff0e6;color:#b54708}.intel-card.runtime h4,.summary-card.runtime h4{color:#101828}
+
   </style>
 </head>
 <body>
@@ -98,15 +48,17 @@
       <div class="brand"><div class="mark"><i></i></div><div><h1>Executive<br>Engine</h1><span>Executive Engine</span></div></div>
       <nav class="nav-section">
         <div class="nav-title">Executive Engine</div>
-        <div class="nav-item active" data-view="command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Command</div>
-        <div class="nav-item" data-view="context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Context</div>
-        <div class="nav-item" data-view="decisions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Decisions</div>
-        <div class="nav-item" data-view="actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .54V22a2 2 0 1 1-4 0v-.09a1.8 1.8 0 0 0-1-.54 1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.54-1H2a2 2 0 1 1 0-4h.09a1.8 1.8 0 0 0 .54-1 1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 9 4.6a1.8 1.8 0 0 0 1-.54V2a2 2 0 1 1 4 0v.09a1.8 1.8 0 0 0 1 .54 1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.4 9c.2.36.38.72.54 1H22a2 2 0 1 1 0 4h-.09a1.8 1.8 0 0 0-.51 1z"/></svg>Action Workspace</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Command</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Daily Brief</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Decisions</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .54V22a2 2 0 1 1-4 0v-.09a1.8 1.8 0 0 0-1-.54 1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.54-1H2a2 2 0 1 1 0-4h.09a1.8 1.8 0 0 0 .54-1 1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 9 4.6a1.8 1.8 0 0 0 1-.54V2a2 2 0 1 1 4 0v.09a1.8 1.8 0 0 0 1 .54 1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.4 9c.2.36.38.72.54 1H22a2 2 0 1 1 0 4h-.09a1.8 1.8 0 0 0-.51 1z"/></svg>Meeting Prep</div>
       </nav>
-      <nav class="nav-section"><div class="nav-title">Intelligence</div><div class="nav-item" data-view="assets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ready Assets</div><div class="nav-item" data-view="command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Strategy Board</div><div class="nav-item" data-view="risks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Risk Monitor</div><div class="nav-item" data-view="context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team Pulse</div><div class="nav-item" data-view="context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16V8M12 16v-5M17 16V6"/></svg>Financial Snapshot</div></nav>
-      <nav class="nav-section"><div class="nav-title">Resources</div><div class="nav-item" data-view="actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Active Projects</div><div class="nav-item" data-view="assets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Files</div><div class="nav-item" data-view="context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Notes</div><div class="nav-item" data-view="context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>Upload Context</div></nav>
+      <nav class="nav-section"><div class="nav-title">Intelligence</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Insights</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Strategy Board</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Risk Monitor</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team Pulse</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16V8M12 16v-5M17 16V6"/></svg>Financial Snapshot</div></nav>
+      <nav class="nav-section"><div class="nav-title">Resources</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Active Projects</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Files</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Notes</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>Upload Context</div></nav>
       <div class="project-title"><span>Project Chats</span><span>+</span></div>
-      <div class="project" id="runtimeThreadOne"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>No active command<small>Waiting</small></div></div><div class="project" id="runtimeThreadTwo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Decision history<small>Empty</small></div></div><div class="project" id="runtimeThreadThree"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Action workspace<small>Empty</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Market Expansion Strategy<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Q2 Board Preparation<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Pricing Optimization<small>Active</small></div></div>
       <div class="side-user"><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><div class="collapse">‹</div></div><div class="copyright">© 2026 Executive Engine. All rights reserved.</div>
     </aside>
     <main class="workspace">
@@ -114,10 +66,10 @@
       <section class="capture"><textarea id="commandInput" placeholder="What are we trying to win today?"></textarea><div class="capture-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><button class="clear" id="clearButton">Clear</button><button class="execute" id="runButton">Execute →</button></div></section>
       <div class="chips"><button class="chip">Prepare for board meeting</button><button class="chip">Analyze market expansion</button><button class="chip">Review Q2 performance</button><button class="chip">Assess key risks</button></div>
       <div id="loading" class="statusline">Building the executive path…</div><div id="error" class="error"></div>
-      <section class="chat" id="chatFeed"><div id="messageStream" class="message-stream"><div id="emptyState" class="chat-empty"><strong>Ready for the next command.</strong><span>Your live workflow will appear here after you execute a command.</span></div></div><div class="follow"><input placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div></section>
+      <section class="chat" id="chatFeed"><div id="messageStream" class="message-stream"><div class="empty-state"><strong>Ready for command.</strong>Enter the outcome you want. The workflow will build a live thread, update the side workspaces, and keep the next command ready.</div></div><div class="follow"><input id="followInput" placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><button class="send-follow" id="followButton">Send</button></div></section>
     </main>
-    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub">Live updates from the conversation</p><div class="stack"><section class="summary-card orange"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span id="nextMoveCount" class="count">0</span></h4><p id="nextMove">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span id="decisionCount" class="count">0</span></h4><p id="decision">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span id="actionStepsCount" class="count">0</span></h4><ul id="actionSteps"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card purple"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span id="readyAssetsCount" class="count">0</span></h4><ul id="readyAssets"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card red"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span id="riskCount" class="count">0</span></h4><ul id="risk"><li>Waiting for first command.</li></ul><a class="add">+ Add note</a></section><section class="summary-card gold"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span id="priorityCount" class="count">—</span></h4><p id="priority">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span id="recommendedCommandCount" class="count">0</span></h4><p id="recommendedCommand">Waiting for first command.</p><a class="add">+ Add note</a></section><section class="summary-card"><h4><span class="circle" style="background:#475467">□</span>Tomorrow / Upcoming<span class="count">0</span></h4><p id="tomorrowUpcoming">Updates after runtime context is returned.</p><a class="link">View schedule →</a></section><div class="split"><section class="summary-card blue"><h4><span class="circle" style="background:var(--blue)">✓</span>Recent Decisions</h4><p id="recentDecisions">No runtime decisions yet.</p><a class="add">+ Add note</a></section><section class="summary-card green"><h4><span class="circle" style="background:var(--green)">✓</span>System Status</h4><p>Runtime ready<br><span id="systemUpdated" style="color:#667085">Waiting for command</span></p></section></div></div></aside>
-    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Search files, notes, and context…"></div><div class="filter">☷</div></div><div class="stack"><section class="intel-card"><h4>💡 Key Insight</h4><p id="keyInsight">Waiting for the latest command response.</p><a class="link">View insight →</a></section><section class="intel-card"><h4>□ Memory</h4><p id="memoryInsight">Runtime context will appear here when returned.</p><a class="link">View all memory →</a></section><section class="intel-card"><h4>▣ Upcoming Priorities</h4><div id="upcomingPriorities"><div class="priority"><div class="num">1</div><div><strong>Waiting for runtime priorities</strong><span>Submit a command to update this panel.</span></div></div></div><a class="link">View all →</a></section><section class="intel-card"><h4>♙ Team Pulse</h4><div id="teamPulse"><div class="pulse"><span>Runtime state</span><strong class="good">Ready</strong></div></div><a class="link">View team pulse →</a></section><section class="intel-card"><h4>Executive Summary</h4><p id="intelExecutiveSummary">No live summary yet.</p><a class="link">View full summary →</a></section></div></aside>
+    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub" id="summarySub">Runtime operating summary</p><div class="stack" id="summaryStack"><section class="summary-card orange runtime"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span class="count" id="nextMoveCount">0</span></h4><p id="nextMove">Waiting for first command.</p></section><section class="summary-card blue runtime"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span class="count" id="decisionCount">0</span></h4><p id="decision">No decision captured yet.</p></section><section class="summary-card green runtime"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span class="count" id="actionCount">0</span></h4><ul id="actionSteps"><li>Tasks will appear after a response.</li></ul></section><section class="summary-card purple runtime"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span class="count" id="assetCount">0</span></h4><ul id="readyAssets"><li>Assets will appear after a response.</li></ul></section><section class="summary-card red runtime"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span class="count" id="riskCount">0</span></h4><ul id="risk"><li>Risks will appear after a response.</li></ul></section><section class="summary-card gold runtime"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span class="count" id="priorityCount">—</span></h4><p id="priority">Waiting.</p></section><section class="summary-card blue runtime"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span class="count" id="recommendedCount">0</span></h4><p id="recommendedCommand">Run a command to generate the next step.</p></section></div></aside>
+    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input id="contextSearch" placeholder="Search runtime context…"></div><div class="filter">☷</div></div><div class="stack" id="intelStack"><section class="intel-card runtime"><h4>Current Focus</h4><p id="currentFocus">No active command yet.</p><a class="link" id="focusLink">Waiting for workflow →</a></section><section class="intel-card runtime"><h4>Active Risk</h4><p id="activeRisk">No risk captured yet.</p><a class="link">Risk monitor will update live →</a></section><section class="intel-card runtime"><h4>Recommended Next Move</h4><p id="intelNextMove">Run the first command.</p><a class="link" id="intelRecommended">Suggested command will appear →</a></section><section class="intel-card runtime"><h4>Thread Context</h4><div class="priority"><div class="num" id="threadCount">0</div><div><strong id="threadTitle">No active thread</strong><span id="threadMeta">Awaiting first command</span></div></div><p id="threadContext">Conversation state, latest objective, decisions, actions, assets, and risks will update from runtime.</p></section><section class="intel-card runtime"><h4>What Matters Now</h4><p id="whatMatters">Capture the outcome you want. The Engine will convert the response into workflow state.</p><a class="link" id="mattersLink">Ready →</a></section></div></aside>
   </div><div class="footer"></div>
   <script>
     const API_URL = "https://executive-engine-os.onrender.com";
@@ -126,341 +78,123 @@
     const clearButton = document.getElementById("clearButton");
     const loading = document.getElementById("loading");
     const errorBox = document.getElementById("error");
-    const chatFeed = document.getElementById("chatFeed");
     const messageStream = document.getElementById("messageStream");
-    const followInput = chatFeed ? chatFeed.querySelector(".follow input") : null;
-    const followSend = chatFeed ? chatFeed.querySelector(".follow svg:last-child") : null;
-    const navItems = Array.from(document.querySelectorAll(".nav-item[data-view]"));
+    const followInput = document.getElementById("followInput");
+    const followButton = document.getElementById("followButton");
 
     const state = {
-      activeView: "command",
-      messages: [],
-      responses: [],
-      decisions: [],
-      actions: [],
-      assets: [],
-      risks: [],
-      context: [],
-      lastCommand: "",
-      threadObjective: ""
+      thread: [], decisions: [], actions: [], assets: [], risks: [],
+      latestCommand: "", latestResponse: null, recommendedCommand: "", activeWorkspace: "Command"
     };
 
-    const FIELD_ORDER = [
-      { label: "NEXT MOVE", target: "nextMove", keys: ["next_move", "nextMove", "what_to_do_now", "next", "recommendation", "answer", "summary"] },
-      { label: "DECISION", target: "decision", keys: ["decision", "recommended_decision"] },
-      { label: "ACTION STEPS", target: "actionSteps", count: "actionStepsCount", keys: ["action_steps", "actions", "steps", "next_steps", "tasks"], list: true },
-      { label: "READY ASSETS", target: "readyAssets", count: "readyAssetsCount", keys: ["ready_assets", "assets", "prepared_assets", "deliverables", "asset"], list: true },
-      { label: "RISK", target: "risk", count: "riskCount", keys: ["risk", "risks", "active_risks"], list: true },
-      { label: "PRIORITY", target: "priority", count: "priorityCount", keys: ["priority", "urgency"] },
-      { label: "RECOMMENDED COMMAND", target: "recommendedCommand", keys: ["recommended_command", "follow_up_command", "command", "next_command"] }
-    ];
-
-    function value(data, keys){
-      for(const k of keys){
-        if(data && data[k] !== undefined && data[k] !== null && data[k] !== "") return data[k];
-      }
-      return "";
+    function escapeHtml(s){return String(s ?? "").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]))}
+    function first(data, keys){for(const k of keys){if(data && data[k] !== undefined && data[k] !== null && data[k] !== "") return data[k]} return ""}
+    function asText(v, fallback=""){ if(v===null||v===undefined||v==="") return fallback; if(Array.isArray(v)) return v.map(item=>typeof item==="object" ? Object.values(item).filter(Boolean).join(" — ") : String(item)).join("
+"); if(typeof v==="object") return Object.entries(v).map(([k,val])=>`${k}: ${Array.isArray(val)?val.join(", "):val}`).join("
+"); return String(v); }
+    function asList(v, fallback=[]){ const text = asText(v, ""); const list = text.split(/
+|;|•|\|/).map(x=>x.trim()).filter(Boolean); return list.length ? list.slice(0,8) : fallback; }
+    function timeNow(){return new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}
+    function shortAnswer(data){
+      return asText(first(data,["clear_answer","answer","summary","next_move","what_to_do_now","recommendation","decision"]), "I organized the response into an executive workflow. Use the next action below to keep moving.");
     }
-
-    function formatValue(v){
-      if(v === null || v === undefined || v === "") return "";
-      if(Array.isArray(v)) return v.map(formatValue).filter(Boolean).join("\n");
-      if(typeof v === "object"){
-        const preferred = v.title || v.name || v.label || v.text || v.summary || v.description || v.action || v.step || v.value || v.content;
-        if(preferred) return String(preferred);
-        return Object.entries(v).map(([k,val]) => `${k.replace(/_/g," ")}: ${formatValue(val)}`).join("; ");
-      }
-      return String(v);
+    function normalize(data){
+      const nextMove = asText(first(data,["next_move","nextMove","what_to_do_now","next","recommendation"]), "Move the workflow forward with the recommended command.");
+      const decision = asText(first(data,["decision","recommended_decision"]), "No explicit decision returned. Treat the next move as the working direction.");
+      const actions = asList(first(data,["action_steps","actions","steps","next_steps"]), [nextMove]);
+      const assets = asList(first(data,["ready_assets","assets","prepared_assets","deliverables"]), ["Working response package"]);
+      const risks = asList(first(data,["risk","risks","active_risks"]), ["Validate the response before acting externally."]);
+      const priority = asText(first(data,["priority","urgency"]), "High");
+      const recommended = asText(first(data,["recommended_command","follow_up_command","command","next_command"]), `Continue: ${nextMove}`);
+      return { raw:data, answer:shortAnswer(data), nextMove, decision, actions, assets, risks, priority, recommended };
     }
-
-    function normalizeItems(v, fallback){
-      if(v === null || v === undefined || v === "") return fallback ? [fallback] : [];
-      if(Array.isArray(v)) return v.map(formatValue).map(x=>x.trim()).filter(Boolean).slice(0, 6);
-      if(typeof v === "object") return [formatValue(v)].filter(Boolean);
-      const raw = String(v).trim();
-      const split = raw.split(/\n|;|•/).map(x => x.replace(/^[-*\d.)\s]+/, "").trim()).filter(Boolean).slice(0, 6);
-      return split.length ? split : (raw ? [raw] : (fallback ? [fallback] : []));
+    function clearEmpty(){ const empty = messageStream.querySelector(".empty-state"); if(empty) empty.remove(); }
+    function addUserMessage(text){
+      clearEmpty();
+      const node=document.createElement("div"); node.className="msg user";
+      node.innerHTML=`<div class="bubble-avatar">W</div><div class="message-body"><div class="msg-head"><strong>You</strong><span>${timeNow()}</span></div><p>${escapeHtml(text)}</p></div>`;
+      messageStream.appendChild(node); scrollChat();
     }
-
-    function text(v, fallback){
-      const formatted = formatValue(v).trim();
-      return formatted || fallback;
+    function renderTaskRows(items){ return items.map((item,i)=>`<div class="task-row"><span class="task-check">${i+1}</span><span>${escapeHtml(item)}</span></div>`).join(""); }
+    function renderAssetRows(items){ return items.map(item=>`<div class="asset-row"><span class="asset-mini">▤</span><span>${escapeHtml(item)}</span></div>`).join(""); }
+    function addAssistantWorkflow(workflow){
+      clearEmpty();
+      const node=document.createElement("div"); node.className="msg engine";
+      node.innerHTML=`<div class="bubble-avatar">E</div><div class="message-body"><div class="msg-head"><strong>Executive Engine</strong><span>${timeNow()}</span></div><div class="workflow-card"><div class="workflow-answer"><strong>Clear answer</strong><p>${escapeHtml(workflow.answer)}</p></div><div class="next-action"><span>Do this next</span><p>${escapeHtml(workflow.nextMove)}</p></div><div class="workflow-grid"><div class="workflow-section"><h5>Action Workspace</h5>${renderTaskRows(workflow.actions)}</div><div class="workflow-section"><h5>Ready Assets</h5>${renderAssetRows(workflow.assets)}</div><div class="workflow-section"><h5>Risk Monitor</h5><div class="risk-card">${escapeHtml(workflow.risks[0])}</div></div><div class="workflow-section"><h5>Decision</h5><p>${escapeHtml(workflow.decision)}</p><span class="pill">Priority: ${escapeHtml(workflow.priority)}</span></div></div><div class="recommended"><span><strong>Suggested follow-up:</strong><br>${escapeHtml(workflow.recommended)}</span><button class="continue-btn" data-command="${escapeHtml(workflow.recommended)}">Continue with recommended command</button></div></div></div>`;
+      messageStream.appendChild(node); scrollChat();
     }
-
-    function escapeHtml(s){
-      return String(s).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+    function scrollChat(){ const chat = document.getElementById("chatFeed"); chat.scrollTop = chat.scrollHeight; }
+    function setList(id, items){ document.getElementById(id).innerHTML = items.length ? items.map(x=>`<li>${escapeHtml(x)}</li>`).join("") : `<li>None captured yet.</li>`; }
+    function updateRuntime(workflow){
+      state.latestResponse = workflow; state.recommendedCommand = workflow.recommended;
+      state.decisions.unshift(workflow.decision); state.actions.unshift(...workflow.actions); state.assets.unshift(...workflow.assets); state.risks.unshift(...workflow.risks);
+      state.decisions = [...new Set(state.decisions)].slice(0,8); state.actions=[...new Set(state.actions)].slice(0,12); state.assets=[...new Set(state.assets)].slice(0,10); state.risks=[...new Set(state.risks)].slice(0,8);
+      document.getElementById("nextMove").textContent = workflow.nextMove;
+      document.getElementById("decision").textContent = workflow.decision;
+      setList("actionSteps", state.actions.slice(0,5)); setList("readyAssets", state.assets.slice(0,5)); setList("risk", state.risks.slice(0,4));
+      document.getElementById("priority").textContent = workflow.priority; document.getElementById("recommendedCommand").textContent = workflow.recommended;
+      document.getElementById("nextMoveCount").textContent = "1"; document.getElementById("decisionCount").textContent = String(state.decisions.length); document.getElementById("actionCount").textContent = String(state.actions.length); document.getElementById("assetCount").textContent = String(state.assets.length); document.getElementById("riskCount").textContent = String(state.risks.length); document.getElementById("priorityCount").textContent = workflow.priority; document.getElementById("recommendedCount").textContent = "1";
+      ["nextMoveCount","decisionCount","actionCount","assetCount","riskCount","recommendedCount"].forEach(id=>document.getElementById(id).dataset.hot="true");
+      document.getElementById("summarySub").textContent = `Updated from ${state.thread.length} message${state.thread.length===1?"":"s"}`;
+      document.getElementById("currentFocus").textContent = state.latestCommand || workflow.nextMove;
+      document.getElementById("activeRisk").textContent = workflow.risks[0];
+      document.getElementById("intelNextMove").textContent = workflow.nextMove;
+      document.getElementById("intelRecommended").textContent = workflow.recommended;
+      document.getElementById("threadCount").textContent = String(state.thread.length);
+      document.getElementById("threadTitle").textContent = state.latestCommand ? "Active workflow" : "No active thread";
+      document.getElementById("threadMeta").textContent = state.latestCommand || "Awaiting first command";
+      document.getElementById("threadContext").textContent = `Decision: ${workflow.decision}`;
+      document.getElementById("whatMatters").textContent = `${workflow.priority} priority. Next: ${workflow.nextMove}`;
+      renderWorkspace(state.activeWorkspace);
     }
-
-    function plainForHistory(body){
-      if(typeof body === "string") return body;
-      const view = getView(body);
-      return [view.clearAnswer, view.nextAction, view.decision].filter(Boolean).join(" | ");
+    function workspaceContent(name){
+      const w = state.latestResponse;
+      if(!w) return `<div class="workspace-view"><h4>${escapeHtml(name)}</h4><p>No runtime data yet. Run a command to populate this workspace.</p></div>`;
+      const map = {
+        "Command": `<div class="workspace-view"><h4>Live Conversation</h4><p>${escapeHtml(state.latestCommand)}</p><p class="runtime-note">Thread messages: ${state.thread.length}</p></div>`,
+        "Daily Brief": `<div class="workspace-view"><h4>Operating Brief</h4><p>${escapeHtml(w.answer)}</p><p class="runtime-note">Next: ${escapeHtml(w.nextMove)}</p></div>`,
+        "Decisions": `<div class="workspace-view"><h4>Decision History</h4><ul>${state.decisions.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
+        "Meeting Prep": `<div class="workspace-view"><h4>Meeting Prep</h4><p>${escapeHtml(w.nextMove)}</p><ul>${state.actions.slice(0,5).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
+        "Insights": `<div class="workspace-view"><h4>Insight</h4><p>${escapeHtml(w.answer)}</p></div>`,
+        "Strategy Board": `<div class="workspace-view"><h4>Strategy Board</h4><p>${escapeHtml(w.decision)}</p><p class="runtime-note">Priority: ${escapeHtml(w.priority)}</p></div>`,
+        "Risk Monitor": `<div class="workspace-view"><h4>Risk Monitor</h4><ul>${state.risks.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
+        "Team Pulse": `<div class="workspace-view"><h4>Team Pulse</h4><p>Execution load is driven by ${state.actions.length} active task${state.actions.length===1?"":"s"}.</p></div>`,
+        "Financial Snapshot": `<div class="workspace-view"><h4>Financial Snapshot</h4><p>No financial data returned by the current response. Use the recommended command to request numbers.</p></div>`,
+        "Active Projects": `<div class="workspace-view"><h4>Active Project</h4><p>${escapeHtml(state.latestCommand)}</p></div>`,
+        "Files": `<div class="workspace-view"><h4>Ready Assets</h4><ul>${state.assets.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>`,
+        "Notes": `<div class="workspace-view"><h4>Runtime Notes</h4><p>${escapeHtml(w.answer)}</p></div>`,
+        "Upload Context": `<div class="workspace-view"><h4>Context</h4><p>Latest command: ${escapeHtml(state.latestCommand)}</p><p>Recommended: ${escapeHtml(w.recommended)}</p></div>`
+      };
+      return map[name] || map.Command;
     }
-
-    function cleanFallback(v){
-      return v && v !== "Not returned yet." ? v : "Not specified by backend.";
+    function renderWorkspace(name){
+      state.activeWorkspace = name;
+      document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active", n.textContent.trim()===name));
+      const existing = messageStream.querySelector(".workspace-view"); if(existing) existing.remove();
+      if(name !== "Command") { const holder=document.createElement("div"); holder.innerHTML = workspaceContent(name); messageStream.prepend(holder.firstChild); }
+      scrollChat();
     }
-
-    function getView(data){
-      const rawAnswer = value(data, ["clear_answer", "answer", "response", "output", "message", "summary"]);
-      const nextMove = text(value(data, FIELD_ORDER[0].keys), text(rawAnswer, "Not returned yet."));
-      const decision = text(value(data, FIELD_ORDER[1].keys), "Not returned yet.");
-      const actions = normalizeItems(value(data, FIELD_ORDER[2].keys), "Not returned yet.");
-      const assets = normalizeItems(value(data, FIELD_ORDER[3].keys), "Not returned yet.");
-      const risks = normalizeItems(value(data, FIELD_ORDER[4].keys), "Not returned yet.");
-      const priority = text(value(data, FIELD_ORDER[5].keys), "Not returned yet.");
-      let recommended = text(value(data, FIELD_ORDER[6].keys), "");
-      if(!recommended) recommended = actions.find(x => x !== "Not returned yet.") || nextMove || "Continue this workflow";
-      const clearAnswer = text(rawAnswer, nextMove || decision || "Backend returned a response. Review the workflow sections below.");
-      const nextAction = actions.find(x => x !== "Not returned yet.") || nextMove || recommended || "Continue this workflow.";
-      return {data, clearAnswer, nextMove, decision, actions, assets, risks, priority, recommended, nextAction};
-    }
-
-    function setText(target, v, fallback){
-      const el = document.getElementById(target);
-      const rendered = text(v, fallback);
-      if(el) el.textContent = rendered;
-      return rendered;
-    }
-
-    function updateCount(id, value){
-      const el = document.getElementById(id);
-      if(el) el.textContent = value;
-    }
-
-    function updateList(target, items, fallback){
-      const el = document.getElementById(target);
-      const lines = Array.isArray(items) ? items : normalizeItems(items, fallback);
-      const usable = lines.filter(x => x && x !== "Not returned yet.");
-      if(el) el.innerHTML = (usable.length ? usable : [fallback || "Not returned yet."]).map(x => `<li>${escapeHtml(x)}</li>`).join("");
-      updateCount(`${target}Count`, usable.length);
-      return usable;
-    }
-
-    function setPanelText(id, content){
-      const el = document.getElementById(id);
-      if(el) el.textContent = content;
-    }
-
-    function renderSummary(data){
-      const view = getView(data);
-      setText("nextMove", view.nextMove, "Not returned yet.");
-      setText("decision", view.decision, "Not returned yet.");
-      const actions = updateList("actionSteps", view.actions, "Not returned yet.");
-      const assets = updateList("readyAssets", view.assets, "Not returned yet.");
-      const risks = updateList("risk", view.risks, "Not returned yet.");
-      setText("priority", view.priority, "Not returned yet.");
-      setText("recommendedCommand", view.recommended, "Continue this workflow");
-      updateCount("nextMoveCount", view.nextMove === "Not returned yet." ? 0 : 1);
-      updateCount("decisionCount", state.decisions.length);
-      updateCount("priorityCount", view.priority === "Not returned yet." ? "—" : "Set");
-      updateCount("recommendedCommandCount", view.recommended ? 1 : 0);
-      setPanelText("recentDecisions", state.decisions.length ? state.decisions.slice(-2).join(" • ") : "No runtime decisions yet.");
-      setPanelText("tomorrowUpcoming", `Next: ${cleanFallback(view.nextAction)}`);
-      setPanelText("systemUpdated", `Updated ${new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}`);
-      renderIntelligence(view, actions, assets, risks);
-      updateRuntimeSidebar();
-    }
-
-    function renderIntelligence(view, actions, assets, risks){
-      const currentFocus = state.lastCommand || "Waiting for command.";
-      const activeRisk = risks[0] || "No active runtime risk returned.";
-      const recommendedMove = view.nextMove !== "Not returned yet." ? view.nextMove : view.nextAction;
-      const followUp = view.recommended || "Continue this workflow.";
-      setPanelText("keyInsight", `Current focus: ${currentFocus}`);
-      setPanelText("memoryInsight", `Active risk: ${activeRisk}`);
-      setPanelText("intelExecutiveSummary", `Recommended next move: ${recommendedMove} Follow-up: ${followUp}`);
-      const priorities = [view.nextAction, followUp, ...actions].filter(x => x && x !== "Not returned yet.").slice(0, 3);
-      const upcoming = document.getElementById("upcomingPriorities");
-      if(upcoming){
-        upcoming.innerHTML = priorities.length ? priorities.map((item, index) => `<div class="priority"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item)}</strong><span>Runtime workflow item</span></div></div>`).join("") : `<div class="priority"><div class="num">1</div><div><strong>No runtime priorities yet</strong><span>Submit a command to update this panel.</span></div></div>`;
-      }
-      const pulse = document.getElementById("teamPulse");
-      if(pulse){
-        pulse.innerHTML = `<div class="pulse"><span>Thread</span><strong class="good">Active</strong></div><div class="pulse"><span>Actions</span><strong class="good">${state.actions.length}</strong></div><div class="pulse"><span>Assets</span><strong class="good">${state.assets.length}</strong></div><div class="pulse"><span>Risk</span><strong class="${risks.length ? "bad" : "good"}">${risks.length ? "Review" : "Clear"}</strong></div>`;
-      }
-    }
-
-    function sectionHtml(label, content, list, wide){
-      const usable = list ? normalizeItems(content, "Not specified by backend.").filter(Boolean) : [];
-      const body = list
-        ? `<ul>${usable.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
-        : `<p>${escapeHtml(cleanFallback(text(content, "Not specified by backend.")))}</p>`;
-      return `<section class="response-section ${wide ? "wide" : ""}"><h5>${label}</h5>${body}</section>`;
-    }
-
-    function structuredHtml(data){
-      const view = getView(data);
-      const sections = [
-        sectionHtml("NEXT MOVE", view.nextMove, false, false),
-        sectionHtml("DECISION", view.decision, false, false),
-        sectionHtml("ACTION STEPS", view.actions, true, true),
-        sectionHtml("READY ASSETS", view.assets, true, false),
-        sectionHtml("RISK", view.risks, true, false),
-        sectionHtml("PRIORITY", view.priority, false, false),
-        sectionHtml("RECOMMENDED COMMAND", view.recommended, false, false)
-      ].join("");
-      const saved = [
-        ["Decision", view.decision],
-        ["Action", view.actions.find(x => x !== "Not returned yet.") || "No action saved yet."],
-        ["Asset", view.assets.find(x => x !== "Not returned yet.") || "No asset saved yet."]
-      ].map(([label, val]) => `<div class="saved-row"><b>${label}</b><span>${escapeHtml(cleanFallback(val))}</span></div>`).join("");
-      return `<div class="workflow-response">
-        <div class="answer-block"><span>Clear answer</span><p>${escapeHtml(cleanFallback(view.clearAnswer))}</p></div>
-        <div class="workflow-next"><div><small>Next action</small><strong>${escapeHtml(cleanFallback(view.nextAction))}</strong></div><button type="button" data-next-command="${escapeHtml(view.recommended)}">Continue →</button></div>
-        <div class="response-grid">${sections}</div>
-        <div class="saved-preview"><span>Saved workflow preview</span>${saved}</div>
-      </div>`;
-    }
-
-    function messageHtml(item){
-      const time = item.time || new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
-      const safeBody = item.role === "engine" && typeof item.body === "object" ? structuredHtml(item.body) : `<p>${escapeHtml(item.body)}</p>`;
-      const loadingClass = item.loading ? " engine-loading" : "";
-      return `<div class="msg ${item.role === "engine" ? "engine" : "user"}${loadingClass}"><div class="bubble-avatar">${item.role === "engine" ? "E" : "W"}</div><div class="message-content"><div class="msg-head"><strong>${item.role === "engine" ? "Executive Engine" : "You"}</strong><span>${time}</span></div>${safeBody}</div></div>`;
-    }
-
-    function renderCommandView(){
-      if(!state.messages.length){
-        messageStream.innerHTML = `<div class="chat-empty"><strong>Ready for the next command.</strong><span>Your live executive workflow will appear here after you execute a command.</span></div>`;
-      }else{
-        messageStream.innerHTML = state.messages.map(messageHtml).join("");
-      }
-      messageStream.scrollTop = messageStream.scrollHeight;
-      bindNextActionButtons();
-    }
-
-    function workspaceList(items, type){
-      if(!items.length) return `<div class="workflow-empty"><strong>No runtime items yet.</strong><span>This workspace populates only from live backend responses and follow-up commands.</span></div>`;
-      return `<div class="workspace-list">${items.map((item, index) => `<div class="workspace-item"><div class="num">${index + 1}</div><div><strong>${escapeHtml(item.title || item)}</strong><span>${escapeHtml(item.source || `From command: ${state.lastCommand || "runtime"}`)}</span></div><em>${escapeHtml(type)}</em></div>`).join("")}</div>`;
-    }
-
-    function renderStateView(view){
-      const latest = state.responses[state.responses.length - 1];
-      const latestView = latest ? getView(latest) : null;
-      const config = {
-        decisions: { title: "Decision History", lead: latestView ? latestView.decision : "Submit a command to create decision history.", items: state.decisions, type: "Decision" },
-        actions: { title: "Action Workspace", lead: latestView ? latestView.nextAction : "Submit a command to create action tasks.", items: state.actions, type: "Task" },
-        assets: { title: "Ready Assets", lead: latestView ? latestView.recommended : "Submit a command to create assets.", items: state.assets, type: "Asset" },
-        risks: { title: "Risk Monitor", lead: latestView ? (latestView.risks[0] || latestView.priority) : "Submit a command to create risk context.", items: state.risks, type: "Risk" },
-        context: { title: "Active Context", lead: state.lastCommand ? `Objective: ${state.lastCommand}` : "Submit a command to create context.", items: state.context, type: "Context" }
-      }[view] || { title: "Workflow", lead: "Submit a command to create runtime state.", items: [], type: "Item" };
-      messageStream.innerHTML = `<div class="workflow-card"><div class="view-title">${escapeHtml(config.type)} workspace</div><h4>${escapeHtml(config.title)}</h4><p>${escapeHtml(config.lead || "No runtime lead yet.")}</p></div>${workspaceList(config.items, config.type)}`;
-      messageStream.scrollTop = 0;
-    }
-
-    function renderActiveView(){
-      if(state.activeView === "command") renderCommandView();
-      else renderStateView(state.activeView);
-    }
-
-    function setActiveView(view){
-      state.activeView = view || "command";
-      navItems.forEach(item => item.classList.toggle("active", item.dataset.view === state.activeView));
-      renderActiveView();
-    }
-
-    function addMessage(role, body){
-      const item = {role, body, time: new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})};
-      state.messages.push(item);
-      if(state.activeView !== "command") setActiveView("command");
-      else renderCommandView();
-      return item;
-    }
-
-    function addLoadingMessage(){
-      const item = {role:"engine", body:"Building the executive workflow…", time:"Working", loading:true};
-      state.messages.push(item);
-      renderCommandView();
-      return item;
-    }
-
-    function removeLoading(item){
-      const index = state.messages.indexOf(item);
-      if(index > -1) state.messages.splice(index, 1);
-      renderCommandView();
-    }
-
-    function captureRuntimeState(input, data){
-      const view = getView(data);
-      state.responses.push(data);
-      state.lastCommand = input;
-      state.threadObjective = state.threadObjective || input;
-      state.context.push(`Latest command: ${input}`);
-      if(view.decision && view.decision !== "Not returned yet.") state.decisions.push(view.decision);
-      state.actions.push(...view.actions.filter(x => x && x !== "Not returned yet."));
-      state.assets.push(...view.assets.filter(x => x && x !== "Not returned yet."));
-      state.risks.push(...view.risks.filter(x => x && x !== "Not returned yet."));
-      state.decisions = [...new Set(state.decisions)].slice(-10);
-      state.actions = [...new Set(state.actions)].slice(-20);
-      state.assets = [...new Set(state.assets)].slice(-20);
-      state.risks = [...new Set(state.risks)].slice(-20);
-      state.context = [...new Set(state.context)].slice(-10);
-    }
-
-    function updateRuntimeSidebar(){
-      const one = document.getElementById("runtimeThreadOne");
-      const two = document.getElementById("runtimeThreadTwo");
-      const three = document.getElementById("runtimeThreadThree");
-      if(one) one.querySelector("div").innerHTML = `${escapeHtml(state.lastCommand || "No active command")}<small>${state.lastCommand ? "Active thread" : "Waiting"}</small>`;
-      if(two) two.querySelector("div").innerHTML = `Decisions<small>${state.decisions.length} runtime item${state.decisions.length === 1 ? "" : "s"}</small>`;
-      if(three) three.querySelector("div").innerHTML = `Action workspace<small>${state.actions.length} task${state.actions.length === 1 ? "" : "s"}</small>`;
-    }
-
-    function bindNextActionButtons(){
-      messageStream.querySelectorAll("[data-next-command]").forEach(button => {
-        button.addEventListener("click", () => {
-          const command = button.getAttribute("data-next-command") || "Continue this workflow";
-          if(followInput){ followInput.value = command; followInput.focus(); }
-          else { commandInput.value = command; commandInput.focus(); }
-        });
-      });
-    }
-
-    async function runCommand(source){
-      const field = source === "follow" && followInput ? followInput : commandInput;
-      const input = field.value.trim();
-      if(!input){
-        errorBox.textContent = "Enter the command first.";
-        errorBox.classList.add("active");
-        return;
-      }
-      loading.classList.add("active");
-      errorBox.classList.remove("active");
-      runButton.disabled = true;
-      addMessage("user", input);
-      const loadingMsg = addLoadingMessage();
+    async function submitCommand(input, source="command"){
+      const value = (input || "").trim(); if(!value){ errorBox.textContent="Enter the outcome first."; errorBox.classList.add("active"); return; }
+      state.latestCommand = value; state.thread.push({role:"user", content:value});
+      loading.classList.add("active"); errorBox.classList.remove("active"); runButton.disabled=true; followButton.disabled=true;
+      addUserMessage(value);
       try{
-        const response = await fetch(`${API_URL}/run`, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ input, command: input, message: input, objective: state.threadObjective || input, history: state.messages.slice(-8).map(m => ({role:m.role, content:plainForHistory(m.body)})) })
-        });
+        const response = await fetch(`${API_URL}/run`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({input:value, command:value, thread:state.thread.slice(-8)})});
         if(!response.ok) throw new Error(`Backend returned ${response.status}`);
         const data = await response.json();
-        removeLoading(loadingMsg);
-        captureRuntimeState(input, data);
-        addMessage("engine", data);
-        renderSummary(data);
-        field.value = "";
-      }catch(err){
-        removeLoading(loadingMsg);
-        errorBox.textContent = `Command failed: ${err.message}`;
-        errorBox.classList.add("active");
-      }finally{
-        loading.classList.remove("active");
-        runButton.disabled = false;
-      }
+        const workflow = normalize(data); state.thread.push({role:"assistant", content:workflow.answer, workflow});
+        addAssistantWorkflow(workflow); updateRuntime(workflow);
+        if(source==="command") commandInput.value=""; followInput.value="";
+      }catch(err){ errorBox.textContent=`Command failed: ${err.message}`; errorBox.classList.add("active"); }
+      finally{ loading.classList.remove("active"); runButton.disabled=false; followButton.disabled=false; }
     }
-
-    navItems.forEach(item => item.addEventListener("click", () => setActiveView(item.dataset.view)));
-    runButton.addEventListener("click", () => runCommand("main"));
-    clearButton.addEventListener("click", () => { commandInput.value = ""; errorBox.classList.remove("active"); });
-    commandInput.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); runCommand("main"); } });
-    document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => { commandInput.value = chip.textContent.trim(); commandInput.focus(); }));
-    if(followInput) followInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); runCommand("follow"); } });
-    if(followSend){ followSend.style.cursor = "pointer"; followSend.addEventListener("click", () => runCommand("follow")); }
-    updateRuntimeSidebar();
+    runButton.addEventListener("click",()=>submitCommand(commandInput.value,"command"));
+    followButton.addEventListener("click",()=>submitCommand(followInput.value || state.recommendedCommand,"follow"));
+    clearButton.addEventListener("click",()=>{ commandInput.value=""; followInput.value=""; errorBox.classList.remove("active"); });
+    commandInput.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); submitCommand(commandInput.value,"command"); }});
+    followInput.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); submitCommand(followInput.value || state.recommendedCommand,"follow"); }});
+    document.addEventListener("click",e=>{ const btn=e.target.closest(".continue-btn"); if(btn){ submitCommand(btn.dataset.command,"follow"); } const nav=e.target.closest(".nav-item"); if(nav){ renderWorkspace(nav.textContent.trim()); }});
   </script>
 </body>
 </html>
