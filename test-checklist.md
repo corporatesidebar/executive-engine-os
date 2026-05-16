@@ -1,45 +1,32 @@
-# Test Checklist — V35140 Guided Workflow Runtime Fix
+# Test Checklist — V35140 Guided Workflow Operating Loop Fix
 
-## Frontend Load
-- [ ] Frontend loads without console syntax errors.
-- [ ] Four-column layout remains visible at desktop width.
-- [ ] Dark sidebar remains unchanged.
-- [ ] Command area remains unchanged.
-- [ ] Executive Summary column remains visible.
-- [ ] Executive Intelligence column remains visible.
-
-## Backend Connection
-- [ ] Submit command from main command box.
-- [ ] Request posts to https://executive-engine-os.onrender.com/run.
-- [ ] API URL is unchanged.
-- [ ] /run response contract is unchanged.
-
-## Main Workflow
-- [ ] User message appears as right-side bubble.
-- [ ] Assistant response appears as left-side guided executive workflow card.
-- [ ] Response starts with clear plain-English answer.
-- [ ] “Do this next” appears prominently.
-- [ ] Action steps appear as task-style rows.
-- [ ] Ready assets appear as asset cards.
-- [ ] Risk appears as warning card.
-- [ ] Continue with recommended command button runs the recommended command.
-- [ ] Turn into action plan button runs a follow-up action-plan command.
-- [ ] Draft asset button runs a follow-up asset-drafting command.
-- [ ] Save decision button updates runtime decision state.
-- [ ] Follow-up input continues the same thread.
-
-## Runtime Panels
-- [ ] Sidebar sections show runtime data, not filler.
-- [ ] Decisions shows captured decisions.
-- [ ] Meeting Prep / Action Workspace shows task rows.
-- [ ] Files / Ready Assets shows assets.
-- [ ] Risk Monitor shows risks.
-- [ ] Context shows latest command, recommendation, and thread count.
-- [ ] Executive Summary explains current operating state.
-- [ ] Executive Intelligence explains current focus, active risk, next move, and follow-up.
-
-## Guardrails
-- [ ] No backend files included.
-- [ ] No Supabase files included.
-- [ ] No DB changes included.
-- [ ] No provider-routing changes included.
+1. Deploy frontend only.
+2. Confirm no backend files are included.
+3. Confirm the approved four-column layout loads.
+4. Confirm dark sidebar is preserved.
+5. Confirm main command area is preserved.
+6. Submit a command.
+7. Confirm POST goes to https://executive-engine-os.onrender.com/run.
+8. Confirm loading state appears.
+9. Confirm user message appears as a compact right-side bubble.
+10. Confirm assistant response appears as a left-side guided workflow card.
+11. Confirm response starts with Clear Answer.
+12. Confirm response includes Why It Matters.
+13. Confirm response includes Do This Next.
+14. Confirm action steps render as task rows with status styling.
+15. Confirm ready assets render as cards.
+16. Confirm risk renders as a warning card with mitigation.
+17. Confirm Continue with recommended command submits the recommended command.
+18. Confirm Turn into action plan submits a follow-up command.
+19. Confirm Draft asset submits a follow-up command.
+20. Confirm Save decision updates runtime state.
+21. Confirm sidebar Decisions view shows decision runtime data.
+22. Confirm sidebar Actions/Team Pulse/Meeting Prep views show action runtime data.
+23. Confirm Ready Assets/Files view shows asset runtime data.
+24. Confirm Risk Monitor view shows risk runtime data.
+25. Confirm Context/Upload Context view shows latest command and thread data.
+26. Confirm Executive Summary updates from latest response.
+27. Confirm Executive Intelligence shows current focus, active risk, follow-up, and what changed.
+28. Confirm follow-up input remains functional.
+29. Confirm API URL was not changed.
+30. Confirm /run contract was not changed.

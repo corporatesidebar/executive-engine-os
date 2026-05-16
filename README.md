@@ -1,36 +1,27 @@
-# Executive Engine OS — V35140 Guided Workflow Runtime Fix
+# Executive Engine OS — V35140 Guided Workflow Operating Loop Fix
 
-## Version
-V35140 — Guided Workflow Runtime Usefulness Fix
+Deployment type: Frontend only.
 
-## Deployment Type
-Frontend only.
+Backend URL preserved: https://executive-engine-os.onrender.com
 
-## Backend URL Preserved
-https://executive-engine-os.onrender.com
+## What changed
+- Preserved the approved four-column layout.
+- Improved the guided workflow layer only.
+- Assistant output now starts with Clear Answer, Why It Matters, and Do This Next.
+- Action steps are rendered as task-style rows with open status.
+- Ready assets are rendered as asset cards with draft actions.
+- Risk is rendered as a warning card with mitigation.
+- Recommended command is exposed through a strong continue action.
+- Sidebar views show runtime decisions, actions, assets, risks, and context.
+- Executive Summary now shows latest decision, priority, next move, actions, assets, risks, and recommended command.
+- Executive Intelligence now shows current focus, active risk, recommended follow-up, and what changed.
+- Removed filler/static workflow behavior not tied to runtime state.
 
-## What Changed
-- Preserved the approved four-column frontend layout.
-- Replaced weak/raw response rendering with a guided executive workflow card.
-- Added a plain-English answer at the top of each assistant response.
-- Added a prominent “Do this next” section.
-- Converted action steps into task-style rows.
-- Converted ready assets into asset cards with draft actions.
-- Converted risk into a warning card.
-- Added runtime buttons:
-  - Continue with recommended command
-  - Turn into action plan
-  - Draft asset
-  - Save decision
-- Made sidebar sections show runtime data from the latest response.
-- Made Executive Summary and Executive Intelligence update from workflow state.
-- Removed static runtime behavior by tying visible workspaces to live state.
-
-## What Was Not Changed
+## What was not changed
 - Backend was not changed.
 - Supabase was not changed.
-- DB schema was not changed.
+- Database schema was not changed.
+- Provider routing was not changed.
 - API URL was not changed.
 - /run contract was not changed.
-- Provider routing was not changed.
-- Approved layout, sidebar, columns, fonts, and visual structure were preserved.
+- Approved layout, sidebar, columns, fonts, colors, and spacing were preserved.
