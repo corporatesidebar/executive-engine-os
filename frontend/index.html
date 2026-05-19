@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Engine</title>
+  <style>
+    :root{
+      --navy:#06162d; --navy2:#0b1f3d; --ink:#101828; --muted:#667085; --line:#e7ecf4;
+      --soft:#f7f9fc; --blue:#1f5eff; --orange:#ff6a00; --green:#17a86b; --red:#ef4444;
+      --purple:#7c3aed; --card:#fff; --shadow:0 14px 40px rgba(16,24,40,.07);
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--font);color:var(--ink);background:#fff;min-height:100vh;overflow:hidden}
+    .app{display:grid;grid-template-columns:315px minmax(560px,1fr)385px 405px;min-height:100vh;background:#fff}
+    .sidebar{height:100vh;background:linear-gradient(180deg,#071a33 0%,#041326 100%);color:#eaf2ff;padding:34px 20px 18px;display:flex;flex-direction:column;gap:24px;border-right:1px solid rgba(255,255,255,.07)}
+    .brand{display:flex;align-items:center;gap:18px;padding:0 10px 34px}
+    .mark{width:58px;height:58px;position:relative;transform:skewX(-14deg)}
+    .mark:before,.mark:after,.mark i{content:"";position:absolute;left:0;width:58px;height:13px;border-radius:3px;background:linear-gradient(90deg,#c8943d,#f2c36e);box-shadow:0 12px 24px rgba(242,195,110,.18)}
+    .mark:before{top:4px}.mark i{top:23px}.mark:after{top:42px;width:42px}
+    .brand h1{font-size:21px;line-height:1.02;margin:0;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#fff}
+    .brand span{display:block;margin-top:6px;color:#90a3c3;text-transform:uppercase;font-size:11px;letter-spacing:.16em;font-weight:800}
+    .nav-section{display:grid;gap:6px}.nav-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850;margin:0 12px 8px}
+    .nav-item{height:40px;border-radius:7px;padding:0 14px;display:flex;align-items:center;gap:14px;color:#dce7f7;font-size:15px;font-weight:760;border:1px solid transparent}
+    .nav-item svg{width:18px;height:18px;stroke-width:2}.nav-item.active{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:inset 3px 0 0 var(--orange);color:#fff}.nav-item.active svg{color:#ffb26d}
+    .project-title{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.09);padding-top:18px}.project-title span:first-child{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#8fa2c1;font-weight:850}.project-title span:last-child{font-size:22px;color:#b9c8e1}
+    .project{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;padding:7px 10px;color:#dce7f7;font-size:13px}.project small{display:block;color:#3dd483;font-size:11px;margin-top:2px}.project svg{width:15px;height:15px;margin-top:2px;color:#aec0dc}
+    .side-user{margin-top:auto;border-top:1px solid rgba(255,255,255,.09);padding-top:20px;display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fde4c9,#c77a31);display:grid;place-items:center;color:#071a33;font-weight:900}.side-user strong{display:block;font-size:14px;color:#fff}.side-user span{font-size:12px;color:#94a8c7}.collapse{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#aebfda}.copyright{font-size:11px;color:#90a3c3;margin-top:16px}
+    .workspace{height:100vh;overflow:auto;padding:24px 18px 32px 34px;border-right:1px solid var(--line);background:#fff}.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.greeting h2{margin:0;font-size:22px;letter-spacing:-.03em}.greeting p{margin:6px 0 0;color:#667085;font-size:13px}.profile{display:flex;gap:14px;align-items:center}.bell{position:relative;font-size:20px;color:#344054}.bell:after{content:"";position:absolute;right:1px;top:0;width:7px;height:7px;background:var(--orange);border-radius:50%}.profile .avatar{width:38px;height:38px}.profile strong{font-size:13px;display:block}.profile span{font-size:11px;color:#667085;font-weight:700}
+    .capture{border:1.5px solid #ff9f55;border-radius:9px;padding:20px 20px 14px;margin-bottom:14px;box-shadow:0 18px 50px rgba(16,24,40,.06)}.capture textarea{width:100%;height:58px;border:0;outline:0;resize:none;font-family:var(--font);font-size:15px;color:#344054}.capture-actions{display:flex;align-items:center;gap:22px;color:#344054}.capture-actions svg{width:18px;height:18px}.clear{margin-left:auto;border:0;background:transparent;color:#667085;font-weight:700}.execute{border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),#ff861f);height:36px;padding:0 22px;color:white;font-weight:850;box-shadow:0 12px 24px rgba(255,106,0,.22);cursor:pointer}.execute:disabled{opacity:.55;cursor:not-allowed}.chips{display:flex;gap:10px;margin:0 20px 13px}.chip{height:27px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#344054;padding:0 18px;font-size:12px;font-weight:800}.chat{border:1px solid var(--line);border-radius:9px;padding:18px 20px 16px;min-height:650px;display:flex;flex-direction:column;gap:17px}.msg{display:grid;grid-template-columns:36px 1fr;gap:14px}.msg .bubble-avatar{width:34px;height:34px;border-radius:50%;background:#eef2f7;display:grid;place-items:center;font-size:13px;font-weight:850;color:#344054}.msg.engine .bubble-avatar{background:#06162d;color:#f4b65e}.msg-head{font-size:13px;margin-bottom:6px}.msg-head strong{margin-right:8px}.msg-head span{color:#667085;font-size:12px}.msg p{margin:0;color:#101828;font-size:14px;line-height:1.5}.asset{margin-top:12px;border:1px solid var(--line);border-radius:8px;height:54px;display:flex;align-items:center;gap:12px;max-width:430px;padding:0 15px}.doc-icon{width:25px;height:25px;border:1px solid #ffb08a;border-radius:5px;color:var(--orange);display:grid;place-items:center}.asset strong{display:block;font-size:13px}.asset span{font-size:12px;color:#667085}.download{margin-left:auto;color:#315bc9}.follow{margin-top:auto;height:58px;border:1px solid var(--line);border-radius:8px;padding:0 16px;display:flex;align-items:center;gap:13px}.follow input{border:0;outline:0;font-size:14px;flex:1}.follow svg{width:18px;height:18px;color:#667085}.statusline{display:none;color:var(--orange);font-size:12px;font-weight:850;margin:8px 0 0 20px}.statusline.active{display:block}.error{display:none;color:#b42318;background:#fff2f0;border:1px solid #ffdad5;border-radius:8px;font-size:12px;font-weight:800;margin:8px 0 0;padding:10px}.error.active{display:block}
+    .summary,.intel{height:100vh;overflow:auto;padding:88px 14px 32px;background:#fff;border-right:1px solid var(--line)}.intel{border-right:0;padding-right:22px}.panel-head{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}.panel-sub{font-size:12px;color:#667085;font-weight:750;margin:0 0 16px}.stack{display:grid;gap:12px}.summary-card,.intel-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px 14px;box-shadow:0 10px 28px rgba(16,24,40,.035)}.summary-card{border-left:3px solid #ccd7e8}.summary-card.orange{border-left-color:var(--orange)}.summary-card.blue{border-left-color:var(--blue)}.summary-card.green{border-left-color:var(--green)}.summary-card.purple{border-left-color:var(--purple)}.summary-card.red{border-left-color:var(--red)}.summary-card.gold{border-left-color:#f59e0b}.summary-card h4{margin:0 0 9px;display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.circle{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px;font-weight:900}.count{margin-left:auto;min-width:22px;height:22px;border-radius:8px;background:#f0f3f8;color:#667085;display:grid;place-items:center;font-size:11px}.summary-card p,.summary-card li{font-size:12px;line-height:1.45;color:#101828;margin:0}.summary-card ul{margin:0;padding-left:18px}.add{display:block;margin-top:9px;color:#667085;font-size:11px;text-decoration:none}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.search{height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:10px;padding:0 12px;margin-bottom:16px}.search input{border:0;outline:0;flex:1;font-size:12px}.filter{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center}.search-row{display:grid;grid-template-columns:1fr 34px;gap:12px}.intel-card{padding:17px}.intel-card h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.03em}.intel-card p{font-size:13px;line-height:1.45;margin:0 0 12px}.link{font-size:12px;color:#1f5eff;font-weight:850;text-decoration:none}.priority{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 0}.num{width:22px;height:22px;border-radius:50%;background:#f0f3f8;display:grid;place-items:center;color:#667085;font-size:12px;font-weight:900}.priority strong{font-size:13px;display:block}.priority span{font-size:12px;color:#667085}.pulse{display:flex;justify-content:space-between;font-size:13px;margin:11px 0}.good{color:#099250}.bad{color:#d92d20}.footer{position:fixed;left:315px;right:0;bottom:0;height:1px;background:#06162d}
+    @media(max-width:1450px){body{overflow:auto}.app{grid-template-columns:280px 1fr}.summary,.intel{height:auto;padding:24px;grid-column:2}.workspace{height:auto}.sidebar{height:auto;min-height:100vh}.footer{display:none}}
+    @media(max-width:850px){.app{display:block}.sidebar{min-height:auto}.workspace,.summary,.intel{padding:20px}.chips{flex-wrap:wrap;margin-left:0}.chat{min-height:500px}.split{grid-template-columns:1fr}.profile{display:none}}
+
+    /* Functional workflow layer: scoped to existing chat/sidebar/panel zones only. */
+    .nav-item{cursor:pointer}.nav-item:focus{outline:2px solid rgba(255,106,0,.55);outline-offset:2px}
+    .chat{position:relative;overflow:auto}.message-stream{display:flex;flex-direction:column;gap:14px;min-height:520px;padding-bottom:8px}
+    .empty-state{border:1px dashed #d7deea;border-radius:9px;background:#fbfcff;padding:18px;color:#667085;font-size:13px;line-height:1.45}.empty-state strong{display:block;color:#101828;font-size:14px;margin-bottom:4px}
+    .msg{display:flex;gap:12px;align-items:flex-start}.msg.user{justify-content:flex-end}.msg.user .bubble-avatar{order:2;background:linear-gradient(135deg,#fde4c9,#c77a31);color:#071a33}.msg.user .message-body{order:1;background:#06162d;color:#fff;border-radius:16px 16px 4px 16px;padding:10px 13px;max-width:76%;box-shadow:0 8px 20px rgba(6,22,45,.13)}.msg.user .msg-head{color:#cbd6e8;margin-bottom:4px}.msg.user .msg-head span{color:#aebfda}.msg.user p{color:#fff;font-size:13px;line-height:1.42}
+    .msg.engine .message-body{max-width:88%}.workflow-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 14px 34px rgba(16,24,40,.06);overflow:hidden}.workflow-answer{padding:13px 14px;border-bottom:1px solid var(--line);background:#fbfcff}.workflow-answer strong{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#ff6a00;margin-bottom:5px}.workflow-answer p{font-size:13px;line-height:1.42;margin:0;color:#101828}.next-action{margin:10px 14px;border:1px solid #ffd9bf;background:#fff7ef;border-radius:9px;padding:10px 11px}.next-action span{display:block;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#b54708;margin-bottom:4px}.next-action p{font-size:13px;margin:0;color:#101828;font-weight:750}.workflow-grid{display:grid;gap:8px;padding:0 14px 12px}.workflow-section{border:1px solid #edf1f7;border-radius:9px;padding:9px 10px;background:#fff}.workflow-section h5{margin:0 0 7px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#667085}.task-row,.asset-row{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:12px;line-height:1.35;margin:6px 0;color:#101828}.task-check{width:16px;height:16px;border-radius:50%;border:1px solid #c8d3e3;display:grid;place-items:center;color:#667085;font-size:10px}.asset-row{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fbfcff}.asset-mini{width:18px;height:18px;border-radius:5px;border:1px solid #ffb08a;color:var(--orange);display:grid;place-items:center;font-size:11px}.risk-card{border:1px solid #ffd3cc;background:#fff6f5;border-radius:9px;padding:9px 10px;font-size:12px;line-height:1.4;color:#912018}.recommended{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:10px 14px;background:#fbfcff}.recommended span{font-size:12px;color:#667085;line-height:1.35}.continue-btn,.send-follow{border:0;border-radius:7px;background:#06162d;color:#fff;height:32px;padding:0 12px;font-size:12px;font-weight:850;cursor:pointer;white-space:nowrap}.continue-btn:hover,.send-follow:hover{background:#0b1f3d}.workspace-view{border:1px solid var(--line);border-radius:10px;background:#fff;padding:13px 14px;box-shadow:0 10px 26px rgba(16,24,40,.04)}.workspace-view h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.workspace-view p,.workspace-view li{font-size:12px;line-height:1.45;margin:0;color:#101828}.workspace-view ul{margin:6px 0 0;padding-left:18px}.follow{flex-shrink:0;margin-top:auto}.follow button{margin-left:4px}.runtime-note{font-size:11px;color:#667085;margin-top:8px}.pill{display:inline-flex;align-items:center;height:22px;border-radius:999px;background:#f0f3f8;color:#667085;padding:0 8px;font-size:11px;font-weight:850;margin-top:6px}.count[data-hot="true"]{background:#fff0e6;color:#b54708}.intel-card.runtime h4,.summary-card.runtime h4{color:#101828}
+
+    /* V35140 runtime workflow usefulness pass: keeps layout, upgrades behavior/rendering only. */
+    .workflow-card{border-color:#dfe6f2}.workflow-answer{background:linear-gradient(180deg,#fff,#fbfcff)}
+    .workflow-answer strong{color:#06162d}.workflow-answer p{font-size:13px;line-height:1.45;color:#101828}
+    .next-action{position:relative}.next-action:before{content:"";position:absolute;left:-1px;top:-1px;bottom:-1px;width:4px;border-radius:9px 0 0 9px;background:var(--orange)}
+    .task-row{border:1px solid #edf1f7;border-radius:8px;padding:8px 9px;background:#fff;grid-template-columns:20px 1fr;align-items:start}
+    .task-row span:last-child{font-weight:700;color:#101828}.task-meta{display:block;margin-top:3px;font-size:10px;font-weight:850;color:#667085;text-transform:uppercase;letter-spacing:.04em}
+    .asset-row{grid-template-columns:22px 1fr auto}.asset-action{border:1px solid #dbe4f0;background:#fff;border-radius:6px;height:24px;padding:0 8px;font-size:10px;font-weight:900;color:#344054}
+    .risk-card strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#b42318;margin-bottom:4px}
+    .workflow-actions{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding:10px 14px;background:#fff}
+    .action-btn{border:0;border-radius:7px;height:31px;padding:0 10px;font-size:11px;font-weight:900;cursor:pointer;white-space:nowrap;background:#06162d;color:#fff}
+    .action-btn.secondary{background:#fff;color:#06162d;border:1px solid #dbe4f0}.action-btn.orange{background:linear-gradient(135deg,var(--orange),#ff861f);color:#fff}
+    .saved-preview{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:0 14px 12px}.saved-pill{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.saved-pill b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:4px}.saved-pill span{display:block;font-size:11px;line-height:1.35;color:#101828}
+    .workspace-view{margin-bottom:6px}.workspace-view .workspace-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.workspace-kpi{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.workspace-kpi b{display:block;font-size:15px}.workspace-kpi span{font-size:10px;color:#667085;text-transform:uppercase;font-weight:850}
+    .workspace-list{display:grid;gap:7px;margin-top:9px}.workspace-item{border:1px solid #edf1f7;border-radius:8px;padding:8px 9px;background:#fff;font-size:12px;line-height:1.4}.workspace-item strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:3px}
+    .mini-status{margin-top:8px;font-size:11px;font-weight:850;color:#099250}.project.runtime-project{cursor:default}.project.runtime-project small{color:#8fa2c1}
+
+  
+
+    /* Premium workflow layer — behavior-focused, layout-preserving. */
+    .message-stream{display:flex;flex-direction:column;gap:12px;min-height:560px;overflow:visible}
+    .empty-state{border:1px dashed #d7dfec;border-radius:10px;background:#fbfcff;padding:14px 15px;font-size:13px;line-height:1.45;color:#667085}.empty-state strong{display:block;color:#101828;margin-bottom:3px}
+    .msg.user{grid-template-columns:1fr;justify-items:end}.msg.user .message-body{max-width:72%;background:#06162d;color:#fff;border-radius:15px 15px 4px 15px;padding:10px 13px;box-shadow:0 12px 26px rgba(6,22,45,.12)}.msg.user .msg-head{color:rgba(255,255,255,.78);font-size:11px;margin-bottom:4px}.msg.user p{color:#fff;font-size:13px;line-height:1.42}
+    .msg.engine{align-items:start}.msg.engine .message-body{max-width:94%}.workflow-card{border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:0 18px 38px rgba(16,24,40,.07);overflow:hidden}.workflow-top{padding:13px 15px 11px;background:linear-gradient(180deg,#fbfcff 0%,#fff 100%);border-bottom:1px solid var(--line)}.eyebrow{display:block;color:#ff6a00;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:950;margin-bottom:5px}.workflow-top h4{margin:0 0 5px;font-size:15px;line-height:1.25;letter-spacing:-.01em}.workflow-top p{font-size:12.5px;line-height:1.42;color:#344054;margin:0}.why-row{display:grid;grid-template-columns:86px 1fr;gap:9px;margin-top:9px;border-top:1px solid #edf1f7;padding-top:9px}.why-row b{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#667085}.why-row span{font-size:12px;line-height:1.4;color:#101828}.next-action{margin:10px 14px;border:1px solid #ffd2b0;background:#fff8f2;border-radius:10px;padding:10px 11px}.next-action span{display:block;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.07em;color:#b54708;margin-bottom:4px}.next-action p{font-size:13px;margin:0;color:#101828;font-weight:850;line-height:1.35}.workflow-grid{display:grid;gap:8px;padding:0 14px 12px}.workflow-section{border:1px solid #edf1f7;border-radius:10px;padding:9px 10px;background:#fff}.workflow-section h5{margin:0 0 7px;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#667085}.task-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:start;border-top:1px solid #f0f3f8;padding-top:7px;margin-top:7px}.task-row:first-of-type{border-top:0;padding-top:0;margin-top:0}.task-check{width:16px;height:16px;border-radius:5px;border:1px solid #c8d3e3;background:#fff;display:grid;place-items:center;color:#667085;font-size:10px}.task-copy{font-size:12px;line-height:1.35;font-weight:750;color:#101828}.task-meta{display:block;margin-top:3px;font-size:10px;font-weight:850;color:#667085;text-transform:uppercase;letter-spacing:.04em}.task-status{height:20px;border-radius:999px;background:#f0f3f8;color:#475467;padding:0 7px;font-size:10px;font-weight:900;display:flex;align-items:center;white-space:nowrap}.asset-row{display:grid;grid-template-columns:21px 1fr auto;gap:9px;align-items:start;border:1px solid #edf1f7;border-radius:9px;padding:8px;background:#fbfcff;margin-top:7px}.asset-row:first-of-type{margin-top:0}.asset-mini{width:20px;height:20px;border-radius:6px;border:1px solid #ffb08a;color:var(--orange);display:grid;place-items:center;font-size:11px}.asset-title{display:block;font-size:12px;font-weight:900;color:#101828;line-height:1.28}.asset-desc{display:block;margin-top:2px;font-size:11px;line-height:1.35;color:#667085}.asset-action{border:1px solid #d7dfec;background:#fff;border-radius:7px;height:24px;padding:0 8px;font-size:10px;font-weight:900;color:#344054;cursor:pointer}.risk-card{border:1px solid #ffc9bf;background:#fff6f4;border-radius:10px;padding:9px 10px;font-size:12px;line-height:1.4;color:#912018}.risk-card strong{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:#b42318;margin-bottom:4px}.risk-card em{display:block;margin-top:5px;font-style:normal;color:#7a271a;font-weight:800}.saved-preview{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:0 14px 12px}.saved-pill{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.saved-pill b{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#667085;margin-bottom:4px}.saved-pill span{display:block;font-size:11px;line-height:1.35;color:#101828}.workflow-actions{display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid var(--line);padding:10px 14px;background:#fbfcff}.workflow-actions button{border:1px solid #d7dfec;border-radius:7px;background:#fff;color:#344054;height:30px;padding:0 10px;font-size:11px;font-weight:900;cursor:pointer}.workflow-actions button.primary{background:#06162d;color:#fff;border-color:#06162d}.workspace-view{border:1px solid var(--line);border-radius:11px;background:#fff;padding:13px 14px;box-shadow:0 12px 28px rgba(16,24,40,.045)}.workspace-view h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.workspace-view p,.workspace-view li{font-size:12px;line-height:1.45;margin:0;color:#101828}.workspace-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.workspace-kpi{border:1px solid #edf1f7;border-radius:8px;padding:8px;background:#fbfcff}.workspace-kpi b{display:block;font-size:16px}.workspace-kpi span{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;font-weight:900}.workspace-list{display:grid;gap:7px;margin-top:9px}.workspace-item{border:1px solid #edf1f7;border-radius:8px;padding:8px 9px;background:#fff;font-size:12px;line-height:1.4}.workspace-item strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:3px}.runtime-note{font-size:11px;color:#667085;margin-top:8px}.pill{display:inline-flex;align-items:center;height:22px;border-radius:999px;background:#f0f3f8;color:#667085;padding:0 8px;font-size:11px;font-weight:850;margin-top:6px}.count[data-hot="true"]{background:#fff0e6;color:#b54708}.mini-status{position:fixed;right:24px;bottom:18px;background:#06162d;color:#fff;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:850;box-shadow:0 14px 36px rgba(6,22,45,.2);z-index:50}.follow{flex-shrink:0;margin-top:auto}.follow button{margin-left:4px}
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark"><i></i></div><div><h1>Executive<br>Engine</h1><span>Executive Engine</span></div></div>
+      <nav class="nav-section">
+        <div class="nav-title">Executive Engine</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Command</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Daily Brief</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Decisions</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .54V22a2 2 0 1 1-4 0v-.09a1.8 1.8 0 0 0-1-.54 1.8 1.8 0 0 0-1.98.36l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.54-1H2a2 2 0 1 1 0-4h.09a1.8 1.8 0 0 0 .54-1 1.8 1.8 0 0 0-.36-1.98l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.8 1.8 0 0 0 9 4.6a1.8 1.8 0 0 0 1-.54V2a2 2 0 1 1 4 0v.09a1.8 1.8 0 0 0 1 .54 1.8 1.8 0 0 0 1.98-.36l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.8 1.8 0 0 0 19.4 9c.2.36.38.72.54 1H22a2 2 0 1 1 0 4h-.09a1.8 1.8 0 0 0-.51 1z"/></svg>Meeting Prep</div>
+      </nav>
+      <nav class="nav-section"><div class="nav-title">Intelligence</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Insights</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Strategy Board</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Risk Monitor</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team Pulse</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16V8M12 16v-5M17 16V6"/></svg>Financial Snapshot</div></nav>
+      <nav class="nav-section"><div class="nav-title">Resources</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>Active Projects</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Files</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Notes</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>Upload Context</div></nav>
+      <div class="project-title"><span>Project Chats</span><span>+</span></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Market Expansion Strategy<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Q2 Board Preparation<small>Active</small></div></div>
+      <div class="project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg><div>Pricing Optimization<small>Active</small></div></div>
+      <div class="side-user"><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><div class="collapse">‹</div></div><div class="copyright">© 2026 Executive Engine. All rights reserved.</div>
+    </aside>
+    <main class="workspace">
+      <div class="topbar"><div class="greeting"><h2>Welcome back, Will.</h2><p>Here’s your Executive Engine.</p></div><div class="profile"><div class="bell">♧</div><div class="avatar">W</div><div><strong>Will Webb</strong><span>Executive</span></div><span>⌄</span></div></div>
+      <section class="capture"><textarea id="commandInput" placeholder="What are we trying to win today?"></textarea><div class="capture-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><button class="clear" id="clearButton">Clear</button><button class="execute" id="runButton">Execute →</button></div></section>
+      <div class="chips"><button class="chip">Prepare for board meeting</button><button class="chip">Analyze market expansion</button><button class="chip">Review Q2 performance</button><button class="chip">Assess key risks</button></div>
+      <div id="loading" class="statusline">Building the executive path…</div><div id="error" class="error"></div>
+      <section class="chat" id="chatFeed"><div id="messageStream" class="message-stream"><div class="empty-state"><strong>Ready for command.</strong>Enter the outcome you want. The workflow will build a live thread, update the side workspaces, and keep the next command ready.</div></div><div class="follow"><input id="followInput" placeholder="Ask a follow-up or refine your request…"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M8 5a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0z"/></svg><button class="send-follow" id="followButton">Send</button></div></section>
+    </main>
+    <aside class="summary"><h3 class="panel-head">Executive Summary</h3><p class="panel-sub" id="summarySub">Runtime operating summary</p><div class="stack" id="summaryStack"><section class="summary-card orange runtime"><h4><span class="circle" style="background:var(--orange)">›</span>Next Move<span class="count" id="nextMoveCount">0</span></h4><p id="nextMove">Waiting for first command.</p></section><section class="summary-card blue runtime"><h4><span class="circle" style="background:var(--blue)">2</span>Decision<span class="count" id="decisionCount">0</span></h4><p id="decision">No decision captured yet.</p></section><section class="summary-card green runtime"><h4><span class="circle" style="background:var(--green)">✓</span>Action Steps<span class="count" id="actionCount">0</span></h4><ul id="actionSteps"><li>Tasks will appear after a response.</li></ul></section><section class="summary-card purple runtime"><h4><span class="circle" style="background:var(--purple)">◌</span>Ready Assets<span class="count" id="assetCount">0</span></h4><ul id="readyAssets"><li>Assets will appear after a response.</li></ul></section><section class="summary-card red runtime"><h4><span class="circle" style="background:var(--red)">!</span>Active Risks<span class="count" id="riskCount">0</span></h4><ul id="risk"><li>Risks will appear after a response.</li></ul></section><section class="summary-card gold runtime"><h4><span class="circle" style="background:#f59e0b">★</span>Priority<span class="count" id="priorityCount">—</span></h4><p id="priority">Waiting.</p></section><section class="summary-card blue runtime"><h4><span class="circle" style="background:var(--blue)">↯</span>Recommended Command<span class="count" id="recommendedCount">0</span></h4><p id="recommendedCommand">Run a command to generate the next step.</p></section></div></aside>
+    <aside class="intel"><div class="search-row"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input id="contextSearch" placeholder="Search runtime context…"></div><div class="filter">☷</div></div><div class="stack" id="intelStack"><section class="intel-card runtime"><h4>Current Focus</h4><p id="currentFocus">No active command yet.</p><a class="link" id="focusLink">Waiting for workflow →</a></section><section class="intel-card runtime"><h4>Active Risk</h4><p id="activeRisk">No risk captured yet.</p><a class="link">Risk monitor will update live →</a></section><section class="intel-card runtime"><h4>Recommended Next Move</h4><p id="intelNextMove">Run the first command.</p><a class="link" id="intelRecommended">Suggested command will appear →</a></section><section class="intel-card runtime"><h4>Thread Context</h4><div class="priority"><div class="num" id="threadCount">0</div><div><strong id="threadTitle">No active thread</strong><span id="threadMeta">Awaiting first command</span></div></div><p id="threadContext">Conversation state, latest objective, decisions, actions, assets, and risks will update from runtime.</p></section><section class="intel-card runtime"><h4>What Matters Now</h4><p id="whatMatters">Capture the outcome you want. The Engine will convert the response into workflow state.</p><a class="link" id="mattersLink">Ready →</a></section></div></aside>
+  </div><div class="footer"></div>
+  
+  <script>
+    const API_URL = "https://executive-engine-os.onrender.com";
+    const commandInput = document.getElementById("commandInput");
+    const runButton = document.getElementById("runButton");
+    const clearButton = document.getElementById("clearButton");
+    const loading = document.getElementById("loading");
+    const errorBox = document.getElementById("error");
+    const messageStream = document.getElementById("messageStream");
+    const followInput = document.getElementById("followInput");
+    const followButton = document.getElementById("followButton");
+
+    const state = {
+      thread: [], latestCommand: "", latestResponse: null, activeWorkspace: "Command",
+      decisions: [], actions: [], assets: [], risks: [], saved: [], recommendedCommand: ""
+    };
+
+    function escapeHtml(value){
+      return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+    }
+    function timeNow(){ return new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}); }
+    function stringify(value){
+      if(value === null || value === undefined) return "";
+      if(Array.isArray(value)) return value.map(stringify).filter(Boolean).join("\n");
+      if(typeof value === "object") return Object.entries(value).map(([k,v]) => `${k}: ${stringify(v)}`).join("\n");
+      return String(value).trim();
+    }
+    function first(data, keys){
+      for(const key of keys){ if(data && data[key] !== undefined && data[key] !== null && stringify(data[key])) return data[key]; }
+      return "";
+    }
+    function compact(text, max=190){
+      const cleaned = stringify(text).replace(/\s+/g," ").trim();
+      if(!cleaned) return "";
+      return cleaned.length > max ? cleaned.slice(0,max-1).replace(/\s+\S*$/,"") + "…" : cleaned;
+    }
+    function sentence(text, fallback){ return compact(text, 260) || fallback; }
+    function toList(value, fallback=[]){
+      if(Array.isArray(value)) return value.map(x => compact(x, 180)).filter(Boolean).slice(0,8);
+      const text = stringify(value);
+      if(!text) return fallback;
+      const pieces = text.split(/\n|\r|;|•|\||(?<=\.)\s+(?=[A-Z0-9])/).map(x => x.replace(/^[-*\d.)\s]+/, "").trim()).filter(Boolean);
+      const clean = [...new Set(pieces)].filter(x => x.length > 2).map(x => compact(x, 170));
+      return (clean.length ? clean : [compact(text,170)]).slice(0,8);
+    }
+    function titleCase(text){
+      const raw = compact(text, 44).replace(/[.:]$/," ").trim();
+      if(!raw) return "Workflow Asset";
+      return raw.split(" ").slice(0,7).map(w => w.length > 3 ? w[0].toUpperCase()+w.slice(1) : w).join(" ");
+    }
+    function deriveObjective(command){
+      const c = compact(command, 110);
+      if(!c) return "Advance the active executive workflow.";
+      return c.replace(/^(please\s+)?(build|create|draft|make|help me|can you|i need)\s+/i, "").replace(/[?.!]$/,".");
+    }
+    function buildClearAnswer(data, command, nextMove, decision){
+      const explicit = first(data,["clear_answer","answer","summary","response","message","what_to_do_now"]);
+      if(explicit) return sentence(explicit, "");
+      const objective = deriveObjective(command);
+      if(decision && decision !== "No explicit decision returned.") return `Yes — the path is to ${objective} The decision point is: ${decision}`;
+      return `The useful move is to turn “${objective}” into a concrete execution path, then use the next step below to keep momentum.`;
+    }
+    function buildWhy(command, workflow){
+      const risk = workflow.risks[0] || "execution drift";
+      return `This matters because the command needs to become decisions, tasks, assets, and risk control — not just another answer. Current risk: ${risk}`;
+    }
+    function normalize(data){
+      const nextMove = sentence(first(data,["next_move","nextMove","what_to_do_now","next","recommendation"]), "Move the workflow forward with one concrete next action.");
+      const decision = sentence(first(data,["decision","recommended_decision"]), "Proceed with the recommended next move, then convert it into tasks and assets.");
+      const actions = toList(first(data,["action_steps","actions","steps","next_steps"]), [nextMove]);
+      const assets = toList(first(data,["ready_assets","assets","prepared_assets","deliverables","asset"]), ["Execution brief", "Action plan", "Follow-up draft"]);
+      const risks = toList(first(data,["risk","risks","active_risks"]), ["The output may stay too broad unless the next command forces specificity."]);
+      const priority = sentence(first(data,["priority","urgency"]), "High");
+      const recommended = sentence(first(data,["recommended_command","follow_up_command","next_command"]), `Continue and make this specific: ${nextMove}`);
+      const answer = buildClearAnswer(data, state.latestCommand, nextMove, decision);
+      const workflow = { raw:data, answer, nextMove, decision, actions, assets, risks, priority, recommended };
+      workflow.why = buildWhy(state.latestCommand, workflow);
+      workflow.mitigation = `Mitigation: use the next command to force owners, sequence, timing, and a usable deliverable.`;
+      return workflow;
+    }
+    function clearEmpty(){ const empty = messageStream.querySelector(".empty-state"); if(empty) empty.remove(); }
+    function scrollChat(){ const chat = document.getElementById("chatFeed"); chat.scrollTop = chat.scrollHeight; }
+    function addUserMessage(text){
+      clearEmpty();
+      const node = document.createElement("div"); node.className = "msg user";
+      node.innerHTML = `<div class="message-body"><div class="msg-head">You · ${timeNow()}</div><p>${escapeHtml(text)}</p></div>`;
+      messageStream.appendChild(node); scrollChat();
+    }
+    function taskRows(items){
+      return items.map((item,i) => `<div class="task-row"><span class="task-check">${i+1}</span><div><span class="task-copy">${escapeHtml(item)}</span><span class="task-meta">Task · pending execution</span></div><span class="task-status">OPEN</span></div>`).join("");
+    }
+    function assetCards(items){
+      return items.map((item,i) => `<div class="asset-row"><span class="asset-mini">▣</span><div><span class="asset-title">${escapeHtml(titleCase(item))}</span><span class="asset-desc">${escapeHtml(item)}</span></div><button class="asset-action" data-asset-index="${i}">Draft</button></div>`).join("");
+    }
+    function preview(workflow){
+      return `<div class="saved-preview"><div class="saved-pill"><b>Decision</b><span>${escapeHtml(workflow.decision)}</span></div><div class="saved-pill"><b>Workspace Task</b><span>${escapeHtml(workflow.actions[0] || workflow.nextMove)}</span></div><div class="saved-pill"><b>Asset Preview</b><span>${escapeHtml(workflow.assets[0] || "Asset ready")}</span></div></div>`;
+    }
+    function addAssistantWorkflow(workflow){
+      clearEmpty();
+      const node = document.createElement("div"); node.className = "msg engine";
+      node.innerHTML = `<div class="bubble-avatar">E</div><div class="message-body"><div class="msg-head"><strong>Executive Engine</strong><span>${timeNow()}</span></div><article class="workflow-card">
+        <header class="workflow-top"><span class="eyebrow">Clear Answer</span><h4>${escapeHtml(workflow.answer)}</h4><div class="why-row"><b>Why it matters</b><span>${escapeHtml(workflow.why)}</span></div></header>
+        <div class="next-action"><span>Do This Next</span><p>${escapeHtml(workflow.nextMove)}</p></div>
+        <div class="workflow-grid">
+          <section class="workflow-section"><h5>Action Workspace</h5>${taskRows(workflow.actions)}</section>
+          <section class="workflow-section"><h5>Ready Assets</h5>${assetCards(workflow.assets)}</section>
+          <section class="workflow-section"><h5>Decision</h5><p>${escapeHtml(workflow.decision)}</p><span class="pill">Priority: ${escapeHtml(workflow.priority)}</span></section>
+          <section class="workflow-section"><h5>Risk Monitor</h5><div class="risk-card"><strong>Active Risk</strong>${escapeHtml(workflow.risks[0])}<em>${escapeHtml(workflow.mitigation)}</em></div></section>
+        </div>
+        ${preview(workflow)}
+        <div class="workflow-actions"><button class="primary" data-action="continue">Continue with recommended command</button><button data-action="plan">Turn into action plan</button><button data-action="draft">Draft asset</button><button data-action="save">Save decision</button></div>
+      </article></div>`;
+      messageStream.appendChild(node); scrollChat();
+    }
+    function setList(id, items){
+      const el = document.getElementById(id); if(!el) return;
+      el.innerHTML = items.length ? items.slice(0,4).map(x => `<li>${escapeHtml(x)}</li>`).join("") : `<li>No runtime data captured yet.</li>`;
+    }
+    function showMiniStatus(text){
+      let el = document.getElementById("miniStatus");
+      if(!el){ el = document.createElement("div"); el.id = "miniStatus"; el.className = "mini-status"; document.body.appendChild(el); }
+      el.textContent = text; clearTimeout(el.timer); el.timer = setTimeout(()=>el.remove(), 1800);
+    }
+    function updateProjectRuntime(workflow){
+      const projects = document.querySelectorAll(".project");
+      const values = [
+        ["Decision", workflow.decision], ["Tasks", `${state.actions.length} open action${state.actions.length === 1 ? "" : "s"}`], ["Assets", `${state.assets.length} ready asset${state.assets.length === 1 ? "" : "s"}`], ["Risk", workflow.risks[0]]
+      ];
+      projects.forEach((project, index) => {
+        const div = project.querySelector("div"); if(!div) return;
+        const item = values[index % values.length]; div.innerHTML = `${escapeHtml(item[0])}<small>${escapeHtml(compact(item[1],42))}</small>`;
+      });
+    }
+    function updateRuntime(workflow){
+      state.latestResponse = workflow; state.recommendedCommand = workflow.recommended;
+      state.decisions.unshift(workflow.decision); state.actions.unshift(...workflow.actions); state.assets.unshift(...workflow.assets); state.risks.unshift(...workflow.risks);
+      state.decisions = [...new Set(state.decisions)].slice(0,12); state.actions = [...new Set(state.actions)].slice(0,20); state.assets = [...new Set(state.assets)].slice(0,16); state.risks = [...new Set(state.risks)].slice(0,12);
+      document.getElementById("nextMove").textContent = workflow.nextMove;
+      document.getElementById("decision").textContent = workflow.decision;
+      setList("actionSteps", state.actions); setList("readyAssets", state.assets); setList("risk", state.risks);
+      document.getElementById("priority").textContent = `${workflow.priority} · ${workflow.nextMove}`;
+      document.getElementById("recommendedCommand").textContent = workflow.recommended;
+      document.getElementById("nextMoveCount").textContent = "1"; document.getElementById("decisionCount").textContent = String(state.decisions.length);
+      document.getElementById("actionCount").textContent = String(state.actions.length); document.getElementById("assetCount").textContent = String(state.assets.length);
+      document.getElementById("riskCount").textContent = String(state.risks.length); document.getElementById("priorityCount").textContent = compact(workflow.priority,12); document.getElementById("recommendedCount").textContent = "1";
+      ["nextMoveCount","decisionCount","actionCount","assetCount","riskCount","recommendedCount"].forEach(id => document.getElementById(id).dataset.hot = "true");
+      document.getElementById("summarySub").textContent = `Latest decision · ${workflow.priority} priority · ${state.thread.length} thread messages`;
+      document.getElementById("currentFocus").textContent = `Current focus: ${deriveObjective(state.latestCommand)}`;
+      document.getElementById("activeRisk").textContent = `${workflow.risks[0]} ${workflow.mitigation}`;
+      document.getElementById("intelNextMove").textContent = workflow.nextMove;
+      document.getElementById("intelRecommended").textContent = workflow.recommended;
+      document.getElementById("threadCount").textContent = String(state.thread.length);
+      document.getElementById("threadTitle").textContent = "Active workflow loop";
+      document.getElementById("threadMeta").textContent = `${state.actions.length} tasks · ${state.assets.length} assets · ${state.risks.length} risks`;
+      document.getElementById("threadContext").textContent = `Latest command: ${state.latestCommand}. Decision: ${workflow.decision}`;
+      document.getElementById("whatMatters").textContent = `What changed: the command is now organized into a decision, ${workflow.actions.length} action step${workflow.actions.length === 1 ? "" : "s"}, ${workflow.assets.length} ready asset${workflow.assets.length === 1 ? "" : "s"}, and a recommended follow-up.`;
+      updateProjectRuntime(workflow); renderWorkspace(state.activeWorkspace);
+    }
+    function workspaceItems(items, label){
+      return `<div class="workspace-list">${items.length ? items.slice(0,8).map((x,i) => `<div class="workspace-item"><strong>${label} ${i+1}</strong>${escapeHtml(x)}</div>`).join("") : `<div class="workspace-item"><strong>${label}</strong>No runtime data captured yet.</div>`}</div>`;
+    }
+    function workspaceContent(name){
+      const w = state.latestResponse;
+      if(!w) return `<div class="workspace-view"><h4>${escapeHtml(name)}</h4><p>Run a command to populate this workspace with live decisions, tasks, assets, risks, and context.</p></div>`;
+      const kpis = `<div class="workspace-kpis"><div class="workspace-kpi"><b>${state.decisions.length}</b><span>Decisions</span></div><div class="workspace-kpi"><b>${state.actions.length}</b><span>Tasks</span></div><div class="workspace-kpi"><b>${state.assets.length}</b><span>Assets</span></div></div>`;
+      const views = {
+        "Command": `<div class="workspace-view"><h4>Live Command Thread</h4><p>${escapeHtml(state.latestCommand)}</p>${kpis}<p class="runtime-note">Next action: ${escapeHtml(w.nextMove)}</p></div>`,
+        "Daily Brief": `<div class="workspace-view"><h4>Operating Brief</h4><p>${escapeHtml(w.answer)}</p>${kpis}<p class="runtime-note">Follow-up: ${escapeHtml(w.recommended)}</p></div>`,
+        "Decisions": `<div class="workspace-view"><h4>Decision Workspace</h4><p>Latest decision: ${escapeHtml(w.decision)}</p>${workspaceItems(state.decisions,"Decision")}</div>`,
+        "Meeting Prep": `<div class="workspace-view"><h4>Prep Workspace</h4><p>${escapeHtml(w.nextMove)}</p>${workspaceItems(state.actions,"Prep Task")}</div>`,
+        "Insights": `<div class="workspace-view"><h4>Runtime Insight</h4><p>${escapeHtml(w.why)}</p><p class="runtime-note">What changed: response converted into operating state.</p></div>`,
+        "Strategy Board": `<div class="workspace-view"><h4>Strategy Board</h4><p>${escapeHtml(w.decision)}</p>${kpis}<p class="runtime-note">Priority: ${escapeHtml(w.priority)}</p></div>`,
+        "Risk Monitor": `<div class="workspace-view"><h4>Risk Workspace</h4><p>${escapeHtml(w.mitigation)}</p>${workspaceItems(state.risks,"Risk")}</div>`,
+        "Team Pulse": `<div class="workspace-view"><h4>Action Load</h4><p>${state.actions.length} open action${state.actions.length === 1 ? "" : "s"} captured from live responses.</p>${workspaceItems(state.actions,"Execution Task")}</div>`,
+        "Financial Snapshot": `<div class="workspace-view"><h4>Financial Snapshot</h4><p>No numeric financial data was returned. Use the recommended command to request budget, ROI, timeline, or cost constraints.</p><p class="runtime-note">${escapeHtml(w.recommended)}</p></div>`,
+        "Active Projects": `<div class="workspace-view"><h4>Active Workflow</h4><p>${escapeHtml(deriveObjective(state.latestCommand))}</p>${kpis}</div>`,
+        "Files": `<div class="workspace-view"><h4>Ready Assets Workspace</h4>${workspaceItems(state.assets,"Asset")}</div>`,
+        "Notes": `<div class="workspace-view"><h4>Runtime Notes</h4><p>${escapeHtml(w.answer)}</p><p class="runtime-note">Decision: ${escapeHtml(w.decision)}</p></div>`,
+        "Upload Context": `<div class="workspace-view"><h4>Context Workspace</h4><p>Latest command: ${escapeHtml(state.latestCommand)}</p><p>Objective: ${escapeHtml(deriveObjective(state.latestCommand))}</p><p>Recommended follow-up: ${escapeHtml(w.recommended)}</p><p>Thread messages: ${state.thread.length}</p></div>`
+      };
+      return views[name] || views.Command;
+    }
+    function renderWorkspace(name){
+      state.activeWorkspace = name;
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.textContent.trim() === name));
+      const existing = messageStream.querySelector(".workspace-view"); if(existing) existing.remove();
+      if(name !== "Command"){
+        const holder = document.createElement("div"); holder.innerHTML = workspaceContent(name); messageStream.prepend(holder.firstElementChild);
+      }
+      scrollChat();
+    }
+    function commandPayload(value){
+      return { input:value, command:value, thread:state.thread.slice(-10), context:{latest_command:state.latestCommand, decisions:state.decisions.slice(0,5), actions:state.actions.slice(0,6), assets:state.assets.slice(0,5), risks:state.risks.slice(0,4)} };
+    }
+    async function submitCommand(input){
+      const value = sentence(input, "");
+      if(!value){ errorBox.textContent = "Enter the outcome first."; errorBox.classList.add("active"); return; }
+      state.latestCommand = value; state.thread.push({role:"user", content:value});
+      loading.classList.add("active"); errorBox.classList.remove("active"); runButton.disabled = true; followButton.disabled = true;
+      addUserMessage(value);
+      try{
+        const response = await fetch(`${API_URL}/run`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(commandPayload(value)) });
+        if(!response.ok) throw new Error(`Backend returned ${response.status}`);
+        const data = await response.json(); const workflow = normalize(data);
+        state.thread.push({role:"assistant", content:workflow.answer, workflow}); addAssistantWorkflow(workflow); updateRuntime(workflow);
+        commandInput.value = ""; followInput.value = "";
+      }catch(err){ errorBox.textContent = `Command failed: ${err.message}`; errorBox.classList.add("active"); }
+      finally{ loading.classList.remove("active"); runButton.disabled = false; followButton.disabled = false; }
+    }
+    function turnIntoActionPlan(){ if(state.latestResponse) submitCommand(`Turn this into a detailed action plan with owners, status, sequence, timing, and deliverables: ${state.latestResponse.nextMove}`); }
+    function draftAsset(){ if(state.latestResponse) submitCommand(`Draft this asset so it is usable immediately: ${state.latestResponse.assets[0] || "executive asset"}`); }
+    function saveDecision(){ if(!state.latestResponse) return; const entry = state.latestResponse.decision; if(!state.decisions.includes(entry)) state.decisions.unshift(entry); state.saved.unshift({type:"decision", value:entry, at:new Date().toISOString()}); updateRuntime(state.latestResponse); showMiniStatus("Decision saved to runtime state."); }
+    runButton.addEventListener("click", () => submitCommand(commandInput.value));
+    followButton.addEventListener("click", () => submitCommand(followInput.value || state.recommendedCommand));
+    clearButton.addEventListener("click", () => { commandInput.value = ""; followInput.value = ""; errorBox.classList.remove("active"); });
+    commandInput.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); submitCommand(commandInput.value); } });
+    followInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); submitCommand(followInput.value || state.recommendedCommand); } });
+    document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => { commandInput.value = chip.textContent.trim(); commandInput.focus(); }));
+    document.addEventListener("click", event => {
+      const nav = event.target.closest(".nav-item"); if(nav){ renderWorkspace(nav.textContent.trim()); return; }
+      const action = event.target.closest("[data-action]");
+      if(action){ const type = action.dataset.action; if(type === "continue") submitCommand(state.recommendedCommand); if(type === "plan") turnIntoActionPlan(); if(type === "draft") draftAsset(); if(type === "save") saveDecision(); return; }
+      const asset = event.target.closest("[data-asset-index]"); if(asset && state.latestResponse){ const item = state.latestResponse.assets[Number(asset.dataset.assetIndex)] || "asset"; submitCommand(`Draft this asset for immediate use: ${item}`); }
+    });
+  </script>
+
+</body>
+</html>
