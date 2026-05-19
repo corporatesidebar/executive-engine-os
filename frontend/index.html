@@ -16,7 +16,6 @@
           <small>EXECUTIVE ENGINE</small>
         </div>
       </div>
-
       <nav class="nav">
         <p>EXECUTIVE ENGINE</p>
         <button class="nav-item active" data-view="command">Command</button>
@@ -62,14 +61,7 @@
           <div class="category-box">
             <label for="categorySelect">Category</label>
             <select id="categorySelect">
-              <option>General</option>
-              <option>Meeting</option>
-              <option>Proposal</option>
-              <option>Execution</option>
-              <option>Decision</option>
-              <option>Strategy</option>
-              <option>Risk</option>
-              <option>Follow-up</option>
+              <option>General</option><option>Meeting</option><option>Proposal</option><option>Execution</option><option>Decision</option><option>Strategy</option><option>Risk</option><option>Follow-up</option><option>Product Feedback</option>
             </select>
           </div>
           <button id="executeBtn" class="execute">Execute →</button>
@@ -78,7 +70,7 @@
 
       <section id="runtimeInsight" class="runtime-insight">
         <strong>RUNTIME INSIGHT</strong>
-        <p>Waiting for your first command. The system will convert the request into operating state, actions, assets, risks, and a recommended next move.</p>
+        <p>Waiting for command. Command Centre will create operating state: category, response quality, fixes, actions, risks, assets, and next move.</p>
       </section>
 
       <section id="thread" class="thread"></section>
@@ -89,46 +81,19 @@
       </section>
     </main>
 
-    <aside class="right-panel">
-      <div class="search-row">
-        <input id="searchInput" placeholder="Search state…" />
-        <button id="viewToggle">☷</button>
-      </div>
-
-      <section class="state-card summary">
-        <h3>EXECUTIVE SUMMARY</h3>
-        <p id="summaryText">No command run yet. Waiting for workflow.</p>
-      </section>
-
+    <aside class="summary-panel">
+      <div class="search-row"><input id="searchInput" placeholder="Search state…" /><button id="viewToggle">☷</button></div>
+      <section class="state-card summary"><h3>EXECUTIVE SUMMARY</h3><p id="summaryText">No command run yet. Waiting for workflow.</p></section>
       <section class="state-grid" id="stateGrid"></section>
+    </aside>
 
-      <section class="state-card">
-        <h3>CURRENT FOCUS</h3>
-        <p id="currentFocus">No active focus yet.</p>
-        <button class="linklike" id="focusAction">Waiting for workflow →</button>
-      </section>
-
-      <section class="state-card">
-        <h3>ACTIVE RISK</h3>
-        <p id="activeRisk">No active risk yet.</p>
-        <button class="linklike" id="riskAction">Risk monitor will update live →</button>
-      </section>
-
-      <section class="state-card">
-        <h3>RECOMMENDED NEXT MOVE</h3>
-        <p id="recommendedMove">Run a command to generate the next move.</p>
-        <button class="linklike" id="nextMoveAction">Ready →</button>
-      </section>
-
-      <section class="state-card">
-        <h3>THREAD CONTEXT</h3>
-        <p id="threadContext">No thread activity yet.</p>
-      </section>
-
-      <section class="state-card">
-        <h3>WHAT MATTERS NOW</h3>
-        <p id="mattersNow">The system will surface what changed after your command.</p>
-      </section>
+    <aside class="intel-panel">
+      <section class="state-card"><h3>CURRENT FOCUS</h3><p id="currentFocus">No active focus yet.</p><button class="linklike" id="focusAction">Waiting for workflow →</button></section>
+      <section class="state-card"><h3>ACTIVE RISK</h3><p id="activeRisk">No active risk yet.</p><button class="linklike" id="riskAction">Risk monitor will update live →</button></section>
+      <section class="state-card"><h3>RECOMMENDED NEXT MOVE</h3><p id="recommendedMove">Run a command to generate the next move.</p><button class="linklike" id="nextMoveAction">Ready →</button></section>
+      <section class="state-card"><h3>THREAD CONTEXT</h3><p id="threadContext">No thread activity yet.</p></section>
+      <section class="state-card"><h3>WHAT MATTERS NOW</h3><p id="mattersNow">The system will surface what changed after your command.</p></section>
+      <section class="state-card"><h3>FEEDBACK LOOP</h3><p id="feedbackLoop">Product feedback will be converted into fixes, acceptance tests, and upload-ready next steps.</p></section>
     </aside>
   </div>
 
@@ -137,12 +102,9 @@
       <button id="closeModal" class="modal-close">×</button>
       <h2 id="modalTitle">Detail</h2>
       <div id="modalBody"></div>
-      <div class="modal-actions">
-        <button id="downloadDetail" class="execute">Download Detail</button>
-      </div>
+      <div class="modal-actions"><button id="downloadDetail" class="execute">Download Detail</button></div>
     </div>
   </div>
-
   <script src="./app.js"></script>
 </body>
 </html>

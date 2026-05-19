@@ -1,28 +1,14 @@
-# Executive Engine OS — V36140 Command Centre Functional Frontend
+# Executive Engine V36141 — Layout-Locked Functional Fix
 
 Frontend-only build.
 
-## Files
-- `frontend/index.html`
-- `frontend/style.css`
-- `frontend/app.js`
+Changed:
+- Preserves existing visual direction and sidebar branding.
+- Restores desktop four-column structure: sidebar, command/thread, executive summary, intelligence/feedback.
+- Adds Product Feedback category auto-detection.
+- Converts product complaints into issue/fix/actions/risks/acceptance tests instead of generic advice.
+- Strengthens frontend response refinement when backend output is weak/generic.
+- Keeps backend route unchanged: https://executive-engine-os.onrender.com/run
+- Keeps /run contract unchanged.
 
-## Preserved
-- Backend URL: `https://executive-engine-os.onrender.com/run`
-- Route: `POST /run`
-- No backend changes
-- No Supabase changes
-
-## Fixes
-- Command Centre title/subtitle corrected
-- Placeholder changed to “What do we need to accomplish?”
-- Category auto-detection + manual override
-- Removed four quick links
-- Clear button moved left
-- Thread order fixed: user input then system response
-- Natural thread scroll
-- OPEN/Draft buttons now open a real detail modal
-- Detail modal supports TXT download
-- Runtime state panels populate from actual command/response
-- Repetitive “the path is to” phrase sanitized
-- Local fallback keeps UI functional if backend fails
+Upload the `frontend` folder files to test frontend only.
