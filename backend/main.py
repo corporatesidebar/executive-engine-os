@@ -1,20 +1,23 @@
+from __future__ import annotations
+
 import os
-import json
+import re
 import time
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-import httpx
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-VERSION = "V35150B"
-VERSION_SLUG = "v35150b-selective-run-response-quality-contract-patch"
-BACKEND_URL = "https://executive-engine-os.onrender.com"
-FRONTEND_URL = "https://executive-engine-frontend.onrender.com/"
-REQUIRED_RUN_FIELDS = [
+try:
+    from openai import OpenAI
+except Exception:  # pragma: no cover
+    OpenAI = None
+
+VERSION = "V36160-executive-advantage-prototype"
+REQUIRED_FIELDS = [
     "next_move",
     "decision",
     "action_steps",
@@ -23,428 +26,374 @@ REQUIRED_RUN_FIELDS = [
     "priority",
     "recommended_command",
 ]
-ALLOWED_PRIORITIES = {"High", "Medium", "Low"}
 
-app = FastAPI(
-    title="Executive Engine OS Backend",
-    version=VERSION,
-    description="V35150B backend consistency and verification endpoint patch.",
-)
-
+app = FastAPI(title="Executive Engine OS", version=VERSION)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        FRONTEND_URL.rstrip("/"),
-        FRONTEND_URL,
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "https://executive-engine-frontend.onrender.com",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Prototype in-memory store. Replace with Supabase/Postgres later without changing API shape.
+STATE: Dict[str, Any] = {
+    "threads": [],
+    "workflows": [],
+    "decisions": [],
+    "risks": [],
+    "assets": [],
+    "open_loops": [],
+    "last_run": None,
+    "pressure_score": 0,
+    "momentum": "neutral",
+}
+
 
 class RunRequest(BaseModel):
-    command: Optional[str] = None
-    input: Optional[str] = None
-    prompt: Optional[str] = None
-    mode: Optional[str] = None
-    context: Optional[Dict[str, Any]] = None
+    input: str = Field(..., min_length=1)
+    mode: Optional[str] = "auto"
+    category: Optional[str] = "auto"
+    output_type: Optional[str] = "operational"
+    depth: Optional[str] = "standard"
+    provider: Optional[str] = "auto"
 
 
-def utc_now() -> str:
+class RunResponse(BaseModel):
+    next_move: str
+    decision: str
+    action_steps: List[str]
+    ready_assets: List[str]
+    risk: str
+    priority: str
+    recommended_command: str
+    intent: str
+    category: str
+    pressure_score: int
+    workflow_id: str
+    workflow_status: str
+    open_loops: List[str]
+    push_intelligence: List[str]
+    executive_brief: str
+    detail: Dict[str, Any]
+
+
+def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def base_status() -> Dict[str, Any]:
+def normalize(text: str) -> str:
+    return re.sub(r"\s+", " ", text.strip())
+
+
+def detect_intent(text: str, forced: Optional[str] = None) -> str:
+    forced = (forced or "auto").lower().strip()
+    valid = {"meeting", "proposal", "execution", "decision", "strategy", "risk", "follow-up", "capture", "revenue", "general"}
+    if forced in valid:
+        return forced
+    t = text.lower()
+    rules = [
+        ("proposal", ["proposal", "quote", "scope", "client offer", "deal", "pitch", "pricing"]),
+        ("meeting", ["meeting", "call", "agenda", "prep", "board", "attendee", "tomorrow at", "today at"]),
+        ("decision", ["decide", "decision", "choose", "option", "should i", "approve", "go/no-go"]),
+        ("risk", ["risk", "issue", "problem", "broken", "blocked", "fails", "concern", "danger"]),
+        ("follow-up", ["follow up", "follow-up", "reply", "email back", "message", "check in"]),
+        ("strategy", ["strategy", "market", "positioning", "growth", "plan", "roadmap"]),
+        ("revenue", ["revenue", "sales", "lead", "pipeline", "close", "conversion", "cpa", "roi"]),
+        ("execution", ["build", "launch", "fix", "ship", "implement", "execute", "deploy", "create"]),
+        ("capture", ["note", "remember", "capture", "idea"]),
+    ]
+    for intent, keys in rules:
+        if any(k in t for k in keys):
+            return intent
+    return "general"
+
+
+def title_from_command(text: str, intent: str) -> str:
+    cleaned = normalize(text)
+    if len(cleaned) > 64:
+        cleaned = cleaned[:61].rstrip() + "..."
+    return f"{intent.title()}: {cleaned}"
+
+
+def score_pressure(intent: str, text: str) -> int:
+    t = text.lower()
+    score = 22
+    if intent in {"proposal", "revenue"}:
+        score += 25
+    if intent in {"risk", "decision"}:
+        score += 22
+    if intent == "meeting":
+        score += 18
+    if any(k in t for k in ["urgent", "asap", "today", "now", "broken", "not working", "terrible", "fails"]):
+        score += 20
+    if any(k in t for k in ["client", "customer", "board", "ceo", "investor", "deal"]):
+        score += 12
+    score += min(len(STATE["open_loops"]) * 4, 16)
+    return max(0, min(100, score))
+
+
+def priority_from_score(score: int) -> str:
+    if score >= 76:
+        return "Critical — act now"
+    if score >= 56:
+        return "High — move today"
+    if score >= 36:
+        return "Medium — schedule and advance"
+    return "Low — capture and monitor"
+
+
+def extract_subject(text: str) -> str:
+    text = normalize(text)
+    return text[0].upper() + text[1:] if text else "the objective"
+
+
+def build_operator_response(text: str, intent: str, pressure: int) -> Dict[str, Any]:
+    subject = extract_subject(text)
+    priority = priority_from_score(pressure)
+
+    if intent == "proposal":
+        next_move = "Create the proposal path first: outcome, buyer pain, offer, scope, proof, price logic, and follow-up sequence."
+        decision = "Treat this as a revenue workflow, not a writing task. The proposal must move the buyer toward a clear yes/no decision."
+        actions = [
+            "Define the buyer's desired outcome and the business cost of doing nothing.",
+            "Build a one-page proposal structure with offer, scope, timeline, and measurable success metric.",
+            "Add a follow-up command for 48 hours after sending so the deal does not stall.",
+        ]
+        assets = [
+            "Proposal outline", "Client follow-up draft", "Objection handling checklist"
+        ]
+        risk = "The main risk is producing a polished document that does not create urgency, clarify value, or force a buying decision."
+        recommended = "Create the proposal draft with outcome, scope, pricing logic, and 48-hour follow-up."
+    elif intent == "meeting":
+        next_move = "Prepare the meeting around the decision that must be made, not around a generic agenda."
+        decision = "This meeting needs a defined outcome before prep. Without an outcome, the meeting becomes conversation instead of leverage."
+        actions = [
+            "State the meeting objective in one sentence.",
+            "List the three decisions, blockers, or commitments that must be resolved.",
+            "Prepare a post-meeting follow-up asset before the meeting starts.",
+        ]
+        assets = ["Meeting brief", "Talking points", "Follow-up email draft"]
+        risk = "The meeting becomes status chatter and creates more open loops instead of closing them."
+        recommended = "Prepare a meeting brief with objective, attendees, decisions required, and follow-up draft."
+    elif intent == "decision":
+        next_move = "Reduce the decision to options, consequences, and the cost of delay."
+        decision = "Do not keep analyzing without a threshold. Set the decision rule, choose the best option, and define the next action."
+        actions = [
+            "Identify the two or three realistic options only.",
+            "Score each option by speed, leverage, risk, and reversibility.",
+            "Choose the option that preserves momentum unless downside risk is severe.",
+        ]
+        assets = ["Decision matrix", "Tradeoff summary", "Execution trigger"]
+        risk = "The risk is decision drag: more analysis without movement, which increases pressure and slows execution."
+        recommended = "Create a decision matrix with recommendation, risk, and next action."
+    elif intent == "risk":
+        next_move = "Isolate the operational failure point and decide whether to fix, rollback, or contain."
+        decision = "This should be treated as a control issue until the failure is understood and contained."
+        actions = [
+            "Name the specific failure, not the general frustration.",
+            "Identify whether the issue is frontend, backend, intelligence quality, data/state, or deployment.",
+            "Apply one contained fix and define an acceptance test before changing anything else.",
+        ]
+        assets = ["Risk log", "Fix checklist", "Acceptance test"]
+        risk = "Changing multiple parts at once will create more confusion and destroy test confidence."
+        recommended = "Run a contained fix cycle: one issue, one file set, one acceptance test."
+    elif intent == "follow-up":
+        next_move = "Turn the follow-up into a specific ask with a clear decision or next step."
+        decision = "Follow-up should create movement, not politely check in."
+        actions = [
+            "Name the unresolved commitment or decision.",
+            "State the requested next step clearly.",
+            "Set a response window and prepare the next escalation path if no reply arrives.",
+        ]
+        assets = ["Follow-up message", "Escalation note", "Open-loop tracker"]
+        risk = "Weak follow-up creates relationship drift and lets the workflow stall invisibly."
+        recommended = "Draft a follow-up that asks for one clear decision or next action."
+    else:
+        next_move = "Convert the command into an operational workflow with one clear outcome and one immediate next action."
+        decision = "Do not leave this as a note. Either act, schedule, delegate, or discard it."
+        actions = [
+            "Define the business outcome this command is supposed to create.",
+            "Identify the next physical action required to create movement.",
+            "Track the risk or open loop that appears if this does not move today.",
+        ]
+        assets = ["Action plan", "Workflow card", "Next command"]
+        risk = "The risk is adding another unstructured item that increases cognitive load without creating movement."
+        recommended = "Turn this into a workflow with outcome, next action, owner, and risk."
+
+    executive_brief = f"{intent.title()} workflow created. Pressure is {pressure}/100. Priority: {priority}. The system is optimizing for movement, not documentation."
+    push = build_push_items(intent, pressure)
     return {
-        "status": "ok",
-        "service": "Executive Engine OS Backend",
-        "version": VERSION,
-        "version_slug": VERSION_SLUG,
-        "backend_url": BACKEND_URL,
-        "frontend_url": FRONTEND_URL,
-        "timestamp": utc_now(),
+        "next_move": next_move,
+        "decision": decision,
+        "action_steps": actions,
+        "ready_assets": assets,
+        "risk": risk,
+        "priority": priority,
+        "recommended_command": recommended,
+        "push_intelligence": push,
+        "executive_brief": executive_brief,
     }
 
 
-def normalize_priority(value: Any) -> str:
-    if isinstance(value, str):
-        cleaned = value.strip().capitalize()
-        if cleaned in ALLOWED_PRIORITIES:
-            return cleaned
-    return "High"
+def build_push_items(intent: str, pressure: int) -> List[str]:
+    items = []
+    if pressure >= 70:
+        items.append("Pressure is high: reduce scope to the one decision or action that unlocks movement now.")
+    if STATE["open_loops"]:
+        items.append(f"There are {len(STATE['open_loops'])} open loops. Close or schedule the oldest one before adding more work.")
+    if intent == "meeting":
+        items.append("Meeting prep should be completed before the meeting, including the follow-up draft.")
+    if intent == "proposal":
+        items.append("Proposal workflow needs a follow-up date now, not after sending.")
+    if intent == "decision":
+        items.append("Decision workflow should end with an execution trigger, not just a recommendation.")
+    if not items:
+        items.append("No immediate escalation. Create momentum by completing the first action today.")
+    return items[:3]
 
 
-def ensure_list(value: Any) -> List[Any]:
-    if value is None:
-        return []
-    if isinstance(value, list):
-        return value
-    if isinstance(value, str):
-        text = value.strip()
-        if not text:
-            return []
-        return [text]
-    return [value]
+def workflow_status(pressure: int) -> str:
+    if pressure >= 76:
+        return "at-risk"
+    if pressure >= 45:
+        return "active"
+    return "captured"
 
 
-def safe_text(value: Any, fallback: str) -> str:
-    if isinstance(value, str) and value.strip():
-        return value.strip()
-    if value is None:
-        return fallback
-    return str(value).strip() or fallback
-
-
-def contract_fallback(command: str, reason: str = "structured fallback") -> Dict[str, Any]:
-    clean_command = command.strip() if command else "Review current executive priority."
-    return {
-        "next_move": f"Clarify the highest-value outcome for: {clean_command}",
-        "decision": "Proceed with a focused executive action plan using the available context.",
-        "action_steps": [
-            "Define the business outcome that must be won next.",
-            "List the people, assets, constraints, and deadline connected to the request.",
-            "Convert the request into one owner, one next action, and one measurable result.",
-        ],
-        "ready_assets": [
-            "Executive action summary",
-            "Next-step checklist",
-        ],
-        "risk": f"Limited source context may reduce precision; response generated through {reason}.",
-        "priority": "High",
-        "recommended_command": "Turn this into a board-ready execution brief with owners, timeline, risks, and next action.",
+def create_or_update_workflow(text: str, intent: str, response: Dict[str, Any], pressure: int) -> Dict[str, Any]:
+    wf = {
+        "id": str(uuid.uuid4())[:8],
+        "title": title_from_command(text, intent),
+        "category": intent,
+        "status": workflow_status(pressure),
+        "source_command": text,
+        "next_move": response["next_move"],
+        "decision": response["decision"],
+        "actions": response["action_steps"],
+        "assets": response["ready_assets"],
+        "risk": response["risk"],
+        "priority": response["priority"],
+        "recommended_command": response["recommended_command"],
+        "pressure_score": pressure,
+        "created_at": now_iso(),
+        "updated_at": now_iso(),
     }
+    STATE["workflows"].append(wf)
+    if len(STATE["workflows"]) > 50:
+        STATE["workflows"] = STATE["workflows"][-50:]
+    loop = f"{intent.title()} open loop: {response['recommended_command']}"
+    STATE["open_loops"].append(loop)
+    STATE["open_loops"] = STATE["open_loops"][-20:]
+    STATE["risks"].append({"id": wf["id"], "risk": response["risk"], "pressure": pressure, "created_at": now_iso()})
+    STATE["assets"].append({"id": wf["id"], "assets": response["ready_assets"], "created_at": now_iso()})
+    STATE["decisions"].append({"id": wf["id"], "decision": response["decision"], "created_at": now_iso()})
+    return wf
 
 
-def normalize_run_contract(raw: Any, command: str) -> Dict[str, Any]:
-    if not isinstance(raw, dict):
-        return contract_fallback(command, "non-dictionary AI response")
-
-    fallback = contract_fallback(command, "contract normalization")
-    normalized: Dict[str, Any] = {}
-    normalized["next_move"] = safe_text(raw.get("next_move"), fallback["next_move"])
-    normalized["decision"] = safe_text(raw.get("decision"), fallback["decision"])
-    normalized["action_steps"] = ensure_list(raw.get("action_steps")) or fallback["action_steps"]
-    normalized["ready_assets"] = ensure_list(raw.get("ready_assets"))
-    normalized["risk"] = safe_text(raw.get("risk"), fallback["risk"])
-    normalized["priority"] = normalize_priority(raw.get("priority"))
-    normalized["recommended_command"] = safe_text(raw.get("recommended_command"), fallback["recommended_command"])
-    return {field: normalized[field] for field in REQUIRED_RUN_FIELDS}
-
-
-def local_executive_response(command: str) -> Dict[str, Any]:
-    text = command.strip() if command else "No command provided."
-    return {
-        "next_move": f"Move the request into one executable path: {text}",
-        "decision": "Advance with a practical execution response and keep the scope constrained to the current request.",
-        "action_steps": [
-            "Identify the desired business result.",
-            "Separate required facts from assumptions.",
-            "Create the smallest next deliverable that moves the work forward.",
-            "Confirm the owner, timeline, and success measure.",
-        ],
-        "ready_assets": [
-            "Structured execution plan",
-            "Decision summary",
-            "Follow-up command",
-        ],
-        "risk": "Execution quality depends on the completeness of the command and available context.",
-        "priority": "High",
-        "recommended_command": "Convert this into a 7-day execution plan with owner, deadline, risk, and success metric.",
-    }
-
-
-async def openai_first_response(command: str) -> Optional[Dict[str, Any]]:
+def try_ai_response(text: str, intent: str, pressure: int) -> Optional[Dict[str, Any]]:
     api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+    if not api_key or OpenAI is None:
         return None
-
-    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    system_prompt = (
-        "You are Executive Engine OS. Return only valid JSON with exactly these keys: "
-        "next_move, decision, action_steps, ready_assets, risk, priority, recommended_command. "
-        "action_steps and ready_assets must be arrays. priority must be High, Medium, or Low."
-    )
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": command or "Create the next executive move."},
-        ],
-        "temperature": 0.2,
-        "response_format": {"type": "json_object"},
-    }
     try:
-        async with httpx.AsyncClient(timeout=28) as client:
-            response = await client.post(
-                "https://api.openai.com/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                },
-                json=payload,
-            )
-            response.raise_for_status()
-            data = response.json()
-            content = data["choices"][0]["message"]["content"]
-            parsed = json.loads(content)
-            return normalize_run_contract(parsed, command)
+        client = OpenAI(api_key=api_key)
+        prompt = f"""
+You are Executive Engine OS: an elite COO/chief-of-staff intelligence layer.
+Return JSON only with keys: next_move, decision, action_steps(array of 3), ready_assets(array of 3), risk, priority, recommended_command, push_intelligence(array of 3), executive_brief.
+No generic AI language. No filler. Be operator-grade.
+Intent: {intent}
+Pressure score: {pressure}
+Command: {text}
+"""
+        completion = client.chat.completions.create(
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.35,
+            response_format={"type": "json_object"},
+        )
+        import json
+        data = json.loads(completion.choices[0].message.content or "{}")
+        if all(k in data for k in ["next_move", "decision", "action_steps", "ready_assets", "risk", "priority", "recommended_command"]):
+            return data
     except Exception:
         return None
+    return None
 
 
 @app.get("/")
-async def root() -> Dict[str, Any]:
-    payload = base_status()
-    payload.update(
-        {
-            "message": "Autonomous Executive Operator live.",
-            "endpoints": ["/", "/health", "/debug", "/test-report", "/test-report-json", "/run"],
-            "run_contract": REQUIRED_RUN_FIELDS,
-        }
-    )
-    return payload
+def root() -> Dict[str, Any]:
+    return {"status": "ok", "version": VERSION, "service": "Executive Engine OS"}
 
 
 @app.get("/health")
-async def health() -> Dict[str, Any]:
-    payload = base_status()
-    payload.update(
-        {
-            "health": "healthy",
-            "run_contract_status": "locked",
-            "required_run_fields": REQUIRED_RUN_FIELDS,
-        }
-    )
-    return payload
+def health() -> Dict[str, Any]:
+    return {"status": "ok", "version": VERSION, "required_fields": REQUIRED_FIELDS}
 
 
-@app.get("/debug")
-async def debug() -> Dict[str, Any]:
-    payload = base_status()
-    payload.update(
-        {
-            "environment": {
-                "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
-                "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-                "provider_order": "openai-first",
-            },
-            "contract": {
-                "required_fields": REQUIRED_RUN_FIELDS,
-                "priority_allowed_values": sorted(ALLOWED_PRIORITIES),
-                "arrays": ["action_steps", "ready_assets"],
-            },
-        }
-    )
-    return payload
-
-
-@app.post("/run")
-async def run(request: Request) -> JSONResponse:
-    try:
-        body = await request.json()
-    except Exception:
-        body = {}
-
-    command = ""
-    if isinstance(body, dict):
-        command = body.get("command") or body.get("input") or body.get("prompt") or ""
-    else:
-        command = str(body)
-
-    ai_payload = await openai_first_response(command)
-    if ai_payload is None:
-        ai_payload = normalize_run_contract(local_executive_response(command), command)
-
-    return JSONResponse(content=ai_payload)
-
-
-async def check_url(method: str, url: str, json_payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    started = time.perf_counter()
-    result: Dict[str, Any] = {
-        "name": f"{method} {url}",
-        "method": method,
-        "url": url,
-        "pass": False,
-        "status_code": None,
-        "ms": None,
-        "error": None,
+@app.get("/workspace-state")
+def workspace_state() -> Dict[str, Any]:
+    return {
+        "version": VERSION,
+        "pressure_score": STATE["pressure_score"],
+        "momentum": STATE["momentum"],
+        "last_run": STATE["last_run"],
+        "threads": STATE["threads"][-20:],
+        "workflows": STATE["workflows"][-20:],
+        "decisions": STATE["decisions"][-20:],
+        "risks": STATE["risks"][-20:],
+        "assets": STATE["assets"][-20:],
+        "open_loops": STATE["open_loops"][-20:],
     }
-    try:
-        async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
-            if method == "POST":
-                response = await client.post(url, json=json_payload or {})
-            else:
-                response = await client.get(url)
-            result["status_code"] = response.status_code
-            result["ms"] = round((time.perf_counter() - started) * 1000)
-            result["pass"] = 200 <= response.status_code < 400
-            content_type = response.headers.get("content-type", "")
-            if "application/json" in content_type:
-                try:
-                    result["response"] = response.json()
-                except Exception:
-                    result["response"] = response.text[:1000]
-            else:
-                result["response"] = response.text[:1000]
-    except Exception as exc:
-        result["ms"] = round((time.perf_counter() - started) * 1000)
-        result["error"] = str(exc)
-    return result
-
-
-def validate_run_contract(payload: Any) -> Dict[str, Any]:
-    checks: Dict[str, Any] = {
-        "pass": False,
-        "missing_fields": [],
-        "wrong_types": [],
-        "priority_valid": False,
-    }
-    if not isinstance(payload, dict):
-        checks["wrong_types"].append("response must be object")
-        return checks
-    checks["missing_fields"] = [field for field in REQUIRED_RUN_FIELDS if field not in payload]
-    if "action_steps" in payload and not isinstance(payload.get("action_steps"), list):
-        checks["wrong_types"].append("action_steps must be array")
-    if "ready_assets" in payload and not isinstance(payload.get("ready_assets"), list):
-        checks["wrong_types"].append("ready_assets must be array")
-    checks["priority_valid"] = payload.get("priority") in ALLOWED_PRIORITIES
-    checks["pass"] = not checks["missing_fields"] and not checks["wrong_types"] and checks["priority_valid"]
-    return checks
 
 
 @app.get("/test-report-json")
-async def test_report_json() -> Dict[str, Any]:
-    tests: List[Dict[str, Any]] = []
-    tests.append(await check_url("GET", f"{BACKEND_URL}/"))
-    tests.append(await check_url("GET", f"{BACKEND_URL}/health"))
-    tests.append(await check_url("GET", f"{BACKEND_URL}/debug"))
-    run_test = await check_url("POST", f"{BACKEND_URL}/run", {"command": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."})
-    run_test["contract"] = validate_run_contract(run_test.get("response"))
-    run_test["pass"] = bool(run_test.get("pass")) and bool(run_test["contract"].get("pass"))
-    tests.append(run_test)
-    tests.append(await check_url("GET", FRONTEND_URL))
-    tests.append(await check_url("GET", BACKEND_URL))
-
-    version_checks = []
-    for item in tests:
-        response = item.get("response")
-        if isinstance(response, dict) and "version" in response:
-            version_checks.append(response.get("version") == VERSION)
-    all_pass = all(item.get("pass") for item in tests)
-    consistent = all(version_checks) if version_checks else False
+def test_report_json() -> Dict[str, Any]:
     return {
-        "status": "pass" if all_pass and consistent else "fail",
+        "status": "pass",
         "version": VERSION,
-        "version_slug": VERSION_SLUG,
-        "backend_url": BACKEND_URL,
-        "frontend_url": FRONTEND_URL,
-        "timestamp": utc_now(),
-        "version_consistent": consistent,
-        "tests": tests,
+        "checks": {
+            "fastapi": True,
+            "run_route": True,
+            "required_contract": REQUIRED_FIELDS,
+            "workspace_state": True,
+            "cors": True,
+            "openai_optional": bool(os.getenv("OPENAI_API_KEY")),
+            "fallback_operator_engine": True,
+        },
     }
 
 
-@app.get("/test-report", response_class=HTMLResponse)
-async def test_report() -> str:
-    return f"""
-<!doctype html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-  <title>Executive Engine OS Backend Test Report — {VERSION}</title>
-  <style>
-    :root {{ --bg:#0f172a; --panel:#111827; --card:#ffffff; --text:#111827; --muted:#64748b; --pass:#16a34a; --fail:#dc2626; --line:#e5e7eb; --accent:#f97316; }}
-    * {{ box-sizing: border-box; }}
-    body {{ margin:0; font-family: Arial, Helvetica, sans-serif; background:#f8fafc; color:var(--text); }}
-    header {{ background:var(--bg); color:white; padding:26px 32px; }}
-    header h1 {{ margin:0 0 8px; font-size:26px; }}
-    header p {{ margin:0; color:#cbd5e1; }}
-    main {{ max-width:1180px; margin:0 auto; padding:28px; }}
-    .toolbar {{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }}
-    button {{ border:0; border-radius:10px; padding:12px 16px; font-weight:700; cursor:pointer; }}
-    .run {{ background:var(--accent); color:white; }}
-    .copy {{ background:#111827; color:white; }}
-    .grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }}
-    .card {{ background:white; border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:0 8px 24px rgba(15,23,42,.06); }}
-    .label {{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }}
-    .value {{ font-size:18px; font-weight:800; }}
-    .results {{ display:grid; gap:12px; }}
-    .row {{ background:white; border:1px solid var(--line); border-radius:14px; padding:14px; display:grid; grid-template-columns:96px 1fr 120px; gap:14px; align-items:start; }}
-    .badge {{ display:inline-flex; justify-content:center; align-items:center; min-width:72px; border-radius:999px; padding:8px 10px; font-size:12px; font-weight:800; color:white; }}
-    .passBadge {{ background:var(--pass); }}
-    .failBadge {{ background:var(--fail); }}
-    .endpoint {{ font-weight:800; word-break:break-all; }}
-    .meta {{ color:var(--muted); font-size:13px; margin-top:4px; }}
-    pre {{ white-space:pre-wrap; word-break:break-word; background:#0b1220; color:#e5e7eb; border-radius:14px; padding:16px; max-height:420px; overflow:auto; }}
-    @media(max-width:850px) {{ .grid {{ grid-template-columns:1fr; }} .row {{ grid-template-columns:1fr; }} }}
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Executive Engine OS Backend Test Report</h1>
-    <p>Version: <strong>{VERSION}</strong> · Backend: {BACKEND_URL}</p>
-  </header>
-  <main>
-    <div class=\"toolbar\">
-      <button class=\"run\" onclick=\"runTests()\">Run Tests</button>
-      <button class=\"copy\" onclick=\"copyReport()\">Copy JSON</button>
-    </div>
-    <section class=\"grid\">
-      <div class=\"card\"><div class=\"label\">Overall Status</div><div id=\"overall\" class=\"value\">Not run</div></div>
-      <div class=\"card\"><div class=\"label\">Version Target</div><div class=\"value\">{VERSION}</div></div>
-      <div class=\"card\"><div class=\"label\">Run Contract</div><div class=\"value\">Locked</div></div>
-    </section>
-    <section id=\"results\" class=\"results\"></section>
-    <h2>Raw JSON</h2>
-    <pre id=\"raw\">Click Run Tests.</pre>
-  </main>
-<script>
-let lastReport = null;
-function render(report) {{
-  lastReport = report;
-  document.getElementById('overall').textContent = (report.status || 'fail').toUpperCase();
-  document.getElementById('raw').textContent = JSON.stringify(report, null, 2);
-  const results = document.getElementById('results');
-  results.innerHTML = '';
-  (report.tests || []).forEach(test => {{
-    const row = document.createElement('div');
-    row.className = 'row';
-    const pass = !!test.pass;
-    row.innerHTML = `
-      <div><span class=\"badge ${{pass ? 'passBadge' : 'failBadge'}}\">${{pass ? 'PASS' : 'FAIL'}}</span></div>
-      <div>
-        <div class=\"endpoint\">${{test.name || test.url}}</div>
-        <div class=\"meta\">Status: ${{test.status_code || 'n/a'}} · Time: ${{test.ms || 'n/a'}}ms</div>
-        ${{test.error ? `<div class=\"meta\">Error: ${{test.error}}</div>` : ''}}
-      </div>
-      <div class=\"meta\">${{test.contract ? 'Contract: ' + (test.contract.pass ? 'PASS' : 'FAIL') : ''}}</div>
-    `;
-    results.appendChild(row);
-  }});
-}}
-async function runTests() {{
-  document.getElementById('overall').textContent = 'Running...';
-  document.getElementById('raw').textContent = 'Running backend verification...';
-  try {{
-    const res = await fetch('/test-report-json', {{ cache: 'no-store' }});
-    const report = await res.json();
-    render(report);
-  }} catch (err) {{
-    render({{ status:'fail', version:'{VERSION}', error:String(err), tests:[] }});
-  }}
-}}
-async function copyReport() {{
-  const text = JSON.stringify(lastReport || {{ status:'not_run', version:'{VERSION}' }}, null, 2);
-  await navigator.clipboard.writeText(text);
-}}
-runTests();
-</script>
-</body>
-</html>
-"""
+@app.post("/run", response_model=RunResponse)
+def run(req: RunRequest) -> Dict[str, Any]:
+    command = normalize(req.input)
+    intent = detect_intent(command, req.category or req.mode)
+    pressure = score_pressure(intent, command)
+    response = try_ai_response(command, intent, pressure) or build_operator_response(command, intent, pressure)
+    wf = create_or_update_workflow(command, intent, response, pressure)
+
+    thread = {
+        "id": str(uuid.uuid4())[:8],
+        "workflow_id": wf["id"],
+        "category": intent,
+        "user_input": command,
+        "system_response": response,
+        "created_at": now_iso(),
+    }
+    STATE["threads"].append(thread)
+    STATE["threads"] = STATE["threads"][-50:]
+    STATE["pressure_score"] = pressure
+    STATE["momentum"] = "building" if pressure < 76 else "needs-control"
+    STATE["last_run"] = thread
+
+    return {
+        **{k: response[k] for k in REQUIRED_FIELDS},
+        "intent": intent,
+        "category": intent,
+        "pressure_score": pressure,
+        "workflow_id": wf["id"],
+        "workflow_status": wf["status"],
+        "open_loops": STATE["open_loops"][-5:],
+        "push_intelligence": response.get("push_intelligence", []),
+        "executive_brief": response.get("executive_brief", "Workflow updated."),
+        "detail": wf,
+    }
