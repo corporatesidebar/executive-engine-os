@@ -1,46 +1,67 @@
-# Executive Engine OS V36170 — Functional Command Centre
+# Executive Engine OS — V36180 Real Executive Response Engine
 
-Scope: functional frontend + FastAPI backend while preserving the approved three-column layout direction.
+## Decision
+YES — this moves Executive Engine closer to Executive Cognition Infrastructure.
 
-## What is functional
-- All sidebar navigation buttons clickable
-- Execute command button clickable
-- Clear button clickable
-- Category auto-select + manual override
-- Command thread stores latest items at top
-- User input followed by system response
-- Filter button clickable
-- Export button downloads JSON
-- View Full Detail opens modal
-- All right-side panel buttons clickable
-- Right-side list items clickable/checkable
-- Pressure score updates from system response
-- Local fallback intelligence works if backend is unavailable
+This build fixes the main regression: canned/static category responses.
 
-## Backend
-Routes:
-- GET /
-- GET /health
-- GET /debug
-- GET /providers
-- GET /test-report-json
-- POST /run
+## Locked
+- Layout/design preserved
+- Navigation preserved
+- Frontend structure preserved
+- `/run` contract preserved
+- Existing required fields preserved
 
-## Local backend
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
+## Upgraded
+- Real intent detection
+- Anti-canned response logic
+- Clarification handling for vague input
+- Proposal status handling for commands like `WHERE IS MY PROPOSAL`
+- Executive Cognition Infrastructure answer path
+- Mode-specific executive outputs
+- Stronger strategic diagnosis and best move
+- Better right-panel data via `action_steps`, `risk`, and `push_intelligence`
 
-## Frontend API URL
-By default frontend points to:
-`https://executive-engine-os.onrender.com`
+## Test Commands
+Use these after deployment:
 
-For local backend, add before app.js in index.html:
-```html
-<script>window.EXECUTIVE_ENGINE_API_URL='http://127.0.0.1:8000'</script>
-```
+1. `WHERE IS MY PROPOSAL`
+   - Expected: status/workflow-continuity response, not another generic proposal.
 
-## Deploy rules
-Do not delete stable backups. Deploy to a branch or staging service first.
+2. `wowowow`
+   - Expected: clarification response, not fake risk/meeting/proposal output.
+
+3. `Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
+   - Expected: specific revenue proposal response with CPA, SEO, landing pages, and conversion tracking.
+
+4. `Does this move EE closer to Executive Cognition Infrastructure?`
+   - Expected: direct yes/no strategic answer about EE cognition layer.
+
+5. `Fix response engine but do not change layout or design`
+   - Expected: backend/logic patch plan, layout locked.
+
+## Backend Routes
+- `/`
+- `/health`
+- `/debug`
+- `/providers`
+- `/test-report-json`
+- `/run`
+
+## Deployment
+Deploy backend and frontend together if replacing V36170. If the current frontend is already deployed and locked, backend can be deployed alone.
+
+## Rollback
+Rollback to V36170 if:
+- `/run` fails
+- frontend cannot reach backend
+- required fields disappear
+
+Required fields preserved:
+- `next_move`
+- `decision`
+- `action_steps`
+- `ready_assets`
+- `risk`
+- `priority`
+- `recommended_command`
