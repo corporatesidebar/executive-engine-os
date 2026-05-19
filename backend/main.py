@@ -1,33 +1,35 @@
+"""
+Executive Engine OS — V36100 Working Prototype
+
+Core loop:
+command -> classify -> pressure/risk analysis -> executive output -> operating state
+
+This backend is intentionally lean, merge-safe, and deployable.
+It does not require OpenAI to run.
+If OPENAI_API_KEY is present, you can later extend build_ai_response().
+"""
+
 from __future__ import annotations
 
 import os
 import re
-import time
-import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-try:
-    from openai import OpenAI
-except Exception:  # pragma: no cover
-    OpenAI = None
 
-VERSION = "V36160-executive-advantage-prototype"
-REQUIRED_FIELDS = [
-    "next_move",
-    "decision",
-    "action_steps",
-    "ready_assets",
-    "risk",
-    "priority",
-    "recommended_command",
-]
+VERSION = "v36100-executive-workflow-intelligence"
 
-app = FastAPI(title="Executive Engine OS", version=VERSION)
+
+app = FastAPI(
+    title="Executive Engine OS",
+    version=VERSION,
+    description="Push-first executive operating system prototype.",
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -36,27 +38,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Prototype in-memory store. Replace with Supabase/Postgres later without changing API shape.
-STATE: Dict[str, Any] = {
-    "threads": [],
-    "workflows": [],
-    "decisions": [],
-    "risks": [],
-    "assets": [],
-    "open_loops": [],
-    "last_run": None,
-    "pressure_score": 0,
-    "momentum": "neutral",
-}
+
+Mode = Literal["auto", "execution", "meeting", "proposal", "strategy", "decision", "revenue"]
 
 
 class RunRequest(BaseModel):
     input: str = Field(..., min_length=1)
-    mode: Optional[str] = "auto"
-    category: Optional[str] = "auto"
-    output_type: Optional[str] = "operational"
-    depth: Optional[str] = "standard"
-    provider: Optional[str] = "auto"
+    mode: Mode = "auto"
+    depth: Literal["fast", "standard", "deep"] = "standard"
+    context: Optional[Dict[str, Any]] = None
 
 
 class RunResponse(BaseModel):
@@ -67,333 +57,396 @@ class RunResponse(BaseModel):
     risk: str
     priority: str
     recommended_command: str
-    intent: str
-    category: str
-    pressure_score: int
-    workflow_id: str
-    workflow_status: str
-    open_loops: List[str]
-    push_intelligence: List[str]
-    executive_brief: str
-    detail: Dict[str, Any]
+
+    # V36100 additions
+    mode: str
+    pressure: str
+    executive_summary: str
+    operating_state: Dict[str, Any]
+    follow_up_questions: List[str]
+    timestamp: str
 
 
-def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+KEYWORDS = {
+    "meeting": ["meeting", "agenda", "call", "client", "stakeholder", "presentation", "prep", "tomorrow"],
+    "proposal": ["proposal", "retainer", "quote", "pricing", "offer", "scope", "deal", "close"],
+    "execution": ["build", "launch", "fix", "ship", "deploy", "execute", "implementation", "workflow"],
+    "strategy": ["strategy", "positioning", "market", "growth", "plan", "competitive", "opportunity"],
+    "decision": ["decide", "decision", "should i", "which option", "tradeoff", "risk", "choose"],
+    "revenue": ["revenue", "sales", "lead", "leads", "cpa", "roi", "pipeline", "conversion", "dealership"],
+}
 
 
 def normalize(text: str) -> str:
-    return re.sub(r"\s+", " ", text.strip())
+    return re.sub(r"\s+", " ", text.strip().lower())
 
 
-def detect_intent(text: str, forced: Optional[str] = None) -> str:
-    forced = (forced or "auto").lower().strip()
-    valid = {"meeting", "proposal", "execution", "decision", "strategy", "risk", "follow-up", "capture", "revenue", "general"}
-    if forced in valid:
-        return forced
-    t = text.lower()
-    rules = [
-        ("proposal", ["proposal", "quote", "scope", "client offer", "deal", "pitch", "pricing"]),
-        ("meeting", ["meeting", "call", "agenda", "prep", "board", "attendee", "tomorrow at", "today at"]),
-        ("decision", ["decide", "decision", "choose", "option", "should i", "approve", "go/no-go"]),
-        ("risk", ["risk", "issue", "problem", "broken", "blocked", "fails", "concern", "danger"]),
-        ("follow-up", ["follow up", "follow-up", "reply", "email back", "message", "check in"]),
-        ("strategy", ["strategy", "market", "positioning", "growth", "plan", "roadmap"]),
-        ("revenue", ["revenue", "sales", "lead", "pipeline", "close", "conversion", "cpa", "roi"]),
-        ("execution", ["build", "launch", "fix", "ship", "implement", "execute", "deploy", "create"]),
-        ("capture", ["note", "remember", "capture", "idea"]),
-    ]
-    for intent, keys in rules:
-        if any(k in t for k in keys):
-            return intent
-    return "general"
+def classify_mode(user_input: str, requested_mode: Mode) -> str:
+    if requested_mode != "auto":
+        return requested_mode
+
+    text = normalize(user_input)
+    scores = {mode: 0 for mode in KEYWORDS}
+
+    for mode, words in KEYWORDS.items():
+        for word in words:
+            if word in text:
+                scores[mode] += 1
+
+    best = max(scores, key=scores.get)
+    return best if scores[best] > 0 else "execution"
 
 
-def title_from_command(text: str, intent: str) -> str:
-    cleaned = normalize(text)
-    if len(cleaned) > 64:
-        cleaned = cleaned[:61].rstrip() + "..."
-    return f"{intent.title()}: {cleaned}"
+def score_pressure(user_input: str, mode: str) -> Dict[str, Any]:
+    text = normalize(user_input)
+    urgent_terms = ["asap", "urgent", "today", "tomorrow", "late", "blocked", "stuck", "risk", "deadline", "losing"]
+    revenue_terms = ["revenue", "sales", "client", "deal", "proposal", "retainer", "cpa", "leads", "money"]
+    relationship_terms = ["client", "partner", "investor", "owner", "team", "stakeholder"]
 
+    urgent = sum(1 for t in urgent_terms if t in text)
+    revenue = sum(1 for t in revenue_terms if t in text)
+    relationship = sum(1 for t in relationship_terms if t in text)
 
-def score_pressure(intent: str, text: str) -> int:
-    t = text.lower()
-    score = 22
-    if intent in {"proposal", "revenue"}:
-        score += 25
-    if intent in {"risk", "decision"}:
-        score += 22
-    if intent == "meeting":
-        score += 18
-    if any(k in t for k in ["urgent", "asap", "today", "now", "broken", "not working", "terrible", "fails"]):
-        score += 20
-    if any(k in t for k in ["client", "customer", "board", "ceo", "investor", "deal"]):
-        score += 12
-    score += min(len(STATE["open_loops"]) * 4, 16)
-    return max(0, min(100, score))
+    raw = urgent * 3 + revenue * 2 + relationship
+    if mode in ["proposal", "meeting", "revenue"]:
+        raw += 2
 
-
-def priority_from_score(score: int) -> str:
-    if score >= 76:
-        return "Critical — act now"
-    if score >= 56:
-        return "High — move today"
-    if score >= 36:
-        return "Medium — schedule and advance"
-    return "Low — capture and monitor"
-
-
-def extract_subject(text: str) -> str:
-    text = normalize(text)
-    return text[0].upper() + text[1:] if text else "the objective"
-
-
-def build_operator_response(text: str, intent: str, pressure: int) -> Dict[str, Any]:
-    subject = extract_subject(text)
-    priority = priority_from_score(pressure)
-
-    if intent == "proposal":
-        next_move = "Create the proposal path first: outcome, buyer pain, offer, scope, proof, price logic, and follow-up sequence."
-        decision = "Treat this as a revenue workflow, not a writing task. The proposal must move the buyer toward a clear yes/no decision."
-        actions = [
-            "Define the buyer's desired outcome and the business cost of doing nothing.",
-            "Build a one-page proposal structure with offer, scope, timeline, and measurable success metric.",
-            "Add a follow-up command for 48 hours after sending so the deal does not stall.",
-        ]
-        assets = [
-            "Proposal outline", "Client follow-up draft", "Objection handling checklist"
-        ]
-        risk = "The main risk is producing a polished document that does not create urgency, clarify value, or force a buying decision."
-        recommended = "Create the proposal draft with outcome, scope, pricing logic, and 48-hour follow-up."
-    elif intent == "meeting":
-        next_move = "Prepare the meeting around the decision that must be made, not around a generic agenda."
-        decision = "This meeting needs a defined outcome before prep. Without an outcome, the meeting becomes conversation instead of leverage."
-        actions = [
-            "State the meeting objective in one sentence.",
-            "List the three decisions, blockers, or commitments that must be resolved.",
-            "Prepare a post-meeting follow-up asset before the meeting starts.",
-        ]
-        assets = ["Meeting brief", "Talking points", "Follow-up email draft"]
-        risk = "The meeting becomes status chatter and creates more open loops instead of closing them."
-        recommended = "Prepare a meeting brief with objective, attendees, decisions required, and follow-up draft."
-    elif intent == "decision":
-        next_move = "Reduce the decision to options, consequences, and the cost of delay."
-        decision = "Do not keep analyzing without a threshold. Set the decision rule, choose the best option, and define the next action."
-        actions = [
-            "Identify the two or three realistic options only.",
-            "Score each option by speed, leverage, risk, and reversibility.",
-            "Choose the option that preserves momentum unless downside risk is severe.",
-        ]
-        assets = ["Decision matrix", "Tradeoff summary", "Execution trigger"]
-        risk = "The risk is decision drag: more analysis without movement, which increases pressure and slows execution."
-        recommended = "Create a decision matrix with recommendation, risk, and next action."
-    elif intent == "risk":
-        next_move = "Isolate the operational failure point and decide whether to fix, rollback, or contain."
-        decision = "This should be treated as a control issue until the failure is understood and contained."
-        actions = [
-            "Name the specific failure, not the general frustration.",
-            "Identify whether the issue is frontend, backend, intelligence quality, data/state, or deployment.",
-            "Apply one contained fix and define an acceptance test before changing anything else.",
-        ]
-        assets = ["Risk log", "Fix checklist", "Acceptance test"]
-        risk = "Changing multiple parts at once will create more confusion and destroy test confidence."
-        recommended = "Run a contained fix cycle: one issue, one file set, one acceptance test."
-    elif intent == "follow-up":
-        next_move = "Turn the follow-up into a specific ask with a clear decision or next step."
-        decision = "Follow-up should create movement, not politely check in."
-        actions = [
-            "Name the unresolved commitment or decision.",
-            "State the requested next step clearly.",
-            "Set a response window and prepare the next escalation path if no reply arrives.",
-        ]
-        assets = ["Follow-up message", "Escalation note", "Open-loop tracker"]
-        risk = "Weak follow-up creates relationship drift and lets the workflow stall invisibly."
-        recommended = "Draft a follow-up that asks for one clear decision or next action."
+    if raw >= 9:
+        level = "HIGH"
+    elif raw >= 5:
+        level = "MEDIUM"
     else:
-        next_move = "Convert the command into an operational workflow with one clear outcome and one immediate next action."
-        decision = "Do not leave this as a note. Either act, schedule, delegate, or discard it."
-        actions = [
-            "Define the business outcome this command is supposed to create.",
-            "Identify the next physical action required to create movement.",
-            "Track the risk or open loop that appears if this does not move today.",
-        ]
-        assets = ["Action plan", "Workflow card", "Next command"]
-        risk = "The risk is adding another unstructured item that increases cognitive load without creating movement."
-        recommended = "Turn this into a workflow with outcome, next action, owner, and risk."
+        level = "LOW"
 
-    executive_brief = f"{intent.title()} workflow created. Pressure is {pressure}/100. Priority: {priority}. The system is optimizing for movement, not documentation."
-    push = build_push_items(intent, pressure)
     return {
-        "next_move": next_move,
-        "decision": decision,
-        "action_steps": actions,
-        "ready_assets": assets,
-        "risk": risk,
-        "priority": priority,
-        "recommended_command": recommended,
-        "push_intelligence": push,
-        "executive_brief": executive_brief,
+        "level": level,
+        "score": raw,
+        "signals": {
+            "urgency": urgent,
+            "revenue": revenue,
+            "relationship": relationship,
+        },
     }
 
 
-def build_push_items(intent: str, pressure: int) -> List[str]:
-    items = []
-    if pressure >= 70:
-        items.append("Pressure is high: reduce scope to the one decision or action that unlocks movement now.")
-    if STATE["open_loops"]:
-        items.append(f"There are {len(STATE['open_loops'])} open loops. Close or schedule the oldest one before adding more work.")
-    if intent == "meeting":
-        items.append("Meeting prep should be completed before the meeting, including the follow-up draft.")
-    if intent == "proposal":
-        items.append("Proposal workflow needs a follow-up date now, not after sending.")
-    if intent == "decision":
-        items.append("Decision workflow should end with an execution trigger, not just a recommendation.")
-    if not items:
-        items.append("No immediate escalation. Create momentum by completing the first action today.")
-    return items[:3]
+def mode_label(mode: str) -> str:
+    return {
+        "meeting": "Meeting Intelligence",
+        "proposal": "Proposal Intelligence",
+        "execution": "Execution Intelligence",
+        "strategy": "Strategy Intelligence",
+        "decision": "Decision Intelligence",
+        "revenue": "Revenue Intelligence",
+    }.get(mode, "Execution Intelligence")
 
 
-def workflow_status(pressure: int) -> str:
-    if pressure >= 76:
-        return "at-risk"
-    if pressure >= 45:
-        return "active"
-    return "captured"
+def build_decision(mode: str, user_input: str, pressure: Dict[str, Any]) -> str:
+    label = mode_label(mode)
+    if pressure["level"] == "HIGH":
+        return f"Treat this as a high-pressure {label.lower()} workflow. The immediate objective is to create clarity, reduce risk, and move the situation toward a concrete business outcome."
+    if mode == "proposal":
+        return "Build the proposal around business outcome, revenue impact, measurable lead quality, and owner-level confidence — not generic marketing services."
+    if mode == "meeting":
+        return "Prepare the meeting as a controlled executive conversation: desired outcome first, leverage points second, follow-up asset third."
+    if mode == "decision":
+        return "Make the decision using downside protection, upside leverage, speed, and reversibility as the governing criteria."
+    if mode == "strategy":
+        return "Frame the strategy around leverage, differentiation, operational simplicity, and the fastest path to measurable movement."
+    return "Convert the request into an execution workflow with a clear next move, asset creation, risk control, and follow-up command."
 
 
-def create_or_update_workflow(text: str, intent: str, response: Dict[str, Any], pressure: int) -> Dict[str, Any]:
-    wf = {
-        "id": str(uuid.uuid4())[:8],
-        "title": title_from_command(text, intent),
-        "category": intent,
-        "status": workflow_status(pressure),
-        "source_command": text,
-        "next_move": response["next_move"],
-        "decision": response["decision"],
-        "actions": response["action_steps"],
-        "assets": response["ready_assets"],
-        "risk": response["risk"],
-        "priority": response["priority"],
-        "recommended_command": response["recommended_command"],
-        "pressure_score": pressure,
-        "created_at": now_iso(),
-        "updated_at": now_iso(),
+def build_next_move(mode: str, user_input: str) -> str:
+    if mode == "proposal":
+        return "Create a one-page executive proposal with the business problem, measurable upside, offer structure, proof points, and next-step close."
+    if mode == "meeting":
+        return "Prepare a meeting brief that defines the win condition, opening frame, key questions, objections, and follow-up asset."
+    if mode == "decision":
+        return "Clarify the decision options, rank them by leverage and risk, then choose the option with the highest speed-to-upside and lowest irreversible downside."
+    if mode == "strategy":
+        return "Turn the strategic issue into a focused operating thesis, immediate priorities, and a 7-day movement plan."
+    if mode == "revenue":
+        return "Identify the revenue lever, remove friction, define the offer, and create the next commercial action."
+    return "Break the command into an immediate executable sequence and create the first usable business asset."
+
+
+def build_action_steps(mode: str, user_input: str, depth: str) -> List[str]:
+    common = [
+        "Define the executive win condition in one sentence.",
+        "Extract the business constraint, deadline, stakeholder, and desired outcome.",
+        "Create the first usable asset instead of another planning note.",
+    ]
+
+    by_mode = {
+        "proposal": [
+            "Position the proposal around revenue movement, not service features.",
+            "Add a simple success metric the buyer can understand immediately.",
+            "End with a direct next step: approve, revise, or schedule decision call.",
+        ],
+        "meeting": [
+            "Write the opening frame so the meeting starts with control.",
+            "Prepare 5 questions that reveal urgency, budget, authority, and pain.",
+            "Draft the follow-up email before the meeting happens.",
+        ],
+        "execution": [
+            "Sequence the work into now, next, blocked, and delegated.",
+            "Identify the single dependency most likely to slow execution.",
+            "Create a follow-up command that continues the workflow.",
+        ],
+        "strategy": [
+            "State the strategic bet clearly.",
+            "Identify the fastest validation path.",
+            "Separate signal from noise: what matters this week only.",
+        ],
+        "decision": [
+            "List the real options, including doing nothing.",
+            "Score each option by upside, risk, speed, and reversibility.",
+            "Pick the default action unless new information changes the facts.",
+        ],
+        "revenue": [
+            "Define the buyer, pain, offer, proof, and next commercial action.",
+            "Remove one conversion bottleneck immediately.",
+            "Create a direct outreach, proposal, or follow-up asset.",
+        ],
     }
-    STATE["workflows"].append(wf)
-    if len(STATE["workflows"]) > 50:
-        STATE["workflows"] = STATE["workflows"][-50:]
-    loop = f"{intent.title()} open loop: {response['recommended_command']}"
-    STATE["open_loops"].append(loop)
-    STATE["open_loops"] = STATE["open_loops"][-20:]
-    STATE["risks"].append({"id": wf["id"], "risk": response["risk"], "pressure": pressure, "created_at": now_iso()})
-    STATE["assets"].append({"id": wf["id"], "assets": response["ready_assets"], "created_at": now_iso()})
-    STATE["decisions"].append({"id": wf["id"], "decision": response["decision"], "created_at": now_iso()})
-    return wf
+
+    steps = common + by_mode.get(mode, by_mode["execution"])
+    if depth == "fast":
+        return steps[:4]
+    if depth == "deep":
+        return steps + [
+            "Create a second-order risk check before execution.",
+            "Define what the system should remember for future continuity.",
+        ]
+    return steps[:6]
 
 
-def try_ai_response(text: str, intent: str, pressure: int) -> Optional[Dict[str, Any]]:
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key or OpenAI is None:
-        return None
-    try:
-        client = OpenAI(api_key=api_key)
-        prompt = f"""
-You are Executive Engine OS: an elite COO/chief-of-staff intelligence layer.
-Return JSON only with keys: next_move, decision, action_steps(array of 3), ready_assets(array of 3), risk, priority, recommended_command, push_intelligence(array of 3), executive_brief.
-No generic AI language. No filler. Be operator-grade.
-Intent: {intent}
-Pressure score: {pressure}
-Command: {text}
-"""
-        completion = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.35,
-            response_format={"type": "json_object"},
-        )
-        import json
-        data = json.loads(completion.choices[0].message.content or "{}")
-        if all(k in data for k in ["next_move", "decision", "action_steps", "ready_assets", "risk", "priority", "recommended_command"]):
-            return data
-    except Exception:
-        return None
-    return None
+def build_ready_assets(mode: str) -> List[str]:
+    assets = {
+        "proposal": [
+            "Executive proposal outline",
+            "Buyer problem framing",
+            "Pricing / scope skeleton",
+            "Follow-up approval email",
+        ],
+        "meeting": [
+            "Meeting brief",
+            "Agenda",
+            "Objection map",
+            "Post-meeting follow-up draft",
+        ],
+        "execution": [
+            "Execution checklist",
+            "Dependency map",
+            "Priority sequence",
+            "Follow-up command",
+        ],
+        "strategy": [
+            "Strategic thesis",
+            "Opportunity map",
+            "7-day action plan",
+            "Risk memo",
+        ],
+        "decision": [
+            "Decision matrix",
+            "Tradeoff summary",
+            "Risk note",
+            "Recommended action",
+        ],
+        "revenue": [
+            "Revenue lever map",
+            "Offer frame",
+            "Lead conversion audit",
+            "Next commercial action",
+        ],
+    }
+    return assets.get(mode, assets["execution"])
+
+
+def build_risk(mode: str, pressure: Dict[str, Any]) -> str:
+    if pressure["level"] == "HIGH":
+        return "Main risk: the workflow stays conceptual instead of producing an asset or decision that changes the business situation today."
+    if mode == "proposal":
+        return "Main risk: the proposal reads like a service menu instead of an executive business case."
+    if mode == "meeting":
+        return "Main risk: entering the meeting without a defined win condition and leaving without a committed next step."
+    if mode == "decision":
+        return "Main risk: delaying the decision because the options are not framed by upside, downside, speed, and reversibility."
+    return "Main risk: spreading attention across too many tasks instead of forcing one high-leverage next move."
+
+
+def build_priority(pressure: Dict[str, Any], mode: str) -> str:
+    if pressure["level"] == "HIGH":
+        return "HIGH — handle before lower-value admin or cosmetic product work."
+    if mode in ["proposal", "meeting", "revenue"]:
+        return "HIGH-MEDIUM — commercial or relationship impact likely."
+    return "MEDIUM — important if it moves an active workflow forward."
+
+
+def build_recommended_command(mode: str) -> str:
+    commands = {
+        "proposal": "Build the executive proposal now with problem, offer, proof, pricing logic, and close step.",
+        "meeting": "Create my meeting brief with agenda, win condition, questions, objections, and follow-up email.",
+        "execution": "Turn this into an execution plan with now/next/blocked/delegated and a ready asset.",
+        "strategy": "Create a strategic operating plan with thesis, risks, opportunities, and 7-day movement plan.",
+        "decision": "Create a decision memo with options, tradeoffs, risks, and recommended action.",
+        "revenue": "Create a revenue action plan with offer, buyer pain, conversion bottleneck, and next outreach.",
+    }
+    return commands.get(mode, commands["execution"])
+
+
+def build_follow_up_questions(mode: str) -> List[str]:
+    if mode == "proposal":
+        return [
+            "Who is the buyer and what outcome do they care about most?",
+            "What price range or retainer level should this proposal support?",
+            "What proof, case study, or credibility point should be included?",
+        ]
+    if mode == "meeting":
+        return [
+            "Who is attending and who has decision authority?",
+            "What is the one outcome you want from the meeting?",
+            "What objection are you most likely to face?",
+        ]
+    if mode == "decision":
+        return [
+            "What are the real options?",
+            "What happens if you delay?",
+            "Which downside is unacceptable?",
+        ]
+    return [
+        "What is the deadline?",
+        "Who is involved?",
+        "What asset should the system create first?",
+    ]
+
+
+def build_operating_state(mode: str, pressure: Dict[str, Any], user_input: str) -> Dict[str, Any]:
+    return {
+        "active_mode": mode,
+        "pressure_level": pressure["level"],
+        "pressure_score": pressure["score"],
+        "signals": pressure["signals"],
+        "open_loop": "Create the first usable asset and define the next committed action.",
+        "momentum_status": "needs_movement" if pressure["level"] in ["MEDIUM", "HIGH"] else "stable",
+        "system_behavior": "push_next_action",
+        "remember_for_later": [
+            "User intent",
+            "Selected mode",
+            "Pressure signals",
+            "Recommended follow-up command",
+        ],
+    }
 
 
 @app.get("/")
 def root() -> Dict[str, Any]:
-    return {"status": "ok", "version": VERSION, "service": "Executive Engine OS"}
+    return {
+        "name": "Executive Engine OS",
+        "version": VERSION,
+        "status": "running",
+        "protected_routes": [
+            "/run",
+            "/health",
+            "/debug",
+            "/providers",
+            "/test-report-json",
+            "/db-status",
+            "/demo-state",
+        ],
+    }
 
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
-    return {"status": "ok", "version": VERSION, "required_fields": REQUIRED_FIELDS}
+    return {
+        "status": "ok",
+        "version": VERSION,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
 
-@app.get("/workspace-state")
-def workspace_state() -> Dict[str, Any]:
+@app.get("/debug")
+def debug() -> Dict[str, Any]:
     return {
         "version": VERSION,
-        "pressure_score": STATE["pressure_score"],
-        "momentum": STATE["momentum"],
-        "last_run": STATE["last_run"],
-        "threads": STATE["threads"][-20:],
-        "workflows": STATE["workflows"][-20:],
-        "decisions": STATE["decisions"][-20:],
-        "risks": STATE["risks"][-20:],
-        "assets": STATE["assets"][-20:],
-        "open_loops": STATE["open_loops"][-20:],
+        "openai_key_present": bool(os.getenv("OPENAI_API_KEY")),
+        "runtime": "fastapi",
+        "mode": "deterministic-local-intelligence",
+    }
+
+
+@app.get("/providers")
+def providers() -> Dict[str, Any]:
+    return {
+        "primary": "local-executive-intelligence",
+        "openai_available": bool(os.getenv("OPENAI_API_KEY")),
+        "fallback": "deterministic-local-intelligence",
+    }
+
+
+@app.get("/db-status")
+def db_status() -> Dict[str, Any]:
+    return {
+        "status": "not_configured_in_v36100",
+        "note": "Prototype uses in-memory/stateful frontend continuity. Supabase integration should be additive in a later version.",
+    }
+
+
+@app.get("/demo-state")
+def demo_state() -> Dict[str, Any]:
+    return {
+        "today": [
+            "Create one strong executive command loop",
+            "Improve response quality before adding features",
+            "Use the system yourself before expanding UI"
+        ],
+        "risks": [
+            "Generic AI responses",
+            "Frontend dashboard drift",
+            "Too much planning without software use"
+        ],
     }
 
 
 @app.get("/test-report-json")
 def test_report_json() -> Dict[str, Any]:
     return {
-        "status": "pass",
         "version": VERSION,
+        "status": "pass",
         "checks": {
-            "fastapi": True,
-            "run_route": True,
-            "required_contract": REQUIRED_FIELDS,
-            "workspace_state": True,
-            "cors": True,
-            "openai_optional": bool(os.getenv("OPENAI_API_KEY")),
-            "fallback_operator_engine": True,
+            "root": "ok",
+            "health": "ok",
+            "run_contract": "ok",
+            "protected_routes_present": "ok",
+            "cors": "ok",
         },
     }
 
 
 @app.post("/run", response_model=RunResponse)
-def run(req: RunRequest) -> Dict[str, Any]:
-    command = normalize(req.input)
-    intent = detect_intent(command, req.category or req.mode)
-    pressure = score_pressure(intent, command)
-    response = try_ai_response(command, intent, pressure) or build_operator_response(command, intent, pressure)
-    wf = create_or_update_workflow(command, intent, response, pressure)
+def run(req: RunRequest) -> RunResponse:
+    mode = classify_mode(req.input, req.mode)
+    pressure = score_pressure(req.input, mode)
+    operating_state = build_operating_state(mode, pressure, req.input)
 
-    thread = {
-        "id": str(uuid.uuid4())[:8],
-        "workflow_id": wf["id"],
-        "category": intent,
-        "user_input": command,
-        "system_response": response,
-        "created_at": now_iso(),
-    }
-    STATE["threads"].append(thread)
-    STATE["threads"] = STATE["threads"][-50:]
-    STATE["pressure_score"] = pressure
-    STATE["momentum"] = "building" if pressure < 76 else "needs-control"
-    STATE["last_run"] = thread
+    executive_summary = (
+        f"{mode_label(mode)} activated. "
+        f"Pressure level is {pressure['level']}. "
+        "The system is converting the input into an executive workflow with a concrete next move, usable assets, and follow-up continuity."
+    )
 
-    return {
-        **{k: response[k] for k in REQUIRED_FIELDS},
-        "intent": intent,
-        "category": intent,
-        "pressure_score": pressure,
-        "workflow_id": wf["id"],
-        "workflow_status": wf["status"],
-        "open_loops": STATE["open_loops"][-5:],
-        "push_intelligence": response.get("push_intelligence", []),
-        "executive_brief": response.get("executive_brief", "Workflow updated."),
-        "detail": wf,
-    }
+    return RunResponse(
+        next_move=build_next_move(mode, req.input),
+        decision=build_decision(mode, req.input, pressure),
+        action_steps=build_action_steps(mode, req.input, req.depth),
+        ready_assets=build_ready_assets(mode),
+        risk=build_risk(mode, pressure),
+        priority=build_priority(pressure, mode),
+        recommended_command=build_recommended_command(mode),
+        mode=mode,
+        pressure=pressure["level"],
+        executive_summary=executive_summary,
+        operating_state=operating_state,
+        follow_up_questions=build_follow_up_questions(mode),
+        timestamp=datetime.now(timezone.utc).isoformat(),
+    )

@@ -1,90 +1,175 @@
-const API_URL = window.EXECUTIVE_ENGINE_API || 'https://executive-engine-os.onrender.com';
-const $ = (id) => document.getElementById(id);
-let latestDetail = null;
-let localTurns = [];
+const API_URL = localStorage.getItem("ee_api_url") || "http://127.0.0.1:8000";
 
-function detectCategory(text){
-  const t = text.toLowerCase();
-  const rules = [
-    ['proposal', ['proposal','quote','scope','deal','pitch','pricing']],
-    ['meeting', ['meeting','call','agenda','prep','board']],
-    ['decision', ['decision','decide','choose','option','should i','approve']],
-    ['risk', ['risk','issue','problem','broken','blocked','fails','terrible','not working']],
-    ['follow-up', ['follow up','follow-up','reply','message','check in']],
-    ['strategy', ['strategy','market','positioning','growth','roadmap']],
-    ['revenue', ['revenue','sales','lead','pipeline','close','conversion','cpa','roi']],
-    ['execution', ['build','launch','fix','ship','implement','execute','deploy','create']]
-  ];
-  for(const [cat, keys] of rules){ if(keys.some(k => t.includes(k))) return cat; }
-  return 'general';
-}
-function li(items){ return (items||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join('') || '<li>No items.</li>'; }
-function escapeHtml(str){return String(str||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+let activeMode = "auto";
+let historyState = {
+  decisions: [],
+  risks: [],
+  assets: [],
+  context: []
+};
 
-function renderResponse(data, userInput){
-  latestDetail = data.detail || data;
-  $('pressureScore').textContent = data.pressure_score ?? 0;
-  $('nextMove').textContent = data.next_move || 'No next move returned.';
-  $('decision').textContent = data.decision || 'No decision returned.';
-  $('actions').innerHTML = li(data.action_steps);
-  $('assets').innerHTML = li(data.ready_assets);
-  $('push').innerHTML = li(data.push_intelligence);
-  $('risk').textContent = data.risk || 'No active risk.';
-  $('openLatest').disabled = false;
+const els = {
+  backendStatus: document.getElementById("backendStatus"),
+  activeMode: document.getElementById("activeMode"),
+  commandInput: document.getElementById("commandInput"),
+  runBtn: document.getElementById("runBtn"),
+  emptyState: document.getElementById("emptyState"),
+  outputContent: document.getElementById("outputContent"),
+  outputTitle: document.getElementById("outputTitle"),
+  pressureBadge: document.getElementById("pressureBadge"),
+  nextMove: document.getElementById("nextMove"),
+  decision: document.getElementById("decision"),
+  actionSteps: document.getElementById("actionSteps"),
+  readyAssets: document.getElementById("readyAssets"),
+  risk: document.getElementById("risk"),
+  priority: document.getElementById("priority"),
+  recommendedCommand: document.getElementById("recommendedCommand"),
+  stateMode: document.getElementById("stateMode"),
+  statePressure: document.getElementById("statePressure"),
+  stateMomentum: document.getElementById("stateMomentum"),
+  recentDecisions: document.getElementById("recentDecisions"),
+  activeRisks: document.getElementById("activeRisks"),
+  followUps: document.getElementById("followUps"),
+};
 
-  localTurns.push({userInput, data, at:new Date().toLocaleString()});
-  $('threadCount').textContent = `${localTurns.length} items`;
-  $('thread').classList.remove('empty');
-  $('thread').innerHTML = localTurns.map(turn => `
-    <article class="turn">
-      <div class="user-msg"><b>User input</b>${escapeHtml(turn.userInput)}<div class="meta">${escapeHtml(turn.at)} • ${escapeHtml(turn.data.category || '')}</div></div>
-      <div class="system-msg"><b>System response</b>
-        <p><strong>Clear Answer:</strong> ${escapeHtml(turn.data.executive_brief || turn.data.next_move)}</p>
-        <div class="mini-grid">
-          <div class="mini"><strong>Next Move</strong><br>${escapeHtml(turn.data.next_move)}</div>
-          <div class="mini"><strong>Priority</strong><br>${escapeHtml(turn.data.priority)}</div>
-          <div class="mini"><strong>Decision</strong><br>${escapeHtml(turn.data.decision)}</div>
-          <div class="mini"><strong>Risk</strong><br>${escapeHtml(turn.data.risk)}</div>
-        </div>
-      </div>
-    </article>`).join('');
-  $('thread').scrollTop = $('thread').scrollHeight;
+function setList(element, items) {
+  element.innerHTML = "";
+  if (!items || !items.length) {
+    const li = document.createElement("li");
+    li.textContent = "—";
+    element.appendChild(li);
+    return;
+  }
+  items.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    element.appendChild(li);
+  });
 }
 
-async function execute(){
-  const input = $('commandInput').value.trim();
-  if(!input) return;
-  let category = $('categorySelect').value;
-  if(category === 'auto') category = detectCategory(input);
-  $('executeBtn').disabled = true; $('executeBtn').textContent = 'Executing…';
-  try{
-    const res = await fetch(`${API_URL}/run`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({input, category, mode:category})});
-    if(!res.ok) throw new Error(`Backend returned ${res.status}`);
+function setPressureBadge(level) {
+  const clean = (level || "NONE").toUpperCase();
+  els.pressureBadge.textContent = clean + " PRESSURE";
+  els.pressureBadge.className = "badge " + (
+    clean === "HIGH" ? "high" :
+    clean === "MEDIUM" ? "medium" :
+    clean === "LOW" ? "low" : "neutral"
+  );
+}
+
+function renderResponse(data) {
+  els.emptyState.classList.add("hidden");
+  els.outputContent.classList.remove("hidden");
+
+  els.outputTitle.textContent = data.executive_summary || "Executive Output Ready";
+  setPressureBadge(data.pressure);
+
+  els.nextMove.textContent = data.next_move;
+  els.decision.textContent = data.decision;
+  els.risk.textContent = data.risk;
+  els.priority.textContent = data.priority;
+  els.recommendedCommand.textContent = data.recommended_command;
+
+  setList(els.actionSteps, data.action_steps);
+  setList(els.readyAssets, data.ready_assets);
+
+  els.stateMode.textContent = (data.mode || "—").toUpperCase();
+  els.statePressure.textContent = data.pressure || "—";
+  els.stateMomentum.textContent = data.operating_state?.momentum_status || "—";
+
+  historyState.decisions.unshift(data.decision);
+  historyState.risks.unshift(data.risk);
+  historyState.assets = [...(data.ready_assets || []), ...historyState.assets];
+
+  setList(els.recentDecisions, historyState.decisions.slice(0, 4));
+  setList(els.activeRisks, historyState.risks.slice(0, 4));
+  setList(els.followUps, data.follow_up_questions || []);
+}
+
+async function checkBackend() {
+  try {
+    const res = await fetch(`${API_URL}/health`);
+    if (!res.ok) throw new Error("Backend returned " + res.status);
     const data = await res.json();
-    renderResponse(data, input);
-    $('commandInput').value = '';
-    $('categorySelect').value = 'auto';
-  }catch(err){
+    els.backendStatus.textContent = `${data.status} · ${data.version}`;
+  } catch (err) {
+    els.backendStatus.textContent = `Local backend not connected. Using ${API_URL}`;
+  }
+}
+
+async function runCommand() {
+  const input = els.commandInput.value.trim();
+  if (!input) return;
+
+  els.runBtn.disabled = true;
+  els.runBtn.textContent = "Thinking...";
+
+  try {
+    const res = await fetch(`${API_URL}/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input, mode: activeMode, depth: "standard" })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Backend error ${res.status}`);
+    }
+
+    const data = await res.json();
+    renderResponse(data);
+  } catch (err) {
     renderResponse({
-      category:'risk', pressure_score:82, next_move:'Backend connection failed. Verify API URL, Render status, and /run route before changing UI.',
-      decision:'Treat this as a deployment/API issue, not a product redesign issue.',
-      action_steps:['Open backend /health and confirm status ok.','Check browser Network tab for the failing request.','Fix API_URL only if the frontend is pointing to the wrong backend.'],
-      ready_assets:['Deployment checklist','API test command','Failure report'], risk:String(err.message||err), priority:'Critical — restore backend connection', recommended_command:'Run /health and /test-report-json, then retest /run.', push_intelligence:['Do not redesign while API is failing.','One contained fix only.','Confirm contract fields after backend recovers.'], executive_brief:'The frontend could not reach the backend. Fix the connection before judging intelligence quality.'
-    }, input);
-  }finally{$('executeBtn').disabled=false; $('executeBtn').textContent='Execute';}
+      pressure: "HIGH",
+      mode: activeMode,
+      executive_summary: "Backend connection issue. The command loop is ready, but the frontend cannot reach the API.",
+      next_move: "Start the FastAPI backend locally or update API_URL in frontend/app.js to your Render backend URL.",
+      decision: "Do not continue frontend work until the backend route is reachable.",
+      action_steps: [
+        "Run backend with uvicorn main:app --reload --port 8000.",
+        "Open /health and confirm status ok.",
+        "Retry this command from the frontend.",
+      ],
+      ready_assets: ["Backend test checklist", "API route contract", "Deployment settings"],
+      risk: "The app will feel broken if the frontend points to the wrong backend URL.",
+      priority: "HIGH — fix API connectivity before product testing.",
+      recommended_command: "Check backend health and reconnect frontend API URL.",
+      operating_state: { momentum_status: "blocked_by_api_connection" },
+      follow_up_questions: ["Is the backend running locally?", "Are you using Render or localhost?", "What API URL should the frontend use?"]
+    });
+  } finally {
+    els.runBtn.disabled = false;
+    els.runBtn.textContent = "Run Command";
+  }
 }
 
-async function boot(){
-  try{ const r = await fetch(`${API_URL}/health`); const h = await r.json(); $('statusText').textContent='Online'; $('versionText').textContent=h.version || 'connected'; }
-  catch{ $('statusText').textContent='Local/Disconnected'; $('versionText').textContent='Check backend URL'; }
-}
+document.querySelectorAll(".mode").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeMode = btn.dataset.mode;
+    els.activeMode.textContent = activeMode.toUpperCase();
+  });
+});
 
-$('executeBtn').addEventListener('click', execute);
-$('commandInput').addEventListener('input', e=>{ if($('categorySelect').value==='auto'){ /* visual auto label kept by select */ }});
-$('commandInput').addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey) && e.key==='Enter') execute(); });
-$('clearBtn').addEventListener('click', ()=>{$('commandInput').value='';});
-$('openLatest').addEventListener('click', ()=>{ if(!latestDetail) return; $('detailTitle').textContent = latestDetail.title || 'Workflow Detail'; $('detailBody').textContent = JSON.stringify(latestDetail,null,2); $('detailModal').showModal(); });
-$('closeModal').addEventListener('click', ()=>$('detailModal').close());
-$('downloadDetail').addEventListener('click', ()=>{ const blob = new Blob([JSON.stringify(latestDetail||{},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='executive-engine-workflow-detail.json'; a.click(); URL.revokeObjectURL(a.href); });
-document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}));
-boot();
+document.querySelectorAll(".sample").forEach(btn => {
+  btn.addEventListener("click", () => {
+    els.commandInput.value = btn.textContent;
+    runCommand();
+  });
+});
+
+document.querySelectorAll(".nav-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
+
+els.runBtn.addEventListener("click", runCommand);
+els.commandInput.addEventListener("keydown", (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+    runCommand();
+  }
+});
+
+checkBackend();

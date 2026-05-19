@@ -1,82 +1,75 @@
-# Executive Engine OS — V36160 Executive Advantage Prototype
+# Executive Engine OS — V36100 Working Prototype
 
-Full working prototype package for GitHub/Render testing.
+## Purpose
+This is a lean working prototype focused on the first real useful loop:
+
+`command -> intelligence routing -> executive output -> follow-up -> operational continuity`
+
+It is not a dashboard mockup. It is a working frontend + FastAPI backend that preserves the core idea of Executive Engine OS as a push-first executive operating layer.
 
 ## Files
 
-- `backend/main.py` — FastAPI backend with `/run`, `/health`, `/workspace-state`, `/test-report-json`
-- `backend/requirements.txt` — Python dependencies
-- `frontend/index.html` — static frontend
-- `frontend/style.css` — frontend styling
-- `frontend/app.js` — frontend controller
+```text
+backend/main.py
+backend/requirements.txt
+frontend/index.html
+frontend/styles.css
+frontend/app.js
+README.md
+TEST_CHECKLIST.md
+```
 
-## What this build does
+## Local Run
 
-- Preserves the required `/run` output contract:
-  - `next_move`
-  - `decision`
-  - `action_steps`
-  - `ready_assets`
-  - `risk`
-  - `priority`
-  - `recommended_command`
-- Adds intent/category routing.
-- Creates workflow records from each command.
-- Tracks open loops, risks, assets, decisions, pressure score, and operating thread.
-- Includes optional OpenAI routing when `OPENAI_API_KEY` exists.
-- Uses a deterministic operator-grade fallback when OpenAI is not configured.
-- Frontend keeps the 4-column operating structure and connects to `/run`.
-
-## Backend local run
-
+### Backend
 ```bash
 cd backend
 pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload --port 8000
 ```
 
+Backend local URL:
+```text
+http://127.0.0.1:8000
+```
+
+### Frontend
 Open:
-
 ```text
-http://localhost:8000/health
+frontend/index.html
 ```
 
-## Frontend local run
+Or serve it:
+```bash
+cd frontend
+python -m http.server 5173
+```
 
-Open `frontend/index.html` in browser, or serve it with any static host.
-
-By default it calls:
-
+Frontend local URL:
 ```text
-https://executive-engine-os.onrender.com
+http://127.0.0.1:5173
 ```
 
-To test local backend, edit `frontend/app.js`:
+## Render Deployment
 
-```js
-const API_URL = 'http://localhost:8000';
-```
-
-## Render deployment
-
-Backend:
-
+### Backend Render Settings
 - Root directory: `backend`
 - Build command: `pip install -r requirements.txt`
 - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 
-Frontend:
-
+### Frontend Render Settings
 - Root directory: `frontend`
-- Static publish directory: `.`
+- Publish directory: `.`
+- Build command: leave blank for static site
 
-## Optional AI
+## Environment Variables
 
-Set environment variable:
-
+Optional:
 ```text
 OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-4o-mini
 ```
 
-If no key exists, the fallback engine still works.
+If no OpenAI key exists, backend uses deterministic local executive intelligence logic so the app still works.
+
+## Version
+V36100 — Executive Workflow & Intelligence Working Prototype

@@ -2,76 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Executive Engine OS</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Executive Engine OS — V36100</title>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="shell">
+  <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
         <div class="mark">EE</div>
-        <div><strong>Executive Engine</strong><span>Command OS</span></div>
+        <div>
+          <h1>Executive Engine</h1>
+          <p>V36100 Working Prototype</p>
+        </div>
       </div>
-      <nav>
-        <button class="nav active" data-view="command">Command Centre</button>
-        <button class="nav" data-view="workflows">Active Workflows</button>
-        <button class="nav" data-view="meetings">Meetings</button>
-        <button class="nav" data-view="proposals">Proposals</button>
-        <button class="nav" data-view="decisions">Decisions</button>
-        <button class="nav" data-view="risks">Risks</button>
+
+      <nav class="nav">
+        <button class="nav-item active" data-section="command">Command Center</button>
+        <button class="nav-item" data-section="decisions">Decisions</button>
+        <button class="nav-item" data-section="assets">Ready Assets</button>
+        <button class="nav-item" data-section="risks">Risks</button>
+        <button class="nav-item" data-section="context">Context</button>
       </nav>
-      <div class="system-card"><span>System</span><strong id="statusText">Connecting…</strong><small id="versionText">—</small></div>
+
+      <div class="system-card">
+        <span class="live-dot"></span>
+        <div>
+          <strong>System Live</strong>
+          <p id="backendStatus">Checking backend...</p>
+        </div>
+      </div>
     </aside>
 
     <main class="main">
-      <section class="hero">
+      <header class="topbar">
         <div>
-          <p class="eyebrow">Welcome back, Will.</p>
-          <h1>Command Centre</h1>
+          <p class="eyebrow">Push-first executive operating layer</p>
+          <h2>What are we trying to win today?</h2>
         </div>
-        <div class="pressure"><span>Pressure</span><strong id="pressureScore">0</strong></div>
+        <div class="mode-pill" id="activeMode">AUTO</div>
+      </header>
+
+      <section class="command-panel">
+        <div class="mode-row">
+          <button class="mode active" data-mode="auto">Auto</button>
+          <button class="mode" data-mode="meeting">Meeting</button>
+          <button class="mode" data-mode="proposal">Proposal</button>
+          <button class="mode" data-mode="execution">Execution</button>
+          <button class="mode" data-mode="strategy">Strategy</button>
+          <button class="mode" data-mode="decision">Decision</button>
+          <button class="mode" data-mode="revenue">Revenue</button>
+        </div>
+
+        <div class="input-wrap">
+          <textarea id="commandInput" placeholder="Example: I have a client meeting tomorrow with a dealership owner. I need to win a marketing retainer and show them why they are losing leads."></textarea>
+          <button id="runBtn">Run Command</button>
+        </div>
+
+        <div class="sample-row">
+          <button class="sample">Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.</button>
+          <button class="sample">I have a meeting tomorrow and need to win a retainer.</button>
+          <button class="sample">Help me decide what to build next without wasting more time.</button>
+        </div>
       </section>
 
-      <section class="command-card">
-        <label for="commandInput">What do we need to accomplish?</label>
-        <textarea id="commandInput" rows="3" placeholder="Example: Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."></textarea>
-        <div class="command-actions">
-          <button id="clearBtn" class="secondary">Clear</button>
-          <div class="category-box"><span>Category</span><select id="categorySelect">
-            <option value="auto">Auto select</option><option value="execution">Execution</option><option value="meeting">Meeting</option><option value="proposal">Proposal</option><option value="decision">Decision</option><option value="strategy">Strategy</option><option value="risk">Risk</option><option value="follow-up">Follow-up</option><option value="revenue">Revenue</option><option value="general">General</option>
-          </select></div>
-          <button id="executeBtn" class="primary">Execute</button>
-        </div>
-      </section>
+      <section class="workspace">
+        <div class="primary-output">
+          <div class="output-header">
+            <div>
+              <p class="eyebrow">Executive Output</p>
+              <h3 id="outputTitle">Awaiting command</h3>
+            </div>
+            <span id="pressureBadge" class="badge neutral">NO PRESSURE</span>
+          </div>
 
-      <section class="grid-four">
-        <div class="panel tall">
-          <div class="panel-head"><h2>Operating Thread</h2><span id="threadCount">0 items</span></div>
-          <div id="thread" class="thread empty">Enter a command to create the first executive workflow.</div>
+          <div id="emptyState" class="empty-state">
+            Enter a command. Executive Engine will classify the intent, assess pressure, generate next action, create assets, and preserve workflow continuity.
+          </div>
+
+          <div id="outputContent" class="output-content hidden">
+            <article class="block">
+              <h4>Next Move</h4>
+              <p id="nextMove"></p>
+            </article>
+
+            <article class="block">
+              <h4>Decision</h4>
+              <p id="decision"></p>
+            </article>
+
+            <article class="block">
+              <h4>Action Steps</h4>
+              <ol id="actionSteps"></ol>
+            </article>
+
+            <article class="block">
+              <h4>Ready Assets</h4>
+              <ul id="readyAssets"></ul>
+            </article>
+
+            <article class="block">
+              <h4>Risk</h4>
+              <p id="risk"></p>
+            </article>
+
+            <article class="block">
+              <h4>Priority</h4>
+              <p id="priority"></p>
+            </article>
+
+            <article class="block accent">
+              <h4>Recommended Command</h4>
+              <p id="recommendedCommand"></p>
+            </article>
+          </div>
         </div>
-        <div class="panel">
-          <h2>Next Move</h2><p id="nextMove">No active command yet.</p>
-          <h2>Decision</h2><p id="decision">Awaiting operational input.</p>
-        </div>
-        <div class="panel">
-          <h2>Action Workspace</h2><ul id="actions"><li>No actions yet.</li></ul>
-          <h2>Ready Assets</h2><ul id="assets"><li>No assets prepared yet.</li></ul>
-        </div>
-        <div class="panel">
-          <h2>Push Intelligence</h2><ul id="push"><li>No push signals yet.</li></ul>
-          <h2>Risk Monitor</h2><p id="risk">No active risk.</p>
-          <button id="openLatest" class="secondary full" disabled>Open Latest Detail</button>
-        </div>
+
+        <aside class="intel-panel">
+          <div class="intel-card">
+            <h4>Operating State</h4>
+            <dl>
+              <dt>Mode</dt><dd id="stateMode">—</dd>
+              <dt>Pressure</dt><dd id="statePressure">—</dd>
+              <dt>Momentum</dt><dd id="stateMomentum">—</dd>
+            </dl>
+          </div>
+
+          <div class="intel-card">
+            <h4>Recent Decisions</h4>
+            <ul id="recentDecisions" class="compact-list">
+              <li>No decisions yet.</li>
+            </ul>
+          </div>
+
+          <div class="intel-card">
+            <h4>Active Risks</h4>
+            <ul id="activeRisks" class="compact-list">
+              <li>No active risks yet.</li>
+            </ul>
+          </div>
+
+          <div class="intel-card">
+            <h4>Follow-up Questions</h4>
+            <ul id="followUps" class="compact-list">
+              <li>System will generate these after command.</li>
+            </ul>
+          </div>
+        </aside>
       </section>
     </main>
   </div>
 
-  <dialog id="detailModal">
-    <div class="modal-head"><h2 id="detailTitle">Workflow Detail</h2><button id="closeModal">×</button></div>
-    <pre id="detailBody"></pre>
-    <button id="downloadDetail" class="primary">Download Detail JSON</button>
-  </dialog>
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
