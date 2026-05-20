@@ -1,22 +1,20 @@
 
-V36730 — EXECUTION MEMORY + CONTINUITY ENGINE
+V36740 — REVENUE INTELLIGENCE ENGINE
 
-Purpose:
-Transform Executive Engine into persistent operational continuity infrastructure.
+Backend-only intelligence expansion.
 
-Core Systems:
-- execution memory layer
-- continuity engine
-- pressure memory
-- execution state tracking
-- operational history
-- context weighting
-- execution resumption
-- thread tracking
-- memory decay
+Adds:
+- Revenue inference
+- ROI prioritization
+- Monetization detection
+- Automation leverage
+- Delegation inference
+- Revenue execution sequencing
+- Conversion bottleneck detection
+- Operational waste detection
 
-Drop these modules into:
+Install Path:
 backend/intelligence/
 
-Next:
-Integrate into /run pipeline and workspace persistence layer.
+Next Recommended Build:
+V36750 — Market + Industry Context Engine

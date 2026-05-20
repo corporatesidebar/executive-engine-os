@@ -1,0 +1,1 @@
+# Detects scalable monetization opportunities

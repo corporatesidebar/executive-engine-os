@@ -1,0 +1,28 @@
+
+# V36740 — Revenue Intelligence Engine Patch
+
+REQUIRED RESPONSE FIELDS:
+- executive_summary
+- revenue_diagnosis
+- real_business_problem
+- highest_roi_move
+- fast_cash_opportunity
+- operational_waste
+- delegation_opportunities
+- automation_opportunities
+- scalable_assets
+- execution_plan
+- revenue_execution_sequence
+- generated_revenue_assets
+- tools_and_resources
+- estimated_time_to_revenue
+- estimated_revenue_impact
+- risk_control
+- next_best_revenue_move
+- follow_up_command
+- operator_mode
+- pressure_level
+- status
+
+PURPOSE:
+Convert Executive Engine into revenue acceleration infrastructure.
