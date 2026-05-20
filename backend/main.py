@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import os
 
-from intelligence.execution_infrastructure import build_execution_response
+from intelligence.execution_operating_engine import build_execution_operating_response
 from intelligence.state_store import load_workspace, save_execution_state
 
-APP_VERSION = "V36640-V36700-Output-First-Executive-Infrastructure"
+APP_VERSION = "V36710-Execution-Operating-Engine"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -37,7 +37,8 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "output_first_executive_execution_infrastructure"
+        "engine": "execution_operating_engine",
+        "purpose": "turn executive inputs into operational systems, assets, decisions, leverage, and action"
     }
 
 @app.get("/health")
@@ -45,14 +46,14 @@ def health():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "openai_configured": bool(OPENAI_API_KEY),
+        "openai_configured": bool(OPENAI_API_KEY)
     }
 
 @app.post("/run")
 def run(req: RunRequest):
     workspace = load_workspace(req.workspace_id or "default", req.user_id or "will")
 
-    response = build_execution_response(
+    response = build_execution_operating_response(
         user_input=req.input,
         mode=req.mode or "execution",
         brain=req.brain or "operator",
@@ -86,14 +87,12 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36640-V36700",
-            "POST /run returns output-first response",
-            "Response includes executive_scan",
-            "Response includes operational_depth",
-            "Response includes execution_assets",
-            "Response includes resource_links",
-            "Response includes stop_doing",
-            "Response preserves existing /run contract"
+            "GET /health returns V36710",
+            "POST /run returns original frontend-compatible contract",
+            "POST /run returns new execution operating fields",
+            "Overload input creates stop/delegate/action system",
+            "Revenue input creates monetization path and assets",
+            "Proposal input creates proposal structure and tools"
         ],
         "test_commands": [
             "I have too many projects and feel overwhelmed.",

@@ -22,14 +22,15 @@ def default_workspace(workspace_id: str, user_id: str) -> dict:
         "active_execution": None,
         "recent_runs": [],
         "decisions": [],
-        "assets": [],
-        "paused_items": [],
+        "generated_assets": [],
+        "stop_list": [],
+        "delegate_list": [],
         "resource_history": [],
         "operator_state": {
-            "pressure": "Normal",
-            "current_focus": None,
+            "pressure_level": "Normal",
+            "operator_mode": None,
+            "current_execution": None,
             "next_move": None,
-            "revenue_path": None,
         }
     }
 
@@ -56,46 +57,56 @@ def save_workspace(workspace: dict):
 def save_execution_state(workspace_id: str, user_id: str, user_input: str, response: dict):
     workspace = load_workspace(workspace_id, user_id)
 
-    run = {
+    workspace["recent_runs"].append({
         "created_at": now_iso(),
         "input": user_input[:700],
+        "operator_mode": response.get("operator_mode"),
+        "pressure_level": response.get("pressure_level"),
         "decision": response.get("decision"),
         "next_move": response.get("next_move"),
-        "priority": response.get("priority"),
         "risk": response.get("risk"),
-    }
-
-    workspace["recent_runs"].append(run)
-    workspace["recent_runs"] = workspace["recent_runs"][-40:]
+    })
+    workspace["recent_runs"] = workspace["recent_runs"][-50:]
 
     workspace["decisions"].append({
         "created_at": now_iso(),
         "decision": response.get("decision"),
-        "recommended_command": response.get("recommended_command"),
-        "risk": response.get("risk"),
+        "real_problem": response.get("real_problem"),
+        "highest_leverage_move": response.get("highest_leverage_move"),
+        "follow_up_command": response.get("follow_up_command") or response.get("recommended_command"),
     })
     workspace["decisions"] = workspace["decisions"][-75:]
 
-    for asset in response.get("ready_assets", [])[:5]:
-        workspace["assets"].append({
+    for asset in response.get("generated_assets", [])[:5]:
+        workspace["generated_assets"].append({
             "created_at": now_iso(),
-            "content": str(asset)[:3000],
+            "content": str(asset)[:4000],
         })
-    workspace["assets"] = workspace["assets"][-75:]
+    workspace["generated_assets"] = workspace["generated_assets"][-75:]
 
-    for item in response.get("stop_doing", []):
-        if item and item not in workspace["paused_items"]:
-            workspace["paused_items"].append(item)
-    workspace["paused_items"] = workspace["paused_items"][-50:]
+    for item in response.get("what_to_stop", []):
+        if item and item not in workspace["stop_list"]:
+            workspace["stop_list"].append(item)
+    workspace["stop_list"] = workspace["stop_list"][-75:]
 
-    for r in response.get("resource_links", []):
+    for item in response.get("what_to_delegate", []):
+        if item and item not in workspace["delegate_list"]:
+            workspace["delegate_list"].append(item)
+    workspace["delegate_list"] = workspace["delegate_list"][-75:]
+
+    for r in response.get("tools_and_resources", []):
         workspace["resource_history"].append(r)
     workspace["resource_history"] = workspace["resource_history"][-100:]
 
-    workspace["active_execution"] = response.get("operational_depth")
-    workspace["operator_state"]["pressure"] = response.get("executive_scan", {}).get("pressure", "High")
-    workspace["operator_state"]["current_focus"] = response.get("executive_scan", {}).get("dominant_insight")
+    workspace["active_execution"] = {
+        "executive_summary": response.get("executive_summary"),
+        "execution_sequence": response.get("execution_sequence"),
+        "time_to_value": response.get("time_to_value"),
+    }
+
+    workspace["operator_state"]["pressure_level"] = response.get("pressure_level")
+    workspace["operator_state"]["operator_mode"] = response.get("operator_mode")
+    workspace["operator_state"]["current_execution"] = response.get("executive_summary")
     workspace["operator_state"]["next_move"] = response.get("next_move")
-    workspace["operator_state"]["revenue_path"] = response.get("operational_depth", {}).get("revenue_path")
 
     save_workspace(workspace)
