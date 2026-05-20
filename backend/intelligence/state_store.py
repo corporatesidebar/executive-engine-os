@@ -19,15 +19,20 @@ def default_workspace(workspace_id: str, user_id: str) -> dict:
         "user_id": user_id,
         "created_at": now_iso(),
         "updated_at": now_iso(),
-        "deployment_history": [],
-        "send_ready_assets": [],
-        "export_ready_assets": [],
-        "implementation_checklists": [],
+        "active_projects": [],
+        "active_decisions": [],
+        "execution_objects": [],
+        "generated_assets": [],
+        "follow_up_items": [],
+        "revenue_lanes": [],
+        "stalled_workflows": [],
+        "people_companies": [],
         "operator_state": {
-            "last_deployment_asset": None,
-            "last_next_move": None,
             "current_focus": None,
-            "pressure_level": "Normal",
+            "active_pressure": "Normal",
+            "last_object_type": None,
+            "last_next_move": None,
+            "last_command": None,
         }
     }
 
@@ -51,39 +56,51 @@ def save_workspace(workspace: dict):
     with open(path(workspace["workspace_id"], workspace["user_id"]), "w", encoding="utf-8") as f:
         json.dump(workspace, f, indent=2, ensure_ascii=False)
 
-def save_deployment_state(workspace_id: str, user_id: str, user_input: str, response: dict):
+def save_structured_execution_state(workspace_id: str, user_id: str, user_input: str, response: dict):
     workspace = load_workspace(workspace_id, user_id)
 
-    record = {
-        "created_at": now_iso(),
-        "input": user_input[:1000],
-        "executive_summary": response.get("executive_summary"),
-        "next_move": response.get("next_move"),
-        "primary_asset_title": response.get("primary_asset", {}).get("title") if isinstance(response.get("primary_asset"), dict) else None,
-        "follow_up_command": response.get("follow_up_command") or response.get("recommended_command"),
-    }
-
-    workspace["deployment_history"].append(record)
-    workspace["deployment_history"] = workspace["deployment_history"][-75:]
-
-    for asset in response.get("send_ready_assets", []):
-        workspace["send_ready_assets"].append({"created_at": now_iso(), "asset": asset})
-    workspace["send_ready_assets"] = workspace["send_ready_assets"][-75:]
-
-    for asset in response.get("export_ready_assets", []):
-        workspace["export_ready_assets"].append({"created_at": now_iso(), "asset": asset})
-    workspace["export_ready_assets"] = workspace["export_ready_assets"][-75:]
-
-    if response.get("implementation_checklist"):
-        workspace["implementation_checklists"].append({
+    objects = response.get("execution_objects", []) or []
+    for obj in objects:
+        workspace["execution_objects"].append({
             "created_at": now_iso(),
-            "items": response.get("implementation_checklist")
+            "object_type": obj.get("object_type"),
+            "title": obj.get("title"),
+            "status": obj.get("status", "generated"),
+            "payload": obj,
         })
-    workspace["implementation_checklists"] = workspace["implementation_checklists"][-75:]
 
-    workspace["operator_state"]["last_deployment_asset"] = record["primary_asset_title"]
+        if obj.get("object_type") in ["proposal", "outreach_sequence", "landing_page", "operating_system"]:
+            workspace["generated_assets"].append({
+                "created_at": now_iso(),
+                "title": obj.get("title"),
+                "object_type": obj.get("object_type"),
+                "payload": obj,
+            })
+
+        if obj.get("object_type") in ["revenue_lane", "offer", "pricing_model"]:
+            workspace["revenue_lanes"].append({
+                "created_at": now_iso(),
+                "title": obj.get("title"),
+                "payload": obj,
+            })
+
+        if obj.get("object_type") in ["follow_up_system", "deployment_checklist"]:
+            workspace["follow_up_items"].append({
+                "created_at": now_iso(),
+                "title": obj.get("title"),
+                "payload": obj,
+            })
+
+    workspace["execution_objects"] = workspace["execution_objects"][-150:]
+    workspace["generated_assets"] = workspace["generated_assets"][-100:]
+    workspace["follow_up_items"] = workspace["follow_up_items"][-100:]
+    workspace["revenue_lanes"] = workspace["revenue_lanes"][-75:]
+
+    scan = response.get("executive_scan", {}) or {}
+    workspace["operator_state"]["current_focus"] = scan.get("dominant_insight") or response.get("executive_summary")
+    workspace["operator_state"]["active_pressure"] = scan.get("pressure_level") or response.get("pressure_level", "High")
+    workspace["operator_state"]["last_object_type"] = objects[0].get("object_type") if objects else None
     workspace["operator_state"]["last_next_move"] = response.get("next_move")
-    workspace["operator_state"]["current_focus"] = response.get("executive_summary")
-    workspace["operator_state"]["pressure_level"] = response.get("pressure_level", "High")
+    workspace["operator_state"]["last_command"] = user_input[:1000]
 
     save_workspace(workspace)

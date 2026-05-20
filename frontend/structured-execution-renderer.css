@@ -1,0 +1,140 @@
+/* Executive Engine OS — V36800 Structured Execution Object Renderer CSS */
+
+.seo-response {
+  border: 1px solid rgba(15, 35, 60, 0.1);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(15, 35, 60, 0.08);
+  overflow: hidden;
+}
+
+.seo-scan {
+  padding: 26px 30px;
+  border-bottom: 1px solid rgba(15, 35, 60, 0.08);
+}
+
+.seo-kicker {
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #f36b16;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.seo-scan h2 {
+  margin: 0 0 18px;
+  font-size: clamp(23px, 2vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #07182d;
+}
+
+.seo-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.seo-scan-grid div {
+  border: 1px solid rgba(15, 35, 60, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  background: #fbfdff;
+}
+
+.seo-scan-grid strong {
+  display: block;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #65758b;
+  margin-bottom: 6px;
+}
+
+.seo-scan-grid span {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #102035;
+}
+
+.seo-objects {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+.seo-object {
+  border: 1px solid rgba(15, 35, 60, 0.1);
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.seo-object-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(15, 35, 60, 0.08);
+  background: #fbfdff;
+}
+
+.seo-object-type {
+  display: inline-flex;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-weight: 800;
+  color: #f36b16;
+  margin-bottom: 8px;
+}
+
+.seo-object-header h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #07182d;
+}
+
+.seo-object-body {
+  padding: 18px 20px 20px;
+}
+
+.seo-row {
+  margin-bottom: 16px;
+}
+
+.seo-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #65758b;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.seo-row p,
+.seo-row li {
+  font-size: 14.5px;
+  line-height: 1.48;
+  color: #142238;
+}
+
+.seo-row ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.seo-row pre {
+  white-space: pre-wrap;
+  border-radius: 12px;
+  background: #f6f8fb;
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .seo-scan-grid {
+    grid-template-columns: 1fr;
+  }
+}

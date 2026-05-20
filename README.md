@@ -1,36 +1,64 @@
-# Executive Engine OS — V36760 Deployment Engine
+# Executive Engine OS — V36800 Structured Execution Object Engine
 
-Backend-only build.
+Package type:
+- Backend upgrade
+- Frontend response renderer helper
+- Additive Supabase SQL
 
-## Purpose
+## What this fixes
 
-Turns Executive Engine from asset recommendation into deploy-ready execution infrastructure.
+The system was forcing operational intelligence into generic text cards. V36800 changes the product architecture so `/run` returns structured operational objects.
 
-## Adds
+## Backend returns
 
-- deployment_assets
-- send_ready_assets
-- export_ready_assets
-- implementation_checklist
-- primary_asset content
-- deployment package in ready_assets
-- no artificial compression or asset slicing
+- executive_scan
+- execution_objects
+- primary_object
+- deployment_sequence
+- memory_state
+- legacy frontend-compatible keys
 
-## Preserves
+## Object types supported
 
-- /run
-- /health
-- /engine-state
-- /test-report
-- frontend compatibility
-- UI/layout/navigation untouched
+- proposal
+- outreach_sequence
+- crm_pipeline
+- kpi_scorecard
+- deployment_checklist
+- landing_page
+- offer
+- pricing_model
+- operating_system
+- delegation_map
+- follow_up_system
 
-## Test Commands
+## Install backend
 
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+Deploy `/backend` to Render.
 
-How do I make Executive Engine profitable fastest?
+Start command:
 
-I have too many projects and feel overwhelmed.
+uvicorn main:app --host 0.0.0.0 --port $PORT
 
-Create a send-ready outreach campaign for Executive Engine.
+## Install frontend helper
+
+Add after existing CSS/JS only if you are ready to render structured objects:
+
+```html
+<link rel="stylesheet" href="./structured-execution-renderer.css">
+<script src="./structured-execution-renderer.js"></script>
+```
+
+Then, when `/run` returns data:
+
+```js
+if (data.renderer_mode === "structured_objects" && window.renderStructuredExecutionObjects) {
+  responseContainer.innerHTML = window.renderStructuredExecutionObjects(data);
+}
+```
+
+## Supabase
+
+Run `/supabase/v36800_structured_execution_objects.sql`.
+
+It is additive only.

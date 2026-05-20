@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import os
 
-from intelligence.deployment_engine import build_deployment_response
-from intelligence.state_store import load_workspace, save_deployment_state
+from intelligence.structured_execution_engine import build_structured_execution_response
+from intelligence.state_store import load_workspace, save_structured_execution_state
 
-APP_VERSION = "V36760-Deployment-Engine"
+APP_VERSION = "V36800-Structured-Execution-Object-Engine"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -26,7 +26,7 @@ class RunRequest(BaseModel):
     mode: Optional[str] = "execution"
     brain: Optional[str] = "operator"
     output_type: Optional[str] = "standard"
-    depth: Optional[str] = "detailed"
+    depth: Optional[str] = "auto"
     provider: Optional[str] = "openai"
     workspace_id: Optional[str] = "default"
     user_id: Optional[str] = "will"
@@ -37,8 +37,8 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "deployment_engine",
-        "purpose": "generate deploy-ready, send-ready, export-ready executive assets"
+        "engine": "structured_execution_object_engine",
+        "purpose": "return operational objects instead of generic text blocks"
     }
 
 @app.get("/health")
@@ -53,15 +53,18 @@ def health():
 def run(req: RunRequest):
     workspace = load_workspace(req.workspace_id or "default", req.user_id or "will")
 
-    response = build_deployment_response(
+    response = build_structured_execution_response(
         user_input=req.input,
         workspace=workspace,
         openai_api_key=OPENAI_API_KEY,
         model=OPENAI_MODEL,
-        depth=req.depth or "detailed",
+        depth=req.depth or "auto",
+        mode=req.mode or "execution",
+        brain=req.brain or "operator",
+        output_type=req.output_type or "standard",
     )
 
-    save_deployment_state(
+    save_structured_execution_state(
         workspace_id=req.workspace_id or "default",
         user_id=req.user_id or "will",
         user_input=req.input,
@@ -85,19 +88,19 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36760",
-            "POST /run preserves frontend-compatible keys",
-            "POST /run returns deployment_assets",
-            "POST /run returns send_ready_assets",
-            "POST /run returns export_ready_assets",
-            "POST /run returns implementation_checklist",
-            "No artificial array slicing in generated assets"
+            "GET /health returns V36800",
+            "POST /run returns executive_scan object",
+            "POST /run returns execution_objects array",
+            "POST /run returns frontend-compatible legacy keys",
+            "POST /run returns object types: proposal, outreach, crm_pipeline, kpi_scorecard, deployment_checklist, operating_system",
+            "Response renderer can render by object type",
+            "Supabase SQL is additive only"
         ],
         "test_commands": [
             "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
             "How do I make Executive Engine profitable fastest?",
-            "I have too many projects and feel overwhelmed.",
-            "Create a send-ready outreach campaign for Executive Engine."
+            "I need 10 clients for Executive Engine in 30 days.",
+            "I have too many projects and feel overwhelmed."
         ]
     }
 
