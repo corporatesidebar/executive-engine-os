@@ -1,27 +1,39 @@
-# Executive Engine OS — V36540 Strategic Inference Engine
+# Executive Engine OS — V36560 Executive Presence Engine
 
 Backend-only build.
 
 ## Purpose
 
-Fix the exact problem shown in testing:
+Add:
+- executive presence
+- response compression
+- authority
+- leverage prioritization
+- psychological awareness
+- commercial sharpness
+- contextual personality modes
 
-The system was organized but not strategically sharp.
+The engine now:
+- challenges wasted motion
+- compresses responses
+- shifts tone by context
+- forces momentum
+- prioritizes ruthlessly
 
-V36540 adds strategic inference:
+## Presence Modes
 
-- hidden bottleneck detection
-- leverage-point identification
-- wrong-move detection
-- commercial reasoning
-- operator instinct
-- generic language removal
-- proposal intelligence
-- strategic inference history
+- commercial
+- technical
+- ruthless
+- political
+- containment
+- executive
+- operator
 
-## What this does NOT touch
+## What This Does NOT Touch
 
-- frontend layout
+- frontend
+- layout
 - navigation
 - sidebars
 - columns
@@ -30,48 +42,21 @@ V36540 adds strategic inference:
 
 ## Verify
 
-Open:
-
-```text
 https://executive-engine-os.onrender.com/health
-```
 
 Expected:
+"version": "V36560-Executive-Presence-Engine"
 
-```json
-"version": "V36540-Strategic-Inference-Engine"
-```
+## Test Commands
 
-## Test command
-
-```text
 Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
-```
 
-Expected response should mention:
+Convert this into a specific executive operating brief with decision, next action, asset, risk, and follow-up command.
 
-- funded vehicle deals
-- finance-intent buyers
-- CPA control
-- Google Ads for immediate demand
-- SEO as 90-day cost-control layer
-- what NOT to sell
-- no generic “conduct analysis” filler
-
-## Required `/run` contract preserved
-
-- next_move
-- decision
-- action_steps
-- ready_assets
-- risk
-- priority
-- recommended_command
-- provider_used
-- status
-
-Additional fields:
-
-- strategic_inference
-- memory_context
-- version
+Expected:
+- compressed reasoning
+- sharper tone
+- executive language
+- less operational fluff
+- what NOT to do
+- leverage-first responses
