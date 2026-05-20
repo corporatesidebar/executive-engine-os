@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
 
-VERSION = "V36261-executive-response-engine-repack"
+VERSION = "V36410-middle-column-cognition-upgrade"
 REQUIRED_RUN_FIELDS = ["next_move","decision","action_steps","ready_assets","risk","priority","recommended_command"]
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
@@ -58,6 +58,34 @@ def executive_brain(command: str) -> Dict[str, Any]:
         "mode": mode,
         "brain": d["brain"],
     }
+
+    if any(x in c.lower() for x in ["costa rica", "move to", "relocate", "pr", "permanent residency", "residency"]):
+        out = {
+            "next_move": "Treat this as a relocation operating plan, not a job-search question. The fastest path is to separate income, residency eligibility, and local execution into three parallel tracks.",
+            "decision": "Do not move first and figure it out there. Build a 30-day relocation sprint: remote-income path, Costa Rica job path, and residency/legal path running at the same time.",
+            "action_steps": [
+                "Lock the target city and lifestyle budget first: San José, Escazú, Santa Ana, Tamarindo, or Jacó changes job options, rent, transport, and network access.",
+                "Choose the income lane: remote Canadian/US executive work is higher leverage than competing locally for lower-paying Costa Rican roles.",
+                "Build a relocation profile: executive resume, LinkedIn headline, short operator bio, proof of revenue/systems outcomes, and availability date.",
+                "Contact 10 Costa Rica-based recruiters, expat business owners, real estate operators, tourism groups, agencies, and international companies with a direct value pitch.",
+                "Book a 30-minute immigration consultation before applying for residency so you do not waste months on the wrong status path.",
+                "Create a 90-day cash runway and document checklist: passport, income proof, police check, birth certificate, apostilles, health insurance, bank statements.",
+                "Run the first trip as an intelligence mission: meetings, neighbourhoods, rent options, coworking, transportation, and employer/business network."
+            ],
+            "ready_assets": [
+                "30-Day Costa Rica Relocation Sprint",
+                "Executive Relocation Resume Angle",
+                "Recruiter/Founder Outreach Message",
+                "Residency Document Checklist",
+                "Target City Comparison Sheet",
+                "90-Day Cash Runway Plan",
+                "First-Trip Intelligence Agenda"
+            ],
+            "risk": "The main risk is confusing the dream with the operating plan. Costa Rica is achievable, but the failure point is income certainty and legal status, not motivation.",
+            "recommended_command": "Build my 30-day Costa Rica relocation sprint with job/income strategy, residency checklist, target cities, outreach messages, and first-week action plan."
+        }
+        out.update(base)
+        return out
     playbooks: Dict[str, Dict[str, Any]] = {
         "career": {
             "next_move": f"Turn '{subject}' into a revenue-focused executive job search sprint: target market, positioning, outreach, proof assets, and daily pipeline.",
@@ -183,20 +211,84 @@ def executive_brain(command: str) -> Dict[str, Any]:
     out = playbooks.get(mode, playbooks["command"]).copy(); out.update(base)
     return out
 
+def cognition_layers(command: str, base: Dict[str, Any]) -> Dict[str, Any]:
+    subject = extract_subject(command)
+    mode = detect(command)["mode"]
+    t = command.lower()
+    pressure = "High" if any(w in t for w in ["urgent", "asap", "tomorrow", "today", "behind", "stuck", "problem", "fix", "close", "deal", "move", "job", "residency"]) else "Medium"
+
+    if any(x in t for x in ["costa rica", "move to", "relocate", "residency", "pr", "permanent residency"]):
+        return {
+            "intent_detected": "relocation_career",
+            "pressure_level": pressure,
+            "operator_read": "This is not one problem. It is three linked problems: income, immigration status, and landing logistics. Solve them in parallel or the plan stalls.",
+            "why_this_matters": "Relocation fails when people chase location before stabilizing income and legal pathway. The executive move is to turn the dream into a controlled operating plan with dates, documents, outreach, and cash runway.",
+            "primary_risk": base.get("risk") or "Moving without income certainty, legal clarity, or a 90-day runway creates avoidable pressure and weak decisions.",
+            "hidden_risk": "Local jobs may pay materially less than Canadian/US executive or consulting work. The highest leverage path is usually remote/fractional income while building Costa Rica options.",
+            "leverage_move": "Position yourself as a North American operator who can help Costa Rica-connected businesses with growth, marketing, systems, and execution—not as a generic job seeker.",
+            "what_happens_next": "First, lock target city and budget. Second, build the executive relocation profile. Third, start outreach. Fourth, confirm immigration pathway. Fifth, book exploratory meetings before committing.",
+            "expected_pushback": "You will likely get uncertainty around visas, lower local pay, and unclear employer sponsorship. Counter that by leading with remote income, consulting offers, and legal consultation.",
+            "executive_insight": "The move becomes realistic when lifestyle ambition is converted into operating constraints: income floor, legal path, timeline, documents, and relationship pipeline.",
+            "do_this_now": listify(base.get("action_steps"), 5),
+            "ready_assets_expanded": listify(base.get("ready_assets"), 7),
+            "follow_up_command": base.get("recommended_command") or "Build my Costa Rica relocation operating plan."
+        }
+
+    if any(w in t for w in ["proposal", "deal", "close", "client", "sales", "revenue"]):
+        hidden_risk = "The buyer will compare price if the proposal does not prove ROI, speed, and execution certainty."
+        leverage = "Turn the proposal into an internal business case the buyer can sell without you in the room."
+        pushback = "Expect pricing, proof, implementation timeline, and internal approval friction."
+        insight = "Executive buyers buy reduced risk and business movement, not tasks."
+    elif any(w in t for w in ["meeting", "call", "board", "presentation"]):
+        hidden_risk = "The meeting becomes a discussion loop if the decision ask is not defined before it starts."
+        leverage = "Control the room around one decision, one owner, and one next commitment."
+        pushback = "Expect scope drift, vague agreement, and requests for more information."
+        insight = "Strong meetings are designed backward from the decision."
+    elif any(w in t for w in ["marketing", "ads", "content", "seo", "campaign", "leads"]):
+        hidden_risk = "Spend and effort will scale before message-market fit is proven."
+        leverage = "Tighten buyer, pain, offer, proof, and conversion action before scaling activity."
+        pushback = "Expect pressure to launch tactics before the message is sharp enough."
+        insight = "Most marketing problems are positioning and offer problems disguised as traffic problems."
+    else:
+        hidden_risk = "The work stays abstract unless converted into a decision, owner, asset, deadline, and next command."
+        leverage = "Reduce ambiguity first, then move the one action that creates the most downstream clarity."
+        pushback = "Expect delay from unclear ownership, missing context, or competing priorities."
+        insight = "Executive leverage comes from turning uncertainty into sequenced action before the organization drifts."
+
+    actions = listify(base.get("action_steps"), 6)
+    assets = listify(base.get("ready_assets"), 6)
+    return {
+        "intent_detected": mode,
+        "pressure_level": pressure,
+        "operator_read": clip(f"The real issue is control of sequence, ownership, risk, and the next executive decision around: {subject}.", 620),
+        "why_this_matters": clip(f"This matters because {subject} can either become a clear operating move or another open loop. The executive value is compression: decide the path, expose the risk, create the asset, and move the next action.", 620),
+        "primary_risk": base.get("risk") or hidden_risk,
+        "hidden_risk": hidden_risk,
+        "leverage_move": leverage,
+        "what_happens_next": "If the next action is specific, momentum increases. If it stays broad, it turns into follow-ups, context switching, and weak accountability.",
+        "expected_pushback": pushback,
+        "executive_insight": insight,
+        "do_this_now": actions[:5],
+        "ready_assets_expanded": assets[:6],
+        "follow_up_command": base.get("recommended_command") or "Build the next executive command pack.",
+    }
+
 def normalize(x: Dict[str, Any], command: str) -> Dict[str, Any]:
     fb = executive_brain(command); out = {}
     for k in REQUIRED_RUN_FIELDS:
         if k in ("action_steps", "ready_assets"):
             out[k] = listify(x.get(k), 7) or fb[k]
         else:
-            out[k] = clip(x.get(k), 600) or fb[k]
+            out[k] = clip(x.get(k), 700) or fb[k]
     if out["priority"] not in ["High", "Medium", "Low"]: out["priority"] = "High"
+    layers = cognition_layers(command, out)
+    out.update(layers)
     out.update({
         "status": "success",
         "provider_used": clean(x.get("provider_used")) or fb["provider_used"],
         "version": VERSION,
         "mode": detect(command)["mode"],
-        "brain": detect(command)["brain"],
+        "brain": "executive-cognition-pipeline",
         "command_summary": extract_subject(command),
         "executive_summary": out["next_move"],
         "do_now": out["action_steps"][:3],
@@ -209,19 +301,32 @@ async def ai(command: str) -> Optional[Dict[str, Any]]:
     key = os.getenv("OPENAI_API_KEY")
     if not key: return None
     system = """
-You are Executive Engine OS Command Centre Brain: a private CEO/COO/Chief-of-Staff operating layer that returns compact, high-value execution outputs.
+You are Executive Engine OS Cognition Infrastructure: a private CEO/COO/Chief-of-Staff operating layer.
 Return ONLY valid JSON with exactly these keys: next_move, decision, action_steps, ready_assets, risk, priority, recommended_command.
-Rules:
-- Produce the work, not generic advice. If the user asks for a proposal, draft the proposal structure. If they ask for a job, build the job-search pipeline. If they ask for a meeting, build the prep pack.
-- Be compact, specific, and executive-grade. No filler, no vague productivity language. Every sentence must create operating value.
-- Use who/what/when/where/why/how silently to fill gaps with reasonable assumptions.
-- Classify the command silently and answer in that operating mode.
-- Make the executive summary decision-first and immediately usable.
-- action_steps must be 4-6 tight, operational, non-redundant steps with concrete outputs. Keep each under 16 words where possible.
-- ready_assets must name concrete assets the system should create now. Keep each asset name short.
-- risk must identify the real execution/commercial/leadership risk.
-- recommended_command must be the next exact command the user can run, written as a command.
-- Never say 'consider', 'try', 'you may want to', 'research', or 'explore' unless tied to a concrete deliverable.
+
+Quality bar: the answer must feel like an expensive operator built it. It must not sound like generic AI advice. For vague personal/business commands, infer the real operating problem and create a specific plan.
+
+Do not answer literally. Interpret the real business pressure beneath the command.
+
+Internal reasoning layers to apply silently:
+1. INTENT: what is the real executive issue?
+2. PRESSURE: what urgency, risk, overload, politics, or decision fatigue exists?
+3. LEVERAGE: what move creates the most progress fastest?
+4. SEQUENCE: what must happen first, second, third?
+5. RESISTANCE: who or what will push back?
+6. EDUCATION: what should the executive understand to become sharper?
+7. ASSET: what usable work should be produced now?
+8. COMPRESSION: remove filler; every sentence must earn its place.
+
+Response rules:
+- Produce operational judgment, not generic advice.
+- Make the response feel expensive, experienced, calm, compressed, and practical.
+- Identify the hidden risk, not just the obvious task.
+- action_steps must be 5-7 sequenced operator actions with concrete outputs, named people/assets where reasonable, and no vague verbs.
+- ready_assets must name actual assets that move the work forward.
+- recommended_command must be the next exact command.
+- Never say consider, explore, leverage synergies, conduct research, gather information, identify opportunities, or generic management phrases unless immediately followed by a concrete target, artifact, or decision.
+- If context is missing, make sharp assumptions and move the work forward.
 """.strip()
     payload = {"model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"), "messages": [{"role": "system", "content": system}, {"role": "user", "content": command}], "temperature": 0.18, "response_format": {"type": "json_object"}}
     try:
@@ -239,7 +344,7 @@ def root(): return {"status":"ok","version":VERSION,"service":"Executive Engine 
 @app.get("/health")
 def health(): return {"status":"ok","health":"healthy","version":VERSION,"timestamp":now()}
 @app.get("/debug")
-def debug(): return {"status":"ok","version":VERSION,"openai_configured":bool(os.getenv("OPENAI_API_KEY")),"required_run_fields":REQUIRED_RUN_FIELDS,"brain":"command-centre-brain-v36270"}
+def debug(): return {"status":"ok","version":VERSION,"openai_configured":bool(os.getenv("OPENAI_API_KEY")),"required_run_fields":REQUIRED_RUN_FIELDS,"brain":"executive-cognition-pipeline-v36400"}
 @app.post("/run")
 async def run(request: Request):
     try: body = await request.json()
