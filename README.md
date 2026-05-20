@@ -1,64 +1,42 @@
-# Executive Engine OS — V36800 Structured Execution Object Engine
+# Executive Engine OS — V36810 Structured Object Renderer Engine
 
-Package type:
-- Backend upgrade
-- Frontend response renderer helper
-- Additive Supabase SQL
+Scope: FRONTEND ONLY.
 
-## What this fixes
+Do not deploy this as a backend replacement. Backend, AI logic, /run, API URL, Supabase, and deployment structure are untouched.
 
-The system was forcing operational intelligence into generic text cards. V36800 changes the product architecture so `/run` returns structured operational objects.
+## What changed
+- Added frontend object detection layer.
+- Added renderer router.
+- Added execution package renderer.
+- Added proposal renderer.
+- Added CRM renderer.
+- Added KPI renderer.
+- Added outbound renderer.
+- Added deployment / implementation / automation / delegation / workflow renderers.
+- Preserved existing layout, sidebar, navigation, command box, colors, spacing, and typography.
+- Legacy response fields still render, but are compressed behind expandable details.
 
-## Backend returns
+## Deploy
+Upload the contents of `/frontend` to the existing static frontend service.
 
-- executive_scan
+## Backend response fields supported
 - execution_objects
-- primary_object
+- execution_packages
+- crm_system
+- kpi_system
+- outbound_systems
 - deployment_sequence
-- memory_state
-- legacy frontend-compatible keys
-
-## Object types supported
-
+- automation_stack
+- implementation_plan
 - proposal
-- outreach_sequence
-- crm_pipeline
-- kpi_scorecard
-- deployment_checklist
-- landing_page
-- offer
-- pricing_model
-- operating_system
+- proposals
+- pricing_structure
 - delegation_map
-- follow_up_system
+- operational_workflows
+- workflows
+- sops
+- onboarding_system
+- hiring_system
 
-## Install backend
-
-Deploy `/backend` to Render.
-
-Start command:
-
-uvicorn main:app --host 0.0.0.0 --port $PORT
-
-## Install frontend helper
-
-Add after existing CSS/JS only if you are ready to render structured objects:
-
-```html
-<link rel="stylesheet" href="./structured-execution-renderer.css">
-<script src="./structured-execution-renderer.js"></script>
-```
-
-Then, when `/run` returns data:
-
-```js
-if (data.renderer_mode === "structured_objects" && window.renderStructuredExecutionObjects) {
-  responseContainer.innerHTML = window.renderStructuredExecutionObjects(data);
-}
-```
-
-## Supabase
-
-Run `/supabase/v36800_structured_execution_objects.sql`.
-
-It is additive only.
+## Rollback
+Restore the previous frontend ZIP if the renderer does not match the backend payload.
