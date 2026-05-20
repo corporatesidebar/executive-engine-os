@@ -261,3 +261,21 @@
 .exec-legacy-section ul{margin:0;padding-left:16px}
 .execute[disabled]{opacity:.72;cursor:wait}
 /* === END V37070 === */
+
+/* === V37080 RUNTIME FIX === */
+.command-runtime-input{width:100%;min-height:52px;resize:vertical;border:0;outline:0;background:transparent;color:#07172c;font:inherit;font-size:15px;font-weight:650;line-height:22px}
+.command-runtime-input::placeholder{color:#52617a}
+.runtime-error{border:1px solid #ffd2d2;background:#fff7f7;color:#8a1020;border-radius:10px;padding:13px 14px;font-size:13px;font-weight:750;line-height:19px;max-width:790px}
+.runtime-package{border:1px solid #dbe3ef;border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(20,40,70,.05);margin-top:12px;max-width:790px;overflow:hidden}
+.runtime-section{padding:12px 14px;border-bottom:1px solid #edf2f7}
+.runtime-section:last-child{border-bottom:0}
+.runtime-section h4{margin:0 0 6px;font-size:12px;font-weight:900}
+.runtime-section p,.runtime-section li{margin:0;font-size:12px;line-height:17px;color:#17243a;font-weight:650}
+.runtime-section ul{margin:0;padding-left:16px}
+.runtime-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px 14px}
+.runtime-card{border:1px solid #e2e8f2;border-left:3px solid #ff5a13;border-radius:9px;padding:12px;background:#fbfdff;min-height:86px}
+.runtime-card h4{margin:0 0 6px;font-size:12px;font-weight:900}
+.runtime-card p{margin:0;font-size:12px;line-height:17px;font-weight:650}
+.execute[disabled]{opacity:.72;cursor:wait}
+@media(max-width:1260px){.runtime-grid{grid-template-columns:1fr}}
+/* === END V37080 === */
