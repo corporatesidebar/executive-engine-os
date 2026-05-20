@@ -1,50 +1,47 @@
-# Executive Engine OS — V36600 Executive Cognition UI Engine
+# Executive Engine OS — V36630 Dual-Layer Executive Intelligence Engine
 
-Frontend-only package.
+Backend-only modular build.
 
 ## Purpose
 
-Upgrade the response presentation layer from “AI card / project manager output” into an executive cognition briefing.
+Adds dual-layer cognition:
 
-## What this does
+1. Executive Scan Layer
+   - dominant insight
+   - decision
+   - move
+   - risk
 
-- Adds a dominant insight visual hierarchy
-- Reduces label dominance
-- Makes response text less equalized
-- Adds optional `renderExecutiveCognitionBrief(response)` helper
-- Supports pressure / briefing / presence / reasoning engine response fields
-- Preserves layout, sidebar, navigation, routes, API URL, and columns
+2. Operational Depth Layer
+   - leverage path
+   - execution sequence
+   - resources/tools
+   - assets to create
+   - stop-doing list
+
+## Preserved
+
+- /run endpoint
+- /health endpoint
+- /engine-state endpoint
+- required response contract
+- deployment structure
+- no frontend changes
 
 ## Install
 
-Add this file after your existing CSS:
+Upload repo files, deploy backend on Render.
 
-```html
-<link rel="stylesheet" href="./executive-cognition-ui.css">
-```
+Start command:
 
-Optional renderer helper:
+uvicorn main:app --host 0.0.0.0 --port $PORT
 
-```html
-<script src="./executive-cognition-ui.js"></script>
-```
+## Test
 
-If you want to use the optional renderer, after `/run` returns JSON:
+POST /run:
 
-```js
-responseContainer.innerHTML = window.renderExecutiveCognitionBrief(data);
-```
+I have too many projects and feel overwhelmed.
 
-## Important
+How do I make Executive Engine profitable fastest?
 
-This does NOT redesign the app shell.
-
-Do NOT change:
-- left nav
-- right columns
-- routing
-- backend
-- API URL
-- deployment structure
-
-This only improves the middle response cognition presentation.
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
