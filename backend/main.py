@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
 
-VERSION = "V36230-command-centre-brain"
+VERSION = "V36261-executive-response-engine-repack"
 REQUIRED_RUN_FIELDS = ["next_move","decision","action_steps","ready_assets","risk","priority","recommended_command"]
 
 app = FastAPI(title="Executive Engine OS", version=VERSION)
@@ -24,20 +24,22 @@ def listify(v: Any, limit: int = 7) -> List[str]:
 def detect(command: str) -> Dict[str, str]:
     t = command.lower()
     rules = [
-        ("proposal", "revenue", ["proposal","sow","quote","deal","close","client","pitch","roi","pricing"]),
+        ("career", "revenue", ["i need a job","need a job","find me a job","job search","career","resume","linkedin","interview me","get hired","employment","apply for"]),
+        ("proposal", "revenue", ["proposal","sow","quote","deal","close","client","pitch","roi","pricing","scope"]),
         ("meeting", "execution", ["meeting","board","agenda","talking points","prep","call","presentation"]),
-        ("strategy", "strategy", ["strategy","market","expand","growth","competitor","positioning","launch"]),
-        ("tasks", "operations", ["task","todo","to do","follow up","deadline","priority","execute"]),
+        ("strategy", "strategy", ["strategy","market","expand","growth","competitor","positioning","launch","plan"]),
+        ("tasks", "operations", ["task","todo","to do","follow up","deadline","priority","execute","action item"]),
         ("calendar", "operations", ["calendar","schedule","tomorrow","today","next week","date","time"]),
         ("risk", "operations", ["risk","issue","problem","blocked","stuck","behind","urgent","fire"]),
-        ("documents", "assets", ["document","pdf","deck","report","brief","notes","email","write","draft"]),
-        ("media_advertising", "growth", ["ad","ads","media","campaign","creative","google ads","facebook","meta","seo"]),
+        ("documents", "assets", ["document","pdf","deck","report","brief","notes","email","write","draft","memo"]),
+        ("media_advertising", "growth", ["ad","ads","media","campaign","creative","google ads","facebook","meta","seo","advertising"]),
         ("content_creation", "growth", ["content","post","video","script","newsletter","blog","social"]),
         ("team_support", "people", ["team","employee","support","coach","train","bob","staff","performance"]),
-        ("talent", "people", ["hire","candidate","resume","interview","recruit","talent","job"]),
+        ("talent", "people", ["hire","candidate","resume review","interview candidate","recruit","talent"]),
     ]
     for mode, brain, keys in rules:
-        if any(k in t for k in keys): return {"mode": mode, "brain": brain}
+        if any(k in t for k in keys):
+            return {"mode": mode, "brain": brain}
     return {"mode": "command", "brain": "operator"}
 
 def extract_subject(command: str) -> str:
@@ -57,6 +59,30 @@ def executive_brain(command: str) -> Dict[str, Any]:
         "brain": d["brain"],
     }
     playbooks: Dict[str, Dict[str, Any]] = {
+        "career": {
+            "next_move": f"Turn '{subject}' into a revenue-focused executive job search sprint: target market, positioning, outreach, proof assets, and daily pipeline.",
+            "decision": "Run this like a sales pipeline, not a casual job search. Target $250K+ executive/operator roles, consulting mandates, fractional COO/CMO/CTO work, and founder-led companies that need growth execution.",
+            "action_steps": [
+                "Define the target role lane: COO/growth operator, CMO/revenue, CTO/product systems, or fractional executive consulting.",
+                "Build a 25-company target list where the business has money, complexity, and visible growth friction.",
+                "Package the executive proof: $1M to $75M growth story, 200M+ user systems experience, AutoLoans/Keyspire/iCHACHA execution, and contractor-ready structure.",
+                "Create two offer angles: full-time executive role and $250K/year consulting/fractional mandate.",
+                "Send 10 direct messages/emails per day to founders, CEOs, private equity operators, and recruiters with a specific business outcome.",
+                "Track every opportunity by stage: target, contacted, replied, meeting, proposal, negotiation, closed/lost.",
+                "Prepare a 30-minute executive interview script that positions you as an operator who fixes revenue, systems, and execution drag."
+            ],
+            "ready_assets": [
+                "Executive Positioning Brief",
+                "25-Company Target List Template",
+                "$250K Consulting Offer One-Pager",
+                "Founder/CEO Outreach Message",
+                "Recruiter Message",
+                "Interview Talking Points",
+                "Pipeline Tracker"
+            ],
+            "risk": "A broad job search will waste time and make you look like a candidate instead of an operator. The leverage is positioning around measurable business outcomes and executive-level mandates.",
+            "recommended_command": "Build my executive job search pipeline for COO/CMO/CTO/fractional roles at $250K+, including target companies, outreach messages, and interview positioning."
+        },
         "proposal": {
             "next_move": f"Turn '{subject}' into a close-ready proposal package: business case, scope, ROI, timeline, risk controls, and approval ask.",
             "decision": "Proceed with a concise executive proposal now. Do not wait for perfect research; use assumptions, identify gaps, and make the decision path clear.",
@@ -183,19 +209,19 @@ async def ai(command: str) -> Optional[Dict[str, Any]]:
     key = os.getenv("OPENAI_API_KEY")
     if not key: return None
     system = """
-You are Executive Engine OS Command Centre Brain: a private CEO/COO/Chief-of-Staff operating layer.
+You are Executive Engine OS Command Centre Brain: a private CEO/COO/Chief-of-Staff operating layer that returns compact, high-value execution outputs.
 Return ONLY valid JSON with exactly these keys: next_move, decision, action_steps, ready_assets, risk, priority, recommended_command.
 Rules:
-- Produce the work direction, not generic advice.
-- Be concise but sophisticated; executive-grade language.
-- Think in who/what/when/where/why/how.
+- Produce the work, not generic advice. If the user asks for a proposal, draft the proposal structure. If they ask for a job, build the job-search pipeline. If they ask for a meeting, build the prep pack.
+- Be compact, specific, and executive-grade. No filler, no vague productivity language. Every sentence must create operating value.
+- Use who/what/when/where/why/how silently to fill gaps with reasonable assumptions.
 - Classify the command silently and answer in that operating mode.
-- The executive summary must be decision-first and immediately usable.
-- action_steps must be 5-7 specific, operational, non-redundant steps.
-- ready_assets must name concrete assets the system should create or prepare.
+- Make the executive summary decision-first and immediately usable.
+- action_steps must be 4-6 tight, operational, non-redundant steps with concrete outputs. Keep each under 16 words where possible.
+- ready_assets must name concrete assets the system should create now. Keep each asset name short.
 - risk must identify the real execution/commercial/leadership risk.
-- recommended_command must be the next exact command the user can run.
-- Never say 'consider', 'try', or 'you may want to'. Use direct operating language.
+- recommended_command must be the next exact command the user can run, written as a command.
+- Never say 'consider', 'try', 'you may want to', 'research', or 'explore' unless tied to a concrete deliverable.
 """.strip()
     payload = {"model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"), "messages": [{"role": "system", "content": system}, {"role": "user", "content": command}], "temperature": 0.18, "response_format": {"type": "json_object"}}
     try:
@@ -213,7 +239,7 @@ def root(): return {"status":"ok","version":VERSION,"service":"Executive Engine 
 @app.get("/health")
 def health(): return {"status":"ok","health":"healthy","version":VERSION,"timestamp":now()}
 @app.get("/debug")
-def debug(): return {"status":"ok","version":VERSION,"openai_configured":bool(os.getenv("OPENAI_API_KEY")),"required_run_fields":REQUIRED_RUN_FIELDS,"brain":"command-centre-brain-v36230"}
+def debug(): return {"status":"ok","version":VERSION,"openai_configured":bool(os.getenv("OPENAI_API_KEY")),"required_run_fields":REQUIRED_RUN_FIELDS,"brain":"command-centre-brain-v36270"}
 @app.post("/run")
 async def run(request: Request):
     try: body = await request.json()
