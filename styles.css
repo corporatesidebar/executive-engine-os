@@ -248,3 +248,16 @@
   .exec-grid { grid-template-columns: 1fr; }
   .exec-assets { grid-template-columns: 1fr 1fr; }
 }
+
+/* === V37070 BACKEND CONTRACT CONNECTION ONLY === */
+.command-runtime-input{width:100%;min-height:50px;resize:vertical;border:0;outline:0;background:transparent;color:#07172c;font:inherit;font-size:15px;font-weight:650;line-height:22px}
+.command-runtime-input::placeholder{color:#52617a}
+.exec-error{border:1px solid #ffd2d2;background:#fff7f7;color:#8a1020;border-radius:10px;padding:13px 14px;font-size:13px;font-weight:750;line-height:19px;max-width:790px}
+.exec-legacy{border:1px solid #dbe3ef;border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(20,40,70,.05);margin-top:12px;max-width:790px;overflow:hidden}
+.exec-legacy-section{padding:12px 14px;border-bottom:1px solid #edf2f7}
+.exec-legacy-section:last-child{border-bottom:0}
+.exec-legacy-section h4{margin:0 0 6px;font-size:12px;font-weight:900}
+.exec-legacy-section p,.exec-legacy-section li{margin:0;font-size:12px;line-height:17px;color:#17243a;font-weight:650}
+.exec-legacy-section ul{margin:0;padding-left:16px}
+.execute[disabled]{opacity:.72;cursor:wait}
+/* === END V37070 === */

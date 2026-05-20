@@ -1,10 +1,3 @@
-# Executive Engine V37060 Clean Frontend
+# Executive Engine V37070
 
-Deploy structure is intentionally flat:
-
-- index.html
-- styles.css
-- app.js
-- README.md
-
-Frontend only. No backend, API, Supabase, navigation, layout, colors, or typography changes.
+Frontend-only clean package connected to live /run backend response contract.

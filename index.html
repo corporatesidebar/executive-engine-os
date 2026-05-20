@@ -39,9 +39,9 @@
 
       <section class="workspace">
         <div class="chatcol">
-          <div class="command"><div class="placeholder">What would you like to achieve today?</div><div class="cmd-bottom"><div class="tools"><span>📎</span><span>⌁</span><span>▣</span></div><div><span class="clear">Clear</span><button class="execute">Execute →</button></div></div></div>
+          <div class="command"><textarea id="commandInput" class="command-runtime-input" placeholder="What would you like to achieve today?"></textarea><div class="cmd-bottom"><div class="tools"><span>📎</span><span>⌁</span><span>▣</span></div><div><span class="clear">Clear</span><button id="executeBtn" class="execute">Execute →</button></div></div></div>
           <div class="chips"><span class="chip">Prepare for board meeting</span><span class="chip">Analyze market expansion</span><span class="chip">Review Q2 performance</span><span class="chip">Assess key risks</span></div>
-          <div class="thread">
+          <div id="thread" class="thread">
             <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>10:24 AM</span></div><div class="copy">I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</div></div></div>
             <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>10:24 AM</span></div><div class="copy">Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</div><div class="assets">
               <div class="asset" style="color:#ff6a1a"><div class="asset-icon">▤</div><strong>Go-To-Market Strategy Framework</strong><span>Strategy Document<br>12 pages</span><div class="download">⇩</div></div>
@@ -57,7 +57,7 @@
           <div class="composer"><span>Ask a follow-up or refine your request...</span><div class="composer-icons"><span>♩</span><span>▷</span></div></div>
         </div>
 
-        <aside class="summary">
+        <aside id="executiveSummary" class="summary">
           <div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
           <div class="sum-card orange"><div class="badge">1</div><div class="sum-title">✕ NEXT MOVE</div><p>Expand to new markets proposal and client meeting.</p><div class="note">＋ Add note</div></div>
           <div class="sum-card"><div class="badge">1</div><div class="sum-title">ℹ DECISION</div><p>Approve strategy and proposal before client meeting.</p><div class="note">＋ Add note</div></div>
@@ -73,7 +73,7 @@
       <div></div>
     </main>
 
-    <aside class="rail">
+    <aside id="rightRail" class="rail">
       <h3>EXECUTIVE INTELLIGENCE</h3>
       <div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
       <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>Expanding to new markets could increase revenue by 20-30% with strong positioning.</p><div class="link">View insight →</div></div>

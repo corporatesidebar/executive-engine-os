@@ -1,175 +1,64 @@
-const execute = document.querySelector('.execute');
-    const thread = document.querySelector('.thread');
-    execute?.addEventListener('click', () => {
-      const block = document.createElement('div');
-      block.className = 'msg';
-      block.innerHTML = `<div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>Now</span></div><div class="copy">Execution package generated. I organized the command into decision, next action, risk, and ready assets.</div><div class="assets"><div class="asset wide" style="color:#2274ff"><div class="asset-icon">▤</div><div><strong>Execution Package</strong><span>Decision • Actions • Risks • Assets</span></div><div class="download">⇩</div></div></div></div>`;
-      thread.appendChild(block);
-      thread.scrollTop = thread.scrollHeight;
-    });
 
-/* === V37060 EXECUTION OBJECT RENDERER ONLY === */
+/* === V37070 CONNECT FRONTEND TO BACKEND RESPONSE CONTRACT === */
 (function(){
-  const thread = document.querySelector('.thread');
-  const execute = document.querySelector('.execute');
-  const summary = document.querySelector('.summary');
-  const rail = document.querySelector('.rail');
+const API_URL="https://executive-engine-os.onrender.com/run";
+const thread=document.querySelector("#thread,.thread");
+const execute=document.querySelector("#executeBtn,.execute");
+const input=document.querySelector("#commandInput,textarea,input[type='text']");
+const summary=document.querySelector("#executiveSummary,.summary");
+const rail=document.querySelector("#rightRail,.rail");
 
-  function classifyCommand(text){
-    const t = (text || '').toLowerCase();
-    if (t.includes('proposal')) return 'proposal';
-    if (t.includes('meeting') || t.includes('board')) return 'meeting';
-    if (t.includes('kpi') || t.includes('performance')) return 'kpi';
-    if (t.includes('crm') || t.includes('pipeline')) return 'crm';
-    if (t.includes('roadmap') || t.includes('timeline')) return 'roadmap';
-    if (t.includes('outreach') || t.includes('email')) return 'outbound';
-    return 'workflow';
-  }
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function arr(v){if(!v)return[];if(Array.isArray(v))return v;if(typeof v==="string")return v.split(/\n|•|- /).map(x=>x.trim()).filter(Boolean);if(typeof v==="object")return Object.values(v).filter(Boolean);return[v]}
+function txt(v){if(v==null)return"";if(typeof v==="string")return v;if(Array.isArray(v))return v.map(txt).join(", ");if(typeof v==="object")return Object.entries(v).map(([k,val])=>`${k}: ${txt(val)}`).join(" · ");return String(v)}
+function time(){return new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}
+function list(v){let a=arr(v);return a.length?`<ul>${a.map(i=>`<li>${esc(txt(i))}</li>`).join("")}</ul>`:"<p>Not returned by backend.</p>"}
 
-  function loader(){
-    const el = document.createElement('div');
-    el.className = 'v37060-loader';
-    el.innerHTML = `
-      <div class="bubble-avatar engine-avatar">E</div>
-      <div class="v37060-stream">
-        <div class="meta"><strong>Executive Engine</strong><span>Building execution objects...</span></div>
-        <div class="copy">Structuring decision, workflow, risks, assets, and next operating move.</div>
-        <div class="v37060-progress"><span></span></div>
-      </div>`;
-    return el;
-  }
+function userMsg(t){thread.insertAdjacentHTML("beforeend",`<div class="msg"><div class="bubble-avatar">W</div><div><div class="meta"><strong>You</strong><span>${esc(time())}</span></div><div class="copy">${esc(t)}</div></div></div>`);thread.scrollTop=thread.scrollHeight}
+function loader(){let el=document.createElement("div");el.className="v37060-loader";el.innerHTML=`<div class="bubble-avatar engine-avatar">E</div><div class="v37060-stream"><div class="meta"><strong>Executive Engine</strong><span>Connecting to backend...</span></div><div class="copy">Running live /run contract and building execution objects from the response.</div><div class="v37060-progress"><span></span></div></div>`;thread.appendChild(el);thread.scrollTop=thread.scrollHeight;return el}
+function errorMsg(m){thread.insertAdjacentHTML("beforeend",`<div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(time())}</span></div><div class="exec-error">Backend connection failed: ${esc(m)}</div></div></div>`);thread.scrollTop=thread.scrollHeight}
 
-  function objectPackage(type){
-    const titleMap = {
-      proposal: 'Proposal Execution Package',
-      meeting: 'Meeting Prep Execution Package',
-      kpi: 'KPI Operating Package',
-      crm: 'CRM Pipeline Execution Package',
-      roadmap: 'Roadmap Implementation Package',
-      outbound: 'Outbound Execution Package',
-      workflow: 'Workflow Execution Package'
-    };
-    const title = titleMap[type] || titleMap.workflow;
+function objects(data){let o=arr(data.execution_objects);if(!o.length)return"";return`<div class="exec-grid">${o.map((x,i)=>{let title=x.title||x.type||x.name||`Execution Object ${i+1}`;let body=x.description||x.summary||x.content||x.value||txt(x);let type=String(x.type||title).toLowerCase();let k=type.includes("proposal")?"proposal":type.includes("meeting")?"meeting":type.includes("kpi")?"kpi":type.includes("asset")?"asset":type.includes("outbound")?"outbound":"workflow";return`<div class="exec-object ${k}"><h4>${esc(title)}</h4><p>${esc(body)}</p></div>`}).join("")}</div>`}
+function assets(data){let a=arr(data.ready_assets);if(!a.length)return"";return`<div class="exec-assets">${a.slice(0,6).map(x=>{let title=x.title||x.name||txt(x).slice(0,80);let meta=x.type||x.format||x.status||"Ready asset";return`<div class="exec-asset"><strong>${esc(title)}</strong><span>${esc(meta)}</span><em>⇩</em></div>`}).join("")}</div>`}
 
-    return `
-      <div class="msg">
-        <div class="bubble-avatar engine-avatar">E</div>
-        <div>
-          <div class="meta"><strong>Executive Engine</strong><span>Now</span></div>
-          <div class="copy">Execution package generated. I converted the command into operating objects, ready assets, risks, and next actions.</div>
+function response(data){
+let has=Array.isArray(data.execution_objects)&&data.execution_objects.length;
+let primary=data.primary_object||data.executive_summary||data.next_move||"Executive response generated.";
+return`<div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(time())}</span></div><div class="copy">${esc(txt(primary))}</div><div class="exec-package"><div class="exec-head"><div><strong>${esc(data.primary_object?.title||data.primary_object||"Live Backend Execution Package")}</strong><br><span>Rendered from /run response contract</span></div><span class="v37060-pill">${esc(data.priority||"Ready")}</span></div><div class="exec-body">${has?objects(data):`<div class="exec-legacy"><div class="exec-legacy-section"><h4>EXECUTIVE SUMMARY</h4><p>${esc(txt(data.executive_summary||data.executive_scan||"Not returned by backend."))}</p></div><div class="exec-legacy-section"><h4>NEXT MOVE</h4><p>${esc(txt(data.next_move||""))}</p></div><div class="exec-legacy-section"><h4>DECISION</h4><p>${esc(txt(data.decision||""))}</p></div><div class="exec-legacy-section"><h4>ACTION STEPS</h4>${list(data.action_steps)}</div><div class="exec-legacy-section"><h4>RISK</h4><p>${esc(txt(data.risk||""))}</p></div><div class="exec-legacy-section"><h4>RECOMMENDED COMMAND</h4><p>${esc(txt(data.recommended_command||""))}</p></div></div>`}${assets(data)}${data.deployment_sequence?`<div class="exec-object workflow" style="margin-top:10px"><h4>DEPLOYMENT SEQUENCE</h4>${list(data.deployment_sequence)}</div>`:""}</div></div></div></div>`;
+}
 
-          <div class="exec-package">
-            <div class="exec-head">
-              <div><strong>${title}</strong><br><span>Decision-ready operating system</span></div>
-              <span class="v37060-pill">Ready</span>
-            </div>
-            <div class="exec-body">
-              <div class="exec-grid">
-                <div class="exec-object proposal">
-                  <h4>PROPOSAL OBJECT</h4>
-                  <p>Scope, positioning, business case, timeline, investment logic, and approval path prepared for executive review.</p>
-                </div>
-                <div class="exec-object meeting">
-                  <h4>MEETING PREP BLOCK</h4>
-                  <ul>
-                    <li>Opening position</li>
-                    <li>Primary talking points</li>
-                    <li>Likely objections</li>
-                    <li>Recommended responses</li>
-                  </ul>
-                </div>
-                <div class="exec-object workflow">
-                  <h4>WORKFLOW CARD</h4>
-                  <ul>
-                    <li>Confirm objective</li>
-                    <li>Assign owner</li>
-                    <li>Lock deadline</li>
-                    <li>Prepare asset package</li>
-                  </ul>
-                </div>
-                <div class="exec-object kpi">
-                  <h4>KPI SNAPSHOT</h4>
-                  <div class="exec-kpis">
-                    <div class="exec-kpi"><b>3</b><span>Active moves</span></div>
-                    <div class="exec-kpi"><b>2</b><span>Risks</span></div>
-                    <div class="exec-kpi"><b>5</b><span>Assets</span></div>
-                  </div>
-                </div>
-                <div class="exec-object asset">
-                  <h4>ASSET MODULES</h4>
-                  <p>Generated documents and operating files are organized below for review, download, and follow-up.</p>
-                </div>
-                <div class="exec-object outbound">
-                  <h4>NEXT COMMAND</h4>
-                  <p>Review the package, approve the direction, then generate the final client-ready version.</p>
-                </div>
-              </div>
+function updateSummary(data){
+if(!summary)return;let actions=arr(data.action_steps), assetsA=arr(data.ready_assets);
+summary.innerHTML=`<div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from backend /run</div>
+<div class="sum-card orange"><div class="badge">1</div><div class="sum-title">✕ NEXT MOVE</div><p>${esc(txt(data.next_move||data.executive_summary||"Live response received."))}</p><div class="note">＋ Live response</div></div>
+<div class="sum-card"><div class="badge">1</div><div class="sum-title">ℹ DECISION</div><p>${esc(txt(data.decision||"Decision not returned."))}</p><div class="note">＋ Live response</div></div>
+<div class="sum-card green"><div class="badge">${actions.length}</div><div class="sum-title">✓ ACTION STEPS</div>${list(actions)}<div class="note">＋ Live response</div></div>
+<div class="sum-card purple"><div class="badge">${assetsA.length}</div><div class="sum-title">✦ READY ASSETS</div>${list(assetsA)}<div class="note">＋ Live response</div></div>
+<div class="sum-card red"><div class="badge">1</div><div class="sum-title">⚠ ACTIVE RISKS</div><p>${esc(txt(data.risk||"No active risk returned."))}</p><div class="note">＋ Live response</div></div>
+<div class="sum-card orange"><div class="sum-title">✪ PRIORITY <span style="margin-left:auto;background:#fff1e8;color:#ff5a13;border-radius:9px;padding:4px 8px">${esc(data.priority||"Medium")}</span></div><p>${esc(txt(data.recommended_command||"Continue with next executive command."))}</p><div class="note">＋ Recommended command</div></div>`;
+}
+function updateRail(data){
+if(!rail)return;let assetsA=arr(data.ready_assets), actions=arr(data.action_steps);
+rail.innerHTML=`<h3>EXECUTIVE INTELLIGENCE</h3><div class="search">⌕ Live backend context loaded <span style="margin-left:auto">☷</span></div>
+<div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>${esc(txt(data.executive_scan||data.executive_summary||data.next_move||"Live backend intelligence received."))}</p><div class="link">Live insight →</div></div>
+<div class="rail-card"><div class="rail-title">▧ ACTIVE RISK</div><p>${esc(txt(data.risk||"No backend risk returned."))}</p><div class="link">Monitor risk →</div></div>
+<div class="rail-card"><div class="rail-title">▣ READY ASSETS</div><p>${esc(assetsA.length?`${assetsA.length} backend asset(s) ready.`:"No ready assets returned.")}</p><div class="link">View assets →</div></div>
+<div class="rail-card"><div class="rail-title">✓ EXECUTION STATUS</div><p>${esc(actions.length?`${actions.length} action step(s) generated from live response.`:"Awaiting action steps from backend.")}</p><div class="link">View execution →</div></div>
+<div class="rail-card"><div class="rail-title">⌘ RECOMMENDED COMMAND</div><p>${esc(txt(data.recommended_command||"Continue the workflow."))}</p><div class="link">Run next →</div></div>`;
+}
 
-              <div class="exec-assets">
-                <div class="exec-asset"><strong>Executive Brief</strong><span>1-page decision memo</span><em>⇩</em></div>
-                <div class="exec-asset"><strong>Action Plan</strong><span>Owner / deadline / next step</span><em>⇩</em></div>
-                <div class="exec-asset"><strong>Risk Register</strong><span>Blockers and mitigation</span><em>⇩</em></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  function syncRightRail(type){
-    if(!rail) return;
-    const labels = {
-      proposal: ['Proposal package created', 'Approval path, ROI logic, and client-ready assets are now active.'],
-      meeting: ['Meeting prep active', 'Talking points, objections, and board narrative are ready for review.'],
-      kpi: ['KPI package active', 'Performance measures and operating indicators are now organized.'],
-      crm: ['CRM object active', 'Pipeline stages, owner follow-up, and conversion risk are now visible.'],
-      roadmap: ['Roadmap active', 'Timeline, dependencies, and execution blockers are now structured.'],
-      outbound: ['Outbound package active', 'Message, audience, follow-up, and conversion path are prepared.'],
-      workflow: ['Workflow package active', 'Objective, owner, next action, and delivery path are now structured.']
-    };
-    const selected = labels[type] || labels.workflow;
-    const card = rail.querySelector('.rail-card');
-    if(card){
-      card.innerHTML = `<div class="rail-title">◆ KEY INSIGHT</div><p>${selected[1]}</p><div class="link">${selected[0]} →</div>`;
-    }
-  }
-
-  function syncSummary(type){
-    if(!summary) return;
-    const next = summary.querySelector('.sum-card p');
-    if(next){
-      next.textContent = type === 'proposal'
-        ? 'Review proposal object, confirm stakeholder, and approve final client-ready version.'
-        : type === 'meeting'
-        ? 'Review meeting prep pack and confirm talking points before the meeting.'
-        : 'Review execution package and confirm the next operating move.';
-    }
-  }
-
-  function getCommandText(){
-    const input = document.querySelector('textarea, input[type="text"], .command textarea, .command input');
-    return input ? input.value : document.querySelector('.placeholder')?.textContent || '';
-  }
-
-  execute?.addEventListener('click', function(){
-    if(!thread) return;
-    const type = classifyCommand(getCommandText());
-    const loading = loader();
-    thread.appendChild(loading);
-    thread.scrollTop = thread.scrollHeight;
-
-    setTimeout(() => {
-      loading.remove();
-      thread.insertAdjacentHTML('beforeend', objectPackage(type));
-      syncRightRail(type);
-      syncSummary(type);
-      thread.scrollTop = thread.scrollHeight;
-    }, 750);
-  });
-
-  document.addEventListener('click', function(e){
-    const head = e.target.closest('.exec-head');
-    if(!head) return;
-    head.closest('.exec-package')?.classList.toggle('collapsed');
-  });
+async function run(){
+if(!thread||!execute)return;let command=(input?.value||"").trim();if(!command){errorMsg("Enter a command before executing.");return}
+userMsg(command);if(input)input.value="";execute.disabled=true;let old=execute.textContent;execute.textContent="Executing...";let loading=loader();
+try{
+let res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({input:command,mode:"execution",brain:"executive",output_type:"execution_package",depth:"standard"})});
+let raw=await res.text();let data;try{data=JSON.parse(raw)}catch(e){data={executive_summary:raw,status:res.status}}
+console.log("V37070 /run response:",data);
+if(!res.ok)throw new Error(data.detail||data.error||`HTTP ${res.status}`);
+loading.remove();thread.insertAdjacentHTML("beforeend",response(data));updateSummary(data);updateRail(data);thread.scrollTop=thread.scrollHeight;
+}catch(e){loading.remove();console.error("V37070 /run error:",e);errorMsg(e.message||"Unknown API error.")}
+finally{execute.disabled=false;execute.textContent=old||"Execute →"}
+}
+execute?.addEventListener("click",run);
+input?.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")run()});
 })();
