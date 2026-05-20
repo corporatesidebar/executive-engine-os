@@ -1,37 +1,83 @@
-# Executive Engine OS — V36510 Font Weight Fix
+# Executive Engine OS — 2026-05-20 V36500 Intelligence Architecture
 
-Frontend-only typography override.
+Backend-only package.
 
-## What this fixes
+## What this builds
 
-- Text looking too bold
-- Response area feeling heavy
-- Middle column being hard to read
-- Generated content looking visually loud
+Executive Intelligence Architecture:
 
-## What this does NOT change
+- continuity
+- memory
+- operational graphing
+- workflow persistence
+- pressure detection
+- intelligent routing
+- contextual reasoning
+- operational sequencing
+- executive communication generation
+- proactive execution support
 
-- Layout
-- Navigation
-- Sidebars
-- Backend
-- API URL
-- Response contract
+## Preserved contract
 
-## Install
+`POST /run` returns:
 
-Put this file into:
+- next_move
+- decision
+- action_steps
+- ready_assets
+- risk
+- priority
+- recommended_command
+- provider_used
+- status
+
+Additional context fields are included for the frontend if needed:
+
+- router
+- active_context
+- workspace
+
+## Files
 
 ```text
-/frontend/font-weight-fix.css
+backend/main.py
+backend/requirements.txt
+README.md
 ```
 
-Then load it after your existing CSS, or paste the contents at the very bottom of your existing CSS file.
+## Local run
 
-Example:
-
-```html
-<link rel="stylesheet" href="./font-weight-fix.css">
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-Important: it must load AFTER the current/main CSS.
+## Render
+
+Start command:
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+Environment variable:
+
+```text
+OPENAI_API_KEY=your_key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+If no OpenAI key is present, deterministic local intelligence fallback still returns the required contract.
+
+## Test command
+
+```bash
+curl -X POST https://executive-engine-os.onrender.com/run \
+  -H "Content-Type: application/json" \
+  -d '{"input":"Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.","mode":"execution","brain":"revenue","output_type":"proposal","depth":"standard"}'
+```
+
+## Important
+
+This package does not change frontend layout, navigation, sidebars, or design.
