@@ -1,68 +1,44 @@
-# Test Checklist — V35160 Backend Response Intelligence Fix
+# Test Checklist — V35160B
 
-## Deploy target
-Backend Render service only.
-
-## Do not touch
-- Frontend
-- DB
-- Supabase
-- Claude routing
-- Deployment settings
-- Layout
-- Navigation
+## Deploy scope
+- [ ] Backend service only
+- [ ] No frontend files deployed
+- [ ] No database/Supabase changes
+- [ ] No deployment setting changes
 
 ## Endpoint tests
-Open:
-```text
-https://executive-engine-os.onrender.com/
-https://executive-engine-os.onrender.com/health
-https://executive-engine-os.onrender.com/debug
-https://executive-engine-os.onrender.com/test-report
-https://executive-engine-os.onrender.com/test-report-json
-```
+- [ ] GET `/` returns 200 and version `V35160B-backend-response-comprehension-fix`
+- [ ] GET `/health` returns 200
+- [ ] GET `/debug` returns 200
+- [ ] GET `/test-report` loads browser page
+- [ ] GET `/test-report-json` returns JSON report
+- [ ] POST `/run` returns 200
+
+## `/run` contract
+- [ ] `next_move`
+- [ ] `decision`
+- [ ] `action_steps`
+- [ ] `ready_assets`
+- [ ] `risk`
+- [ ] `priority`
+- [ ] `recommended_command`
+- [ ] `provider_used`
+- [ ] `status`
+
+## Intelligence tests
+Use prompt:
+`Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
 
 Expected:
-- All routes return 200.
-- Version reports `V35160-response-intelligence-fix`.
-- `/test-report` has Run Tests and Copy JSON.
+- [ ] Intent is proposal
+- [ ] Output is dealership / auto-loan / SEO / Google Ads proposal
+- [ ] Output contains actual proposal-ready content
+- [ ] Output does not mention Costa Rica
+- [ ] Output does not mention relocation
+- [ ] Output does not mention residency
+- [ ] Output is concise enough to read in frontend cards
 
-## /run contract test
-POST to:
-```text
-https://executive-engine-os.onrender.com/run
-```
-
-Body:
-```json
-{
-  "command": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
-}
-```
-
-Expected fields:
-```text
-next_move
-decision
-action_steps
-ready_assets
-risk
-priority
-recommended_command
-provider_used
-status
-```
-
-Expected behavior:
-- Output is about Ontario auto-loan dealership proposal.
-- Output includes actual proposal content in `ready_assets`.
-- Output does not mention Costa Rica, relocation, residency, or unrelated job-search content.
-- `action_steps` has 3-7 items.
-- `ready_assets` is an array.
-- `priority` is High, Medium, or Low.
-- `status` is success.
-
-## Decision
-- PROMOTE only if all checks pass.
-- FIX if any endpoint fails or proposal prompt returns unrelated content.
-- HOLD if deployment is inconsistent.
+## Test page tools
+- [ ] Run Tests button works
+- [ ] Copy JSON button works
+- [ ] PASS/FAIL is clear
