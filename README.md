@@ -1,20 +1,19 @@
+# V36750 — Asset Generation Engine
 
-V36740 — REVENUE INTELLIGENCE ENGINE
+Backend-only module.
 
-Backend-only intelligence expansion.
+Purpose:
+Make Executive Engine generate real operational assets instead of only describing execution.
 
-Adds:
-- Revenue inference
-- ROI prioritization
-- Monetization detection
-- Automation leverage
-- Delegation inference
-- Revenue execution sequencing
-- Conversion bottleneck detection
-- Operational waste detection
+Install:
+Drop `asset_generation_engine.py` into `backend/intelligence/`.
 
-Install Path:
-backend/intelligence/
+Integration:
+Import `build_v36750_response(user_input)` into your `/run` route or merge its logic into the current execution engine.
 
-Next Recommended Build:
-V36750 — Market + Industry Context Engine
+Preserves:
+- frontend
+- layout
+- navigation
+- API URL
+- deployment structure
