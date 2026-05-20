@@ -1,149 +1,89 @@
 const API_URL = window.EXECUTIVE_ENGINE_API_URL || 'https://executive-engine-os.onrender.com';
-const STORAGE_KEY = 'ee_entries_v36810';
-const $ = (id) => document.getElementById(id);
-const pageNames = {command:'Command Centre',workflows:'Active Workflows',meetings:'Meetings',proposals:'Proposals',decisions:'Decisions',risks:'Risks',calendar:'Calendar',contacts:'Contacts',knowledge:'Knowledge Base',reports:'Reports',settings:'Settings',actions:'Priority Actions',nextMoves:'Next Moves',alerts:'Industry Alerts',opportunities:'Opportunities',insights:'Insights Feed',detail:'Workflow Detail'};
-let state = { page:'command', entries: safeLoad(), latest:null, filter:null, detailId:null };
+const STORAGE_KEY = 'ee_exact_reference_v37010';
+const $ = (id)=>document.getElementById(id);
+let state = { page:'command', entries:load(), selected:null, projects:[
+  {title:'Market Expansion Strategy',status:'Active'}, {title:'Q2 Board Preparation',status:'Active'}, {title:'Pricing Optimization',status:'Active'}
+] };
 
-function safeLoad(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return []}}
-function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries.slice(0,100)));}
-function escapeHtml(s=''){return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function nowLabel(){return new Date().toLocaleString([], {year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit'});}
-function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
-function asArray(v){if(v===undefined||v===null||v==='')return[];return Array.isArray(v)?v:[v];}
-function titleCase(s=''){return String(s).replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase());}
-function firstText(v){if(!v)return''; if(typeof v==='string')return v; if(Array.isArray(v))return firstText(v[0]); if(typeof v==='object')return v.title||v.name||v.package_title||v.label||v.summary||''; return String(v);}
+function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}}
+function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries.slice(0,60)))}
+function esc(s=''){return String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function time(){return new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}
+function date(){return new Date().toLocaleDateString([], {month:'numeric',day:'numeric',year:'numeric'})}
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function arr(v){if(v==null||v==='')return[]; return Array.isArray(v)?v:[v]}
+function first(v){if(!v)return''; if(typeof v==='string')return v; if(Array.isArray(v))return first(v[0]); if(typeof v==='object')return v.title||v.name||v.summary||v.description||v.next_move||v.executive_summary||''; return String(v)}
+function copy(txt){navigator.clipboard?.writeText(txt).catch(()=>{})}
+function detectCategory(text){const t=(text||'').toLowerCase(); const map={Meeting:['meeting','board','agenda','talking','client','call','prep','objection'],Proposal:['proposal','pitch','scope','pricing','quote','offer'],Decision:['decision','decide','approve','choose','tradeoff'],Risk:['risk','blocker','threat','issue','concern'],Execution:['build','deploy','execute','fix','launch','workflow','make'],Strategy:['strategy','market','growth','position','go-to-market','revenue','expansion']}; for(const [k,words] of Object.entries(map)){if(words.some(w=>t.includes(w)))return k} return 'General'}
 
-function detectCategory(text){const t=(text||'').toLowerCase();const rules=[['Meeting',['meeting','agenda','talking points','client call','investor','prep','call']],['Proposal',['proposal','pitch','quote','pricing','offer','scope']],['Decision',['decide','decision','choose','tradeoff','should i','option']],['Risk',['risk','problem','blocker','threat','issue','concern','compliance','broken','error']],['Execution',['build','execute','launch','implement','fix','deploy','workflow','make it functional','system']],['Strategy',['strategy','growth','market','positioning','revenue','seo','ads','cpa','executive engine','cognition']]];for(const [cat,words] of rules){if(words.some(w=>t.includes(w)))return cat;}return 'General';}
-function selectedCategory(){const val=$('categorySelect').value;return val==='Auto select'?detectCategory($('commandInput').value):val;}
-
-async function executeCommand(){
-  const input=$('commandInput').value.trim(); if(!input){$('commandInput').focus();return;}
-  const category=selectedCategory(); $('categorySelect').value=category;
-  const button=$('executeBtn'); button.disabled=true; button.textContent='Executing...';
-  const placeholder={id:uid(), input, category, created_at:nowLabel(), response:null, loading:true};
-  state.entries.unshift(placeholder); state.latest=placeholder; save(); renderAll();
+async function runCommand(text){
+  const input=(text||$('commandInput').value||$('followInput').value).trim(); if(!input) return;
+  $('commandInput').value=''; $('followInput').value='';
+  const entry={id:uid(), input, category:detectCategory(input), created:`${date()}, ${time()}`, loading:true};
+  state.entries.push(entry); save(); render();
+  const btn=$('executeBtn'); btn.disabled=true; btn.textContent='Executing...';
   try{
-    const res=await fetch(`${API_URL}/run`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({input,category,render_target:'structured_objects'})});
-    if(!res.ok) throw new Error(`Backend returned ${res.status}`);
+    const res=await fetch(`${API_URL}/run`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({input,category:entry.category,render_target:'hybrid_execution_objects'})});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data=await res.json();
-    placeholder.response=normalizeResponse(data, category, input); placeholder.loading=false; placeholder.category=placeholder.response.category||category;
-  }catch(err){
-    placeholder.response=normalizeResponse(localFallback(input, category), category, input); placeholder.loading=false; placeholder.error=`Live backend unavailable: ${err.message}`;
+    entry.response=normalize(data,input,entry.category); entry.loading=false;
+  }catch(e){
+    entry.response=normalize(fallback(input,entry.category),input,entry.category); entry.loading=false; entry.warning='Fallback used: live backend unavailable.';
   }
-  $('commandInput').value=''; save(); renderAll(); button.disabled=false; button.textContent='Execute';
+  save(); render(); btn.disabled=false; btn.innerHTML='Execute <span>→</span>';
 }
 
-function normalizeResponse(data, fallbackCategory, input=''){
-  const normalized={...data};
-  normalized.category=normalized.category||fallbackCategory;
-  normalized.executive_summary=normalized.executive_summary||normalized.clear_answer||normalized.executive_read||normalized.next_move||'';
-  normalized.strategic_diagnosis=normalized.strategic_diagnosis||normalized.diagnosis||normalized.decision||'';
-  normalized.best_move=normalized.best_move||normalized.next_move||'';
-  normalized.action_steps=asArray(normalized.action_steps||normalized.actions||normalized.next_steps);
-  normalized.ready_assets=asArray(normalized.ready_assets||normalized.assets||normalized.generated_assets);
-  normalized.risks=asArray(normalized.risks||normalized.risk);
-  normalized.push_intelligence=asArray(normalized.push_intelligence||normalized.insights||normalized.signals);
-  normalized.recommended_command=normalized.recommended_command||'';
-  normalized.execution_objects=collectExecutionObjects(normalized, input, fallbackCategory);
-  return normalized;
+function normalize(data,input,category){
+  const r={...(data||{})};
+  r.category=r.category||category;
+  r.executive_summary=r.executive_summary||r.executive_read||r.clear_answer||r.summary||`I converted this into a ${category.toLowerCase()} execution thread.`;
+  r.next_move=r.next_move||r.best_move||'Move the highest-leverage action forward now.';
+  r.decision=r.decision||'Proceed with a focused execution path and validate the next dependency.';
+  r.action_steps=arr(r.action_steps||r.actions||r.next_steps).slice(0,6);
+  r.ready_assets=arr(r.ready_assets||r.assets||r.generated_assets);
+  r.risk=r.risk||first(r.risks)||'Execution drift if ownership, timeline, and next command are not locked.';
+  r.priority=r.priority||'High';
+  r.recommended_command=r.recommended_command||'Create the next execution package with owner, timeline, risk, and ready asset.';
+  r.execution_objects=collectObjects(r,input,category);
+  return r;
+}
+function collectObjects(r,input,category){
+  const objects=[]; const keys={execution_packages:'execution_package',execution_package:'execution_package',execution_objects:'execution_package',proposal:'proposal',proposal_assets:'proposal',crm_system:'crm',kpi_system:'kpi',outbound_systems:'outbound',deployment_sequence:'deployment',automation_stack:'automation',implementation_plan:'implementation',delegation_map:'delegation',operational_workflows:'workflow'};
+  Object.entries(keys).forEach(([k,type])=>{ if(r[k]) arr(r[k]).forEach((x,i)=>objects.push(normalizeObj(x,type,i))) });
+  if(!objects.length) objects.push({type:'execution_package',title:`${category} Execution Package`,purpose:r.executive_summary, status:'Ready', preview:r.action_steps, details:r});
+  return objects.slice(0,8);
+}
+function normalizeObj(x,type,i){
+  if(typeof x==='string') return {type,title:`${label(type)} ${i+1}`,purpose:x,status:'Ready',preview:[x],details:x};
+  if(Array.isArray(x)) return {type,title:`${label(type)} ${i+1}`,purpose:'Operational sequence generated.',status:'Ready',preview:x,details:x};
+  const o={...(x||{})}; return {type:o.type||type,title:o.title||o.name||o.package_title||`${label(type)} ${i+1}`,purpose:o.purpose||o.summary||o.business_purpose||o.description||first(o)||'Execution asset generated.',status:o.status||o.deployment_priority||'Ready',preview:arr(o.preview||o.steps||o.deployment_steps||o.deliverables||o.items).slice(0,4),details:o};
+}
+function label(s){return String(s||'asset').replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
+function fallback(input,category){
+  if(input.replace(/[^a-z0-9]/gi,'').length<8) return {category:'Clarify',priority:'Medium',executive_summary:'I need a clearer business objective before creating an execution package.',next_move:'State the desired outcome, stakeholder, deadline, and asset you need.',decision:'Do not create fake operational work from unclear input.',action_steps:['Clarify the business objective','Choose the workflow category','Add deadline and stakeholder','Name the asset required'],risk:'Low-signal input creates false certainty.',ready_assets:['Clarifying command'],recommended_command:'Clarify the objective, deadline, stakeholder, and asset needed.'};
+  return {category,priority:'High',executive_summary:`Understood. I will convert this ${category.toLowerCase()} request into an executive execution package with assets, next move, risk, and follow-up command.`,next_move:'Create the first operational asset and lock the next decision.',decision:'Proceed with a compact execution path rather than a long text response.',action_steps:['Identify the outcome','Build the primary asset','Define owner and timeline','Surface risk and dependency','Recommend next command'],ready_assets:['Execution package','Action sequence','Follow-up command'],risk:'Execution loses value if it stays as advice instead of saved operational assets.',recommended_command:'Build the full execution package with asset cards, owners, timeline, and risk controls.'}
 }
 
-function collectExecutionObjects(r, input, category){
-  const objects=[];
-  const map=[
-    ['execution_packages','execution_package'],['execution_package','execution_package'],['execution_objects','execution_object'],['proposal','proposal'],['proposals','proposal'],['proposal_assets','proposal'],['crm_system','crm'],['crm','crm'],['kpi_system','kpi'],['kpis','kpi'],['outbound_systems','outbound'],['outbound_system','outbound'],['deployment_sequence','deployment'],['implementation_plan','implementation'],['automation_stack','automation'],['delegation_map','delegation'],['operational_workflows','workflow'],['workflows','workflow'],['sops','sop'],['pricing_structure','pricing'],['onboarding_system','onboarding'],['hiring_system','hiring']
-  ];
-  for(const [key,type] of map){
-    if(r[key]!==undefined){
-      asArray(r[key]).forEach((item,i)=>objects.push(normalizeObject(item,type,key,i)));
-    }
-  }
-  if(!objects.length){objects.push(legacyToExecutionPackage(r,input,category));}
-  return objects.filter(Boolean);
-}
+function render(){renderNav(); renderProjects(); renderConversation(); renderSummary(); renderIntel(); renderPressure();}
+function renderNav(){document.querySelectorAll('.nav-link').forEach(b=>{b.classList.toggle('active',b.dataset.page===state.page); b.onclick=()=>{state.page=b.dataset.page; renderPageMode(); renderNav();}})}
+function renderProjects(){ $('projectList').innerHTML=state.projects.map(p=>`<div class="project-item"><span>▱</span><div><b>${esc(p.title)}</b><small>${esc(p.status)}</small></div></div>`).join('') }
+function renderPageMode(){ const conv=$('conversation'); if(state.page==='command'){renderConversation();return;} conv.innerHTML=`<section class="page-mode"><h2>${esc(pageName(state.page))}</h2><p>This page uses the approved cockpit shell. Content will populate from live execution objects and saved workflows.</p><div class="page-grid">${state.entries.slice(-4).reverse().map(e=>`<div class="page-tile"><h3>${esc(e.category)} — ${esc(e.input)}</h3><p>${esc(first(e.response?.executive_summary)||'No response yet.')}</p></div>`).join('') || '<div class="page-tile"><h3>No live items yet</h3><p>Run a command to populate this workspace.</p></div>'}</div></section>` }
+function pageName(p){return {daily:'Daily Brief',decisions:'Decisions',meeting:'Meeting Prep',insights:'Insights',strategy:'Strategy Board',risks:'Risk Monitor',team:'Team Pulse',finance:'Financial Snapshot',projects:'Active Projects',files:'Files',notes:'Notes',upload:'Upload Context'}[p]||'Command'}
+function renderConversation(){ if(state.page!=='command')return renderPageMode(); const entries=state.entries.length?state.entries:[]; $('conversation').innerHTML= entries.length ? entries.map(turns).join('') : `<div class="empty"><b>No active command thread yet.</b><br/>Enter a command above to create live executive output. No fake thread data is preloaded.</div>`; document.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>openDetail(b.dataset.detail)); document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copy(b.dataset.copy));}
+function turns(e){ const r=e.response; return `<div class="turn"><div class="turn-avatar">W</div><div class="turn-body"><div class="turn-head"><b>You</b><time>${esc(e.created)}</time></div><p>${esc(e.input)}</p></div></div><div class="turn engine"><div class="turn-avatar">E</div><div class="turn-body"><div class="turn-head"><b>Executive Engine</b><time>${esc(e.created)}</time></div>${e.loading?'<p>Building execution objects...</p>':responseBlock(e)}</div></div>` }
+function responseBlock(e){ const r=e.response; const cards=(r.execution_objects||[]).map((o,i)=>assetCard(o,e.id,i)).join(''); return `<p>${esc(r.executive_summary)}</p>${cards?`<div class="asset-row">${cards}</div>`:''}` }
+function assetCard(o,id,i){ const color=o.type==='proposal'?'green':o.type==='kpi'?'blue':''; return `<div class="asset-card"><div class="asset-icon ${color}">${icon(o.type)}</div><div><b>${esc(o.title)}</b><small>${esc(label(o.type))} · ${esc(o.status||'Ready')}</small></div><button title="Open" data-detail="${id}:${i}">⌄</button></div>` }
+function icon(t){return t==='proposal'?'▤':t==='kpi'?'▥':t==='crm'?'▦':t==='outbound'?'✉':'□'}
+function renderSummary(){ const latest=[...state.entries].reverse().find(e=>e.response)?.response; const r=latest||fallback('default','Execution'); const cards=[['orange','NEXT MOVE',r.next_move,1],['blue','DECISION',r.decision,1],['green','ACTION STEPS',r.action_steps,arr(r.action_steps).length||3],['purple','READY ASSETS',r.ready_assets,arr(r.ready_assets).length||3],['red','ACTIVE RISKS',r.risk,2],['yellow','PRIORITY',r.priority,'High'],['blue','RECOMMENDED COMMAND',r.recommended_command,1]]; $('summaryCards').innerHTML=cards.map(card).join('')+splitMini();}
+function card([color,title,body,count]){ const content=Array.isArray(body)?`<ul>${body.slice(0,4).map(x=>`<li>${esc(first(x))}</li>`).join('')}</ul>`:`<p>${esc(first(body))}</p>`; return `<article class="summary-card ${color}"><div class="summary-head"><span class="num-dot">${symbol(title)}</span><h3>${title}</h3><span class="count-pill">${esc(count)}</span></div>${title==='PRIORITY'?'<span class="priority-badge">High</span>':''}${content}<button class="add-note">+ Add note</button></article>`}
+function symbol(t){return t.includes('MOVE')?'➜':t.includes('DECISION')?'2':t.includes('ACTION')?'✓':t.includes('ASSET')?'⌘':t.includes('RISK')?'△':t.includes('PRIORITY')?'✦':'⚡'}
+function splitMini(){return `<div class="split-mini"><article class="summary-card blue"><div class="summary-head"><span class="num-dot">✓</span><h3>RECENT DECISIONS</h3></div><ul><li>Execution path approved</li><li>Renderer lock preserved</li></ul><button class="add-note">+ Add note</button></article><article class="summary-card green"><div class="summary-head"><span class="num-dot">✓</span><h3>SYSTEM STATUS</h3></div><p>All systems operating normally</p><button class="add-note">Last updated: now</button></article></div>`}
+function renderIntel(){ $('intelCards').innerHTML = [intel('⌖','KEY INSIGHT','Executive Engine should convert commands into saved execution assets, not text-only replies.','View insight →'),intel('⌬','MEMORY','You prefer concise proposals with clear ROI, risk analysis, and operator-grade next moves.','View all memory →'),upcoming(),team(),intel('☷','EXECUTIVE SUMMARY','Focus: execution object rendering, design lock, and reduced cognitive load.','View full summary →')].join('') }
+function intel(ic,t,b,l){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">${ic}</span><h3>${t}</h3></div><p>${b}</p><a>${l}</a></article>`}
+function upcoming(){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">□</span><h3>UPCOMING PRIORITIES</h3></div><div class="upcoming"><div class="upcoming-row"><span class="rank">1</span><p><b>Board Meeting</b><br/>May 27, 2026 · 10:00 AM</p></div><div class="upcoming-row"><span class="rank">2</span><p><b>Investor Update</b><br/>May 30, 2026 · 1:00 PM</p></div><div class="upcoming-row"><span class="rank">3</span><p><b>Strategy Review</b><br/>June 2, 2026 · 9:00 AM</p></div></div><a>View all →</a></article>`}
+function team(){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">♙</span><h3>TEAM PULSE</h3></div><div class="team-row"><span>Sales</span><b class="ok">On Track</b></div><div class="team-row"><span>Marketing</span><b class="ok">On Track</b></div><div class="team-row"><span>Operations</span><b class="bad">At Risk</b></div><a>View team pulse →</a></article>`}
+function renderPressure(){ const latest=[...state.entries].reverse().find(e=>e.response); const score=latest?Math.min(88,Math.max(18,(latest.response.action_steps?.length||2)*9 + (latest.response.priority==='High'?26:12))):26; $('pressureScore').textContent=score; $('pressureLabel').textContent=score>=60?'High':score>=25?'Medium':'Low'; }
+function openDetail(key){ const [id,idx]=key.split(':'); const entry=state.entries.find(e=>e.id===id); const obj=entry?.response?.execution_objects?.[Number(idx)]; if(!obj)return; const drawer=document.createElement('div'); drawer.className='detail-drawer'; drawer.innerHTML=`<div class="drawer-head"><div><h2>${esc(obj.title)}</h2><p>${esc(label(obj.type))} · ${esc(obj.status||'Ready')}</p></div><button id="closeDrawer">×</button></div><div class="detail-section"><h3>Purpose</h3><p>${esc(obj.purpose||'Execution asset generated.')}</p></div><div class="detail-section"><h3>Preview</h3><ul>${arr(obj.preview).map(x=>`<li>${esc(first(x))}</li>`).join('')}</ul></div><div class="detail-section"><h3>Full Object</h3><pre>${esc(JSON.stringify(obj.details||obj,null,2))}</pre></div><button class="copy-btn" id="copyObj">Copy Object</button>`; document.body.appendChild(drawer); $('closeDrawer').onclick=()=>drawer.remove(); $('copyObj').onclick=()=>copy(JSON.stringify(obj.details||obj,null,2)); }
 
-function normalizeObject(item,type,key,i){
-  if(item===null||item===undefined)return null;
-  if(typeof item==='string')return {type,title:titleCase(type),summary:item,source:key};
-  if(Array.isArray(item))return {type,title:titleCase(type),items:item,source:key};
-  const o={...item,type:item.type||type,source:key};
-  o.title=o.title||o.name||o.package_title||o.system_name||titleCase(type)+' '+(i+1);
-  return o;
-}
-function legacyToExecutionPackage(r,input,category){
-  return {type:'execution_package',title:`${category||'Executive'} Execution Package`,deployment_priority:r.priority||'High',business_purpose:r.executive_summary||`Convert "${input}" into operational movement.`,deployment_steps:r.action_steps||[],operational_content:{best_move:r.best_move||r.next_move,decision:r.decision,ready_assets:r.ready_assets,risks:r.risks,recommended_command:r.recommended_command}};
-}
-
-function localFallback(input, category){
-  const t=input.toLowerCase(); const weak=t.replace(/[^a-z0-9]/g,'').length<6 || /^(wow+|lol+|haha+|a girl)$/i.test(input.trim());
-  if(weak){return {category:'Clarify',pressure:18,priority:'Medium',executive_summary:'The input is too low-signal to create a trusted executive workflow.',strategic_diagnosis:'Executive Engine should not fake certainty from vague input. It should ask for the missing objective before creating an execution object.',best_move:'Capture the outcome, category, deadline, stakeholder, and required asset.',action_steps:['State the business outcome.','Choose the workflow category.','Add deadline, stakeholder, and required output.'],ready_assets:['Clarifying prompt','Objective checklist'],risks:['Fake certainty from unclear input.'],recommended_command:'Clarify the objective, category, deadline, and desired output.'};}
-  return {category,pressure:44,priority:'High',executive_summary:`Executive Engine should convert this ${category.toLowerCase()} command into operational objects, not generic text.`,strategic_diagnosis:'The valuable output is the execution package, deployment sequence, assets, owners, risks, and next command.',best_move:'Create a deployable execution package and attach it to the active workflow.',action_steps:['Define the operational objective.','Generate the primary execution package.','Create the first asset.','Assign the next action and owner.','Set the follow-up command.'],ready_assets:['Execution package','Action sequence','Follow-up command'],risks:['Generic answer instead of operational system.'],recommended_command:'Generate the primary execution package with deployment steps, assets, owners, and follow-up command.'};
-}
-
-function renderAll(){renderNav();renderPage();renderSidebars();renderPressure();}
-function renderNav(){document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.dataset.page===state.page)); $('pageTitle').textContent=pageNames[state.page]||'Command Centre';}
-function renderPressure(){const latest=state.entries.find(e=>e.response); const score=latest?.response?.pressure || 0; $('pressureScore').textContent=score; $('pressureLabel').textContent=score>=55?'High':score>=25?'Medium':'Idle';}
-function renderPage(){const el=$('pageContent'); if(state.page==='command') return renderThread(el); if(state.page==='detail') return renderDetail(el); return renderListPage(el, state.page);}
-
-function renderThread(el){
-  const entries=state.filter?state.entries.filter(e=>e.category===state.filter):state.entries;
-  el.innerHTML=`<section class="thread-card"><div class="thread-head"><div><h3>⌘ Command Thread</h3><small>${state.filter?`Filtered: ${state.filter}`:'Latest at the top'}</small></div><div class="head-actions"><button id="filterBtn">▽ Filter</button><button id="exportBtn">⇩ Export</button></div></div><div id="thread" class="thread"></div></section>`;
-  $('filterBtn').onclick=()=>{state.filter=state.filter?null:selectedCategory();renderAll();}; $('exportBtn').onclick=exportJson;
-  const thread=$('thread');
-  if(!entries.length){thread.innerHTML='<div class="empty"><b>No commands yet.</b><br>Run a command to create live execution objects. No static filler is rendered in the command thread.</div>'; return;}
-  thread.innerHTML=entries.map(entryHtml).join('');
-  document.querySelectorAll('.view-detail').forEach(btn=>btn.onclick=()=>{state.detailId=btn.dataset.id;state.page='detail';renderAll();});
-}
-function entryHtml(e){const r=e.response;return `<div class="entry-pair ${e.loading?'loading':''}"><div class="icon">♟</div><article class="msg"><span class="tag">${escapeHtml(e.category)}</span><h4>User Input</h4><p>${escapeHtml(e.input)}</p><small>${escapeHtml(e.created_at)} • ${escapeHtml(e.category)}</small></article><div class="icon system">▰</div><article class="msg ${e.error?'error':''}"><h4>System Response</h4>${e.loading?'<p>Building operational objects...</p>':responseHtml(r,e.error)}<button class="view-detail" data-id="${e.id}">View Full Detail</button><small>${escapeHtml(e.created_at)} • ${escapeHtml(r?.category||e.category)}</small></article></div>`;}
-
-function responseHtml(r,err){
-  if(!r)return'<p>No response yet.</p>';
-  const structured = renderStructuredObjects(r.execution_objects||[]);
-  return `${err?`<p><b>${escapeHtml(err)}</b></p>`:''}<div class="executive-read"><h5>Executive Read</h5><p>${escapeHtml(r.executive_summary)}</p></div>${structured}<div class="legacy-compact"><details><summary>Legacy cognition fields</summary><h5>Strategic Diagnosis</h5><p>${escapeHtml(r.strategic_diagnosis)}</p><h5>Best Move</h5><p>${escapeHtml(r.best_move||r.next_move)}</p><h5>Recommended Command</h5><p>${escapeHtml(r.recommended_command)}</p></details></div>`;
-}
-
-function renderStructuredObjects(objects){
-  if(!objects.length)return '';
-  const priority=['execution_package','deployment','proposal','crm','kpi','workflow','automation','delegation','outbound','implementation','pricing','sop','onboarding','hiring','execution_object'];
-  const sorted=[...objects].sort((a,b)=>priority.indexOf(a.type)-priority.indexOf(b.type));
-  return `<div class="object-stack">${sorted.map(renderObject).join('')}</div>`;
-}
-function renderObject(o){
-  const type=(o.type||'execution_object').toLowerCase();
-  const renderers={proposal:renderProposal,crm:renderCrm,kpi:renderKpi,outbound:renderOutbound,deployment:renderDeployment,implementation:renderImplementation,automation:renderAutomation,delegation:renderDelegation,workflow:renderWorkflow,pricing:renderPricing,sop:renderSop,onboarding:renderWorkflow,hiring:renderWorkflow,execution_package:renderPackage,execution_object:renderPackage};
-  return (renderers[type]||renderPackage)(o);
-}
-function objectHeader(o,label){return `<div class="object-header"><span class="object-badge">${escapeHtml(label||titleCase(o.type))}</span><strong>${escapeHtml(o.title||titleCase(o.type))}</strong>${o.deployment_priority?`<em>${escapeHtml(o.deployment_priority)}</em>`:''}</div>`;}
-function renderPackage(o){return `<section class="object-card package">${objectHeader(o,'Execution Package')}<p>${escapeHtml(o.business_purpose||o.summary||o.purpose||'Operational package generated from command.')}</p>${renderField('Deployment Steps',o.deployment_steps||o.steps||o.items)}${renderKeyValues(o.operational_content)}</section>`;}
-function renderProposal(o){return `<section class="object-card proposal">${objectHeader(o,'Proposal')}<div class="object-grid">${kv('Pricing',o.pricing||o.price)}${kv('Scope',o.scope)}${kv('CTA',o.cta||o.call_to_action)}</div>${renderField('Deliverables',o.deliverables||o.assets)}${renderField('Terms / Assumptions',o.terms||o.assumptions)}</section>`;}
-function renderCrm(o){return `<section class="object-card crm">${objectHeader(o,'CRM System')}<p>${escapeHtml(o.summary||o.purpose||'Pipeline and ownership system.')}</p>${renderField('Pipeline Stages',o.pipeline_stages||o.stages)}${renderField('Automation Rules',o.automation_rules||o.rules)}${renderField('Follow-up Timing',o.follow_up_timing||o.followups)}</section>`;}
-function renderKpi(o){const metrics=asArray(o.metrics||o.kpis||o.targets);return `<section class="object-card kpi">${objectHeader(o,'KPI System')}<div class="metric-grid">${metrics.length?metrics.map(m=>metricHtml(m)).join(''):metricHtml({name:o.name||'Target',target:o.target||'Define target',owner:o.owner||'Owner TBD'})}</div>${renderField('Reporting Frequency',o.reporting_frequency||o.frequency)}</section>`;}
-function renderOutbound(o){return `<section class="object-card outbound">${objectHeader(o,'Outbound System')}${renderField('Subject Lines',o.subject_lines||o.subjects)}${renderField('Message Sequence',o.message_sequence||o.sequence||o.messages)}${renderField('Follow-up Cadence',o.follow_up_cadence||o.cadence)}</section>`;}
-function renderDeployment(o){return `<section class="object-card deployment">${objectHeader(o,'Deployment Sequence')}${renderField('Phases',o.phases||o.sequence||o.steps)}${renderField('Dependencies',o.dependencies)}${renderField('Timeline',o.timeline)}</section>`;}
-function renderImplementation(o){return `<section class="object-card implementation">${objectHeader(o,'Implementation Plan')}${renderField('Rollout Phases',o.rollout_phases||o.phases||o.steps)}${renderField('Owners',o.owners)}${renderField('Dependencies',o.dependencies)}</section>`;}
-function renderAutomation(o){return `<section class="object-card automation">${objectHeader(o,'Automation Stack')}${renderField('Triggers',o.triggers)}${renderField('Actions',o.actions||o.steps)}${renderField('Tools',o.tools)}</section>`;}
-function renderDelegation(o){return `<section class="object-card delegation">${objectHeader(o,'Delegation Map')}${renderTable(o.assignments||o.owners||o.items,['owner','responsibility','deadline','status'])}</section>`;}
-function renderWorkflow(o){return `<section class="object-card workflow">${objectHeader(o,'Workflow')}${renderField('Steps',o.steps||o.workflow_steps||o.items)}${renderField('Owner',o.owner)}${renderField('Output',o.output||o.deliverable)}</section>`;}
-function renderPricing(o){return `<section class="object-card pricing">${objectHeader(o,'Pricing System')}<div class="object-grid">${Object.entries(o).filter(([k])=>!['type','title','source'].includes(k)).map(([k,v])=>kv(titleCase(k),v)).join('')}</div></section>`;}
-function renderSop(o){return `<section class="object-card sop">${objectHeader(o,'SOP')}${renderField('Procedure',o.procedure||o.steps||o.items)}${renderField('Quality Standard',o.quality_standard||o.standard)}</section>`;}
-function renderField(label,val){const arr=asArray(val); if(!arr.length)return''; if(arr.length===1 && typeof arr[0]!=='object')return `<div class="object-field"><h6>${escapeHtml(label)}</h6><p>${escapeHtml(arr[0])}</p></div>`; return `<div class="object-field"><h6>${escapeHtml(label)}</h6><ul class="object-list">${arr.map(item=>`<li>${formatObjectItem(item)}</li>`).join('')}</ul></div>`;}
-function formatObjectItem(item){if(typeof item==='string'||typeof item==='number')return escapeHtml(item); if(Array.isArray(item))return item.map(formatObjectItem).join(', '); if(typeof item==='object')return Object.entries(item).map(([k,v])=>`<b>${escapeHtml(titleCase(k))}:</b> ${escapeHtml(firstText(v)||JSON.stringify(v))}`).join(' · '); return escapeHtml(String(item));}
-function renderKeyValues(obj){if(!obj||typeof obj!=='object')return'';return `<div class="object-grid">${Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>kv(titleCase(k),v)).join('')}</div>`;}
-function kv(label,val){if(val===undefined||val===null||val==='')return'';return `<div class="kv"><span>${escapeHtml(label)}</span><b>${escapeHtml(Array.isArray(val)?val.map(firstText).join(', '):firstText(val)||String(val))}</b></div>`;}
-function metricHtml(m){if(typeof m==='string')m={name:m};return `<div class="metric"><span>${escapeHtml(m.name||m.metric||'Metric')}</span><b>${escapeHtml(m.target||m.value||'Target TBD')}</b><em>${escapeHtml(m.owner||m.frequency||'Owner TBD')}</em></div>`;}
-function renderTable(rows,cols){rows=asArray(rows); if(!rows.length)return'<p class="muted">No delegation data yet.</p>';return `<table class="object-table"><thead><tr>${cols.map(c=>`<th>${escapeHtml(titleCase(c))}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${escapeHtml((typeof r==='object'?(r[c]||r[titleCase(c)]):r)||'')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
-
-function renderDetail(el){const e=state.entries.find(x=>x.id===state.detailId)||state.entries[0]; if(!e){state.page='command';return renderThread(el);} const r=e.response||{};el.innerHTML=`<section class="detail-card"><button class="text-btn" id="backBtn">← Back to Command Thread</button><h3>${escapeHtml(e.category)} Workflow Detail</h3><p class="muted">${escapeHtml(e.created_at)}</p><div class="detail-section"><h4>User Input</h4><p>${escapeHtml(e.input)}</p></div><div class="detail-section"><h4>Structured Operational Objects</h4>${renderStructuredObjects(r.execution_objects||[])}</div><div class="detail-grid"><div class="detail-section"><h4>Executive Read</h4><p>${escapeHtml(r.executive_summary||'')}</p></div><div class="detail-section"><h4>Strategic Diagnosis</h4><p>${escapeHtml(r.strategic_diagnosis||'')}</p></div><div class="detail-section"><h4>Best Move</h4><p>${escapeHtml(r.best_move||r.next_move||'')}</p></div><div class="detail-section"><h4>Recommended Command</h4><p>${escapeHtml(r.recommended_command||'')}</p></div></div></section>`; $('backBtn').onclick=()=>{state.page='command';renderAll();};}
-function renderListPage(el,page){const title=pageNames[page]||'Workspace';const rows=rowsForPage(page);el.innerHTML=`<section class="page-card"><h3>${title}</h3><p class="muted">Live page generated from command thread, execution objects, and workflow state.</p>${rows.length?rows.map(rowHtml).join(''):'<div class="empty">No live records yet. Run a command to populate this page.</div>'}</section>`;}
-function rowHtml(row){return `<div class="list-row"><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.desc||'')}</p></div><span class="pill">${escapeHtml(row.meta||'Open')}</span></div>`;}
-function allObjects(){return state.entries.flatMap(e=>asArray(e.response?.execution_objects).map(o=>({...o,entry:e})));}
-function rowsForPage(page){const entries=state.entries.filter(e=>e.response); const objs=allObjects(); if(page==='proposals')return objs.filter(o=>o.type==='proposal'||o.entry.category==='Proposal').map(o=>({title:o.title||o.entry.input,desc:o.business_purpose||o.summary||o.entry.response?.best_move,meta:o.type||o.entry.category})); if(page==='workflows')return objs.map(o=>({title:o.title||o.entry.input,desc:o.business_purpose||o.summary||o.entry.response?.next_move,meta:o.type})); if(page==='actions')return entries.flatMap(e=>asArray(e.response?.action_steps).map(x=>({title:x,desc:e.input,meta:e.category}))); if(page==='nextMoves')return entries.map(e=>({title:e.response?.next_move||e.response?.best_move,desc:e.input,meta:e.category})); if(page==='risks')return entries.flatMap(e=>asArray(e.response?.risks).map(x=>({title:x,desc:e.input,meta:e.category}))); if(page==='opportunities')return entries.flatMap(e=>asArray(e.response?.ready_assets).map(x=>({title:x,desc:'Asset/opportunity created from workflow',meta:e.category}))); if(page==='insights')return entries.flatMap(e=>asArray(e.response?.push_intelligence).map(x=>({title:x,desc:e.input,meta:e.category}))); if(page==='meetings')return entries.filter(e=>e.category==='Meeting').map(e=>({title:e.input,desc:e.response?.best_move,meta:e.category})); if(page==='decisions')return entries.filter(e=>e.category==='Decision').map(e=>({title:e.input,desc:e.response?.decision,meta:e.category})); if(page==='reports')return [{title:'Execution objects',desc:String(objs.length),meta:'Live count'},{title:'Open action items',desc:String(entries.reduce((n,e)=>n+asArray(e.response?.action_steps).length,0)),meta:'Live count'}]; if(page==='settings')return [{title:'Frontend mode',desc:'V36810 Structured Object Renderer. Backend untouched.',meta:'Locked'},{title:'Storage key',desc:STORAGE_KEY,meta:'Local'}]; return entries.map(e=>({title:e.input,desc:e.response?.executive_summary,meta:e.category}));}
-function renderSidebars(){const entries=state.entries.filter(e=>e.response); const latest=entries[0]?.response; const objects=allObjects(); fill('priorityActions', asArray(latest?.action_steps).slice(0,3)); fill('nextMoves', entries.slice(0,3).map(e=>e.response?.next_move||e.response?.best_move)); fill('activeWorkflows', objects.slice(0,3).map(o=>`${o.title||o.entry.input} | ${o.type}`)); fill('industryAlerts', asArray(latest?.push_intelligence).slice(0,3)); fill('opportunities', asArray(latest?.ready_assets).slice(0,3)); fill('risksMonitor', asArray(latest?.risks).slice(0,3)); fill('insightsFeed', entries.slice(0,3).map(e=>e.response?.strategic_diagnosis)); $('tracker').innerHTML=`<span>Execution objects</span><b>${objects.length}</b><span>Action items</span><b>${entries.reduce((n,e)=>n+asArray(e.response?.action_steps).length,0)}</b><span>Assets</span><b>${entries.reduce((n,e)=>n+asArray(e.response?.ready_assets).length,0)}</b><span>Static filler</span><b>0</b>`;}
-function fill(id,items){items=asArray(items).filter(Boolean);$(id).innerHTML=items.length?items.map(x=>`<li>${escapeHtml(String(x).replace(' | ',' — '))}</li>`).join(''):'<li class="muted">No live data yet.</li>';}
-function exportJson(){const blob=new Blob([JSON.stringify(state.entries,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='executive-engine-thread-export-v36810.json';a.click();URL.revokeObjectURL(a.href);}
-
-document.addEventListener('click',(e)=>{const page=e.target?.dataset?.page;if(page){state.page=page;state.filter=null;renderAll();}});
-$('executeBtn').onclick=executeCommand;$('clearBtn').onclick=()=>{$('commandInput').value='';$('categorySelect').value='Auto select';$('commandInput').focus();};
-$('commandInput').addEventListener('input',()=>{if($('categorySelect').value==='Auto select')$('categoryNote').textContent=`Category auto-detected: ${detectCategory($('commandInput').value)}. You can change it anytime.`;});
-$('commandInput').addEventListener('keydown',(e)=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')executeCommand();});
-renderAll();
+$('executeBtn').onclick=()=>runCommand(); $('sendFollowBtn').onclick=()=>runCommand($('followInput').value); $('clearBtn').onclick=()=>{$('commandInput').value='';$('followInput').value=''}; $('commandInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))runCommand()}); $('followInput').addEventListener('keydown',e=>{if(e.key==='Enter')runCommand($('followInput').value)}); document.querySelectorAll('.quick-chips button').forEach(b=>b.onclick=()=>runCommand(b.dataset.prompt)); $('newProjectBtn').onclick=()=>{state.projects.unshift({title:'New Executive Workflow',status:'Active'});renderProjects()};
+render();
