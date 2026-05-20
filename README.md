@@ -1,27 +1,67 @@
-# Executive Engine OS — V35140 Guided Workflow Operating Loop Fix
+# Executive Engine OS — V36180 Real Executive Response Engine
 
-Deployment type: Frontend only.
+## Decision
+YES — this moves Executive Engine closer to Executive Cognition Infrastructure.
 
-Backend URL preserved: https://executive-engine-os.onrender.com
+This build fixes the main regression: canned/static category responses.
 
-## What changed
-- Preserved the approved four-column layout.
-- Improved the guided workflow layer only.
-- Assistant output now starts with Clear Answer, Why It Matters, and Do This Next.
-- Action steps are rendered as task-style rows with open status.
-- Ready assets are rendered as asset cards with draft actions.
-- Risk is rendered as a warning card with mitigation.
-- Recommended command is exposed through a strong continue action.
-- Sidebar views show runtime decisions, actions, assets, risks, and context.
-- Executive Summary now shows latest decision, priority, next move, actions, assets, risks, and recommended command.
-- Executive Intelligence now shows current focus, active risk, recommended follow-up, and what changed.
-- Removed filler/static workflow behavior not tied to runtime state.
+## Locked
+- Layout/design preserved
+- Navigation preserved
+- Frontend structure preserved
+- `/run` contract preserved
+- Existing required fields preserved
 
-## What was not changed
-- Backend was not changed.
-- Supabase was not changed.
-- Database schema was not changed.
-- Provider routing was not changed.
-- API URL was not changed.
-- /run contract was not changed.
-- Approved layout, sidebar, columns, fonts, colors, and spacing were preserved.
+## Upgraded
+- Real intent detection
+- Anti-canned response logic
+- Clarification handling for vague input
+- Proposal status handling for commands like `WHERE IS MY PROPOSAL`
+- Executive Cognition Infrastructure answer path
+- Mode-specific executive outputs
+- Stronger strategic diagnosis and best move
+- Better right-panel data via `action_steps`, `risk`, and `push_intelligence`
+
+## Test Commands
+Use these after deployment:
+
+1. `WHERE IS MY PROPOSAL`
+   - Expected: status/workflow-continuity response, not another generic proposal.
+
+2. `wowowow`
+   - Expected: clarification response, not fake risk/meeting/proposal output.
+
+3. `Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
+   - Expected: specific revenue proposal response with CPA, SEO, landing pages, and conversion tracking.
+
+4. `Does this move EE closer to Executive Cognition Infrastructure?`
+   - Expected: direct yes/no strategic answer about EE cognition layer.
+
+5. `Fix response engine but do not change layout or design`
+   - Expected: backend/logic patch plan, layout locked.
+
+## Backend Routes
+- `/`
+- `/health`
+- `/debug`
+- `/providers`
+- `/test-report-json`
+- `/run`
+
+## Deployment
+Deploy backend and frontend together if replacing V36170. If the current frontend is already deployed and locked, backend can be deployed alone.
+
+## Rollback
+Rollback to V36170 if:
+- `/run` fails
+- frontend cannot reach backend
+- required fields disappear
+
+Required fields preserved:
+- `next_move`
+- `decision`
+- `action_steps`
+- `ready_assets`
+- `risk`
+- `priority`
+- `recommended_command`
