@@ -1,81 +1,77 @@
+# Executive Engine OS — V36530 Continuity + Memory Engine
 
-# EXECUTIVE ENGINE — V36520 RESPONSE COGNITION OVERHAUL
+Backend-only build.
 
-## OBJECTIVE
+## What this adds
 
-Transform Executive Engine from:
-- structured chatbot responses
+- Persistent workspace memory
+- Active workflow persistence
+- Recent decision memory
+- Operator state tracking
+- Open-loop tracking
+- Recent asset tracking
+- Context retrieval before response generation
+- Workflow continuation instead of stateless chat
+- `/engine-state`
+- `/operator-scan`
+- `/memory`
+- `/workflow`
 
-Into:
-- executive cognition infrastructure
+## What this does NOT change
 
-## CORE UPGRADES
+- No frontend redesign
+- No navigation changes
+- No layout changes
+- No sidebar changes
+- No API URL changes
 
-### Dynamic Response Architecture
-Different output structures for:
-- proposal
-- revenue
+## Required `/run` contract preserved
+
+- next_move
 - decision
-- execution
-- meeting
+- action_steps
+- ready_assets
 - risk
-- strategy
+- priority
+- recommended_command
+- provider_used
+- status
 
-### Generic Language Removal
-Kill:
-- “high-impact”
-- “drive efficiency”
-- “stakeholders”
-- “optimize workflows”
+## Deploy
 
-Replace with:
-- operational language
-- commercial logic
-- decisive sequencing
-- executive compression
+Render start command:
 
-### Asset-First Engine
-Every response should create:
-- proposals
-- messaging
-- plans
-- sequences
-- negotiation positioning
-- execution frameworks
-- operational playbooks
+```bash
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
 
-### Memory + Continuity
-Persist:
-- workflows
-- decisions
-- priorities
-- pressure
-- operator state
-- ongoing execution
+## Verify
 
-### Operator Intelligence Layer
-Infer:
-- leverage
-- urgency
-- pressure
-- momentum loss
-- operational friction
-- execution complexity
+```text
+https://executive-engine-os.onrender.com/health
+```
 
-### Output Compression
-Less filler.
-More signal.
-Higher-density cognition.
+Should return:
 
-## IMPORTANT
+```json
+{
+  "status": "ok",
+  "version": "V36530-Continuity-Memory-Engine"
+}
+```
 
-DO NOT:
-- redesign layout
-- remove columns
-- modify navigation
-- collapse into chat UI
+## Test
 
-PRESERVE:
-- 4-column architecture
-- executive cockpit feel
-- operational command center structure
+Use this command in the app:
+
+```text
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+```
+
+Then open:
+
+```text
+https://executive-engine-os.onrender.com/engine-state
+```
+
+You should see active workflow, recent decision, open loops, and operator state.
