@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Executive Engine</title>
+  
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -41,51 +42,20 @@
         <div class="chatcol">
           <div class="command"><textarea id="commandInput" class="command-runtime-input" placeholder="What would you like to achieve today?"></textarea><div class="cmd-bottom"><div class="tools"><span>📎</span><span>⌁</span><span>▣</span></div><div><span class="clear">Clear</span><button id="executeBtn" class="execute">Execute →</button></div></div></div>
           <div class="chips"><span class="chip">Prepare for board meeting</span><span class="chip">Analyze market expansion</span><span class="chip">Review Q2 performance</span><span class="chip">Assess key risks</span></div>
-          <div id="thread" class="thread">
-            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>10:24 AM</span></div><div class="copy">I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</div></div></div>
-            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>10:24 AM</span></div><div class="copy">Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</div><div class="assets">
-              <div class="asset" style="color:#ff6a1a"><div class="asset-icon">▤</div><strong>Go-To-Market Strategy Framework</strong><span>Strategy Document<br>12 pages</span><div class="download">⇩</div></div>
-              <div class="asset" style="color:#ff3d3d"><div class="asset-icon">▤</div><strong>Board Presentation Deck</strong><span>Presentation<br>16 slides</span><div class="download">⇩</div></div>
-              <div class="asset" style="color:#15a66a"><div class="asset-icon">▤</div><strong>Market Opportunity Analysis</strong><span>Analysis Report<br>24 pages</span><div class="download">⇩</div></div>
-              <div class="asset" style="color:#2274ff"><div class="asset-icon">▤</div><strong>Financial Impact Model</strong><span>Financial Model<br>Excel</span><div class="download">⇩</div></div>
-            </div></div></div>
-            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>10:48 AM</span></div><div class="copy">Now create a proposal based on that strategy.</div></div></div>
-            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>10:48 AM</span></div><div class="copy">Proposal created. It aligns with the strategy and includes scope, timeline, investment, and expected outcomes.</div><div class="assets"><div class="asset wide" style="color:#17a86b"><div class="asset-icon">▤</div><div><strong>Client Proposal v1.0</strong><span>Proposal Document • 18 pages</span></div><div class="download">⇩</div></div></div></div></div>
-            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>11:15 AM</span></div><div class="copy">Prepare me for the meeting and give me talking points and objections.</div></div></div>
-            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>11:15 AM</span></div><div class="copy">Meeting prep complete. Here are your talking points, key messages, objections to expect, and recommended responses.</div><div class="assets"><div class="asset wide" style="color:#ff6a1a"><div class="asset-icon">▤</div><div><strong>Meeting Prep Pack</strong><span>Document • 9 pages</span></div><div class="download">⇩</div></div></div></div></div>
-          </div>
+          <div id="thread" class="thread"></div>
           <div class="composer"><span>Ask a follow-up or refine your request...</span><div class="composer-icons"><span>♩</span><span>▷</span></div></div>
         </div>
 
-        <aside id="executiveSummary" class="summary">
-          <div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
-          <div class="sum-card orange"><div class="badge">1</div><div class="sum-title">✕ NEXT MOVE</div><p>Expand to new markets proposal and client meeting.</p><div class="note">＋ Add note</div></div>
-          <div class="sum-card"><div class="badge">1</div><div class="sum-title">ℹ DECISION</div><p>Approve strategy and proposal before client meeting.</p><div class="note">＋ Add note</div></div>
-          <div class="sum-card green"><div class="badge">3</div><div class="sum-title">✓ ACTION STEPS</div><ul><li>Finalize proposal</li><li>Schedule client meeting</li><li>Prepare presentation</li></ul><div class="note">＋ Add note</div></div>
-          <div class="sum-card purple"><div class="badge">3</div><div class="sum-title">✦ READY ASSETS</div><ul><li>Strategy Framework</li><li>Client Proposal v1.0</li><li>Meeting Prep Pack</li></ul><div class="note">＋ Add note</div></div>
-          <div class="sum-card red"><div class="badge">2</div><div class="sum-title">⚠ ACTIVE RISKS</div><ul><li>Competitor aggressive pricing</li><li>Market entry barriers</li></ul><div class="note">＋ Add note</div></div>
-          <div class="sum-card orange"><div class="sum-title">✪ PRIORITY <span style="margin-left:auto;background:#fff1e8;color:#ff5a13;border-radius:9px;padding:4px 8px">High</span></div><p>Client meeting preparation and proposal approval.</p><div class="note">＋ Add note</div></div>
-          <div class="sum-card"><div class="badge">1</div><div class="sum-title">⚡ RECOMMENDED COMMAND</div><p>Review proposal and confirm meeting agenda.</p><div class="note">＋ Add note</div></div>
-          <div class="sum-card"><div class="badge">2</div><div class="sum-title">▣ TOMORROW / UPCOMING</div><p>Board Meeting<br>May 27, 2026 • 10:00 AM</p><div class="link">View schedule →</div></div>
-          <div class="half"><div class="sum-card tiny"><div class="sum-title">● RECENT DECISIONS</div><ul><li>Approved Q2 budget reallocation</li><li>Greenlit market expansion study</li></ul><div class="note">＋ Add note</div></div><div class="sum-card tiny green"><div class="sum-title">⬟ SYSTEM STATUS</div><p>All systems operating normally</p><div class="note">Last updated: 2 min ago</div></div></div>
-        </aside>
+        <aside id="executiveSummary" class="summary"></aside>
       </section>
       <div></div>
     </main>
 
-    <aside id="rightRail" class="rail">
-      <h3>EXECUTIVE INTELLIGENCE</h3>
-      <div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
-      <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>Expanding to new markets could increase revenue by 20-30% with strong positioning.</p><div class="link">View insight →</div></div>
-      <div class="rail-card"><div class="rail-title">▧ MEMORY</div><p>You prefer concise proposals with clear ROI and risk analysis.</p><div class="link">View all memory →</div></div>
-      <div class="rail-card"><div class="rail-title">▣ UPCOMING PRIORITIES</div><div class="priority-row"><div class="num">1</div><div><strong>Board Meeting</strong><br><span>May 27, 2026 • 10:00 AM</span></div></div><div class="priority-row"><div class="num">2</div><div><strong>Investor Update</strong><br><span>May 30, 2026 • 1:00 PM</span></div></div><div class="priority-row"><div class="num">3</div><div><strong>Strategy Review</strong><br><span>June 2, 2026 • 9:00 AM</span></div></div><div class="link">View all →</div></div>
-      <div class="rail-card"><div class="rail-title">♙ TEAM PULSE</div><div class="team"><span>Sales</span><strong class="ok">On Track</strong></div><div class="team"><span>Marketing</span><strong class="ok">On Track</strong></div><div class="team"><span>Operations</span><strong class="bad">At Risk</strong></div><div class="link">View team pulse →</div></div>
-      <div class="rail-card"><div class="rail-title">⌘ EXECUTIVE SUMMARY</div><p>Revenue up 12% this quarter. Expansion strategy on track. Focus: execution and de-risking.</p><div class="link">View full summary →</div></div>
-    </aside>
+    <aside id="rightRail" class="rail"></aside>
     <footer class="app-footer"><span>Privacy Policy</span><span>Terms of Service</span><span>Security</span><span>|</span><span>◐</span></footer>
   </div>
 
+  
   <script src="app.js"></script>
-
 </body>
 </html>

@@ -85,130 +85,126 @@
     .rail h3{font-size:12px;font-weight:900;margin:0 0 12px}.rail-card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:15px 16px;margin-bottom:13px;box-shadow:0 5px 16px rgba(20,40,70,.035)}
     .search{height:35px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:9px;color:#64728a;padding:0 12px;font-size:12px;margin-bottom:13px}
     .rail-title{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:900;margin-bottom:10px}.rail-card p{font-size:13px;line-height:19px;margin:0 0 12px;font-weight:700}.link{color:#086bff;font-size:13px;font-weight:900}.priority-row{display:grid;grid-template-columns:26px 1fr;gap:10px;margin:10px 0}.num{width:24px;height:24px;border-radius:999px;background:#eef2f7;display:grid;place-items:center;font-size:12px}.priority-row strong{font-size:12px}.priority-row span{font-size:12px;color:#3d4d66}.team{display:flex;justify-content:space-between;margin:12px 0;font-size:13px}.ok{color:var(--green)}.bad{color:var(--red)}
-  
-/* === V37060 EXECUTION OBJECT RENDERER ONLY === */
-.v37060-loader {
+
+/* === V37100 REAL FRONTEND STATE CONTROLLER HOOKS ONLY === */
+.command-runtime-input {
+  width: 100%;
+  min-height: 50px;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #07172c;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 22px;
+}
+.command-runtime-input::placeholder { color: #52617a; }
+.thread-empty {
+  min-height: 158px;
+  border: 1px dashed #dbe3ef;
+  border-radius: 10px;
   display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: 13px;
-  margin-bottom: 18px;
+  place-items: center;
+  text-align: center;
+  padding: 22px;
+  color: #65748e;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 650;
 }
-.v37060-stream {
-  background: #ffffff;
+.runtime-error {
+  border: 1px solid #ffd2d2;
+  background: #fff7f7;
+  color: #8a1020;
+  border-radius: 10px;
+  padding: 13px 14px;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 19px;
+  max-width: 790px;
+}
+.runtime-package {
   border: 1px solid #dbe3ef;
   border-radius: 10px;
-  padding: 14px;
-}
-.v37060-progress {
-  height: 7px;
-  background: #edf2f8;
-  border-radius: 999px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-.v37060-progress span {
-  display: block;
-  width: 42%;
-  height: 100%;
-  background: linear-gradient(90deg, #ff5a13, #ff8a43);
-  border-radius: 999px;
-  animation: v37060Load 1.15s ease-in-out infinite;
-}
-@keyframes v37060Load {
-  0% { transform: translateX(-80%); }
-  100% { transform: translateX(240%); }
-}
-.exec-package {
-  border: 1px solid #dbe3ef;
-  border-radius: 10px;
-  background: #ffffff;
+  background: #fff;
   box-shadow: 0 6px 18px rgba(20,40,70,.05);
   margin-top: 12px;
   max-width: 790px;
   overflow: hidden;
 }
-.exec-head {
+.runtime-package-head {
   padding: 13px 14px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid #edf2f7;
-  cursor: pointer;
 }
-.exec-head strong {
-  font-size: 13px;
-  font-weight: 900;
-}
-.exec-head span {
+.runtime-package-head strong { font-size: 13px; font-weight: 900; }
+.runtime-package-head span { font-size: 11px; color: #62708a; }
+.runtime-pill {
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #0b6cff;
+  padding: 4px 8px;
   font-size: 11px;
-  color: #62708a;
+  font-weight: 900;
+  white-space: nowrap;
 }
-.exec-body {
-  padding: 12px 14px 14px;
+.runtime-section {
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf2f7;
 }
-.exec-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 10px;
-}
-.exec-object {
-  border: 1px solid #e2e8f2;
-  border-radius: 9px;
-  padding: 12px;
-  background: #fbfdff;
-  min-height: 96px;
-}
-.exec-object h4 {
-  margin: 0 0 7px;
+.runtime-section:last-child { border-bottom: 0; }
+.runtime-section h4 {
+  margin: 0 0 6px;
   font-size: 12px;
   font-weight: 900;
-  letter-spacing: .01em;
 }
-.exec-object p,
-.exec-object li {
+.runtime-section p,
+.runtime-section li {
   margin: 0;
   font-size: 12px;
   line-height: 17px;
   color: #17243a;
   font-weight: 650;
 }
-.exec-object ul {
-  margin: 0;
-  padding-left: 16px;
-}
-.exec-object.proposal { border-left: 3px solid #ff5a13; }
-.exec-object.meeting { border-left: 3px solid #0b6cff; }
-.exec-object.workflow { border-left: 3px solid #08a66a; }
-.exec-object.kpi { border-left: 3px solid #6d48ff; }
-.exec-object.asset { border-left: 3px solid #f5a400; }
-.exec-object.outbound { border-left: 3px solid #ef1f2f; }
-.exec-kpis {
+.runtime-section ul { margin: 0; padding-left: 16px; }
+.runtime-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+  padding: 12px 14px;
 }
-.exec-kpi {
-  background: #fff;
+.runtime-card {
   border: 1px solid #e2e8f2;
-  border-radius: 8px;
-  padding: 10px;
+  border-left: 3px solid #ff5a13;
+  border-radius: 9px;
+  padding: 12px;
+  background: #fbfdff;
+  min-height: 86px;
 }
-.exec-kpi b {
-  display: block;
-  font-size: 18px;
-  line-height: 20px;
-}
-.exec-kpi span {
+.runtime-card h4 { margin: 0 0 6px; font-size: 12px; font-weight: 900; }
+.runtime-card p { margin: 0 0 10px; font-size: 12px; line-height: 17px; font-weight: 650; }
+.runtime-card-actions { display:flex; gap:8px; margin-top:8px; }
+.runtime-card-actions button {
+  border: 1px solid #dbe3ef;
+  background: #fff;
+  border-radius: 7px;
+  padding: 5px 8px;
   font-size: 11px;
-  color: #62708a;
+  font-weight: 900;
+  color: #0b6cff;
+  cursor: pointer;
 }
-.exec-assets {
+.runtime-assets {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
+  grid-template-columns: repeat(3,minmax(0,1fr));
   gap: 8px;
-  margin-top: 10px;
+  padding: 0 14px 14px;
 }
-.exec-asset {
+.runtime-asset {
   border: 1px solid #dbe3ef;
   background: #fff;
   border-radius: 8px;
@@ -216,66 +212,12 @@
   min-height: 74px;
   position: relative;
 }
-.exec-asset strong {
-  font-size: 12px;
-  display: block;
+.runtime-asset strong { font-size: 12px; display:block; }
+.runtime-asset span { display:block; font-size: 11px; color:#62708a; margin-top:4px; }
+.runtime-asset em { position:absolute; right:10px; bottom:8px; font-style:normal; color:#31435e; }
+.execute[disabled] { opacity: .72; cursor: wait; }
+@media(max-width:1260px){
+  .runtime-grid { grid-template-columns:1fr; }
+  .runtime-assets { grid-template-columns:1fr 1fr; }
 }
-.exec-asset span {
-  display: block;
-  font-size: 11px;
-  color: #62708a;
-  margin-top: 4px;
-}
-.exec-asset em {
-  position: absolute;
-  right: 10px;
-  bottom: 8px;
-  font-style: normal;
-  color: #31435e;
-}
-.exec-package.collapsed .exec-body {
-  display: none;
-}
-.v37060-pill {
-  border-radius: 999px;
-  background: #eef4ff;
-  color: #0b6cff;
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 900;
-}
-@media (max-width: 1260px) {
-  .exec-grid { grid-template-columns: 1fr; }
-  .exec-assets { grid-template-columns: 1fr 1fr; }
-}
-
-/* === V37070 BACKEND CONTRACT CONNECTION ONLY === */
-.command-runtime-input{width:100%;min-height:50px;resize:vertical;border:0;outline:0;background:transparent;color:#07172c;font:inherit;font-size:15px;font-weight:650;line-height:22px}
-.command-runtime-input::placeholder{color:#52617a}
-.exec-error{border:1px solid #ffd2d2;background:#fff7f7;color:#8a1020;border-radius:10px;padding:13px 14px;font-size:13px;font-weight:750;line-height:19px;max-width:790px}
-.exec-legacy{border:1px solid #dbe3ef;border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(20,40,70,.05);margin-top:12px;max-width:790px;overflow:hidden}
-.exec-legacy-section{padding:12px 14px;border-bottom:1px solid #edf2f7}
-.exec-legacy-section:last-child{border-bottom:0}
-.exec-legacy-section h4{margin:0 0 6px;font-size:12px;font-weight:900}
-.exec-legacy-section p,.exec-legacy-section li{margin:0;font-size:12px;line-height:17px;color:#17243a;font-weight:650}
-.exec-legacy-section ul{margin:0;padding-left:16px}
-.execute[disabled]{opacity:.72;cursor:wait}
-/* === END V37070 === */
-
-/* === V37080 RUNTIME FIX === */
-.command-runtime-input{width:100%;min-height:52px;resize:vertical;border:0;outline:0;background:transparent;color:#07172c;font:inherit;font-size:15px;font-weight:650;line-height:22px}
-.command-runtime-input::placeholder{color:#52617a}
-.runtime-error{border:1px solid #ffd2d2;background:#fff7f7;color:#8a1020;border-radius:10px;padding:13px 14px;font-size:13px;font-weight:750;line-height:19px;max-width:790px}
-.runtime-package{border:1px solid #dbe3ef;border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(20,40,70,.05);margin-top:12px;max-width:790px;overflow:hidden}
-.runtime-section{padding:12px 14px;border-bottom:1px solid #edf2f7}
-.runtime-section:last-child{border-bottom:0}
-.runtime-section h4{margin:0 0 6px;font-size:12px;font-weight:900}
-.runtime-section p,.runtime-section li{margin:0;font-size:12px;line-height:17px;color:#17243a;font-weight:650}
-.runtime-section ul{margin:0;padding-left:16px}
-.runtime-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px 14px}
-.runtime-card{border:1px solid #e2e8f2;border-left:3px solid #ff5a13;border-radius:9px;padding:12px;background:#fbfdff;min-height:86px}
-.runtime-card h4{margin:0 0 6px;font-size:12px;font-weight:900}
-.runtime-card p{margin:0;font-size:12px;line-height:17px;font-weight:650}
-.execute[disabled]{opacity:.72;cursor:wait}
-@media(max-width:1260px){.runtime-grid{grid-template-columns:1fr}}
-/* === END V37080 === */
+/* === END V37100 === */
