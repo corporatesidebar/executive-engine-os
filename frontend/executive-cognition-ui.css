@@ -1,0 +1,270 @@
+/* =========================================================
+   Executive Engine OS — V36600 Executive Cognition UI Engine
+   Frontend-only response hierarchy layer.
+   Load AFTER existing CSS.
+   Does NOT alter layout, navigation, columns, routes, or API.
+   ========================================================= */
+
+/* Response container: calmer, tighter, executive briefing feel */
+.executive-cognition-output,
+.response-card,
+.output-card,
+.engine-output,
+.ai-response,
+.result-card,
+.response-panel {
+  border-radius: 18px !important;
+  border: 1px solid rgba(15, 35, 60, 0.10) !important;
+  box-shadow: 0 18px 48px rgba(15, 35, 60, 0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Kill loud “AI card” feeling */
+.executive-cognition-output *,
+.response-card *,
+.output-card *,
+.engine-output *,
+.ai-response *,
+.result-card *,
+.response-panel * {
+  letter-spacing: normal;
+}
+
+/* Primary title / dominant insight */
+.executive-cognition-output h1,
+.executive-cognition-output h2,
+.response-card h1,
+.response-card h2,
+.output-card h1,
+.output-card h2,
+.engine-output h1,
+.engine-output h2,
+.ai-response h1,
+.ai-response h2,
+.result-card h1,
+.result-card h2 {
+  font-size: clamp(22px, 2.1vw, 34px) !important;
+  line-height: 1.12 !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.035em !important;
+  margin: 0 0 14px 0 !important;
+  color: #07182d !important;
+}
+
+/* Dominant insight line inside existing structures */
+.response-card > p:first-of-type,
+.output-card > p:first-of-type,
+.engine-output > p:first-of-type,
+.ai-response > p:first-of-type,
+.result-card > p:first-of-type,
+.response-panel > p:first-of-type,
+.executive-cognition-output > p:first-of-type {
+  font-size: clamp(19px, 1.5vw, 27px) !important;
+  line-height: 1.22 !important;
+  font-weight: 620 !important;
+  letter-spacing: -0.025em !important;
+  color: #07182d !important;
+  margin: 0 0 18px 0 !important;
+}
+
+/* Body copy: less bold, more readable */
+.executive-cognition-output p,
+.response-card p,
+.output-card p,
+.engine-output p,
+.ai-response p,
+.result-card p,
+.response-panel p {
+  font-size: 15.5px !important;
+  line-height: 1.52 !important;
+  font-weight: 430 !important;
+  color: #132238 !important;
+}
+
+/* Lists: shorter, scan-friendly */
+.executive-cognition-output ul,
+.response-card ul,
+.output-card ul,
+.engine-output ul,
+.ai-response ul,
+.result-card ul,
+.response-panel ul {
+  margin: 8px 0 0 0 !important;
+  padding-left: 18px !important;
+}
+
+.executive-cognition-output li,
+.response-card li,
+.output-card li,
+.engine-output li,
+.ai-response li,
+.result-card li,
+.response-panel li {
+  margin: 5px 0 !important;
+  font-size: 15px !important;
+  line-height: 1.42 !important;
+  font-weight: 430 !important;
+}
+
+/* Reduce project-manager label dominance */
+.executive-cognition-output .label,
+.response-card .label,
+.output-card .label,
+.engine-output .label,
+.ai-response .label,
+.result-card .label,
+.response-panel .label,
+.executive-cognition-output .section-label,
+.response-card .section-label,
+.output-card .section-label,
+.engine-output .section-label,
+.ai-response .section-label,
+.result-card .section-label,
+.response-panel .section-label,
+.executive-cognition-output .eyebrow,
+.response-card .eyebrow,
+.output-card .eyebrow,
+.engine-output .eyebrow,
+.ai-response .eyebrow,
+.result-card .eyebrow,
+.response-panel .eyebrow {
+  font-size: 10.5px !important;
+  letter-spacing: 0.13em !important;
+  font-weight: 650 !important;
+  color: #5f6f85 !important;
+  text-transform: uppercase !important;
+}
+
+/* Existing section blocks: less equalized, more hierarchy */
+.operator-read,
+.primary-risk,
+.leverage-move,
+.do-this-now,
+.ready-assets,
+.follow-up-command,
+.risk-control,
+.priority-section,
+.now-section,
+.later-section,
+.active-brief,
+.command-centre-active-brief,
+.decision-section,
+.next-move-section {
+  border-color: rgba(15, 35, 60, 0.08) !important;
+}
+
+/* Soften secondary boxes */
+.command-centre-active-brief,
+.active-brief,
+.secondary-brief,
+.summary-grid,
+.brief-grid {
+  opacity: 0.88 !important;
+  box-shadow: none !important;
+}
+
+/* Follow-up / command block becomes quieter but decisive */
+.follow-up-command,
+.recommended-command-section,
+.next-command-section {
+  background: rgba(255, 118, 32, 0.055) !important;
+  border-top: 1px solid rgba(255, 118, 32, 0.18) !important;
+}
+
+/* Create executive “scan path” helper classes for new renderer */
+.ee-cognition-brief {
+  border: 1px solid rgba(15, 35, 60, 0.10);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(15, 35, 60, 0.08);
+  background: #fff;
+  overflow: hidden;
+}
+
+.ee-dominant-insight {
+  padding: 26px 30px 20px;
+  border-bottom: 1px solid rgba(15, 35, 60, 0.08);
+}
+
+.ee-dominant-insight .ee-kicker {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: #f36b16;
+  margin-bottom: 10px;
+}
+
+.ee-dominant-insight .ee-insight {
+  font-size: clamp(24px, 2.4vw, 38px);
+  line-height: 1.08;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+  color: #07182d;
+}
+
+.ee-brief-body {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.ee-brief-row {
+  padding: 18px 30px;
+  border-bottom: 1px solid rgba(15, 35, 60, 0.07);
+}
+
+.ee-brief-row:last-child {
+  border-bottom: none;
+}
+
+.ee-brief-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: #6b7b90;
+  margin-bottom: 8px;
+}
+
+.ee-brief-value {
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 470;
+  color: #111f34;
+}
+
+.ee-brief-value.strong {
+  font-size: 18px;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+}
+
+.ee-stop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ee-stop-item {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #142238;
+}
+
+.ee-stop-item::before {
+  content: "Stop: ";
+  color: #f36b16;
+  font-weight: 700;
+}
+
+.ee-final-move {
+  background: rgba(255, 118, 32, 0.06);
+}
+
+/* Mobile / narrow safety */
+@media (max-width: 980px) {
+  .ee-dominant-insight,
+  .ee-brief-row {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}

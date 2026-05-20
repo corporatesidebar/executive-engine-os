@@ -1,50 +1,50 @@
-# Executive Engine OS — V36590 Executive Pressure Engine
+# Executive Engine OS — V36600 Executive Cognition UI Engine
 
-Backend-only build.
+Frontend-only package.
 
 ## Purpose
 
-Upgrade Executive Engine from executive briefing into executive pressure intelligence.
+Upgrade the response presentation layer from “AI card / project manager output” into an executive cognition briefing.
 
-## What this adds
+## What this does
 
-- pressure source detection
-- focus fragmentation detection
-- strategic doubt detection
-- build-loop fatigue detection
-- commercial proof pressure detection
-- hidden psychological pattern detection
-- stabilizing decision logic
-- stop-doing logic
-- pressure history in engine state
+- Adds a dominant insight visual hierarchy
+- Reduces label dominance
+- Makes response text less equalized
+- Adds optional `renderExecutiveCognitionBrief(response)` helper
+- Supports pressure / briefing / presence / reasoning engine response fields
+- Preserves layout, sidebar, navigation, routes, API URL, and columns
 
-## What this does NOT touch
+## Install
 
-- frontend
-- layout
-- navigation
-- columns
-- sidebars
-- design
-- spacing
-- typography
+Add this file after your existing CSS:
+
+```html
+<link rel="stylesheet" href="./executive-cognition-ui.css">
+```
+
+Optional renderer helper:
+
+```html
+<script src="./executive-cognition-ui.js"></script>
+```
+
+If you want to use the optional renderer, after `/run` returns JSON:
+
+```js
+responseContainer.innerHTML = window.renderExecutiveCognitionBrief(data);
+```
+
+## Important
+
+This does NOT redesign the app shell.
+
+Do NOT change:
+- left nav
+- right columns
+- routing
+- backend
 - API URL
 - deployment structure
 
-## Verify
-
-https://executive-engine-os.onrender.com/health
-
-Expected:
-
-"version": "V36590-Executive-Pressure-Engine"
-
-## Test commands
-
-I have too many active projects and feel overwhelmed.
-
-Should I keep building Executive Engine or pivot?
-
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
-
-Build V36590 — Executive Pressure Engine
+This only improves the middle response cognition presentation.
