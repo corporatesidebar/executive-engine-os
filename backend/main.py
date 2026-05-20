@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
@@ -10,33 +10,21 @@ try:
 except Exception:
     OpenAI = None
 
-APP_VERSION = "V36530-Continuity-Memory-Engine"
+APP_VERSION = "V36540-Strategic-Inference-Engine"
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-
 DATA_DIR = os.getenv("EE_DATA_DIR", "/tmp/executive_engine_data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-app = FastAPI(
-    title="Executive Engine OS",
-    version=APP_VERSION,
-    description="Continuity + Memory Engine for Executive Engine OS."
-)
+app = FastAPI(title="Executive Engine OS", version=APP_VERSION)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://executive-engine-frontend.onrender.com",
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "*",
-    ],
+    allow_origins=["*", "https://executive-engine-frontend.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 class RunRequest(BaseModel):
     input: str = Field(..., min_length=1)
@@ -49,7 +37,6 @@ class RunRequest(BaseModel):
     user_id: Optional[str] = "will"
     context: Optional[Dict[str, Any]] = None
 
-
 class MemoryRequest(BaseModel):
     content: str
     title: Optional[str] = None
@@ -59,33 +46,14 @@ class MemoryRequest(BaseModel):
     workspace_id: Optional[str] = "default"
     user_id: Optional[str] = "will"
 
-
-class WorkflowRequest(BaseModel):
-    title: str
-    status: Optional[str] = "active"
-    priority: Optional[str] = "High"
-    next_action: Optional[str] = None
-    owner: Optional[str] = "Will"
-    deadline: Optional[str] = None
-    workspace_id: Optional[str] = "default"
-    user_id: Optional[str] = "will"
-    context: Optional[Dict[str, Any]] = None
-
-
-def now_iso() -> str:
+def now_iso():
     return datetime.now(timezone.utc).isoformat()
 
+def db_path(workspace_id="default", user_id="will"):
+    safe = re.sub(r"[^a-zA-Z0-9_\-]", "_", f"{workspace_id}_{user_id}")
+    return os.path.join(DATA_DIR, f"workspace_{safe}.json")
 
-def safe_key(workspace_id: str, user_id: str) -> str:
-    raw = f"{workspace_id}_{user_id}"
-    return re.sub(r"[^a-zA-Z0-9_\-]", "_", raw)
-
-
-def db_path(workspace_id: str, user_id: str) -> str:
-    return os.path.join(DATA_DIR, f"workspace_{safe_key(workspace_id, user_id)}.json")
-
-
-def empty_workspace(workspace_id: str, user_id: str) -> Dict[str, Any]:
+def empty_workspace(workspace_id="default", user_id="will"):
     return {
         "workspace_id": workspace_id,
         "user_id": user_id,
@@ -101,142 +69,101 @@ def empty_workspace(workspace_id: str, user_id: str) -> Dict[str, Any]:
             "last_command": None,
             "last_next_move": None,
             "open_loops": [],
-            "stalled_items": [],
-            "active_theme": None
+            "strategic_theme": None,
+            "inference_history": []
         },
         "continuity": {
-            "current_thread": [],
-            "recent_entities": [],
+            "recent_commands": [],
             "recent_assets": [],
-            "recent_commands": []
+            "recent_entities": []
         }
     }
 
-
-def load_workspace(workspace_id: str = "default", user_id: str = "will") -> Dict[str, Any]:
+def load_workspace(workspace_id="default", user_id="will"):
     path = db_path(workspace_id, user_id)
     if not os.path.exists(path):
         return empty_workspace(workspace_id, user_id)
     try:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        data.setdefault("memory", [])
-        data.setdefault("workflows", [])
-        data.setdefault("decisions", [])
-        data.setdefault("activity", [])
-        data.setdefault("operator_state", empty_workspace(workspace_id, user_id)["operator_state"])
-        data.setdefault("continuity", empty_workspace(workspace_id, user_id)["continuity"])
+        base = empty_workspace(workspace_id, user_id)
+        for k, v in base.items():
+            data.setdefault(k, v)
+        data.setdefault("operator_state", base["operator_state"])
+        data["operator_state"].setdefault("inference_history", [])
+        data.setdefault("continuity", base["continuity"])
         return data
     except Exception:
         return empty_workspace(workspace_id, user_id)
 
+def save_workspace(ws):
+    ws["updated_at"] = now_iso()
+    with open(db_path(ws["workspace_id"], ws["user_id"]), "w", encoding="utf-8") as f:
+        json.dump(ws, f, indent=2, ensure_ascii=False)
 
-def save_workspace(data: Dict[str, Any]) -> None:
-    data["updated_at"] = now_iso()
-    with open(db_path(data["workspace_id"], data["user_id"]), "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-
-def words(text: str) -> set:
+def words(text):
     return set(re.findall(r"[a-zA-Z0-9]{3,}", (text or "").lower()))
 
-
-def detect_pressure(text: str) -> Dict[str, Any]:
-    t = text.lower()
-    critical = ["urgent", "asap", "wtf", "fuck", "shit", "broken", "doesn't work", "doesnt work", "stop", "now"]
-    high = ["proposal", "client", "deploy", "revenue", "money", "deadline", "meeting", "risk", "fix", "build"]
-    c = sum(1 for x in critical if x in t)
-    h = sum(1 for x in high if x in t)
-    if c:
-        return {"level": "Critical", "reason": "frustration or immediate failure signal detected"}
-    if h >= 2:
-        return {"level": "High", "reason": "commercial or execution pressure detected"}
-    if h == 1:
-        return {"level": "Medium", "reason": "workstream signal detected"}
-    return {"level": "Normal", "reason": "no acute pressure signal detected"}
-
-
-def detect_intent(text: str, mode: str = "", brain: str = "", output_type: str = "") -> str:
-    t = " ".join([text, mode or "", brain or "", output_type or ""]).lower()
+def detect_intent(text, mode="", brain="", output_type=""):
+    blob = f"{text} {mode} {brain} {output_type}".lower()
     table = {
-        "proposal": ["proposal", "sow", "quote", "pitch", "client offer"],
-        "meeting": ["meeting", "agenda", "prep", "call", "talking points"],
-        "email": ["email", "reply", "message", "follow up", "dm"],
-        "decision": ["decide", "decision", "choose", "yes or no", "option"],
-        "revenue": ["revenue", "sales", "lead", "cpa", "ads", "seo", "pricing", "dealership"],
-        "risk": ["risk", "broken", "problem", "blocker", "issue", "wrong"],
+        "proposal": ["proposal", "sow", "quote", "pitch", "offer"],
+        "revenue": ["revenue", "sales", "lead", "cpa", "ads", "seo", "pricing", "dealership", "customer"],
+        "meeting": ["meeting", "agenda", "call", "prep", "talking points"],
+        "decision": ["decide", "decision", "choose", "option", "should i"],
+        "risk": ["risk", "broken", "problem", "blocker", "issue", "wrong", "failure"],
         "build": ["build", "ship", "deploy", "fix", "implement", "create"],
+        "communication": ["email", "reply", "message", "follow-up", "follow up"]
     }
-    scores = {k: sum(1 for x in v if x in t) for k, v in table.items()}
+    scores = {k: sum(1 for x in v if x in blob) for k, v in table.items()}
     best = max(scores, key=scores.get)
     return best if scores[best] else "operator"
 
+def detect_pressure(text):
+    t = text.lower()
+    critical = any(x in t for x in ["wtf", "fuck", "shit", "urgent", "asap", "broken", "doesnt work", "doesn't work", "stop"])
+    high = sum(1 for x in ["proposal", "client", "revenue", "deploy", "build", "fix", "deadline", "money", "cpa"] if x in t)
+    if critical:
+        return {"level": "Critical", "reason": "immediate pressure/frustration signal"}
+    if high >= 2:
+        return {"level": "High", "reason": "commercial/execution pressure"}
+    if high == 1:
+        return {"level": "Medium", "reason": "active workstream signal"}
+    return {"level": "Normal", "reason": "standard command"}
 
-def extract_entities(text: str) -> List[str]:
-    phrases = re.findall(r"\b[A-Z][A-Za-z0-9&.\-/]*(?:\s+[A-Z][A-Za-z0-9&.\-/]*){0,5}\b", text)
-    money = re.findall(r"\$[\d,]+(?:\.\d+)?[kKmM]?", text)
-    perc = re.findall(r"\b\d+(?:\.\d+)?\s?%", text)
-    return list(dict.fromkeys(phrases + money + perc))[:20]
-
-
-def relevance_score(item: Dict[str, Any], query: str) -> int:
+def retrieve_context(ws, query, limit=8):
     q = words(query)
-    blob = json.dumps(item).lower()
-    overlap = sum(1 for w in q if w in blob)
-    importance = int(item.get("importance", 3) or 3)
-    recency = 2 if item.get("updated_at") or item.get("created_at") else 0
-    return overlap * 4 + importance + recency
-
-
-def retrieve_context(workspace: Dict[str, Any], query: str, limit: int = 8) -> Dict[str, Any]:
-    memory = sorted(workspace.get("memory", []), key=lambda x: relevance_score(x, query), reverse=True)[:limit]
-    workflows = sorted(workspace.get("workflows", []), key=lambda x: relevance_score(x, query), reverse=True)[:limit]
-    decisions = sorted(workspace.get("decisions", []), key=lambda x: relevance_score(x, query), reverse=True)[:limit]
-    active = [w for w in workspace.get("workflows", []) if w.get("status") == "active"]
+    def score(item):
+        blob = json.dumps(item).lower()
+        return sum(1 for w in q if w in blob) * 4 + int(item.get("importance", 3) or 3)
     return {
-        "relevant_memory": [m for m in memory if relevance_score(m, query) > 3],
-        "relevant_workflows": [w for w in workflows if relevance_score(w, query) > 3],
-        "recent_decisions": decisions[:5],
-        "active_workflows": active[:10],
-        "operator_state": workspace.get("operator_state", {})
+        "memory": sorted(ws.get("memory", []), key=score, reverse=True)[:limit],
+        "workflows": sorted(ws.get("workflows", []), key=score, reverse=True)[:limit],
+        "decisions": ws.get("decisions", [])[-10:],
+        "operator_state": ws.get("operator_state", {})
     }
 
-
-def infer_workflow_title(text: str, intent: str) -> str:
+def infer_workflow_title(text, intent):
     clean = re.sub(r"\s+", " ", text).strip()
     if len(clean) <= 80:
         return clean
-    label = {
-        "proposal": "Proposal",
-        "meeting": "Meeting",
-        "email": "Communication",
-        "decision": "Decision",
-        "revenue": "Revenue",
-        "risk": "Risk",
-        "build": "Build",
-        "operator": "Operator"
-    }.get(intent, "Workflow")
-    return f"{label}: {clean[:68].rstrip()}"
+    return f"{intent.title()}: {clean[:68]}"
 
-
-def upsert_workflow(workspace: Dict[str, Any], req: RunRequest, intent: str, pressure: Dict[str, Any]) -> Dict[str, Any]:
+def upsert_workflow(ws, req, intent, pressure):
     title = infer_workflow_title(req.input, intent)
     q = words(title)
-    best = None
-    best_score = 0
-    for wf in workspace.get("workflows", []):
-        score = len(q & words(wf.get("title", "")))
-        if score > best_score:
-            best, best_score = wf, score
-
+    best, best_score = None, 0
+    for wf in ws.get("workflows", []):
+        s = len(q & words(wf.get("title", "")))
+        if s > best_score:
+            best, best_score = wf, s
     if best and best_score >= 3:
         best["updated_at"] = now_iso()
+        best["last_command"] = req.input
         best["status"] = "active"
         best["priority"] = "Critical" if pressure["level"] == "Critical" else best.get("priority", "High")
-        best["last_command"] = req.input
         best["continuity_count"] = int(best.get("continuity_count", 0)) + 1
         return best
-
     wf = {
         "id": f"wf_{uuid.uuid4().hex[:8]}",
         "title": title,
@@ -244,89 +171,234 @@ def upsert_workflow(workspace: Dict[str, Any], req: RunRequest, intent: str, pre
         "status": "active",
         "priority": "Critical" if pressure["level"] == "Critical" else "High",
         "owner": "Will",
-        "next_action": "Generate the next concrete asset and keep this workflow moving.",
+        "next_action": "Generate the next strategic asset.",
         "created_at": now_iso(),
         "updated_at": now_iso(),
         "last_command": req.input,
         "continuity_count": 1,
         "importance": 4
     }
-    workspace["workflows"].append(wf)
-    workspace["workflows"] = workspace["workflows"][-100:]
+    ws["workflows"].append(wf)
+    ws["workflows"] = ws["workflows"][-100:]
     return wf
 
+FORBIDDEN_LANGUAGE = [
+    "comprehensive strategy",
+    "high-impact",
+    "drive efficiency",
+    "stakeholders",
+    "optimize workflows",
+    "leverage opportunities",
+    "best practices",
+    "streamline operations",
+    "conduct analysis",
+    "review existing assets",
+    "determine the specific type"
+]
 
-def update_continuity(workspace: Dict[str, Any], req: RunRequest, intent: str, pressure: Dict[str, Any], workflow: Dict[str, Any], response: Dict[str, Any]) -> None:
-    entities = extract_entities(req.input)
-    state = workspace["operator_state"]
-    state["current_pressure"] = pressure["level"]
-    state["current_focus"] = workflow.get("title")
-    state["last_command"] = req.input
-    state["last_next_move"] = response.get("next_move")
-    state["active_theme"] = intent
-
-    if response.get("risk"):
-        open_loop = {
-            "id": f"loop_{uuid.uuid4().hex[:8]}",
-            "workflow_id": workflow.get("id"),
-            "title": response.get("risk"),
-            "created_at": now_iso(),
-            "status": "open"
+def clean_language(value):
+    if isinstance(value, str):
+        out = value
+        replacements = {
+            "comprehensive strategy": "focused operating plan",
+            "high-impact": "revenue-relevant",
+            "drive efficiency": "remove wasted motion",
+            "stakeholders": "decision-makers",
+            "optimize workflows": "tighten the execution path",
+            "leverage opportunities": "use the strongest opening",
+            "best practices": "what works in this situation",
+            "streamline operations": "remove friction",
+            "conduct analysis": "identify the constraint",
+            "review existing assets": "use only assets that move the decision",
+            "determine the specific type": "choose the asset that forces the next decision"
         }
-        state.setdefault("open_loops", []).append(open_loop)
-        state["open_loops"] = state["open_loops"][-25:]
+        for a, b in replacements.items():
+            out = re.sub(a, b, out, flags=re.I)
+        return out
+    if isinstance(value, list):
+        return [clean_language(v) for v in value]
+    if isinstance(value, dict):
+        return {k: clean_language(v) for k, v in value.items()}
+    return value
 
-    continuity = workspace["continuity"]
-    continuity.setdefault("current_thread", []).append({
-        "at": now_iso(),
-        "input": req.input[:500],
-        "intent": intent,
-        "pressure": pressure["level"],
-        "workflow_id": workflow.get("id"),
-        "next_move": response.get("next_move")
-    })
-    continuity["current_thread"] = continuity["current_thread"][-30:]
-    continuity["recent_entities"] = list(dict.fromkeys((entities + continuity.get("recent_entities", []))))[:50]
-    continuity.setdefault("recent_commands", []).append(req.input[:300])
-    continuity["recent_commands"] = continuity["recent_commands"][-30:]
+def build_strategic_inference(req, intent, pressure, context, workflow):
+    text = req.input.lower()
+    inference = {
+        "hidden_bottleneck": "The system needs to identify the real constraint, not repeat the surface task.",
+        "leverage_point": "Create the asset or decision that unlocks the next move fastest.",
+        "wrong_move": "Do not create generic planning steps that make the user do the work.",
+        "commercial_angle": "Tie the output to revenue, control, speed, risk reduction, or decision momentum.",
+        "operator_instinct": "Say the thing a sharp operator would notice immediately."
+    }
 
-    for asset in response.get("ready_assets", [])[:5]:
-        continuity.setdefault("recent_assets", []).append({
-            "id": f"asset_{uuid.uuid4().hex[:8]}",
-            "workflow_id": workflow.get("id"),
-            "content": str(asset)[:2000],
-            "created_at": now_iso()
-        })
-    continuity["recent_assets"] = continuity["recent_assets"][-50:]
+    if "dealership" in text or "auto loan" in text or "cpa" in text:
+        inference = {
+            "hidden_bottleneck": "The dealership does not care about SEO or ads. It cares about funded vehicle deals at a predictable acquisition cost.",
+            "leverage_point": "Position the offer around finance-intent lead capture, lead handling speed, and funded-deal tracking.",
+            "wrong_move": "Do not lead with keyword research, blog calendars, or generic digital marketing activities.",
+            "commercial_angle": "CPA under $100 is believable only if broad car-shopping traffic is excluded and credit/financing intent is isolated.",
+            "operator_instinct": "Use Google Ads for immediate finance-intent demand; use SEO as the 90-day cost-control layer."
+        }
+    elif "build" in text and ("engine" in text or "system" in text):
+        inference = {
+            "hidden_bottleneck": "The product is not failing because it lacks structure. It is failing when responses do not produce strategic leverage.",
+            "leverage_point": "Upgrade reasoning quality before adding more UI or dashboard surface area.",
+            "wrong_move": "Do not add more cards, widgets, or static sections to hide weak cognition.",
+            "commercial_angle": "The value is dependency: the executive feels sharper, faster, and more in control after every command.",
+            "operator_instinct": "The system must challenge weak assumptions and produce the next asset, not narrate a process."
+        }
+    elif intent == "meeting":
+        inference = {
+            "hidden_bottleneck": "Most meetings fail because they lack a decision target.",
+            "leverage_point": "Enter with the close first: what decision must be made before the meeting ends.",
+            "wrong_move": "Do not create a polite agenda that avoids the hard decision.",
+            "commercial_angle": "The meeting must protect time, force ownership, and reduce post-call ambiguity.",
+            "operator_instinct": "Prepare the objection before the other person says it."
+        }
+    elif intent == "decision":
+        inference = {
+            "hidden_bottleneck": "The issue is not options. It is the cost of delay and unclear tradeoffs.",
+            "leverage_point": "Choose the option that preserves momentum and limits downside.",
+            "wrong_move": "Do not keep exploring once the tradeoff is obvious.",
+            "commercial_angle": "A fast reversible decision beats a perfect delayed decision.",
+            "operator_instinct": "Name the tradeoff directly and move."
+        }
+    elif intent == "risk":
+        inference = {
+            "hidden_bottleneck": "The problem will expand if the system keeps changing multiple layers at once.",
+            "leverage_point": "Isolate the failing layer and ship the smallest controlled fix.",
+            "wrong_move": "Do not redesign while debugging.",
+            "commercial_angle": "Protect working assets first; speed only matters after stability.",
+            "operator_instinct": "Lock the stable base before touching anything else."
+        }
 
+    return inference
 
-def build_prompt(req: RunRequest, intent: str, pressure: Dict[str, Any], context: Dict[str, Any], workflow: Dict[str, Any]) -> str:
+def strategic_fallback(req, intent, pressure, context, workflow):
+    inf = build_strategic_inference(req, intent, pressure, context, workflow)
+
+    if intent == "proposal" or "proposal" in req.input.lower():
+        asset = f"""DEALERSHIP PROPOSAL — STRATEGIC DRAFT
+
+Core Position:
+The dealership does not need “SEO and Google Ads.” It needs a predictable path to financed vehicle buyers at a controlled acquisition cost.
+
+Strategic Read:
+{inf["hidden_bottleneck"]}
+
+Offer:
+90-Day Funded Deal Acquisition Sprint
+
+What We Control:
+1. Search intent: only financing, bad-credit, approval, and local buyer terms.
+2. Landing path: pre-approval focused, fast contact, no generic dealership browsing.
+3. Tracking: lead source, form submit, call, booked appointment, approval, funded deal.
+4. Budget waste: remove broad auto traffic, research traffic, and low-intent clicks weekly.
+5. SEO layer: build local finance pages to reduce paid dependency over 90 days.
+
+Why CPA Under $100 Can Work:
+It is not a “traffic” target. It is an intent-control target. The campaign must avoid broad car shoppers and isolate buyers actively looking for financing.
+
+What Not To Sell:
+- Blog calendar first
+- Generic SEO reports
+- Broad Google Ads campaigns
+- Vanity ranking reports
+- Traffic without funded-deal tracking
+
+Close:
+If the goal is CPA under $100, the first move is not more marketing. It is tighter intent control, better lead handling, and proof that the dealership can convert finance leads into funded deals."""
+        return {
+            "next_move": "Reframe the proposal around funded deals and CPA control, not SEO/Ads activity.",
+            "decision": "Lead with finance-intent Google Ads for speed; use SEO as the 90-day cost-control layer.",
+            "action_steps": [
+                "Open the proposal with funded-deal economics, not marketing tasks.",
+                "State that CPA under $100 depends on excluding broad car-shopping traffic.",
+                "Build the offer as a 90-day acquisition sprint with weekly waste removal.",
+                "Add tracking from click to lead to appointment to funded deal.",
+                "Close with a kickoff ask: budget, landing page access, tracking access, launch date."
+            ],
+            "ready_assets": [asset],
+            "risk": "The deal will sound weak if it sells deliverables instead of showing how the dealership gets finance-ready buyers at a controlled cost.",
+            "priority": "High",
+            "recommended_command": "Generate the final dealership proposal with pricing, timeline, deliverables, and kickoff email.",
+            "what_to_do_now": "Use the funded-deal acquisition angle as the spine of the proposal.",
+            "asset": asset,
+            "follow_up": "Next output should produce the actual client-facing proposal, not another planning list.",
+            "provider_used": "local-strategic-inference-engine",
+            "status": "success"
+        }
+
+    asset = f"""STRATEGIC INFERENCE
+
+Hidden Bottleneck:
+{inf["hidden_bottleneck"]}
+
+Leverage Point:
+{inf["leverage_point"]}
+
+Wrong Move:
+{inf["wrong_move"]}
+
+Commercial Angle:
+{inf["commercial_angle"]}
+
+Operator Instinct:
+{inf["operator_instinct"]}
+
+Active Workflow:
+{workflow.get("title")}
+"""
+    return {
+        "next_move": inf["leverage_point"],
+        "decision": f"Do this: {inf['operator_instinct']}",
+        "action_steps": [
+            inf["wrong_move"],
+            inf["leverage_point"],
+            "Create the decision-moving asset now.",
+            "Save the inference to the active workflow.",
+            "Use the next command to produce the finished asset."
+        ],
+        "ready_assets": [asset],
+        "risk": inf["hidden_bottleneck"],
+        "priority": "Critical" if pressure["level"] == "Critical" else "High",
+        "recommended_command": "Generate the finished executive asset using this strategic inference.",
+        "what_to_do_now": inf["leverage_point"],
+        "asset": asset,
+        "follow_up": "Continue from this strategic inference instead of restarting the topic.",
+        "provider_used": "local-strategic-inference-engine",
+        "status": "success"
+    }
+
+def build_prompt(req, intent, pressure, context, workflow, inference):
     return f"""
-You are Executive Engine OS for Will Webb.
+You are Executive Engine OS — Strategic Inference Engine.
 
-You are not a chatbot. You are an executive continuity and memory engine.
+You are not a chatbot. You are a sharp operator sitting beside the executive.
 
-Your task:
-- remember active context
-- continue workflows instead of restarting
-- infer pressure and operational state
-- create the actual work product
-- produce executive-grade next moves
-- avoid generic business language
-- preserve the response contract
+Your job:
+- infer the real bottleneck
+- identify the highest-leverage move
+- challenge weak assumptions
+- create the actual asset
+- remove generic business language
+- make the user think: "that is smart"
 
-Intent: {intent}
+Detected intent: {intent}
 Pressure: {pressure}
 Active workflow: {json.dumps(workflow, ensure_ascii=False)}
-Retrieved continuity context:
-{json.dumps(context, ensure_ascii=False, indent=2)[:8000]}
+Retrieved context: {json.dumps(context, ensure_ascii=False)[:8000]}
+Strategic inference: {json.dumps(inference, ensure_ascii=False, indent=2)}
+
+Forbidden language:
+{json.dumps(FORBIDDEN_LANGUAGE)}
 
 Rules:
-1. Never say "conduct analysis" unless you include what analysis to perform and why.
-2. Never say "prepare proposal" without producing proposal material.
-3. Never use filler like comprehensive strategy, high-impact, stakeholders, optimize workflows, drive efficiency.
-4. Use commercial/operator reasoning.
-5. Make the response feel like it remembers what matters.
+1. Do not produce generic task lists.
+2. Do not say "conduct analysis", "review assets", or "prepare strategy" unless you create the actual strategic output.
+3. Every answer must include at least one non-obvious insight.
+4. Every answer must say what NOT to do.
+5. Commercial logic matters: money, risk, speed, leverage, control, conversion, trust.
 6. Return only valid JSON.
 
 Required JSON:
@@ -346,122 +418,34 @@ Required JSON:
 }}
 """
 
-
-def enforce_contract(data: Dict[str, Any]) -> Dict[str, Any]:
-    data.setdefault("next_move", "Move the active workflow forward with one concrete asset.")
-    data.setdefault("decision", "Continue from the active context and avoid restarting the work.")
+def enforce_contract(data):
+    data = clean_language(data or {})
+    data.setdefault("next_move", "Identify the real bottleneck and create the decision-moving asset.")
+    data.setdefault("decision", "Prioritize strategic leverage over generic activity.")
     data.setdefault("action_steps", [])
     data.setdefault("ready_assets", [])
-    data.setdefault("risk", "The risk is losing continuity and turning this into another disconnected response.")
+    data.setdefault("risk", "The risk is organized output with no strategic intelligence.")
     data.setdefault("priority", "High")
-    data.setdefault("recommended_command", "Continue this workflow and generate the next executable asset.")
-    data.setdefault("provider_used", "local-continuity-engine")
+    data.setdefault("recommended_command", "Generate the finished asset using the strategic inference.")
+    data.setdefault("provider_used", "local-strategic-inference-engine")
     data.setdefault("status", "success")
-
     if isinstance(data["action_steps"], str):
         data["action_steps"] = [data["action_steps"]]
     if isinstance(data["ready_assets"], str):
         data["ready_assets"] = [data["ready_assets"]]
-
     if len(data["action_steps"]) < 3:
         data["action_steps"] += [
-            "Keep the active workflow open.",
-            "Generate the next concrete asset.",
-            "Save the decision and next command for continuity."
+            "Name the hidden bottleneck.",
+            "Choose the leverage move.",
+            "Create the asset that forces the next decision."
         ][:3-len(data["action_steps"])]
-
     if not data["ready_assets"]:
-        data["ready_assets"] = [data.get("asset") or "Continuity record saved for the active workflow."]
-
+        data["ready_assets"] = [data.get("asset", "Strategic inference saved.")]
     if data["priority"] not in ["Critical", "High", "Medium", "Low"]:
         data["priority"] = "High"
-
     return data
 
-
-def fallback_response(req: RunRequest, intent: str, pressure: Dict[str, Any], context: Dict[str, Any], workflow: Dict[str, Any]) -> Dict[str, Any]:
-    if intent == "proposal" or "proposal" in req.input.lower():
-        asset = """PROPOSAL CONTINUITY DRAFT
-
-Positioning:
-Do not sell SEO and Google Ads as services. Sell funded auto-loan opportunities at a controlled acquisition cost.
-
-Commercial Logic:
-The dealership wants applications that can become funded deals. A CPA under $100 only matters if the traffic is credit-intent, local, and filtered away from low-buying-intent searches.
-
-Offer:
-90-Day Auto Loan Acquisition Sprint
-
-What We Build:
-1. Google Ads campaigns around credit-intent and financing-intent search terms.
-2. Landing page path focused on pre-approval, inventory-fit, and fast contact.
-3. Local SEO pages targeting Ontario auto financing, bad credit car loans, and dealership-specific service areas.
-4. Conversion tracking for lead source, form submit, call, booked appointment, and funded deal.
-5. Weekly CPA review with waste removal and budget reallocation.
-
-Risk Control:
-No broad auto keywords. No vanity SEO reporting. No traffic that cannot become a finance lead.
-
-Client Close:
-If the dealership wants lower CPA, the first move is not more marketing. It is tighter intent control, cleaner landing pages, and faster lead handling."""
-        return enforce_contract({
-            "next_move": "Turn the dealership request into a funded-deal acquisition offer, not an SEO/Ads task list.",
-            "decision": "Lead with Google Ads for immediate credit-intent demand; use SEO as the 90-day cost-reduction layer.",
-            "action_steps": [
-                "Frame the proposal around funded applications, not clicks or rankings.",
-                "Build the offer as a 90-day acquisition sprint with weekly CPA control.",
-                "Exclude broad auto traffic and focus on financing/bad-credit/local-intent searches.",
-                "Include conversion tracking from ad click to lead to booked appointment to funded deal.",
-                "Close with a kickoff decision: budget, landing page, tracking, launch date."
-            ],
-            "ready_assets": [asset],
-            "risk": "CPA under $100 fails if the campaign buys broad car-shopping traffic instead of finance-intent leads.",
-            "priority": "High",
-            "recommended_command": "Generate the full dealership proposal with pricing, scope, landing page plan, and kickoff email.",
-            "what_to_do_now": "Use the funded-deal positioning as the proposal spine.",
-            "asset": asset,
-            "follow_up": "Track this as the active proposal workflow and reuse the positioning in the next command.",
-            "provider_used": "local-continuity-engine",
-            "status": "success"
-        })
-
-    asset = f"""CONTINUITY RECORD
-
-Active Workflow:
-{workflow.get("title")}
-
-What The System Now Remembers:
-- Current intent: {intent}
-- Current pressure: {pressure.get("level")}
-- Active focus: {workflow.get("title")}
-- Prior relevant workflows: {len(context.get("relevant_workflows", []))}
-- Prior relevant memory items: {len(context.get("relevant_memory", []))}
-
-Next Continuity Move:
-Continue this workflow from the current state instead of restarting."""
-    return enforce_contract({
-        "next_move": "Keep this as an active workflow and generate the next concrete asset from memory.",
-        "decision": "The system should continue from saved context, not treat the next command as isolated.",
-        "action_steps": [
-            "Save the current command into the active workflow.",
-            "Preserve the next move, risk, and ready asset.",
-            "Use retrieved memory before generating the next response.",
-            "Surface open loops and stalled items in engine state.",
-            "Use the next command to deepen the asset, not restart the topic."
-        ],
-        "ready_assets": [asset],
-        "risk": "Without continuity, Executive Engine keeps sounding organized but not truly useful.",
-        "priority": "High" if pressure.get("level") in ["High", "Critical"] else "Medium",
-        "recommended_command": "Continue this workflow and generate the next asset using saved context.",
-        "what_to_do_now": "Run the next command against the same workflow so memory compounds.",
-        "asset": asset,
-        "follow_up": "Check /engine-state to confirm active workflow, recent decisions, open loops, and memory count.",
-        "provider_used": "local-continuity-engine",
-        "status": "success"
-    })
-
-
-def call_openai(req: RunRequest, intent: str, pressure: Dict[str, Any], context: Dict[str, Any], workflow: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def call_openai(req, intent, pressure, context, workflow, inference):
     if not OPENAI_API_KEY or OpenAI is None:
         return None
     try:
@@ -469,38 +453,26 @@ def call_openai(req: RunRequest, intent: str, pressure: Dict[str, Any], context:
         result = client.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=[
-                {"role": "system", "content": build_prompt(req, intent, pressure, context, workflow)},
+                {"role": "system", "content": build_prompt(req, intent, pressure, context, workflow, inference)},
                 {"role": "user", "content": req.input}
             ],
-            temperature=0.35,
+            temperature=0.28,
             response_format={"type": "json_object"}
         )
-        raw = result.choices[0].message.content or "{}"
-        data = json.loads(raw)
+        data = json.loads(result.choices[0].message.content or "{}")
         data["provider_used"] = f"openai:{DEFAULT_MODEL}"
         return enforce_contract(data)
     except Exception:
         return None
-
 
 @app.get("/")
 def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "continuity_memory",
-        "features": [
-            "persistent_workspace_state",
-            "active_workflows",
-            "decision_memory",
-            "operator_state",
-            "open_loops",
-            "recent_assets",
-            "retrieval_context",
-            "workflow_continuation"
-        ]
+        "engine": "strategic_inference",
+        "purpose": "turn organized output into commercially sharp operator intelligence"
     }
-
 
 @app.get("/health")
 def health():
@@ -511,153 +483,135 @@ def health():
         "data_dir": DATA_DIR
     }
 
-
 @app.post("/run")
 def run(req: RunRequest):
-    workspace = load_workspace(req.workspace_id or "default", req.user_id or "will")
+    ws = load_workspace(req.workspace_id or "default", req.user_id or "will")
     intent = detect_intent(req.input, req.mode or "", req.brain or "", req.output_type or "")
     pressure = detect_pressure(req.input)
-    workflow = upsert_workflow(workspace, req, intent, pressure)
-    context = retrieve_context(workspace, req.input)
+    context = retrieve_context(ws, req.input)
+    workflow = upsert_workflow(ws, req, intent, pressure)
+    inference = build_strategic_inference(req, intent, pressure, context, workflow)
 
-    response = call_openai(req, intent, pressure, context, workflow)
+    response = call_openai(req, intent, pressure, context, workflow, inference)
     if not response:
-        response = fallback_response(req, intent, pressure, context, workflow)
+        response = strategic_fallback(req, intent, pressure, context, workflow)
+    response = enforce_contract(response)
 
-    update_continuity(workspace, req, intent, pressure, workflow, response)
-
-    workspace["activity"].append({
-        "id": f"act_{uuid.uuid4().hex[:8]}",
-        "created_at": now_iso(),
-        "type": "run",
-        "input": req.input[:800],
-        "intent": intent,
-        "pressure": pressure["level"],
-        "workflow_id": workflow["id"]
-    })
-    workspace["activity"] = workspace["activity"][-100:]
-
-    workspace["decisions"].append({
-        "id": f"dec_{uuid.uuid4().hex[:8]}",
+    ws["operator_state"]["current_pressure"] = pressure["level"]
+    ws["operator_state"]["current_focus"] = workflow["title"]
+    ws["operator_state"]["last_command"] = req.input
+    ws["operator_state"]["last_next_move"] = response["next_move"]
+    ws["operator_state"]["strategic_theme"] = intent
+    ws["operator_state"]["inference_history"].append({
+        "id": f"inf_{uuid.uuid4().hex[:8]}",
         "created_at": now_iso(),
         "workflow_id": workflow["id"],
         "input": req.input[:500],
-        "decision": response.get("decision"),
-        "next_move": response.get("next_move"),
-        "risk": response.get("risk"),
-        "priority": response.get("priority"),
-        "importance": 4
+        "inference": inference,
+        "next_move": response["next_move"]
     })
-    workspace["decisions"] = workspace["decisions"][-100:]
+    ws["operator_state"]["inference_history"] = ws["operator_state"]["inference_history"][-50:]
 
-    workflow["next_action"] = response.get("recommended_command") or response.get("next_move")
+    ws["decisions"].append({
+        "id": f"dec_{uuid.uuid4().hex[:8]}",
+        "created_at": now_iso(),
+        "workflow_id": workflow["id"],
+        "decision": response["decision"],
+        "next_move": response["next_move"],
+        "risk": response["risk"],
+        "priority": response["priority"],
+        "strategic_inference": inference,
+        "importance": 5
+    })
+    ws["decisions"] = ws["decisions"][-100:]
+
+    ws["activity"].append({
+        "id": f"act_{uuid.uuid4().hex[:8]}",
+        "created_at": now_iso(),
+        "type": "run",
+        "intent": intent,
+        "pressure": pressure["level"],
+        "workflow_id": workflow["id"],
+        "input": req.input[:500]
+    })
+    ws["activity"] = ws["activity"][-100:]
+
+    ws["continuity"]["recent_commands"].append(req.input[:300])
+    ws["continuity"]["recent_commands"] = ws["continuity"]["recent_commands"][-30:]
+    for asset in response.get("ready_assets", [])[:5]:
+        ws["continuity"]["recent_assets"].append({
+            "id": f"asset_{uuid.uuid4().hex[:8]}",
+            "created_at": now_iso(),
+            "workflow_id": workflow["id"],
+            "content": str(asset)[:2500]
+        })
+    ws["continuity"]["recent_assets"] = ws["continuity"]["recent_assets"][-50:]
+    workflow["next_action"] = response["recommended_command"]
     workflow["updated_at"] = now_iso()
 
-    save_workspace(workspace)
+    save_workspace(ws)
 
+    response["strategic_inference"] = inference
     response["memory_context"] = {
         "active_workflow": workflow,
-        "operator_state": workspace["operator_state"],
-        "relevant_memory_count": len(context["relevant_memory"]),
-        "active_workflow_count": len([w for w in workspace["workflows"] if w.get("status") == "active"]),
-        "recent_decisions_count": len(workspace["decisions"]),
-        "open_loops_count": len(workspace["operator_state"].get("open_loops", []))
+        "pressure": pressure,
+        "intent": intent,
+        "recent_decisions_count": len(ws["decisions"]),
+        "inference_count": len(ws["operator_state"]["inference_history"])
     }
     response["version"] = APP_VERSION
     return response
 
-
 @app.post("/memory")
 def add_memory(item: MemoryRequest):
-    workspace = load_workspace(item.workspace_id or "default", item.user_id or "will")
-    memory = {
+    ws = load_workspace(item.workspace_id or "default", item.user_id or "will")
+    mem = {
         "id": f"mem_{uuid.uuid4().hex[:8]}",
+        "created_at": now_iso(),
+        "updated_at": now_iso(),
         "type": item.type,
         "title": item.title or item.content[:80],
         "content": item.content,
-        "importance": item.importance,
-        "tags": item.tags or [],
-        "created_at": now_iso(),
-        "updated_at": now_iso()
+        "importance": item.importance or 3,
+        "tags": item.tags or []
     }
-    workspace["memory"].append(memory)
-    workspace["memory"] = workspace["memory"][-250:]
-    save_workspace(workspace)
-    return {"status": "success", "version": APP_VERSION, "memory": memory}
-
+    ws["memory"].append(mem)
+    ws["memory"] = ws["memory"][-250:]
+    save_workspace(ws)
+    return {"status": "success", "version": APP_VERSION, "memory": mem}
 
 @app.get("/memory")
-def get_memory(workspace_id: str = "default", user_id: str = "will"):
-    workspace = load_workspace(workspace_id, user_id)
-    return {
-        "status": "success",
-        "version": APP_VERSION,
-        "memory": workspace["memory"],
-        "decisions": workspace["decisions"][-25:],
-        "operator_state": workspace["operator_state"]
-    }
-
-
-@app.post("/workflow")
-def add_workflow(item: WorkflowRequest):
-    workspace = load_workspace(item.workspace_id or "default", item.user_id or "will")
-    wf = {
-        "id": f"wf_{uuid.uuid4().hex[:8]}",
-        "title": item.title,
-        "status": item.status,
-        "priority": item.priority,
-        "next_action": item.next_action,
-        "owner": item.owner,
-        "deadline": item.deadline,
-        "context": item.context or {},
-        "created_at": now_iso(),
-        "updated_at": now_iso(),
-        "importance": 4
-    }
-    workspace["workflows"].append(wf)
-    save_workspace(workspace)
-    return {"status": "success", "version": APP_VERSION, "workflow": wf}
-
-
-@app.get("/workflow")
-def get_workflows(workspace_id: str = "default", user_id: str = "will"):
-    workspace = load_workspace(workspace_id, user_id)
-    return {"status": "success", "version": APP_VERSION, "workflows": workspace["workflows"]}
-
+def memory(workspace_id: str = "default", user_id: str = "will"):
+    ws = load_workspace(workspace_id, user_id)
+    return {"status": "success", "version": APP_VERSION, "memory": ws["memory"], "decisions": ws["decisions"][-25:]}
 
 @app.get("/engine-state")
 def engine_state(workspace_id: str = "default", user_id: str = "will"):
-    workspace = load_workspace(workspace_id, user_id)
-    active = [w for w in workspace["workflows"] if w.get("status") == "active"]
+    ws = load_workspace(workspace_id, user_id)
+    active = [w for w in ws["workflows"] if w.get("status") == "active"]
     return {
         "status": "success",
         "version": APP_VERSION,
-        "operator_state": workspace["operator_state"],
+        "operator_state": ws["operator_state"],
         "active_workflows": active,
-        "recent_decisions": workspace["decisions"][-10:],
-        "recent_assets": workspace["continuity"].get("recent_assets", [])[-10:],
-        "recent_commands": workspace["continuity"].get("recent_commands", [])[-10:],
-        "memory_count": len(workspace["memory"]),
-        "open_loops": workspace["operator_state"].get("open_loops", [])
+        "recent_decisions": ws["decisions"][-10:],
+        "recent_assets": ws["continuity"]["recent_assets"][-10:],
+        "memory_count": len(ws["memory"])
     }
-
 
 @app.get("/operator-scan")
 def operator_scan(workspace_id: str = "default", user_id: str = "will"):
-    workspace = load_workspace(workspace_id, user_id)
-    active = [w for w in workspace["workflows"] if w.get("status") == "active"]
-    critical = [w for w in active if w.get("priority") == "Critical"]
-    focus = critical[0] if critical else active[-1] if active else None
+    ws = load_workspace(workspace_id, user_id)
+    hist = ws["operator_state"].get("inference_history", [])
+    latest = hist[-1] if hist else None
     return {
         "status": "success",
         "version": APP_VERSION,
-        "pressure": workspace["operator_state"].get("current_pressure", "Normal"),
-        "focus": focus,
-        "next_move": focus.get("next_action") if focus else "Create the first active workflow.",
-        "open_loops": workspace["operator_state"].get("open_loops", [])[-10:],
-        "recommended_command": "Continue the active workflow using saved memory and produce the next asset."
+        "current_pressure": ws["operator_state"].get("current_pressure"),
+        "current_focus": ws["operator_state"].get("current_focus"),
+        "latest_inference": latest,
+        "recommended_command": "Generate the finished asset using the latest strategic inference."
     }
-
 
 @app.get("/test-report")
 def test_report():
@@ -665,19 +619,14 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36530",
-            "POST /run stores active workflow and decision",
-            "GET /engine-state shows operator_state, active_workflows, recent_decisions, open_loops",
-            "POST /memory saves durable context",
-            "GET /operator-scan returns current pressure and next move"
+            "GET /health returns V36540",
+            "POST /run returns strategic_inference object",
+            "Proposal test produces funded-deal positioning, not generic SEO/Ads tasks",
+            "Forbidden generic language is replaced",
+            "GET /engine-state shows inference_history"
         ],
-        "copy_tools": {
-            "health": "https://executive-engine-os.onrender.com/health",
-            "engine_state": "https://executive-engine-os.onrender.com/engine-state",
-            "proposal_test": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
-        }
+        "proposal_test": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
     }
-
 
 @app.get("/test-report-json")
 def test_report_json():

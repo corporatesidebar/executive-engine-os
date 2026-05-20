@@ -1,29 +1,62 @@
-# Executive Engine OS — V36530 Continuity + Memory Engine
+# Executive Engine OS — V36540 Strategic Inference Engine
 
 Backend-only build.
 
-## What this adds
+## Purpose
 
-- Persistent workspace memory
-- Active workflow persistence
-- Recent decision memory
-- Operator state tracking
-- Open-loop tracking
-- Recent asset tracking
-- Context retrieval before response generation
-- Workflow continuation instead of stateless chat
-- `/engine-state`
-- `/operator-scan`
-- `/memory`
-- `/workflow`
+Fix the exact problem shown in testing:
 
-## What this does NOT change
+The system was organized but not strategically sharp.
 
-- No frontend redesign
-- No navigation changes
-- No layout changes
-- No sidebar changes
-- No API URL changes
+V36540 adds strategic inference:
+
+- hidden bottleneck detection
+- leverage-point identification
+- wrong-move detection
+- commercial reasoning
+- operator instinct
+- generic language removal
+- proposal intelligence
+- strategic inference history
+
+## What this does NOT touch
+
+- frontend layout
+- navigation
+- sidebars
+- columns
+- design
+- API URL
+
+## Verify
+
+Open:
+
+```text
+https://executive-engine-os.onrender.com/health
+```
+
+Expected:
+
+```json
+"version": "V36540-Strategic-Inference-Engine"
+```
+
+## Test command
+
+```text
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+```
+
+Expected response should mention:
+
+- funded vehicle deals
+- finance-intent buyers
+- CPA control
+- Google Ads for immediate demand
+- SEO as 90-day cost-control layer
+- what NOT to sell
+- no generic “conduct analysis” filler
 
 ## Required `/run` contract preserved
 
@@ -37,41 +70,8 @@ Backend-only build.
 - provider_used
 - status
 
-## Deploy
+Additional fields:
 
-Render start command:
-
-```bash
-uvicorn main:app --host 0.0.0.0 --port $PORT
-```
-
-## Verify
-
-```text
-https://executive-engine-os.onrender.com/health
-```
-
-Should return:
-
-```json
-{
-  "status": "ok",
-  "version": "V36530-Continuity-Memory-Engine"
-}
-```
-
-## Test
-
-Use this command in the app:
-
-```text
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
-```
-
-Then open:
-
-```text
-https://executive-engine-os.onrender.com/engine-state
-```
-
-You should see active workflow, recent decision, open loops, and operator state.
+- strategic_inference
+- memory_context
+- version
