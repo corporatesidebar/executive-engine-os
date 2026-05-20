@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from datetime import datetime, timezone
 import os, json, re, uuid
 
@@ -10,7 +10,7 @@ try:
 except Exception:
     OpenAI = None
 
-APP_VERSION = "V36580-Executive-Briefing-Engine"
+APP_VERSION = "V36590-Executive-Pressure-Engine"
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 DATA_DIR = os.getenv("EE_DATA_DIR", "/tmp/executive_engine_data")
@@ -56,11 +56,11 @@ def empty_workspace(workspace_id="default", user_id="will"):
         "activity": [],
         "operator_state": {
             "current_pressure": "Normal",
+            "pressure_source": None,
             "current_focus": None,
-            "briefing_mode": None,
             "last_command": None,
             "last_next_move": None,
-            "briefing_history": []
+            "pressure_history": []
         },
         "continuity": {
             "recent_commands": [],
@@ -79,7 +79,7 @@ def load_workspace(workspace_id="default", user_id="will"):
         for k, v in base.items():
             ws.setdefault(k, v)
         ws.setdefault("operator_state", base["operator_state"])
-        ws["operator_state"].setdefault("briefing_history", [])
+        ws["operator_state"].setdefault("pressure_history", [])
         ws.setdefault("continuity", base["continuity"])
         return ws
     except Exception:
@@ -93,47 +93,30 @@ def save_workspace(ws):
 def detect_intent(text):
     t = text.lower()
     table = {
-        "proposal": ["proposal", "pitch", "quote", "offer", "scope"],
-        "build": ["build", "deploy", "fix", "engine", "backend", "frontend", "version"],
-        "decision": ["decide", "decision", "choose", "should i", "pivot"],
-        "meeting": ["meeting", "agenda", "call", "prep"],
-        "revenue": ["sales", "revenue", "cpa", "lead", "dealership", "ads", "seo", "cash"],
-        "risk": ["risk", "broken", "problem", "stuck", "failure"],
-        "overload": ["overwhelmed", "too many", "scattered", "chaos", "busy", "burned"],
-        "strategy": ["strategy", "positioning", "market", "roadmap"]
+        "overload": ["overwhelmed", "too much", "too many", "stressed", "burned", "scattered", "chaos"],
+        "avoidance": ["later", "not sure", "maybe", "thinking", "research", "should i", "what if"],
+        "decision": ["decide", "decision", "choose", "pivot", "keep building"],
+        "revenue": ["revenue", "sales", "cash", "client", "dealership", "proposal", "cpa", "ads", "seo"],
+        "build": ["build", "deploy", "backend", "frontend", "version", "engine"],
+        "risk": ["risk", "broken", "problem", "stuck", "failure", "doesn't work", "doesnt work"],
+        "meeting": ["meeting", "call", "agenda", "prep"],
     }
     scores = {k: sum(1 for x in v if x in t) for k, v in table.items()}
     best = max(scores, key=scores.get)
     return best if scores[best] else "operator"
 
-def detect_pressure(text):
+def pressure_level(text):
     t = text.lower()
-    if any(x in t for x in ["wtf", "fuck", "shit", "urgent", "asap", "broken", "overwhelmed"]):
+    if any(x in t for x in ["wtf", "fuck", "shit", "overwhelmed", "urgent", "asap", "broken", "can't", "cant"]):
         return "Critical"
-    score = sum(1 for x in ["proposal", "revenue", "client", "build", "deploy", "risk", "deadline", "cash"] if x in t)
+    score = sum(1 for x in ["too many", "client", "revenue", "deadline", "risk", "deploy", "cash", "proposal"] if x in t)
     if score >= 2:
         return "High"
     if score == 1:
         return "Medium"
     return "Normal"
 
-def retrieve_context(ws, query):
-    recent = ws.get("decisions", [])[-8:]
-    recent_assets = ws.get("continuity", {}).get("recent_assets", [])[-5:]
-    return {"recent_decisions": recent, "recent_assets": recent_assets}
-
-FORBIDDEN_LABELS = [
-    "operator read",
-    "leverage move",
-    "do this now",
-    "ready assets",
-    "follow-up command",
-    "primary risk",
-    "command centre",
-    "active brief"
-]
-
-GENERIC_PHRASES = {
+GENERIC = {
     "conduct analysis": "make the call",
     "review existing assets": "use only what moves the decision",
     "determine the specific type": "choose the asset that forces movement",
@@ -143,16 +126,15 @@ GENERIC_PHRASES = {
     "best practices": "what works here",
     "streamline operations": "remove friction",
     "maintain workflow momentum": "force momentum",
-    "gather key leaders": "bring only the decision owner",
-    "rapid decision-making session": "15-minute decision lock",
-    "assess current initiatives": "cut everything except the revenue path"
+    "assess current initiatives": "cut everything except the leverage path",
+    "gather key leaders": "bring only the decision owner"
 }
 
 def clean_text(s):
     if not isinstance(s, str):
         return s
     out = s
-    for a, b in GENERIC_PHRASES.items():
+    for a, b in GENERIC.items():
         out = re.sub(a, b, out, flags=re.I)
     return out.strip()
 
@@ -165,180 +147,153 @@ def clean_obj(obj):
         return {k: clean_obj(v) for k, v in obj.items()}
     return obj
 
-def briefing_mode(intent):
+def retrieve_context(ws):
     return {
-        "proposal": "commercial_brief",
-        "revenue": "cash_path_brief",
-        "build": "build_control_brief",
-        "decision": "decision_lock_brief",
-        "meeting": "political_brief",
-        "risk": "containment_brief",
-        "overload": "pressure_reduction_brief",
-        "strategy": "strategic_position_brief",
-    }.get(intent, "operator_brief")
-
-def build_briefing(req, intent, pressure, context):
-    t = req.input.lower()
-
-    brief = {
-        "dominant_insight": "You do not need more structure. You need a single decision that forces movement.",
-        "decision": "Pick the next move and remove everything that competes with it.",
-        "pressure_signal": "Fragmentation is creating drag.",
-        "warning": "If everything stays active, nothing becomes decisive.",
-        "next_action": "Choose one priority and turn it into the finished asset now.",
-        "stop_doing": ["Stop expanding the plan.", "Stop treating every active item as equal."],
-        "briefing_mode": briefing_mode(intent)
+        "recent_decisions": ws.get("decisions", [])[-8:],
+        "recent_assets": ws.get("continuity", {}).get("recent_assets", [])[-5:],
+        "operator_state": ws.get("operator_state", {})
     }
 
-    if any(x in t for x in ["dealership", "auto loan", "seo", "google ads", "cpa"]):
-        brief = {
-            "dominant_insight": "The dealership does not buy marketing. It buys funded deals at a believable acquisition cost.",
-            "decision": "Position the offer as a 90-day financed-buyer acquisition sprint.",
-            "pressure_signal": "A sub-$100 CPA collapses if broad car-shopping traffic enters the campaign.",
-            "warning": "Do not lead with SEO reports, blog calendars, or campaign setup. Those feel like vendor work.",
-            "next_action": "Write the proposal around finance-intent traffic, lead handling speed, and funded-deal tracking.",
-            "stop_doing": ["Stop selling SEO and Ads as services.", "Stop measuring success as traffic or rankings."],
-            "briefing_mode": "commercial_brief"
-        }
+def pressure_diagnosis(req, intent, level, context):
+    t = req.input.lower()
 
-    elif "overwhelmed" in t or "too many" in t or "scattered" in t:
-        brief = {
-            "dominant_insight": "You are not overloaded because of workload. You are overloaded because nothing is being eliminated.",
-            "decision": "Cut active priorities to one revenue path, one stability path, and one personal/admin path.",
-            "pressure_signal": "The pressure is coming from open loops, not lack of effort.",
-            "warning": "Keeping every initiative alive is disguised procrastination.",
-            "next_action": "Name the one thing that can create cash, control, or relief this week. Everything else gets delayed.",
-            "stop_doing": ["Stop starting new threads.", "Stop improving systems that are not tied to this week's leverage."],
-            "briefing_mode": "pressure_reduction_brief"
+    diagnosis = {
+        "pressure_source": "unresolved decision",
+        "dominant_truth": "The pressure is not the amount of work. It is the number of open decisions.",
+        "hidden_pattern": "You are keeping options alive to avoid committing too early.",
+        "stabilizer": "Close one loop. Do not open another.",
+        "decision": "Choose one move and make the others inactive.",
+        "warning": "Open loops will keep feeling like workload until they are killed, delegated, or delayed.",
+        "next_action": "Pick the one decision that would reduce the most pressure today.",
+        "stop": ["Stop reopening decisions.", "Stop treating every open idea as active."]
+    }
+
+    if "overwhelmed" in t or "too many" in t or "scattered" in t:
+        diagnosis = {
+            "pressure_source": "focus fragmentation",
+            "dominant_truth": "You are not overloaded because of workload. You are overloaded because nothing is being eliminated.",
+            "hidden_pattern": "Every open option is taxing your brain like a real obligation.",
+            "stabilizer": "Cut the active list before doing more work.",
+            "decision": "Keep one revenue path, one stability path, one personal/admin path. Everything else is delayed.",
+            "warning": "If you keep all directions alive, the system will organize chaos instead of reducing it.",
+            "next_action": "Write the three active priorities. Kill or delay everything outside them.",
+            "stop": ["Stop starting new workstreams.", "Stop improving systems that do not reduce pressure this week."]
         }
 
     elif "pivot" in t or "keep building executive engine" in t:
-        brief = {
-            "dominant_insight": "Do not pivot while the core thesis is getting clearer. Tighten the product until one use case feels unavoidable.",
-            "decision": "Keep building, but narrow the next 7 days to response quality and daily-use dependency.",
-            "pressure_signal": "The risk is not building the wrong product. The risk is widening the product before one workflow becomes addictive.",
-            "warning": "A pivot now would reset momentum and recreate the same uncertainty somewhere else.",
-            "next_action": "Lock one daily executive workflow and make it excellent before adding surface area.",
-            "stop_doing": ["Stop evaluating the whole company every day.", "Stop adding features before the core response earns trust."],
-            "briefing_mode": "decision_lock_brief"
+        diagnosis = {
+            "pressure_source": "strategic doubt",
+            "dominant_truth": "You do not need a pivot. You need proof that one workflow is valuable enough to repeat daily.",
+            "hidden_pattern": "The urge to pivot is coming from response-quality frustration, not a broken thesis.",
+            "stabilizer": "Narrow the product until one daily executive use case becomes unavoidable.",
+            "decision": "Keep building Executive Engine for 7 more days, but only test daily-use dependency.",
+            "warning": "A pivot now resets momentum and recreates the same uncertainty in a new wrapper.",
+            "next_action": "Choose one daily executive workflow and make it excellent before adding anything else.",
+            "stop": ["Stop judging the whole product every day.", "Stop adding features before one workflow earns trust."]
+        }
+
+    elif any(x in t for x in ["dealership", "proposal", "cpa", "seo", "ads"]):
+        diagnosis = {
+            "pressure_source": "commercial proof",
+            "dominant_truth": "The dealership does not need marketing confidence. It needs confidence that spend turns into funded deals.",
+            "hidden_pattern": "Marketing deliverables feel safe to sell, but the buyer is judging economic credibility.",
+            "stabilizer": "Anchor the proposal to financed-buyer economics.",
+            "decision": "Sell a 90-day funded-deal acquisition sprint, not SEO and Ads.",
+            "warning": "If the proposal leads with deliverables, it sounds like every agency.",
+            "next_action": "Write the offer around intent control, lead handling speed, and funded-deal tracking.",
+            "stop": ["Stop selling generic SEO.", "Stop talking about traffic before funded-deal attribution."]
         }
 
     elif intent == "build":
-        brief = {
-            "dominant_insight": "The shell is good enough. The bottleneck is how the system thinks and presents the answer.",
-            "decision": "Do not touch UI. Upgrade only the briefing layer.",
-            "pressure_signal": "Every broad system add creates more testing drag.",
-            "warning": "More architecture will hide weak cognition instead of fixing it.",
-            "next_action": "Make the response feel like an executive briefing: one truth, one move, one warning, one action.",
-            "stop_doing": ["Stop adding dashboards.", "Stop changing layout.", "Stop expanding scope."],
-            "briefing_mode": "build_control_brief"
+        diagnosis = {
+            "pressure_source": "build-loop fatigue",
+            "dominant_truth": "The pressure is coming from repeated build cycles without a locked pass/fail standard.",
+            "hidden_pattern": "More versions feel like progress, but they also create testing drag.",
+            "stabilizer": "Define one pass/fail test and stop shipping until it passes.",
+            "decision": "Lock the shell. Improve only the response psychology layer.",
+            "warning": "If every build opens a new concern, the product will never stabilize.",
+            "next_action": "Run three test commands and promote only if pressure drops when reading the answer.",
+            "stop": ["Stop adding new architecture.", "Stop changing anything that already works."]
         }
 
-    return brief
+    return diagnosis
 
-def build_asset(brief, intent):
-    if intent == "proposal":
-        return f"""EXECUTIVE BRIEFING — DEALERSHIP PROPOSAL
+def build_asset(dx):
+    return f"""EXECUTIVE PRESSURE BRIEF
 
-{brief["dominant_insight"]}
+{dx["dominant_truth"]}
 
-Decision:
-{brief["decision"]}
+Pressure Source:
+{dx["pressure_source"]}
 
-Offer Spine:
-90-Day Financed-Buyer Acquisition Sprint
-
-What Matters:
-- finance-intent traffic
-- landing-page speed
-- lead handling speed
-- appointment conversion
-- funded-deal attribution
-- weekly waste removal
-
-Do Not Sell:
-- generic SEO
-- blog calendars
-- broad Google Ads
-- traffic reports
-- rankings without lead quality
-
-Close:
-If the dealership wants sub-$100 CPA, the first move is not more marketing. It is intent control and funded-deal tracking."""
-    return f"""EXECUTIVE BRIEFING
-
-{brief["dominant_insight"]}
+Hidden Pattern:
+{dx["hidden_pattern"]}
 
 Decision:
-{brief["decision"]}
+{dx["decision"]}
 
-Pressure:
-{brief["pressure_signal"]}
+Stabilizer:
+{dx["stabilizer"]}
 
 Warning:
-{brief["warning"]}
+{dx["warning"]}
 
 Move:
-{brief["next_action"]}
+{dx["next_action"]}
 
 Stop:
-- {brief["stop_doing"][0]}
-- {brief["stop_doing"][1]}
+- {dx["stop"][0]}
+- {dx["stop"][1]}
 """
 
-def local_response(req, intent, pressure, brief):
-    asset = build_asset(brief, intent)
+def local_response(req, intent, level, dx):
+    asset = build_asset(dx)
     return {
-        "next_move": brief["next_action"],
-        "decision": brief["decision"],
+        "next_move": dx["next_action"],
+        "decision": dx["decision"],
         "action_steps": [
-            brief["stop_doing"][0],
-            brief["stop_doing"][1],
-            brief["next_action"]
+            dx["stop"][0],
+            dx["stop"][1],
+            dx["next_action"]
         ],
         "ready_assets": [asset],
-        "risk": brief["warning"],
-        "priority": "Critical" if pressure == "Critical" else "High",
-        "recommended_command": "Generate the final executive briefing output from this decision.",
-        "what_to_do_now": brief["next_action"],
+        "risk": dx["warning"],
+        "priority": "Critical" if level == "Critical" else "High",
+        "recommended_command": "Generate the next pressure-reducing action from this brief.",
+        "what_to_do_now": dx["next_action"],
         "asset": asset,
-        "follow_up": "Do not reopen the decision. Execute the move.",
-        "provider_used": "local-executive-briefing-engine",
+        "follow_up": "Do not open another loop. Close or kill one first.",
+        "provider_used": "local-executive-pressure-engine",
         "status": "success"
     }
 
-def build_prompt(req, brief, context):
+def build_prompt(req, dx, context):
     return f"""
-You are Executive Engine OS — Executive Briefing Engine.
+You are Executive Engine OS — Executive Pressure Engine.
 
 Your job:
-Convert the command into a high-signal executive briefing.
+Detect the true pressure source behind the command and reduce executive pressure.
 
-The response must feel like:
-- a calm executive briefing
-- one dominant truth
-- one decision
-- one warning
-- one next action
-- no filler
-- no project-manager labels
-- no generic AI sections
+Do not act like a task manager.
+Do not give generic productivity advice.
+Do not create more work unless it closes a loop.
 
-Briefing intelligence:
-{json.dumps(brief, ensure_ascii=False, indent=2)}
+Pressure diagnosis:
+{json.dumps(dx, ensure_ascii=False, indent=2)}
 
 Recent context:
 {json.dumps(context, ensure_ascii=False)[:6000]}
 
-Rules:
-1. Open with one dominant insight.
-2. Keep the language compressed and expensive.
-3. Do not use labels like Operator Read, Leverage Move, Do This Now, Ready Assets, Follow-up Command.
-4. Include what to stop doing.
-5. Tie the output to control, speed, revenue, risk, or pressure reduction.
-6. Return only valid JSON.
+Response rules:
+1. Open with the psychological truth behind the pressure.
+2. Name the pressure source.
+3. Identify the hidden pattern.
+4. Force a stabilizing decision.
+5. Say what to stop doing.
+6. Keep the response short, calm, and decisive.
+7. Tie the answer to control, relief, momentum, revenue, or risk reduction.
 
-Required JSON:
+Return only valid JSON:
 {{
   "next_move": "",
   "decision": "",
@@ -357,17 +312,17 @@ Required JSON:
 
 def enforce(data):
     data = clean_obj(data or {})
-    data.setdefault("next_move", "Choose the one move that forces momentum.")
-    data.setdefault("decision", "Stop widening. Commit to the next decisive action.")
+    data.setdefault("next_move", "Close one loop before opening another.")
+    data.setdefault("decision", "Reduce pressure by eliminating options, not adding tasks.")
     data.setdefault("action_steps", [])
     data.setdefault("ready_assets", [])
-    data.setdefault("risk", "The risk is looking organized while staying unfocused.")
+    data.setdefault("risk", "The risk is organizing pressure instead of reducing it.")
     data.setdefault("priority", "High")
-    data.setdefault("recommended_command", "Generate the final executive briefing.")
+    data.setdefault("recommended_command", "Generate the next pressure-reducing action.")
     data.setdefault("what_to_do_now", data["next_move"])
     data.setdefault("asset", "")
-    data.setdefault("follow_up", "Execute the decision; do not reopen the loop.")
-    data.setdefault("provider_used", "local-executive-briefing-engine")
+    data.setdefault("follow_up", "Close or kill one open loop.")
+    data.setdefault("provider_used", "local-executive-pressure-engine")
     data.setdefault("status", "success")
 
     if isinstance(data["action_steps"], str):
@@ -378,18 +333,17 @@ def enforce(data):
         data["action_steps"] = data["action_steps"][:5]
     if len(data["action_steps"]) < 3:
         data["action_steps"] += [
-            "Stop the competing work.",
-            "Lock the decision.",
-            "Execute the next move."
+            "Stop one competing priority.",
+            "Lock the stabilizing decision.",
+            "Execute the next pressure-reducing move."
         ][:3-len(data["action_steps"])]
     if not data["ready_assets"]:
-        data["ready_assets"] = [data.get("asset") or "Executive briefing saved."]
-
+        data["ready_assets"] = [data.get("asset") or "Pressure brief saved."]
     if data["priority"] not in ["Critical", "High", "Medium", "Low"]:
         data["priority"] = "High"
     return data
 
-def call_openai(req, brief, context):
+def call_openai(req, dx, context):
     if not OPENAI_API_KEY or OpenAI is None:
         return None
     try:
@@ -397,10 +351,10 @@ def call_openai(req, brief, context):
         result = client.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=[
-                {"role": "system", "content": build_prompt(req, brief, context)},
+                {"role": "system", "content": build_prompt(req, dx, context)},
                 {"role": "user", "content": req.input}
             ],
-            temperature=0.15,
+            temperature=0.12,
             response_format={"type": "json_object"}
         )
         data = json.loads(result.choices[0].message.content or "{}")
@@ -414,8 +368,8 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "executive_briefing",
-        "purpose": "compress cognition into one dominant insight, one decision, one warning, one action"
+        "engine": "executive_pressure",
+        "purpose": "detect pressure source, reduce overload, force stabilizing decisions"
     }
 
 @app.get("/health")
@@ -431,38 +385,38 @@ def health():
 def run(req: RunRequest):
     ws = load_workspace(req.workspace_id or "default", req.user_id or "will")
     intent = detect_intent(req.input)
-    pressure = detect_pressure(req.input)
-    context = retrieve_context(ws, req.input)
-    brief = build_briefing(req, intent, pressure, context)
+    level = pressure_level(req.input)
+    context = retrieve_context(ws)
+    dx = pressure_diagnosis(req, intent, level, context)
 
-    response = call_openai(req, brief, context)
+    response = call_openai(req, dx, context)
     if not response:
-        response = local_response(req, intent, pressure, brief)
+        response = local_response(req, intent, level, dx)
     response = enforce(response)
 
     record = {
-        "id": f"brief_{uuid.uuid4().hex[:8]}",
+        "id": f"pressure_{uuid.uuid4().hex[:8]}",
         "created_at": now_iso(),
         "input": req.input[:500],
         "intent": intent,
-        "pressure": pressure,
-        "briefing_mode": brief["briefing_mode"],
-        "dominant_insight": brief["dominant_insight"],
+        "pressure_level": level,
+        "pressure_source": dx["pressure_source"],
+        "dominant_truth": dx["dominant_truth"],
         "decision": response["decision"],
         "next_move": response["next_move"],
-        "risk": response["risk"],
+        "risk": response["risk"]
     }
 
     ws["decisions"].append(record)
     ws["decisions"] = ws["decisions"][-100:]
 
-    ws["operator_state"]["current_pressure"] = pressure
+    ws["operator_state"]["current_pressure"] = level
+    ws["operator_state"]["pressure_source"] = dx["pressure_source"]
     ws["operator_state"]["current_focus"] = intent
-    ws["operator_state"]["briefing_mode"] = brief["briefing_mode"]
     ws["operator_state"]["last_command"] = req.input
     ws["operator_state"]["last_next_move"] = response["next_move"]
-    ws["operator_state"]["briefing_history"].append(record)
-    ws["operator_state"]["briefing_history"] = ws["operator_state"]["briefing_history"][-50:]
+    ws["operator_state"]["pressure_history"].append(record)
+    ws["operator_state"]["pressure_history"] = ws["operator_state"]["pressure_history"][-50:]
 
     ws["continuity"]["recent_commands"].append(req.input[:300])
     ws["continuity"]["recent_commands"] = ws["continuity"]["recent_commands"][-30:]
@@ -477,12 +431,12 @@ def run(req: RunRequest):
 
     save_workspace(ws)
 
-    response["executive_briefing"] = brief
+    response["executive_pressure"] = dx
     response["memory_context"] = {
-        "briefing_mode": brief["briefing_mode"],
-        "pressure": pressure,
+        "pressure_level": level,
+        "pressure_source": dx["pressure_source"],
         "recent_decisions": len(ws["decisions"]),
-        "briefing_history": len(ws["operator_state"]["briefing_history"])
+        "pressure_history": len(ws["operator_state"]["pressure_history"])
     }
     response["version"] = APP_VERSION
     return response
@@ -501,14 +455,14 @@ def engine_state(workspace_id: str = "default", user_id: str = "will"):
 @app.get("/operator-scan")
 def operator_scan(workspace_id: str = "default", user_id: str = "will"):
     ws = load_workspace(workspace_id, user_id)
-    latest = ws["operator_state"]["briefing_history"][-1] if ws["operator_state"]["briefing_history"] else None
+    latest = ws["operator_state"]["pressure_history"][-1] if ws["operator_state"]["pressure_history"] else None
     return {
         "status": "success",
         "version": APP_VERSION,
-        "briefing_mode": ws["operator_state"].get("briefing_mode"),
         "pressure": ws["operator_state"].get("current_pressure"),
-        "latest_briefing": latest,
-        "recommended_command": "Generate the final executive briefing and execute the move."
+        "pressure_source": ws["operator_state"].get("pressure_source"),
+        "latest_pressure_read": latest,
+        "recommended_command": "Generate the next pressure-reducing action and close one loop."
     }
 
 @app.get("/test-report")
@@ -517,17 +471,19 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36580",
-            "POST /run returns executive_briefing object",
-            "Responses open with one dominant insight",
-            "Responses avoid project-manager labels",
-            "Responses are compressed: one decision, one warning, one action",
-            "Engine state stores briefing history"
+            "GET /health returns V36590",
+            "POST /run returns executive_pressure object",
+            "Overload prompts identify focus fragmentation",
+            "Pivot prompts identify strategic doubt",
+            "Proposal prompts identify commercial proof pressure",
+            "Build prompts identify build-loop fatigue",
+            "Engine state stores pressure history"
         ],
         "test_commands": [
-            "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
             "I have too many active projects and feel overwhelmed.",
-            "Should I keep building Executive Engine or pivot?"
+            "Should I keep building Executive Engine or pivot?",
+            "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
+            "Build V36590 — Executive Pressure Engine"
         ]
     }
 

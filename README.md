@@ -1,31 +1,35 @@
-# Executive Engine OS — V36580 Executive Briefing Engine
+# Executive Engine OS — V36590 Executive Pressure Engine
 
 Backend-only build.
 
 ## Purpose
 
-Upgrade response presentation from structured productivity output into high-signal executive briefing.
+Upgrade Executive Engine from executive briefing into executive pressure intelligence.
 
-## What changes
+## What this adds
 
-- One dominant insight
-- One decision
-- One warning
-- One next action
-- Less section-label dependency
-- Less project-manager language
-- More executive briefing tone
-- More scan-friendly cognitive density
+- pressure source detection
+- focus fragmentation detection
+- strategic doubt detection
+- build-loop fatigue detection
+- commercial proof pressure detection
+- hidden psychological pattern detection
+- stabilizing decision logic
+- stop-doing logic
+- pressure history in engine state
 
 ## What this does NOT touch
 
-- frontend layout
+- frontend
+- layout
 - navigation
-- sidebars
 - columns
-- design shell
-- spacing system
+- sidebars
+- design
+- spacing
+- typography
 - API URL
+- deployment structure
 
 ## Verify
 
@@ -33,12 +37,14 @@ https://executive-engine-os.onrender.com/health
 
 Expected:
 
-"version": "V36580-Executive-Briefing-Engine"
+"version": "V36590-Executive-Pressure-Engine"
 
 ## Test commands
-
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
 
 I have too many active projects and feel overwhelmed.
 
 Should I keep building Executive Engine or pivot?
+
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+
+Build V36590 — Executive Pressure Engine
