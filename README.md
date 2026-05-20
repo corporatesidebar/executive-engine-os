@@ -1,8 +1,15 @@
-# Executive Engine OS V37010 — Exact Reference UI
+# EXECUTIVE ENGINE — ORIGINAL DESIGN LOCK FIX
 
-Frontend-only build.
+This build is locked to the provided original screenshot design.
 
-Preserves backend API URL and /run contract.
-Visual target: original approved Executive Engine command cockpit screenshot.
+Deploy either:
+- root files: index.html, styles.css, app.js
+OR
+- frontend/ folder files if your Render Static Site uses frontend as publish directory.
 
-Deploy the contents of `frontend/` to the static frontend service.
+Do not deploy older V36810/V36900 files.
+
+Version: V37030 Original Design Lock Fix
+Scope: Frontend only
+Backend: untouched
+API URL: untouched

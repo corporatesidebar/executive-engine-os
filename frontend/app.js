@@ -1,5 +1,5 @@
 const API_URL = window.EXECUTIVE_ENGINE_API_URL || 'https://executive-engine-os.onrender.com';
-const STORAGE_KEY = 'ee_exact_reference_v37010';
+const STORAGE_KEY = 'ee_exact_reference_v37030';
 const $ = (id)=>document.getElementById(id);
 let state = { page:'command', entries:load(), selected:null, projects:[
   {title:'Market Expansion Strategy',status:'Active'}, {title:'Q2 Board Preparation',status:'Active'}, {title:'Pricing Optimization',status:'Active'}
