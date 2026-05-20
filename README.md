@@ -1,3 +1,7 @@
+# Executive Engine OS — V36230 Command Centre Brain
+
+Backend response intelligence upgraded. Frontend layout preserved.
+
 # Executive Engine OS — V36210 Navigation System
 
 Built from the stable 0a9926b base.
