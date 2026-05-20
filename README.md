@@ -1,40 +1,22 @@
-# Executive Engine OS — V36710 Execution Operating Engine
 
-Backend-only modular package.
+V36730 — EXECUTION MEMORY + CONTINUITY ENGINE
 
-## Purpose
+Purpose:
+Transform Executive Engine into persistent operational continuity infrastructure.
 
-Transforms Executive Engine from executive advice software into executive execution infrastructure.
+Core Systems:
+- execution memory layer
+- continuity engine
+- pressure memory
+- execution state tracking
+- operational history
+- context weighting
+- execution resumption
+- thread tracking
+- memory decay
 
-## Adds
+Drop these modules into:
+backend/intelligence/
 
-- operational classification layer
-- leverage inference
-- pressure detection
-- action generation
-- execution sequencing
-- asset generation
-- tools/resources
-- delegation recommendations
-- stop-doing recommendations
-- revenue opportunity logic
-- frontend-compatible output keys
-
-## Preserved
-
-- /run
-- /health
-- /engine-state
-- /test-report
-- current frontend compatibility
-- deployment structure
-
-## Test Commands
-
-I have too many projects and feel overwhelmed.
-
-How do I make Executive Engine profitable fastest?
-
-Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
-
-What should I stop doing this week?
+Next:
+Integrate into /run pipeline and workspace persistence layer.
