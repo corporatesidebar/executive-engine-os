@@ -1,67 +1,56 @@
-# Executive Engine OS — V36180 Real Executive Response Engine
+# Executive Engine OS — V36200 Command System
 
 ## Decision
-YES — this moves Executive Engine closer to Executive Cognition Infrastructure.
+This build renames the core work unit from generic chats/tasks to **Commands** and preserves the locked `/run` output contract.
 
-This build fixes the main regression: canned/static category responses.
+## Included Files
+```text
+frontend/index.html
+backend/main.py
+backend/requirements.txt
+README.md
+```
 
-## Locked
-- Layout/design preserved
-- Navigation preserved
-- Frontend structure preserved
-- `/run` contract preserved
-- Existing required fields preserved
+## What Changed
+- Core unit name: **Command**
+- Primary button: **Run Command**
+- Sidebar: **Active Commands**
+- Placeholder: **What do we need to accomplish?**
+- Backend `/run` produces required executive fields:
+  - next_move
+  - decision
+  - action_steps
+  - ready_assets
+  - risk
+  - priority
+  - recommended_command
+- OpenAI is used when `OPENAI_API_KEY` exists.
+- Local fallback engine prevents weak/empty output when OpenAI fails.
 
-## Upgraded
-- Real intent detection
-- Anti-canned response logic
-- Clarification handling for vague input
-- Proposal status handling for commands like `WHERE IS MY PROPOSAL`
-- Executive Cognition Infrastructure answer path
-- Mode-specific executive outputs
-- Stronger strategic diagnosis and best move
-- Better right-panel data via `action_steps`, `risk`, and `push_intelligence`
+## Deploy
+### Backend Render
+Root directory: `backend`
+Start command:
+```bash
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+Environment:
+```text
+OPENAI_API_KEY=your_key
+OPENAI_MODEL=gpt-4o-mini
+```
 
-## Test Commands
-Use these after deployment:
+### Frontend Render Static Site
+Root directory: `frontend`
+Publish directory: `.`
 
-1. `WHERE IS MY PROPOSAL`
-   - Expected: status/workflow-continuity response, not another generic proposal.
+## Test Checklist
+1. GET `/health` returns status ok.
+2. POST `/run` returns all required fields.
+3. Frontend loads.
+4. Run Command posts to `https://executive-engine-os.onrender.com/run`.
+5. Output displays in locked order.
+6. Ready Assets contain actual copy/assets, not generic advice.
 
-2. `wowowow`
-   - Expected: clarification response, not fake risk/meeting/proposal output.
-
-3. `Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
-   - Expected: specific revenue proposal response with CPA, SEO, landing pages, and conversion tracking.
-
-4. `Does this move EE closer to Executive Cognition Infrastructure?`
-   - Expected: direct yes/no strategic answer about EE cognition layer.
-
-5. `Fix response engine but do not change layout or design`
-   - Expected: backend/logic patch plan, layout locked.
-
-## Backend Routes
-- `/`
-- `/health`
-- `/debug`
-- `/providers`
-- `/test-report-json`
-- `/run`
-
-## Deployment
-Deploy backend and frontend together if replacing V36170. If the current frontend is already deployed and locked, backend can be deployed alone.
-
-## Rollback
-Rollback to V36170 if:
-- `/run` fails
-- frontend cannot reach backend
-- required fields disappear
-
-Required fields preserved:
-- `next_move`
-- `decision`
-- `action_steps`
-- `ready_assets`
-- `risk`
-- `priority`
-- `recommended_command`
+## Known Limitation
+Frontend API URL is hardcoded to production backend: `https://executive-engine-os.onrender.com`.
