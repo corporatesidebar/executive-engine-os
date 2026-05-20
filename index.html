@@ -4,8 +4,107 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Executive Engine</title>
-  
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root{
+      --nav:#061a2c;
+      --nav2:#031220;
+      --ink:#07172c;
+      --muted:#62708a;
+      --line:#dbe3ef;
+      --soft:#f5f8fc;
+      --blue:#0b6cff;
+      --orange:#ff5a13;
+      --green:#08a66a;
+      --red:#ef1f2f;
+      --purple:#6d48ff;
+      --card:#ffffff;
+      --shadow:0 14px 40px rgba(13,30,55,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;color:var(--ink);background:#f7f9fc}
+    body{font-size:14px;font-weight:600}
+    .app{height:100vh;display:grid;grid-template-columns:296px minmax(720px,1fr) 390px;background:#f8fbff}
+    .sidebar{height:100vh;background:linear-gradient(180deg,#061a2c 0%,#061a2c 72%,#03111e 100%);color:#fff;display:flex;flex-direction:column;padding:22px 18px 0;overflow:hidden}
+    .brand{display:flex;gap:16px;align-items:flex-start;margin-bottom:34px}
+    .mark{font-size:60px;line-height:.8;font-weight:900;font-style:italic;background:linear-gradient(135deg,#ffe4b9,#a96026);-webkit-background-clip:text;color:transparent;letter-spacing:-9px}
+    .brand h1{font-size:24px;line-height:22px;margin:0;font-weight:900;letter-spacing:.3px}
+    .brand p{margin:5px 0 0;font-size:13px;color:#d5dfeb;font-weight:500;letter-spacing:.2px}
+    .nav-scroll{overflow-y:auto;overflow-x:hidden;flex:1;padding-right:2px}
+    .nav-section{margin:0 0 22px}
+    .nav-title{font-size:12px;letter-spacing:.08em;color:#b8c6d7;margin:0 0 10px 8px;font-weight:700}
+    .nav-item{height:39px;border-radius:7px;display:flex;align-items:center;gap:13px;padding:0 12px;margin:3px 0;color:#fff;font-weight:800;font-size:15px}
+    .nav-item.active{background:rgba(255,255,255,.11);box-shadow:inset 3px 0 0 var(--orange), inset 0 0 0 1px rgba(255,255,255,.14)}
+    .ico{width:19px;text-align:center;color:#fff;opacity:.95}
+    .project-row{display:grid;grid-template-columns:22px 1fr;gap:10px;margin:10px 7px;color:#fff;font-size:12px;font-weight:700;line-height:15px}
+    .active-small{color:#00d184;font-size:11px}
+    .nav-divider{height:1px;background:rgba(255,255,255,.14);margin:20px 6px}
+    .profile-side{height:86px;display:flex;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.08);padding:13px 0 16px}
+    .avatar{width:45px;height:45px;border-radius:999px;background:linear-gradient(135deg,#f9b189,#fff);display:grid;place-items:center;color:#9c3c12;font-weight:900;overflow:hidden}
+    .profile-side strong{display:block;font-size:14px}
+    .profile-side span{font-size:13px;color:#d9e3ee;font-weight:500}
+    .footer{height:50px;margin:0 -18px;background:#020c16;color:#bdc6d1;display:flex;align-items:center;padding-left:24px;font-size:12px;font-weight:500}
+
+    .main{height:100vh;display:grid;grid-template-rows:86px 1fr 54px;overflow:hidden}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:22px 36px 8px}
+    .welcome h2{font-size:28px;margin:0 0 4px;font-weight:900;letter-spacing:-.5px}
+    .welcome p{font-size:15px;margin:0;color:#33415b;font-weight:600}
+    .top-actions{display:flex;align-items:center;gap:20px}
+    .bell{font-size:21px;position:relative}.bell:after{content:"4";position:absolute;top:-8px;right:-7px;background:var(--orange);color:#fff;border-radius:999px;font-size:10px;width:15px;height:15px;display:grid;place-items:center}
+    .mini-profile{display:flex;align-items:center;gap:10px}
+    .mini-profile .avatar{width:42px;height:42px}.mini-profile strong{font-size:14px}.mini-profile span{font-size:12px;color:#40506b}
+    .pressure{width:78px;height:74px;background:#fff;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center;box-shadow:var(--shadow)}
+    .pressure small{font-size:12px}.pressure b{font-size:28px;line-height:24px}.pressure em{font-size:13px;color:var(--orange);font-style:normal;font-weight:800}
+    .workspace{min-height:0;overflow:hidden;padding:0 28px 10px;display:grid;grid-template-columns:minmax(540px,1fr) 374px;gap:18px}
+    .chatcol{min-width:0;display:flex;flex-direction:column;min-height:0}
+    .command{background:#fff;border:2px solid var(--orange);border-radius:10px;min-height:119px;padding:20px 22px 14px;box-shadow:0 10px 28px rgba(255,90,19,.08)}
+    .command .placeholder{color:#52617a;font-size:15px;margin-bottom:28px}
+    .cmd-bottom{display:flex;align-items:center;justify-content:space-between}
+    .tools{display:flex;gap:26px;color:#263952;font-size:18px}
+    .execute{border:0;background:linear-gradient(180deg,#ff691f,#ff4c00);color:#fff;border-radius:8px;padding:13px 20px;font-weight:900;box-shadow:0 10px 18px rgba(255,90,19,.25)}
+    .clear{color:#52617a;margin-right:18px;font-size:14px}
+    .chips{display:flex;gap:9px;margin:12px 22px 12px}
+    .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:12px;color:#24324b;box-shadow:0 3px 8px rgba(20,40,70,.03)}
+    .thread{background:#fff;border:1px solid var(--line);border-radius:10px;flex:1;min-height:0;overflow-y:auto;padding:20px 18px 18px}
+    .msg{display:grid;grid-template-columns:38px 1fr;gap:13px;margin-bottom:18px}
+    .bubble-avatar{width:32px;height:32px;border-radius:999px;background:#eef2f7;display:grid;place-items:center;font-size:12px;font-weight:900}
+    .engine-avatar{background:#061a2c;color:#d79b4f;font-size:18px;font-style:italic}
+    .meta{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+    .meta strong{font-size:13px}.meta span{font-size:12px;color:#6c7890}
+    .copy{font-size:14px;line-height:22px;font-weight:650;max-width:760px}
+    .assets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;max-width:760px}
+    .asset{border:1px solid var(--line);border-radius:8px;background:#fff;min-height:108px;padding:13px 12px;position:relative;box-shadow:0 3px 12px rgba(20,40,70,.035)}
+    .asset-icon{width:27px;height:27px;border-radius:6px;border:2px solid currentColor;display:grid;place-items:center;margin-bottom:8px;font-size:13px}
+    .asset strong{font-size:12px;display:block;line-height:15px}.asset span{font-size:11px;color:#465672;display:block;margin-top:10px;font-weight:600}.download{position:absolute;right:12px;bottom:10px;color:#31435e}
+    .asset.wide{grid-column:span 3;min-height:58px;display:grid;grid-template-columns:32px 1fr 20px;align-items:center}.asset.wide .asset-icon{margin:0}.asset.wide span{margin-top:3px}
+    .composer{height:50px;background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:#62708a;flex:0 0 auto}
+    .composer-icons{display:flex;gap:18px;font-size:18px}
+
+    .summary{min-width:0;display:flex;flex-direction:column;min-height:0;background:#fff;border:1px solid var(--line);border-radius:9px;padding:14px 10px;overflow-y:auto}
+    .section-head{font-size:12px;font-weight:900;margin:0 0 2px 4px}.section-sub{font-size:11px;color:#52617a;margin:0 0 10px 4px}
+    .sum-card{border:1px solid #e2e8f2;border-left:3px solid var(--blue);border-radius:9px;background:#fff;padding:12px 12px 9px;margin-bottom:6px;position:relative}
+    .sum-card.orange{border-left-color:var(--orange)}.sum-card.green{border-left-color:var(--green)}.sum-card.purple{border-left-color:var(--purple)}.sum-card.red{border-left-color:var(--red)}
+    .sum-title{display:flex;gap:9px;align-items:center;font-size:12px;font-weight:900;margin-bottom:7px}.badge{position:absolute;right:10px;top:9px;background:#f1f4f8;border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px}
+    .sum-card p,.sum-card li{font-size:12px;line-height:16px;margin:0;color:#142239;font-weight:700}.sum-card ul{margin:0 0 0 18px;padding:0}.note{font-size:11px;color:#6e7c92;margin-top:7px}
+    .half{display:grid;grid-template-columns:1fr 1fr;gap:6px}.tiny{min-height:78px}
+    .app-footer{grid-column:1/4;height:54px;background:#020c16;color:#cbd3dd;display:flex;align-items:center;justify-content:flex-end;gap:28px;padding:0 32px;font-size:12px;font-weight:500}
+
+    .rail{height:100vh;overflow-y:auto;padding:14px 18px 18px;background:#fbfdff}
+    .rail h3{font-size:12px;font-weight:900;margin:0 0 12px}.rail-card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:15px 16px;margin-bottom:13px;box-shadow:0 5px 16px rgba(20,40,70,.035)}
+    .search{height:35px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;gap:9px;color:#64728a;padding:0 12px;font-size:12px;margin-bottom:13px}
+    .rail-title{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:900;margin-bottom:10px}.rail-card p{font-size:13px;line-height:19px;margin:0 0 12px;font-weight:700}.link{color:#086bff;font-size:13px;font-weight:900}.priority-row{display:grid;grid-template-columns:26px 1fr;gap:10px;margin:10px 0}.num{width:24px;height:24px;border-radius:999px;background:#eef2f7;display:grid;place-items:center;font-size:12px}.priority-row strong{font-size:12px}.priority-row span{font-size:12px;color:#3d4d66}.team{display:flex;justify-content:space-between;margin:12px 0;font-size:13px}.ok{color:var(--green)}.bad{color:var(--red)}
+  </style>
+
+<style>
+.command-input{width:100%;min-height:82px;border:0;outline:0;resize:none;background:transparent;color:var(--ink);font:inherit;font-size:15px;font-weight:600;line-height:1.45}
+.command-input::placeholder{color:#7b879b}.clear{background:transparent;border:0;color:#64748b;font-weight:800;cursor:pointer;margin-right:14px}.execute:disabled{opacity:.72;cursor:wait}.thread{overflow-y:auto}
+.empty-thread{border:1px dashed #cfd8e6;border-radius:14px;min-height:150px;display:grid;place-items:center;text-align:center;color:#68768f;padding:28px}.empty-thread b{display:block;color:#17243a;margin-bottom:7px}.msg.loading .copy{color:#64748b}
+.loading-dots::after{content:"";animation:dots 1.2s steps(4,end) infinite}@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}100%{content:""}}
+.exec-package{border:1px solid var(--line);border-radius:14px;background:#fff;margin-top:12px;overflow:hidden}.exec-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.exec-head strong{font-size:15px}.exec-head button{border:0;border-radius:8px;background:#f1f5fb;padding:7px 10px;font-weight:800;cursor:pointer}.exec-type{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);font-weight:900}.exec-body{padding:14px 16px}
+.exec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.exec-mini{border:1px solid #e3ebf5;background:#fbfdff;border-radius:12px;padding:12px}.exec-mini b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#334155;margin-bottom:6px}.exec-mini p,.exec-mini li{font-size:13px;line-height:1.4;color:#17243a;margin:0}.exec-mini ul{margin:0;padding-left:17px}
+.object-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.object-card{border:1px solid #dfe8f4;border-radius:12px;padding:12px;background:#fff}.object-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.object-card strong{font-size:13px}.object-card small{display:block;color:#66758c;margin-top:4px}.object-card button{border:0;border-radius:8px;background:#f1f5fb;padding:7px 9px;font-weight:800;cursor:pointer}.object-card p{font-size:13px;line-height:1.4;color:#334155}
+.error-box{border:1px solid #ffc9c9;background:#fff5f5;color:#9b1c1c;border-radius:12px;padding:12px;margin-top:10px}@media(max-width:1100px){.exec-grid,.object-cards{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
   <div class="app">
@@ -40,22 +139,51 @@
 
       <section class="workspace">
         <div class="chatcol">
-          <div class="command"><textarea id="commandInput" class="command-runtime-input" placeholder="What would you like to achieve today?"></textarea><div class="cmd-bottom"><div class="tools"><span>📎</span><span>⌁</span><span>▣</span></div><div><span class="clear">Clear</span><button id="executeBtn" class="execute">Execute →</button></div></div></div>
+          <div class="command"><textarea id="commandInput" class="command-input" placeholder="What would you like to achieve today?"></textarea><div class="cmd-bottom"><div class="tools"><span>⌕</span><span>✣</span><span>▣</span></div><div><button id="clearBtn" class="clear" type="button">Clear</button><button id="executeBtn" class="execute" type="button">Execute →</button></div></div></div>
           <div class="chips"><span class="chip">Prepare for board meeting</span><span class="chip">Analyze market expansion</span><span class="chip">Review Q2 performance</span><span class="chip">Assess key risks</span></div>
-          <div id="thread" class="thread"></div>
+          <div class="thread" id="thread">
+            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>10:24 AM</span></div><div class="copy">I have a board meeting next week. Build me a strategy to speak with them about expanding to new markets.</div></div></div>
+            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>10:24 AM</span></div><div class="copy">Understood. I’ll build a go-to-market expansion strategy tailored to your current business, competitive landscape, and key opportunities.</div><div class="assets">
+              <div class="asset" style="color:#ff6a1a"><div class="asset-icon">▤</div><strong>Go-To-Market Strategy Framework</strong><span>Strategy Document<br>12 pages</span><div class="download">⇩</div></div>
+              <div class="asset" style="color:#ff3d3d"><div class="asset-icon">▤</div><strong>Board Presentation Deck</strong><span>Presentation<br>16 slides</span><div class="download">⇩</div></div>
+              <div class="asset" style="color:#15a66a"><div class="asset-icon">▤</div><strong>Market Opportunity Analysis</strong><span>Analysis Report<br>24 pages</span><div class="download">⇩</div></div>
+              <div class="asset" style="color:#2274ff"><div class="asset-icon">▤</div><strong>Financial Impact Model</strong><span>Financial Model<br>Excel</span><div class="download">⇩</div></div>
+            </div></div></div>
+            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>10:48 AM</span></div><div class="copy">Now create a proposal based on that strategy.</div></div></div>
+            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>10:48 AM</span></div><div class="copy">Proposal created. It aligns with the strategy and includes scope, timeline, investment, and expected outcomes.</div><div class="assets"><div class="asset wide" style="color:#17a86b"><div class="asset-icon">▤</div><div><strong>Client Proposal v1.0</strong><span>Proposal Document • 18 pages</span></div><div class="download">⇩</div></div></div></div></div>
+            <div class="msg"><div class="bubble-avatar">SJ</div><div><div class="meta"><strong>You</strong><span>11:15 AM</span></div><div class="copy">Prepare me for the meeting and give me talking points and objections.</div></div></div>
+            <div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>11:15 AM</span></div><div class="copy">Meeting prep complete. Here are your talking points, key messages, objections to expect, and recommended responses.</div><div class="assets"><div class="asset wide" style="color:#ff6a1a"><div class="asset-icon">▤</div><div><strong>Meeting Prep Pack</strong><span>Document • 9 pages</span></div><div class="download">⇩</div></div></div></div></div>
+          </div>
           <div class="composer"><span>Ask a follow-up or refine your request...</span><div class="composer-icons"><span>♩</span><span>▷</span></div></div>
         </div>
 
-        <aside id="executiveSummary" class="summary"></aside>
+        <aside class="summary" id="summaryRail">
+          <div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
+          <div class="sum-card orange"><div class="badge">1</div><div class="sum-title">✕ NEXT MOVE</div><p>Expand to new markets proposal and client meeting.</p><div class="note">＋ Add note</div></div>
+          <div class="sum-card"><div class="badge">1</div><div class="sum-title">ℹ DECISION</div><p>Approve strategy and proposal before client meeting.</p><div class="note">＋ Add note</div></div>
+          <div class="sum-card green"><div class="badge">3</div><div class="sum-title">✓ ACTION STEPS</div><ul><li>Finalize proposal</li><li>Schedule client meeting</li><li>Prepare presentation</li></ul><div class="note">＋ Add note</div></div>
+          <div class="sum-card purple"><div class="badge">3</div><div class="sum-title">✦ READY ASSETS</div><ul><li>Strategy Framework</li><li>Client Proposal v1.0</li><li>Meeting Prep Pack</li></ul><div class="note">＋ Add note</div></div>
+          <div class="sum-card red"><div class="badge">2</div><div class="sum-title">⚠ ACTIVE RISKS</div><ul><li>Competitor aggressive pricing</li><li>Market entry barriers</li></ul><div class="note">＋ Add note</div></div>
+          <div class="sum-card orange"><div class="sum-title">✪ PRIORITY <span style="margin-left:auto;background:#fff1e8;color:#ff5a13;border-radius:9px;padding:4px 8px">High</span></div><p>Client meeting preparation and proposal approval.</p><div class="note">＋ Add note</div></div>
+          <div class="sum-card"><div class="badge">1</div><div class="sum-title">⚡ RECOMMENDED COMMAND</div><p>Review proposal and confirm meeting agenda.</p><div class="note">＋ Add note</div></div>
+          <div class="sum-card"><div class="badge">2</div><div class="sum-title">▣ TOMORROW / UPCOMING</div><p>Board Meeting<br>May 27, 2026 • 10:00 AM</p><div class="link">View schedule →</div></div>
+          <div class="half"><div class="sum-card tiny"><div class="sum-title">● RECENT DECISIONS</div><ul><li>Approved Q2 budget reallocation</li><li>Greenlit market expansion study</li></ul><div class="note">＋ Add note</div></div><div class="sum-card tiny green"><div class="sum-title">⬟ SYSTEM STATUS</div><p>All systems operating normally</p><div class="note">Last updated: 2 min ago</div></div></div>
+        </aside>
       </section>
       <div></div>
     </main>
 
-    <aside id="rightRail" class="rail"></aside>
+    <aside class="rail" id="intelRail">
+      <h3>EXECUTIVE INTELLIGENCE</h3>
+      <div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
+      <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>Expanding to new markets could increase revenue by 20-30% with strong positioning.</p><div class="link">View insight →</div></div>
+      <div class="rail-card"><div class="rail-title">▧ MEMORY</div><p>You prefer concise proposals with clear ROI and risk analysis.</p><div class="link">View all memory →</div></div>
+      <div class="rail-card"><div class="rail-title">▣ UPCOMING PRIORITIES</div><div class="priority-row"><div class="num">1</div><div><strong>Board Meeting</strong><br><span>May 27, 2026 • 10:00 AM</span></div></div><div class="priority-row"><div class="num">2</div><div><strong>Investor Update</strong><br><span>May 30, 2026 • 1:00 PM</span></div></div><div class="priority-row"><div class="num">3</div><div><strong>Strategy Review</strong><br><span>June 2, 2026 • 9:00 AM</span></div></div><div class="link">View all →</div></div>
+      <div class="rail-card"><div class="rail-title">♙ TEAM PULSE</div><div class="team"><span>Sales</span><strong class="ok">On Track</strong></div><div class="team"><span>Marketing</span><strong class="ok">On Track</strong></div><div class="team"><span>Operations</span><strong class="bad">At Risk</strong></div><div class="link">View team pulse →</div></div>
+      <div class="rail-card"><div class="rail-title">⌘ EXECUTIVE SUMMARY</div><p>Revenue up 12% this quarter. Expansion strategy on track. Focus: execution and de-risking.</p><div class="link">View full summary →</div></div>
+    </aside>
     <footer class="app-footer"><span>Privacy Policy</span><span>Terms of Service</span><span>Security</span><span>|</span><span>◐</span></footer>
   </div>
-
-  
   <script src="app.js"></script>
 </body>
 </html>

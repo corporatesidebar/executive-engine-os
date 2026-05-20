@@ -1,24 +1,13 @@
 # Executive Engine V37100 — Real Frontend State Controller
 
-Frontend-only clean package.
+Deploy these root files:
 
-Files:
 - index.html
-- styles.css
 - app.js
-- README.md
+- styles.css
 
-Base:
-V37050 visual/layout shell.
+This removes the fake inline click handler and installs a real state controller.
 
-Runtime:
-- Single centralized app state
-- One renderApp() pipeline
-- Live POST to https://executive-engine-os.onrender.com/run
-- Loading message is replaced by success/error state
-- Backend response is parsed into executive fields
-- Execution objects render as compact cards
-- Right rail and executive summary sync from latest backend response
+Test command:
 
-Deploy:
-Upload these four files as the frontend root.
+i need proposal for digital marketing and advertising for a cookie shop in Barrie Ontario consumer research average cost per cookie and how do we sell them across canada

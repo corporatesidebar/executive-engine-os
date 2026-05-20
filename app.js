@@ -1,450 +1,298 @@
-/* === V37100 REAL FRONTEND STATE CONTROLLER === */
-(function () {
-  "use strict";
 
-  const API_URL = "https://executive-engine-os.onrender.com/run";
+const API_URL = "https://executive-engine-os.onrender.com/run";
 
-  const state = {
-    messages: [],
-    currentCommand: "",
-    isLoading: false,
-    lastResponse: null,
-    executionObjects: [],
-    activeCategory: "Command",
-    rightRailState: null,
-    error: null
+const els = {
+  input: document.getElementById("commandInput"),
+  execute: document.getElementById("executeBtn"),
+  clear: document.getElementById("clearBtn"),
+  thread: document.getElementById("thread"),
+  summary: document.getElementById("summaryRail"),
+  intel: document.getElementById("intelRail"),
+};
+
+const state = {
+  messages: [],
+  currentCommand: "",
+  isLoading: false,
+  lastResponse: null,
+  executionObjects: [],
+  rightRailState: null,
+  error: null,
+};
+
+function uid(){ return "m_" + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+function now(){ return new Date().toLocaleString([], { month:"numeric", day:"numeric", year:"numeric", hour:"numeric", minute:"2-digit" }); }
+function esc(v=""){ return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function arr(v){ if(v == null || v === "") return []; return Array.isArray(v) ? v : [v]; }
+function textOf(v){
+  if(v == null) return "";
+  if(typeof v === "string") return v;
+  if(typeof v === "number") return String(v);
+  if(Array.isArray(v)) return v.map(textOf).filter(Boolean).join(", ");
+  if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.next_move || v.executive_summary || JSON.stringify(v);
+  return String(v);
+}
+function first(v){ return textOf(Array.isArray(v) ? v[0] : v); }
+function label(s){ return String(s || "object").replace(/_/g, " ").replace(/\b\w/g, m => m.toUpperCase()); }
+
+function payload(command){
+  return {
+    input: command,
+    mode: "execution",
+    brain: "operator",
+    output_type: "standard",
+    depth: "auto",
+    provider: "openai"
   };
+}
 
-  const els = {};
+function parseResponse(data){
+  const r = data && typeof data === "object" ? data : {};
+  const scan = r.executive_scan || {};
+  const executionObjects = normalizeObjects(r);
 
-  function init() {
-    els.thread = document.querySelector("#thread, .thread");
-    els.input = document.querySelector("#commandInput, textarea, input[type='text']");
-    els.execute = document.querySelector("#executeBtn, .execute");
-    els.summary = document.querySelector("#executiveSummary, .summary");
-    els.rail = document.querySelector("#rightRail, .rail");
+  return {
+    raw: r,
+    executive_summary: r.executive_summary || scan.dominant_insight || r.summary || r.next_move || "Execution response generated.",
+    next_move: r.next_move || scan.move || r.what_to_do_now || "Review the prepared execution package and choose the next action.",
+    decision: r.decision || r.operator_decision || scan.decision || "Proceed with the highest-leverage execution path.",
+    action_steps: arr(r.action_steps || r.immediate_actions || r.execution_sequence || r.deployment_sequence).slice(0, 8),
+    ready_assets: arr(r.ready_assets || r.generated_assets || r.deployment_assets || r.export_ready_assets).slice(0, 8),
+    risk: r.risk || r.risk_control || scan.risk || "Execution risk should be controlled before deployment.",
+    priority: r.priority || r.pressure_level || "High",
+    recommended_command: r.recommended_command || r.follow_up_command || r.next_execution_package || "Generate the next deployment-ready asset.",
+    execution_objects: executionObjects,
+    deployment_sequence: arr(r.deployment_sequence || r.implementation_plan || r.execution_sequence).slice(0, 8),
+    provider_used: r.provider_used || "backend",
+    status: r.status || "success"
+  };
+}
 
-    if (!els.thread || !els.input || !els.execute) {
-      console.error("V37100 boot failed: missing required runtime hooks", els);
-      return;
-    }
-
-    els.execute.addEventListener("click", handleSubmit);
-    els.input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        handleSubmit();
-      }
-    });
-
-    renderApp();
-    console.log("V37100 state controller mounted", { API_URL });
-  }
-
-  function uid(prefix = "msg") {
-    return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-  }
-
-  function now() {
-    return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  }
-
-  function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[char]));
-  }
-
-  function toText(value) {
-    if (value == null) return "";
-    if (typeof value === "string") return value;
-    if (Array.isArray(value)) return value.map(toText).join(", ");
-    if (typeof value === "object") {
-      return Object.entries(value).map(([key, val]) => `${key}: ${toText(val)}`).join(" · ");
-    }
-    return String(value);
-  }
-
-  function toArray(value) {
-    if (!value) return [];
-    if (Array.isArray(value)) return value;
-    if (typeof value === "string") {
-      return value.split(/\n|•|- /).map((item) => item.trim()).filter(Boolean);
-    }
-    if (typeof value === "object") return Object.values(value).filter(Boolean);
-    return [value];
-  }
-
-  function normalizeResponse(raw) {
-    const data = raw && typeof raw === "object" ? raw : { executive_summary: String(raw || "") };
-
-    const parsed = {
-      executive_summary: data.executive_summary || data.summary || data.message || "",
-      next_move: data.next_move || data.what_to_do_now || "",
-      decision: data.decision || data.recommendation || "",
-      action_steps: toArray(data.action_steps || data.actions || data.next_actions),
-      ready_assets: toArray(data.ready_assets || data.assets || data.asset),
-      risk: data.risk || data.active_risk || "",
-      priority: data.priority || "Medium",
-      recommended_command: data.recommended_command || data.next_command || "",
-      execution_objects: toArray(data.execution_objects || data.objects),
-      primary_object: data.primary_object || null,
-      deployment_sequence: toArray(data.deployment_sequence || data.sequence),
-      executive_scan: data.executive_scan || data.scan || "",
-      provider_used: data.provider_used || data.provider || ""
-    };
-
-    parsed.execution_objects = parsed.execution_objects.map((object, index) => {
-      if (typeof object === "string") {
-        return {
-          title: `Execution Object ${index + 1}`,
-          type: "workflow",
-          status: "Ready",
-          content: object
-        };
-      }
-      return {
-        title: object.title || object.name || object.type || `Execution Object ${index + 1}`,
-        type: object.type || object.category || "workflow",
-        status: object.status || "Ready",
-        content: object.description || object.summary || object.content || object.value || toText(object)
-      };
-    });
-
-    return parsed;
-  }
-
-  function buildPayload(command) {
-    return {
-      input: command,
-      mode: "execution",
-      brain: "operator",
-      output_type: "standard",
-      depth: "auto",
-      provider: "openai"
-    };
-  }
-
-  async function handleSubmit() {
-    const command = (els.input.value || "").trim();
-    if (!command || state.isLoading) return;
-
-    const loadingId = uid("loading");
-
-    state.currentCommand = command;
-    state.error = null;
-    state.isLoading = true;
-    state.messages.push({
-      id: uid("user"),
-      role: "user",
-      status: "user",
-      content: command,
-      timestamp: now()
-    });
-    state.messages.push({
-      id: loadingId,
-      role: "assistant",
-      status: "assistant_loading",
-      content: "Running live backend response contract...",
-      timestamp: now()
-    });
-
-    els.input.value = "";
-    renderApp();
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(buildPayload(command))
-      });
-
-      const rawText = await response.text();
-      let rawData;
-      try {
-        rawData = JSON.parse(rawText);
-      } catch {
-        rawData = { executive_summary: rawText };
-      }
-
-      console.log("V37100 /run raw response:", rawData);
-
-      if (!response.ok) {
-        throw new Error(rawData.detail || rawData.error || rawText || `HTTP ${response.status}`);
-      }
-
-      const parsed = normalizeResponse(rawData);
-      state.lastResponse = parsed;
-      state.executionObjects = parsed.execution_objects;
-      state.rightRailState = buildRightRailState(parsed);
-      state.messages = state.messages.map((message) => {
-        if (message.id !== loadingId) return message;
-        return {
-          ...message,
-          status: "assistant_success",
-          content: parsed.executive_summary || parsed.executive_scan || parsed.next_move || "Execution package generated.",
-          response: parsed
-        };
-      });
-    } catch (error) {
-      console.error("V37100 /run failed:", error);
-      state.error = error.message || "Backend request failed.";
-      state.messages = state.messages.map((message) => {
-        if (message.id !== loadingId) return message;
-        return {
-          ...message,
-          status: "assistant_error",
-          content: state.error
-        };
-      });
-    } finally {
-      state.isLoading = false;
-      renderApp();
-    }
-  }
-
-  function buildRightRailState(response) {
-    return {
-      next_move: response.next_move || response.executive_summary || "No next move returned.",
-      decision: response.decision || "No decision returned.",
-      actions: response.action_steps,
-      assets: response.ready_assets,
-      risk: response.risk || "No risk returned.",
-      priority: response.priority || "Medium",
-      recommended_command: response.recommended_command || "Continue the workflow.",
-      executive_scan: response.executive_scan || response.executive_summary || response.next_move || "Live backend response received."
-    };
-  }
-
-  function renderApp() {
-    if (els.execute) {
-      els.execute.disabled = state.isLoading;
-      els.execute.textContent = state.isLoading ? "Executing..." : "Execute →";
-    }
-
-    renderThread();
-    renderSummary();
-    renderRightRail();
-  }
-
-  function renderThread() {
-    if (!els.thread) return;
-
-    if (!state.messages.length) {
-      els.thread.innerHTML = `
-        <div class="thread-empty">
-          <div>
-            <strong>No active command thread yet.</strong><br>
-            Enter a command above to create live executive output from the backend.
-          </div>
-        </div>`;
-      return;
-    }
-
-    els.thread.innerHTML = state.messages.map(renderMessage).join("");
-    els.thread.scrollTop = els.thread.scrollHeight;
-  }
-
-  function renderMessage(message) {
-    if (message.role === "user") {
-      return `
-        <div class="msg" data-id="${escapeHtml(message.id)}">
-          <div class="bubble-avatar">W</div>
-          <div>
-            <div class="meta"><strong>You</strong><span>${escapeHtml(message.timestamp)}</span></div>
-            <div class="copy">${escapeHtml(message.content)}</div>
-          </div>
-        </div>`;
-    }
-
-    if (message.status === "assistant_loading") {
-      return `
-        <div class="msg" data-id="${escapeHtml(message.id)}">
-          <div class="bubble-avatar engine-avatar">E</div>
-          <div>
-            <div class="meta"><strong>Executive Engine</strong><span>${escapeHtml(message.timestamp)}</span></div>
-            <div class="v37060-stream">
-              <div class="copy">Running live backend response contract...</div>
-              <div class="v37060-progress"><span></span></div>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    if (message.status === "assistant_error") {
-      return `
-        <div class="msg" data-id="${escapeHtml(message.id)}">
-          <div class="bubble-avatar engine-avatar">E</div>
-          <div>
-            <div class="meta"><strong>Executive Engine</strong><span>${escapeHtml(message.timestamp)}</span></div>
-            <div class="runtime-error">${escapeHtml(message.content)}</div>
-          </div>
-        </div>`;
-    }
-
-    return `
-      <div class="msg" data-id="${escapeHtml(message.id)}">
-        <div class="bubble-avatar engine-avatar">E</div>
-        <div>
-          <div class="meta"><strong>Executive Engine</strong><span>${escapeHtml(message.timestamp)}</span></div>
-          <div class="copy">${escapeHtml(message.content)}</div>
-          ${renderResponsePackage(message.response)}
-        </div>
-      </div>`;
-  }
-
-  function renderResponsePackage(response) {
-    if (!response) return "";
-
-    const objects = response.execution_objects || [];
-    const hasObjects = objects.length > 0;
-
-    return `
-      <div class="runtime-package">
-        <div class="runtime-package-head">
-          <div>
-            <strong>${escapeHtml(getPrimaryTitle(response))}</strong><br>
-            <span>Live /run response rendered through V37100 controller</span>
-          </div>
-          <span class="runtime-pill">${escapeHtml(response.priority || "Ready")}</span>
-        </div>
-        ${hasObjects ? renderExecutionObjects(objects) : renderLegacySections(response)}
-        ${renderAssets(response.ready_assets)}
-        ${renderDeploymentSequence(response.deployment_sequence)}
-      </div>`;
-  }
-
-  function getPrimaryTitle(response) {
-    const primary = response.primary_object;
-    if (primary && typeof primary === "object") return primary.title || primary.name || "Primary Execution Object";
-    if (primary && typeof primary === "string") return primary;
-    return "Executive Execution Package";
-  }
-
-  function renderExecutionObjects(objects) {
-    return `
-      <div class="runtime-grid">
-        ${objects.map((object, index) => `
-          <div class="runtime-card">
-            <h4>${escapeHtml(object.title || `Execution Object ${index + 1}`)}</h4>
-            <p>${escapeHtml(object.type || "workflow")} · ${escapeHtml(object.status || "Ready")}</p>
-            <p>${escapeHtml(object.content || "")}</p>
-            <div class="runtime-card-actions">
-              <button type="button" data-action="details" data-index="${index}">View Details</button>
-              <button type="button" data-action="copy" data-copy="${escapeHtml(object.content || object.title || "")}">Copy</button>
-            </div>
-          </div>
-        `).join("")}
-      </div>`;
-  }
-
-  function renderLegacySections(response) {
-    return `
-      <div class="runtime-section"><h4>EXECUTIVE SUMMARY</h4><p>${escapeHtml(response.executive_summary || response.executive_scan || "Not returned.")}</p></div>
-      <div class="runtime-section"><h4>NEXT MOVE</h4><p>${escapeHtml(response.next_move || "Not returned.")}</p></div>
-      <div class="runtime-section"><h4>DECISION</h4><p>${escapeHtml(response.decision || "Not returned.")}</p></div>
-      <div class="runtime-section"><h4>ACTION STEPS</h4>${renderList(response.action_steps)}</div>
-      <div class="runtime-section"><h4>RISK</h4><p>${escapeHtml(response.risk || "Not returned.")}</p></div>
-      <div class="runtime-section"><h4>RECOMMENDED COMMAND</h4><p>${escapeHtml(response.recommended_command || "Not returned.")}</p></div>`;
-  }
-
-  function renderAssets(assets) {
-    const list = toArray(assets);
-    if (!list.length) return "";
-    return `
-      <div class="runtime-assets">
-        ${list.slice(0, 6).map((asset) => {
-          const title = asset.title || asset.name || toText(asset).slice(0, 80);
-          const meta = asset.type || asset.format || asset.status || "Ready asset";
-          return `<div class="runtime-asset"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>⇩</em></div>`;
-        }).join("")}
-      </div>`;
-  }
-
-  function renderDeploymentSequence(sequence) {
-    const list = toArray(sequence);
-    if (!list.length) return "";
-    return `<div class="runtime-section"><h4>DEPLOYMENT SEQUENCE</h4>${renderList(list)}</div>`;
-  }
-
-  function renderList(items) {
-    const list = toArray(items);
-    if (!list.length) return "<p>Not returned.</p>";
-    return `<ul>${list.map((item) => `<li>${escapeHtml(toText(item))}</li>`).join("")}</ul>`;
-  }
-
-  function renderSummary() {
-    if (!els.summary) return;
-
-    const response = state.lastResponse;
-    if (!response) {
-      els.summary.innerHTML = `
-        <div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
-        <div class="sum-card orange"><div class="badge">0</div><div class="sum-title">✕ NEXT MOVE</div><p>No command executed yet.</p><div class="note">＋ Awaiting backend response</div></div>
-        <div class="sum-card"><div class="badge">0</div><div class="sum-title">ℹ DECISION</div><p>No live decision yet.</p><div class="note">＋ Awaiting backend response</div></div>
-        <div class="sum-card green"><div class="badge">0</div><div class="sum-title">✓ ACTION STEPS</div><p>No action steps yet.</p><div class="note">＋ Awaiting backend response</div></div>
-        <div class="sum-card purple"><div class="badge">0</div><div class="sum-title">✦ READY ASSETS</div><p>No assets yet.</p><div class="note">＋ Awaiting backend response</div></div>`;
-      return;
-    }
-
-    els.summary.innerHTML = `
-      <div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from backend /run</div>
-      <div class="sum-card orange"><div class="badge">1</div><div class="sum-title">✕ NEXT MOVE</div><p>${escapeHtml(response.next_move || response.executive_summary || "Not returned.")}</p><div class="note">＋ Live response</div></div>
-      <div class="sum-card"><div class="badge">1</div><div class="sum-title">ℹ DECISION</div><p>${escapeHtml(response.decision || "Not returned.")}</p><div class="note">＋ Live response</div></div>
-      <div class="sum-card green"><div class="badge">${response.action_steps.length}</div><div class="sum-title">✓ ACTION STEPS</div>${renderList(response.action_steps)}<div class="note">＋ Live response</div></div>
-      <div class="sum-card purple"><div class="badge">${response.ready_assets.length}</div><div class="sum-title">✦ READY ASSETS</div>${renderList(response.ready_assets)}<div class="note">＋ Live response</div></div>
-      <div class="sum-card red"><div class="badge">1</div><div class="sum-title">⚠ ACTIVE RISKS</div><p>${escapeHtml(response.risk || "Not returned.")}</p><div class="note">＋ Live response</div></div>
-      <div class="sum-card orange"><div class="sum-title">✪ PRIORITY <span style="margin-left:auto;background:#fff1e8;color:#ff5a13;border-radius:9px;padding:4px 8px">${escapeHtml(response.priority || "Medium")}</span></div><p>${escapeHtml(response.recommended_command || "Continue the workflow.")}</p><div class="note">＋ Recommended command</div></div>`;
-  }
-
-  function renderRightRail() {
-    if (!els.rail) return;
-
-    const rail = state.rightRailState;
-    if (!rail) {
-      els.rail.innerHTML = `
-        <h3>EXECUTIVE INTELLIGENCE</h3>
-        <div class="search">⌕ Awaiting live backend context <span style="margin-left:auto">☷</span></div>
-        <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>No live backend response yet.</p><div class="link">Execute a command →</div></div>
-        <div class="rail-card"><div class="rail-title">▧ MEMORY</div><p>Context will update from the active command thread.</p><div class="link">Waiting →</div></div>`;
-      return;
-    }
-
-    els.rail.innerHTML = `
-      <h3>EXECUTIVE INTELLIGENCE</h3>
-      <div class="search">⌕ Live backend context loaded <span style="margin-left:auto">☷</span></div>
-      <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>${escapeHtml(rail.executive_scan)}</p><div class="link">Live insight →</div></div>
-      <div class="rail-card"><div class="rail-title">▣ NEXT MOVE</div><p>${escapeHtml(rail.next_move)}</p><div class="link">View next move →</div></div>
-      <div class="rail-card"><div class="rail-title">ℹ DECISION</div><p>${escapeHtml(rail.decision)}</p><div class="link">View decision →</div></div>
-      <div class="rail-card"><div class="rail-title">✓ EXECUTION STATUS</div><p>${rail.actions.length} action step(s). ${rail.assets.length} ready asset(s).</p><div class="link">View execution →</div></div>
-      <div class="rail-card"><div class="rail-title">⚠ ACTIVE RISK</div><p>${escapeHtml(rail.risk)}</p><div class="link">Monitor risk →</div></div>
-      <div class="rail-card"><div class="rail-title">⌘ RECOMMENDED COMMAND</div><p>${escapeHtml(rail.recommended_command)}</p><div class="link">Run next →</div></div>`;
-  }
-
-  document.addEventListener("click", async (event) => {
-    const copyButton = event.target.closest("[data-action='copy']");
-    if (copyButton) {
-      const text = copyButton.getAttribute("data-copy") || "";
-      try {
-        await navigator.clipboard.writeText(text);
-        copyButton.textContent = "Copied";
-      } catch {
-        copyButton.textContent = "Copy failed";
-      }
-      setTimeout(() => copyButton.textContent = "Copy", 1200);
-    }
+function normalizeObjects(r){
+  const objects = [];
+  arr(r.execution_objects).forEach((o, i) => objects.push(normalizeObject(o, i)));
+  [
+    ["primary_object", "primary_object"],
+    ["primary_asset", "primary_asset"],
+    ["execution_packages", "execution_package"],
+    ["deployment_assets", "deployment_asset"],
+    ["generated_assets", "generated_asset"],
+    ["proposal", "proposal"],
+    ["crm_system", "crm_pipeline"],
+    ["kpi_system", "kpi_scorecard"],
+    ["outbound_systems", "outreach_sequence"],
+    ["automation_stack", "automation_stack"],
+    ["delegation_map", "delegation_map"],
+    ["implementation_plan", "implementation_plan"],
+    ["deployment_sequence", "deployment_checklist"]
+  ].forEach(([key, type]) => {
+    if(!r[key]) return;
+    arr(r[key]).forEach((o, i) => objects.push(normalizeObject(o, objects.length + i, type)));
   });
+  const unique = [];
+  const seen = new Set();
+  objects.forEach(o => {
+    const key = `${o.type}:${o.title}`;
+    if(!seen.has(key)){ seen.add(key); unique.push(o); }
+  });
+  return unique.slice(0, 10);
+}
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
+function normalizeObject(o, i, fallbackType="execution_object"){
+  if(!o || typeof o !== "object"){
+    return { id: uid(), type: fallbackType, title: `${label(fallbackType)} ${i + 1}`, status: "Ready", purpose: textOf(o), details: o };
   }
-})();
+  const payload = o.payload && typeof o.payload === "object" ? o.payload : o;
+  return {
+    id: uid(),
+    type: o.object_type || o.asset_type || o.type || fallbackType,
+    title: o.title || o.asset_name || o.name || payload.title || payload.offer || `${label(fallbackType)} ${i + 1}`,
+    status: o.status || o.deployment_priority || "Ready",
+    purpose: o.purpose || payload.purpose || payload.positioning || payload.business_problem || payload.promise || textOf(payload).slice(0, 180),
+    details: payload
+  };
+}
+
+async function submitCommand(){
+  const command = (els.input?.value || "").trim();
+  if(!command || state.isLoading) return;
+
+  state.error = null;
+  state.currentCommand = command;
+  state.isLoading = true;
+
+  const userMsg = { id: uid(), role: "user", status: "success", content: command, created: now() };
+  const loadingId = uid();
+  const loadingMsg = { id: loadingId, role: "assistant", status: "loading", content: "Building execution package", created: now() };
+
+  state.messages.push(userMsg, loadingMsg);
+  if(els.input) els.input.value = "";
+  renderApp();
+
+  try{
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload(command))
+    });
+
+    const bodyText = await res.text();
+    let data = {};
+    try { data = JSON.parse(bodyText); }
+    catch { data = { executive_summary: bodyText || "Backend returned an unreadable response." }; }
+
+    if(!res.ok) throw new Error(data.detail || data.error || `Backend returned HTTP ${res.status}`);
+
+    const parsed = parseResponse(data);
+    state.lastResponse = parsed;
+    state.executionObjects = parsed.execution_objects || [];
+    state.rightRailState = parsed;
+
+    const idx = state.messages.findIndex(m => m.id === loadingId);
+    if(idx >= 0){
+      state.messages[idx] = { id: loadingId, role: "assistant", status: "success", content: parsed.executive_summary, response: parsed, created: now() };
+    }
+
+  }catch(err){
+    const message = err?.message || "Frontend could not connect to backend.";
+    state.error = message;
+    const idx = state.messages.findIndex(m => m.id === loadingId);
+    if(idx >= 0){
+      state.messages[idx] = { id: loadingId, role: "assistant", status: "error", content: message, created: now() };
+    }
+  }finally{
+    state.isLoading = false;
+    renderApp();
+  }
+}
+
+function renderApp(){
+  renderThread();
+  renderRightSummary();
+  renderIntelRail();
+  if(els.execute){
+    els.execute.disabled = state.isLoading;
+    els.execute.textContent = state.isLoading ? "Executing..." : "Execute →";
+  }
+}
+
+function renderThread(){
+  if(!els.thread) return;
+  if(!state.messages.length){
+    els.thread.innerHTML = `<div class="empty-thread"><div><b>No active command thread yet.</b><span>Enter a command above to create live executive output. No fake thread data is preloaded.</span></div></div>`;
+    return;
+  }
+  els.thread.innerHTML = state.messages.map(renderMessage).join("");
+  els.thread.querySelectorAll("[data-copy]").forEach(btn => {
+    btn.addEventListener("click", () => navigator.clipboard?.writeText(btn.getAttribute("data-copy") || ""));
+  });
+  els.thread.scrollTop = els.thread.scrollHeight;
+}
+
+function renderMessage(m){
+  if(m.role === "user"){
+    return `<div class="msg"><div class="bubble-avatar">W</div><div><div class="meta"><strong>You</strong><span>${esc(m.created)}</span></div><div class="copy">${esc(m.content)}</div></div></div>`;
+  }
+  if(m.status === "loading"){
+    return `<div class="msg loading"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="copy"><span class="loading-dots">${esc(m.content)}</span></div></div></div>`;
+  }
+  if(m.status === "error"){
+    return `<div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="error-box">${esc(m.content)}</div></div></div>`;
+  }
+  return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div>${renderAssistantResponse(m.response)}</div></div>`;
+}
+
+function renderAssistantResponse(r){
+  if(!r) return `<div class="copy">Response received.</div>`;
+  const actions = r.action_steps.length ? `<div class="exec-mini"><b>Action Path</b><ul>${r.action_steps.map(x => `<li>${esc(textOf(x))}</li>`).join("")}</ul></div>` : "";
+  const assets = r.ready_assets.length ? `<div class="exec-mini"><b>Ready Assets</b><ul>${r.ready_assets.slice(0,4).map(x => `<li>${esc(first(x))}</li>`).join("")}</ul></div>` : "";
+  const objects = r.execution_objects.length ? `<div class="object-cards">${r.execution_objects.map(renderObjectCard).join("")}</div>` : "";
+
+  return `
+    <div class="copy">${esc(r.executive_summary)}</div>
+    <div class="exec-package">
+      <div class="exec-head">
+        <div><div class="exec-type">Execution Package</div><strong>${esc(r.next_move)}</strong></div>
+        <button data-copy="${esc(JSON.stringify(r.raw || r, null, 2))}">Copy</button>
+      </div>
+      <div class="exec-body">
+        <div class="exec-grid">
+          <div class="exec-mini"><b>Decision</b><p>${esc(r.decision)}</p></div>
+          <div class="exec-mini"><b>Risk Control</b><p>${esc(r.risk)}</p></div>
+          ${actions}
+          ${assets}
+        </div>
+        ${objects}
+      </div>
+    </div>`;
+}
+
+function renderObjectCard(o){
+  return `<div class="object-card"><div class="object-card-top"><div><strong>${esc(o.title)}</strong><small>${esc(label(o.type))} · ${esc(o.status)}</small></div><button data-copy="${esc(JSON.stringify(o.details, null, 2))}">Copy</button></div><p>${esc(o.purpose || "Deployment-ready execution object.")}</p></div>`;
+}
+
+function renderRightSummary(){
+  if(!els.summary) return;
+  const r = state.rightRailState;
+  if(!r){
+    els.summary.innerHTML = `
+      <div class="section-head">EXECUTIVE SUMMARY</div>
+      <div class="section-sub">Live updates from the conversation</div>
+      ${summaryCard("orange", "NEXT MOVE", "Enter a command to generate the next move.", 1)}
+      ${summaryCard("blue", "DECISION", "No live decision yet.", 1)}
+      ${summaryCard("green", "ACTION STEPS", ["Awaiting command."], 1)}
+      ${summaryCard("purple", "READY ASSETS", ["No assets generated yet."], 0)}
+      ${summaryCard("red", "ACTIVE RISKS", "No live risk detected yet.", 0)}
+      ${summaryCard("orange", "PRIORITY", "Normal", "—")}
+      ${summaryCard("blue", "RECOMMENDED COMMAND", "Run a command to begin.", 1)}
+    `;
+    return;
+  }
+  els.summary.innerHTML = `
+    <div class="section-head">EXECUTIVE SUMMARY</div>
+    <div class="section-sub">Live updates from the current command</div>
+    ${summaryCard("orange", "NEXT MOVE", r.next_move, 1)}
+    ${summaryCard("blue", "DECISION", r.decision, 1)}
+    ${summaryCard("green", "ACTION STEPS", r.action_steps, r.action_steps.length)}
+    ${summaryCard("purple", "READY ASSETS", r.ready_assets.length ? r.ready_assets : r.execution_objects.map(o => o.title), r.ready_assets.length || r.execution_objects.length)}
+    ${summaryCard("red", "ACTIVE RISKS", r.risk, 1)}
+    ${summaryCard("orange", "PRIORITY", r.priority, "High")}
+    ${summaryCard("blue", "RECOMMENDED COMMAND", r.recommended_command, 1)}
+  `;
+}
+
+function summaryCard(color, title, body, count){
+  const content = Array.isArray(body) ? `<ul>${body.slice(0,5).map(x => `<li>${esc(textOf(x))}</li>`).join("")}</ul>` : `<p>${esc(textOf(body))}</p>`;
+  return `<div class="sum-card ${esc(color)}"><div class="badge">${esc(count)}</div><div class="sum-title">${esc(title)}</div>${content}<div class="note">＋ Add note</div></div>`;
+}
+
+function renderIntelRail(){
+  if(!els.intel) return;
+  const r = state.rightRailState;
+  const objects = r?.execution_objects || [];
+  els.intel.innerHTML = `
+    <h3>EXECUTIVE INTELLIGENCE</h3>
+    <div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
+    <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>${esc(r ? r.executive_summary : "Executive Engine converts commands into saved execution assets.")}</p><div class="link">View insight →</div></div>
+    <div class="rail-card"><div class="rail-title">▧ MEMORY</div><p>${esc(objects.length ? `${objects.length} execution object${objects.length === 1 ? "" : "s"} prepared from the latest command.` : "No generated execution objects yet.")}</p><div class="link">View all memory →</div></div>
+    <div class="rail-card"><div class="rail-title">▣ READY TO REVIEW</div>${objects.length ? objects.slice(0,5).map((o,i) => `<div class="priority-row"><div class="num">${i+1}</div><div><strong>${esc(o.title)}</strong><br><span>${esc(label(o.type))}</span></div></div>`).join("") : `<p>Run a command to generate review-ready assets.</p>`}<div class="link">View all →</div></div>
+    <div class="rail-card"><div class="rail-title">♙ EXECUTION STATE</div><div class="team"><span>Status</span><strong class="ok">${esc(state.isLoading ? "Working" : "Ready")}</strong></div><div class="team"><span>Objects</span><strong>${esc(objects.length)}</strong></div><div class="team"><span>Priority</span><strong>${esc(r?.priority || "Normal")}</strong></div></div>
+  `;
+}
+
+function bindEvents(){
+  els.execute?.addEventListener("click", submitCommand);
+  els.clear?.addEventListener("click", () => { if(els.input) els.input.value = ""; });
+  els.input?.addEventListener("keydown", e => {
+    if(e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); submitCommand(); }
+  });
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      if(els.input) els.input.value = chip.textContent.trim();
+      submitCommand();
+    });
+  });
+}
+
+bindEvents();
+renderApp();
