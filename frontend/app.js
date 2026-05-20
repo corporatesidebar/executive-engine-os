@@ -1,89 +1,236 @@
-const API_URL = window.EXECUTIVE_ENGINE_API_URL || 'https://executive-engine-os.onrender.com';
-const STORAGE_KEY = 'ee_exact_reference_v37030';
-const $ = (id)=>document.getElementById(id);
-let state = { page:'command', entries:load(), selected:null, projects:[
-  {title:'Market Expansion Strategy',status:'Active'}, {title:'Q2 Board Preparation',status:'Active'}, {title:'Pricing Optimization',status:'Active'}
-] };
+const API_URL = "https://executive-engine-os.onrender.com/run";
 
-function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}}
-function save(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries.slice(0,60)))}
-function esc(s=''){return String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function time(){return new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}
-function date(){return new Date().toLocaleDateString([], {month:'numeric',day:'numeric',year:'numeric'})}
-function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function arr(v){if(v==null||v==='')return[]; return Array.isArray(v)?v:[v]}
-function first(v){if(!v)return''; if(typeof v==='string')return v; if(Array.isArray(v))return first(v[0]); if(typeof v==='object')return v.title||v.name||v.summary||v.description||v.next_move||v.executive_summary||''; return String(v)}
-function copy(txt){navigator.clipboard?.writeText(txt).catch(()=>{})}
-function detectCategory(text){const t=(text||'').toLowerCase(); const map={Meeting:['meeting','board','agenda','talking','client','call','prep','objection'],Proposal:['proposal','pitch','scope','pricing','quote','offer'],Decision:['decision','decide','approve','choose','tradeoff'],Risk:['risk','blocker','threat','issue','concern'],Execution:['build','deploy','execute','fix','launch','workflow','make'],Strategy:['strategy','market','growth','position','go-to-market','revenue','expansion']}; for(const [k,words] of Object.entries(map)){if(words.some(w=>t.includes(w)))return k} return 'General'}
+const els = {
+  input: document.getElementById("commandInput"),
+  execute: document.getElementById("executeBtn"),
+  clear: document.getElementById("clearBtn"),
+  thread: document.getElementById("thread"),
+  summary: document.getElementById("summaryRail"),
+  intel: document.getElementById("intelRail"),
+  composer: document.querySelector(".composer"),
+};
 
-async function runCommand(text){
-  const input=(text||$('commandInput').value||$('followInput').value).trim(); if(!input) return;
-  $('commandInput').value=''; $('followInput').value='';
-  const entry={id:uid(), input, category:detectCategory(input), created:`${date()}, ${time()}`, loading:true};
-  state.entries.push(entry); save(); render();
-  const btn=$('executeBtn'); btn.disabled=true; btn.textContent='Executing...';
+const state = {
+  messages: [],
+  decisions: [],
+  actions: [],
+  assets: [],
+  risks: [],
+  contexts: [],
+  savedDecisions: [],
+  lastResponse: null,
+  lastCommand: "",
+  isLoading: false,
+};
+
+function uid(){ return "m_" + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+function now(){ return new Date().toLocaleString([], { month:"numeric", day:"numeric", hour:"numeric", minute:"2-digit" }); }
+function esc(v=""){ return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function normalizeText(v){
+  if(v == null || v === "") return "";
+  if(typeof v === "string") return v;
+  if(typeof v === "number" || typeof v === "boolean") return String(v);
+  if(Array.isArray(v)) return v.map(normalizeText).filter(Boolean).join("\n");
+  if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.text || JSON.stringify(v);
+  return String(v);
+}
+function toArray(v){
+  if(v == null || v === "") return [];
+  if(Array.isArray(v)) return v.map(x => typeof x === "object" ? x : { title: normalizeText(x) }).filter(x => normalizeText(x.title || x.description || x));
+  const raw = normalizeText(v);
+  return raw.split(/\n|;|•/).map(x => x.trim()).filter(Boolean).map(x => ({ title:x }));
+}
+function firstValue(obj, keys){
+  for(const key of keys){ if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key]; }
+  return "";
+}
+function compact(v, fallback){ return normalizeText(v).trim() || fallback; }
+function label(s){ return String(s || "asset").replace(/_/g," ").replace(/\b\w/g, m => m.toUpperCase()); }
+
+function buildPayload(command){
+  return { input: command, mode:"execution", brain:"operator", output_type:"standard", depth:"standard", provider:"openai" };
+}
+
+function parseResponse(raw){
+  const r = raw && typeof raw === "object" ? raw : { next_move: normalizeText(raw) };
+  const scan = r.executive_scan || r.scan || {};
+  const nextMove = compact(firstValue(r,["next_move","nextMove","what_to_do_now","recommendation"]) || scan.move, "Confirm the objective, then move the highest-leverage action forward.");
+  const decision = compact(firstValue(r,["decision","recommended_decision","operator_decision"]) || scan.decision, "Proceed, but only after the objective, owner, deadline, and asset are clear.");
+  const actions = toArray(firstValue(r,["action_steps","actions","steps","next_steps","immediate_actions","execution_sequence"]));
+  const assets = toArray(firstValue(r,["ready_assets","assets","prepared_assets","deliverables","generated_assets"]));
+  const risk = compact(firstValue(r,["risk","risks","active_risks","risk_control"]) || scan.risk, "Unclear input can create false certainty. Lock the outcome before execution.");
+  const priority = compact(firstValue(r,["priority","urgency","pressure_level"]), "High");
+  const recommended = compact(firstValue(r,["recommended_command","follow_up_command","next_command","command"]), `Turn this into a 7-step action plan for: ${state.lastCommand || "this objective"}`);
+  const summary = compact(firstValue(r,["executive_summary","summary","clear_answer"]) || scan.dominant_insight || nextMove, nextMove);
+  const why = compact(firstValue(r,["why_it_matters","business_impact","strategic_value"]), "This matters because the command needs to become an operating path, not a loose answer.");
+  const safeActions = actions.length ? actions.slice(0,7) : [
+    { title:"Clarify the outcome" }, { title:"Name the owner" }, { title:"Set the deadline" }, { title:"Prepare the required asset" }
+  ];
+  const safeAssets = assets.length ? assets.slice(0,6) : [{ title:"Execution brief", description:"A working asset created from the latest command." }];
+  return { raw:r, summary, why, next_move: nextMove, decision, action_steps:safeActions, ready_assets:safeAssets, risk, priority, recommended_command: recommended, provider_used:r.provider_used || "backend", status:r.status || "success" };
+}
+
+function addUserMessage(command){ state.messages.push({ id:uid(), role:"user", content:command, created:now() }); }
+function addAssistantLoading(){ const id=uid(); state.messages.push({ id, role:"assistant", status:"loading", created:now() }); return id; }
+function replaceMessage(id, patch){ const i=state.messages.findIndex(m=>m.id===id); if(i>=0) state.messages[i] = { ...state.messages[i], ...patch }; }
+
+async function submitCommand(commandOverride){
+  const command = (commandOverride || els.input?.value || "").trim();
+  if(!command || state.isLoading) return;
+  state.lastCommand = command;
+  state.isLoading = true;
+  addUserMessage(command);
+  const loadingId = addAssistantLoading();
+  if(els.input) els.input.value = "";
+  setComposerValue("");
+  renderThread();
+  renderButtons();
   try{
-    const res=await fetch(`${API_URL}/run`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({input,category:entry.category,render_target:'hybrid_execution_objects'})});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    entry.response=normalize(data,input,entry.category); entry.loading=false;
-  }catch(e){
-    entry.response=normalize(fallback(input,entry.category),input,entry.category); entry.loading=false; entry.warning='Fallback used: live backend unavailable.';
+    const res = await fetch(API_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(buildPayload(command)) });
+    const bodyText = await res.text();
+    let data; try{ data = JSON.parse(bodyText); }catch{ data = { executive_summary: bodyText }; }
+    if(!res.ok) throw new Error(data.detail || data.error || `Backend returned HTTP ${res.status}`);
+    const parsed = parseResponse(data);
+    applyRuntimeState(parsed, command);
+    replaceMessage(loadingId, { status:"success", response:parsed, content:parsed.summary, created:now() });
+  }catch(err){
+    replaceMessage(loadingId, { status:"error", content: err?.message || "Frontend could not connect to backend.", created:now() });
+  }finally{
+    state.isLoading = false;
+    renderAll();
   }
-  save(); render(); btn.disabled=false; btn.innerHTML='Execute <span>→</span>';
 }
 
-function normalize(data,input,category){
-  const r={...(data||{})};
-  r.category=r.category||category;
-  r.executive_summary=r.executive_summary||r.executive_read||r.clear_answer||r.summary||`I converted this into a ${category.toLowerCase()} execution thread.`;
-  r.next_move=r.next_move||r.best_move||'Move the highest-leverage action forward now.';
-  r.decision=r.decision||'Proceed with a focused execution path and validate the next dependency.';
-  r.action_steps=arr(r.action_steps||r.actions||r.next_steps).slice(0,6);
-  r.ready_assets=arr(r.ready_assets||r.assets||r.generated_assets);
-  r.risk=r.risk||first(r.risks)||'Execution drift if ownership, timeline, and next command are not locked.';
-  r.priority=r.priority||'High';
-  r.recommended_command=r.recommended_command||'Create the next execution package with owner, timeline, risk, and ready asset.';
-  r.execution_objects=collectObjects(r,input,category);
-  return r;
-}
-function collectObjects(r,input,category){
-  const objects=[]; const keys={execution_packages:'execution_package',execution_package:'execution_package',execution_objects:'execution_package',proposal:'proposal',proposal_assets:'proposal',crm_system:'crm',kpi_system:'kpi',outbound_systems:'outbound',deployment_sequence:'deployment',automation_stack:'automation',implementation_plan:'implementation',delegation_map:'delegation',operational_workflows:'workflow'};
-  Object.entries(keys).forEach(([k,type])=>{ if(r[k]) arr(r[k]).forEach((x,i)=>objects.push(normalizeObj(x,type,i))) });
-  if(!objects.length) objects.push({type:'execution_package',title:`${category} Execution Package`,purpose:r.executive_summary, status:'Ready', preview:r.action_steps, details:r});
-  return objects.slice(0,8);
-}
-function normalizeObj(x,type,i){
-  if(typeof x==='string') return {type,title:`${label(type)} ${i+1}`,purpose:x,status:'Ready',preview:[x],details:x};
-  if(Array.isArray(x)) return {type,title:`${label(type)} ${i+1}`,purpose:'Operational sequence generated.',status:'Ready',preview:x,details:x};
-  const o={...(x||{})}; return {type:o.type||type,title:o.title||o.name||o.package_title||`${label(type)} ${i+1}`,purpose:o.purpose||o.summary||o.business_purpose||o.description||first(o)||'Execution asset generated.',status:o.status||o.deployment_priority||'Ready',preview:arr(o.preview||o.steps||o.deployment_steps||o.deliverables||o.items).slice(0,4),details:o};
-}
-function label(s){return String(s||'asset').replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
-function fallback(input,category){
-  if(input.replace(/[^a-z0-9]/gi,'').length<8) return {category:'Clarify',priority:'Medium',executive_summary:'I need a clearer business objective before creating an execution package.',next_move:'State the desired outcome, stakeholder, deadline, and asset you need.',decision:'Do not create fake operational work from unclear input.',action_steps:['Clarify the business objective','Choose the workflow category','Add deadline and stakeholder','Name the asset required'],risk:'Low-signal input creates false certainty.',ready_assets:['Clarifying command'],recommended_command:'Clarify the objective, deadline, stakeholder, and asset needed.'};
-  return {category,priority:'High',executive_summary:`Understood. I will convert this ${category.toLowerCase()} request into an executive execution package with assets, next move, risk, and follow-up command.`,next_move:'Create the first operational asset and lock the next decision.',decision:'Proceed with a compact execution path rather than a long text response.',action_steps:['Identify the outcome','Build the primary asset','Define owner and timeline','Surface risk and dependency','Recommend next command'],ready_assets:['Execution package','Action sequence','Follow-up command'],risk:'Execution loses value if it stays as advice instead of saved operational assets.',recommended_command:'Build the full execution package with asset cards, owners, timeline, and risk controls.'}
+function applyRuntimeState(r, command){
+  state.lastResponse = r;
+  state.decisions.unshift({ title:r.decision, command, created:now(), priority:r.priority });
+  r.action_steps.forEach((a,i)=> state.actions.unshift({ title: compact(a.title || a.name || a.description || a, `Action ${i+1}`), status:i===0?"Next":"Open", command }));
+  r.ready_assets.forEach((a,i)=> state.assets.unshift({ title: compact(a.title || a.name || a.asset_name || a, `Ready asset ${i+1}`), description: compact(a.description || a.summary || a.purpose, "Prepared from latest command."), type:a.type || a.asset_type || "Execution Asset" }));
+  state.risks.unshift({ title:r.risk, mitigation:`Mitigation: ${r.next_move}`, command });
+  state.contexts.unshift({ command, focus:r.next_move, recommended:r.recommended_command, created:now() });
+  state.decisions = state.decisions.slice(0,12); state.actions = state.actions.slice(0,20); state.assets = state.assets.slice(0,20); state.risks = state.risks.slice(0,12); state.contexts = state.contexts.slice(0,12);
 }
 
-function render(){renderNav(); renderProjects(); renderConversation(); renderSummary(); renderIntel(); renderPressure();}
-function renderNav(){document.querySelectorAll('.nav-link').forEach(b=>{b.classList.toggle('active',b.dataset.page===state.page); b.onclick=()=>{state.page=b.dataset.page; renderPageMode(); renderNav();}})}
-function renderProjects(){ $('projectList').innerHTML=state.projects.map(p=>`<div class="project-item"><span>▱</span><div><b>${esc(p.title)}</b><small>${esc(p.status)}</small></div></div>`).join('') }
-function renderPageMode(){ const conv=$('conversation'); if(state.page==='command'){renderConversation();return;} conv.innerHTML=`<section class="page-mode"><h2>${esc(pageName(state.page))}</h2><p>This page uses the approved cockpit shell. Content will populate from live execution objects and saved workflows.</p><div class="page-grid">${state.entries.slice(-4).reverse().map(e=>`<div class="page-tile"><h3>${esc(e.category)} — ${esc(e.input)}</h3><p>${esc(first(e.response?.executive_summary)||'No response yet.')}</p></div>`).join('') || '<div class="page-tile"><h3>No live items yet</h3><p>Run a command to populate this workspace.</p></div>'}</div></section>` }
-function pageName(p){return {daily:'Daily Brief',decisions:'Decisions',meeting:'Meeting Prep',insights:'Insights',strategy:'Strategy Board',risks:'Risk Monitor',team:'Team Pulse',finance:'Financial Snapshot',projects:'Active Projects',files:'Files',notes:'Notes',upload:'Upload Context'}[p]||'Command'}
-function renderConversation(){ if(state.page!=='command')return renderPageMode(); const entries=state.entries.length?state.entries:[]; $('conversation').innerHTML= entries.length ? entries.map(turns).join('') : `<div class="empty"><b>No active command thread yet.</b><br/>Enter a command above to create live executive output. No fake thread data is preloaded.</div>`; document.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>openDetail(b.dataset.detail)); document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copy(b.dataset.copy));}
-function turns(e){ const r=e.response; return `<div class="turn"><div class="turn-avatar">W</div><div class="turn-body"><div class="turn-head"><b>You</b><time>${esc(e.created)}</time></div><p>${esc(e.input)}</p></div></div><div class="turn engine"><div class="turn-avatar">E</div><div class="turn-body"><div class="turn-head"><b>Executive Engine</b><time>${esc(e.created)}</time></div>${e.loading?'<p>Building execution objects...</p>':responseBlock(e)}</div></div>` }
-function responseBlock(e){ const r=e.response; const cards=(r.execution_objects||[]).map((o,i)=>assetCard(o,e.id,i)).join(''); return `<p>${esc(r.executive_summary)}</p>${cards?`<div class="asset-row">${cards}</div>`:''}` }
-function assetCard(o,id,i){ const color=o.type==='proposal'?'green':o.type==='kpi'?'blue':''; return `<div class="asset-card"><div class="asset-icon ${color}">${icon(o.type)}</div><div><b>${esc(o.title)}</b><small>${esc(label(o.type))} · ${esc(o.status||'Ready')}</small></div><button title="Open" data-detail="${id}:${i}">⌄</button></div>` }
-function icon(t){return t==='proposal'?'▤':t==='kpi'?'▥':t==='crm'?'▦':t==='outbound'?'✉':'□'}
-function renderSummary(){ const latest=[...state.entries].reverse().find(e=>e.response)?.response; const r=latest||fallback('default','Execution'); const cards=[['orange','NEXT MOVE',r.next_move,1],['blue','DECISION',r.decision,1],['green','ACTION STEPS',r.action_steps,arr(r.action_steps).length||3],['purple','READY ASSETS',r.ready_assets,arr(r.ready_assets).length||3],['red','ACTIVE RISKS',r.risk,2],['yellow','PRIORITY',r.priority,'High'],['blue','RECOMMENDED COMMAND',r.recommended_command,1]]; $('summaryCards').innerHTML=cards.map(card).join('')+splitMini();}
-function card([color,title,body,count]){ const content=Array.isArray(body)?`<ul>${body.slice(0,4).map(x=>`<li>${esc(first(x))}</li>`).join('')}</ul>`:`<p>${esc(first(body))}</p>`; return `<article class="summary-card ${color}"><div class="summary-head"><span class="num-dot">${symbol(title)}</span><h3>${title}</h3><span class="count-pill">${esc(count)}</span></div>${title==='PRIORITY'?'<span class="priority-badge">High</span>':''}${content}<button class="add-note">+ Add note</button></article>`}
-function symbol(t){return t.includes('MOVE')?'➜':t.includes('DECISION')?'2':t.includes('ACTION')?'✓':t.includes('ASSET')?'⌘':t.includes('RISK')?'△':t.includes('PRIORITY')?'✦':'⚡'}
-function splitMini(){return `<div class="split-mini"><article class="summary-card blue"><div class="summary-head"><span class="num-dot">✓</span><h3>RECENT DECISIONS</h3></div><ul><li>Execution path approved</li><li>Renderer lock preserved</li></ul><button class="add-note">+ Add note</button></article><article class="summary-card green"><div class="summary-head"><span class="num-dot">✓</span><h3>SYSTEM STATUS</h3></div><p>All systems operating normally</p><button class="add-note">Last updated: now</button></article></div>`}
-function renderIntel(){ $('intelCards').innerHTML = [intel('⌖','KEY INSIGHT','Executive Engine should convert commands into saved execution assets, not text-only replies.','View insight →'),intel('⌬','MEMORY','You prefer concise proposals with clear ROI, risk analysis, and operator-grade next moves.','View all memory →'),upcoming(),team(),intel('☷','EXECUTIVE SUMMARY','Focus: execution object rendering, design lock, and reduced cognitive load.','View full summary →')].join('') }
-function intel(ic,t,b,l){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">${ic}</span><h3>${t}</h3></div><p>${b}</p><a>${l}</a></article>`}
-function upcoming(){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">□</span><h3>UPCOMING PRIORITIES</h3></div><div class="upcoming"><div class="upcoming-row"><span class="rank">1</span><p><b>Board Meeting</b><br/>May 27, 2026 · 10:00 AM</p></div><div class="upcoming-row"><span class="rank">2</span><p><b>Investor Update</b><br/>May 30, 2026 · 1:00 PM</p></div><div class="upcoming-row"><span class="rank">3</span><p><b>Strategy Review</b><br/>June 2, 2026 · 9:00 AM</p></div></div><a>View all →</a></article>`}
-function team(){return `<article class="intel-card"><div class="intel-title"><span class="intel-icon">♙</span><h3>TEAM PULSE</h3></div><div class="team-row"><span>Sales</span><b class="ok">On Track</b></div><div class="team-row"><span>Marketing</span><b class="ok">On Track</b></div><div class="team-row"><span>Operations</span><b class="bad">At Risk</b></div><a>View team pulse →</a></article>`}
-function renderPressure(){ const latest=[...state.entries].reverse().find(e=>e.response); const score=latest?Math.min(88,Math.max(18,(latest.response.action_steps?.length||2)*9 + (latest.response.priority==='High'?26:12))):26; $('pressureScore').textContent=score; $('pressureLabel').textContent=score>=60?'High':score>=25?'Medium':'Low'; }
-function openDetail(key){ const [id,idx]=key.split(':'); const entry=state.entries.find(e=>e.id===id); const obj=entry?.response?.execution_objects?.[Number(idx)]; if(!obj)return; const drawer=document.createElement('div'); drawer.className='detail-drawer'; drawer.innerHTML=`<div class="drawer-head"><div><h2>${esc(obj.title)}</h2><p>${esc(label(obj.type))} · ${esc(obj.status||'Ready')}</p></div><button id="closeDrawer">×</button></div><div class="detail-section"><h3>Purpose</h3><p>${esc(obj.purpose||'Execution asset generated.')}</p></div><div class="detail-section"><h3>Preview</h3><ul>${arr(obj.preview).map(x=>`<li>${esc(first(x))}</li>`).join('')}</ul></div><div class="detail-section"><h3>Full Object</h3><pre>${esc(JSON.stringify(obj.details||obj,null,2))}</pre></div><button class="copy-btn" id="copyObj">Copy Object</button>`; document.body.appendChild(drawer); $('closeDrawer').onclick=()=>drawer.remove(); $('copyObj').onclick=()=>copy(JSON.stringify(obj.details||obj,null,2)); }
+function renderAll(){ renderThread(); renderSummary(); renderIntel(); renderButtons(); }
+function renderButtons(){ if(els.execute){ els.execute.disabled=state.isLoading; els.execute.textContent=state.isLoading ? "Executing..." : "Execute →"; } }
 
-$('executeBtn').onclick=()=>runCommand(); $('sendFollowBtn').onclick=()=>runCommand($('followInput').value); $('clearBtn').onclick=()=>{$('commandInput').value='';$('followInput').value=''}; $('commandInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))runCommand()}); $('followInput').addEventListener('keydown',e=>{if(e.key==='Enter')runCommand($('followInput').value)}); document.querySelectorAll('.quick-chips button').forEach(b=>b.onclick=()=>runCommand(b.dataset.prompt)); $('newProjectBtn').onclick=()=>{state.projects.unshift({title:'New Executive Workflow',status:'Active'});renderProjects()};
-render();
+function renderThread(){
+  if(!els.thread) return;
+  const follow = getComposerHTML();
+  const runtime = state.messages.map(renderMessage).join("");
+  if(runtime){
+    const existingDemo = state.messages.length === 0 ? els.thread.innerHTML : "";
+    els.thread.innerHTML = existingDemo || runtime + follow;
+  }else{
+    // Preserve the approved 28(1) demo thread before the first live command.
+    ensureComposerBound();
+    return;
+  }
+  bindRuntimeButtons();
+  els.thread.scrollTop = els.thread.scrollHeight;
+}
+
+function renderMessage(m){
+  if(m.role === "user") return `<div class="msg user-msg"><div class="bubble-avatar">W</div><div><div class="meta"><strong>You</strong><span>${esc(m.created)}</span></div><div class="copy user-copy">${esc(m.content)}</div></div></div>`;
+  if(m.status === "loading") return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="workflow-card loading-card">Building executive workflow…</div></div></div>`;
+  if(m.status === "error") return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="risk-block"><strong>Connection issue</strong><p>${esc(m.content)}</p></div></div></div>`;
+  return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div>${renderWorkflowCard(m.response)}</div></div>`;
+}
+
+function renderWorkflowCard(r){
+  return `<div class="workflow-card">
+    <div class="wf-section clear-answer"><span>Clear Answer</span><p>${esc(r.summary)}</p></div>
+    <div class="wf-section why"><span>Why it matters</span><p>${esc(r.why)}</p></div>
+    <div class="do-next"><span>Do this next</span><strong>${esc(r.next_move)}</strong></div>
+    <div class="wf-split"><div class="wf-section"><span>Decision</span><p>${esc(r.decision)}</p></div><div class="wf-section"><span>Priority</span><p>${esc(r.priority)}</p></div></div>
+    <div class="task-list">${r.action_steps.map((a,i)=>`<div class="task-row"><span class="check">${i===0?"→":"○"}</span><div><strong>${esc(compact(a.title || a.name || a.description || a, `Action ${i+1}`))}</strong><small>${i===0?"Next":"Open"}</small></div></div>`).join("")}</div>
+    <div class="asset-grid">${r.ready_assets.map((a,i)=>`<div class="asset-card"><div class="doc-icon">▤</div><div><strong>${esc(compact(a.title || a.name || a.asset_name || a, `Asset ${i+1}`))}</strong><span>${esc(compact(a.description || a.summary || a.purpose || a.type, "Ready to use"))}</span></div></div>`).join("")}</div>
+    <div class="risk-block"><strong>Active risk</strong><p>${esc(r.risk)}</p><small>Mitigation: ${esc(r.next_move)}</small></div>
+    <button class="recommended-btn" data-command="${esc(r.recommended_command)}">Continue with recommended command →</button>
+    <div class="workflow-actions"><button data-action="plan">Turn into action plan</button><button data-action="asset">Draft asset</button><button data-action="decision">Save decision</button></div>
+  </div>`;
+}
+
+function getComposerHTML(){ return `<div class="composer runtime-composer"><input id="followInput" placeholder="Ask a follow-up or refine your request..." /><div class="composer-icons"><span>♩</span><button id="followSend" type="button">▷</button></div></div>`; }
+function ensureComposerBound(){ setupComposer(); }
+function setupComposer(){
+  const input = document.getElementById("followInput") || document.querySelector(".composer input");
+  const send = document.getElementById("followSend") || document.querySelector(".composer button");
+  send?.addEventListener("click", () => submitCommand(input?.value || ""));
+  input?.addEventListener("keydown", e => { if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); submitCommand(input.value); } });
+}
+function setComposerValue(v){ const input = document.getElementById("followInput") || document.querySelector(".composer input"); if(input) input.value = v; }
+
+function bindRuntimeButtons(){
+  setupComposer();
+  els.thread.querySelectorAll("[data-command]").forEach(btn => btn.addEventListener("click", () => submitCommand(btn.getAttribute("data-command") || "")));
+  els.thread.querySelectorAll("[data-action]").forEach(btn => btn.addEventListener("click", () => handleAction(btn.getAttribute("data-action"))));
+}
+
+function handleAction(action){
+  const r = state.lastResponse; if(!r) return;
+  if(action === "plan"){
+    const plan = { summary:"Action plan created from the current response.", why:"This converts the answer into trackable execution.", next_move:"Work the first open task now.", decision:r.decision, action_steps:r.action_steps, ready_assets:r.ready_assets, risk:r.risk, priority:r.priority, recommended_command:r.recommended_command };
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:plan, created:now() });
+  }
+  if(action === "asset"){
+    const asset = { title:"Draft asset package", description:r.ready_assets.map(a=>compact(a.title||a)).join("; ") || r.summary, type:"Draft" };
+    state.assets.unshift(asset);
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:{...r, summary:"Draft asset package prepared.", why:"This turns the workflow into a usable deliverable.", next_move:"Review the asset card and decide what to send or refine.", ready_assets:[asset], action_steps:[{title:"Review draft asset"},{title:"Confirm audience"},{title:"Send or refine"}]}, created:now() });
+  }
+  if(action === "decision"){
+    state.savedDecisions.unshift({ title:r.decision, created:now() });
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:{...r, summary:"Decision saved to the runtime decision workspace.", why:"Captured decisions create continuity instead of another disposable answer.", next_move:r.recommended_command, action_steps:[{title:"Use the saved decision as the operating assumption"},{title:"Move the next action forward"}]}, created:now() });
+  }
+  renderAll();
+}
+
+function card(color,title,body,count){
+  const html = Array.isArray(body) ? `<ul>${body.slice(0,5).map(x=>`<li>${esc(compact(x.title || x.name || x.description || x, ""))}</li>`).join("")}</ul>` : `<p>${esc(compact(body,"—"))}</p>`;
+  return `<div class="sum-card ${color}"><div class="badge">${esc(count ?? "")}</div><div class="sum-title">${esc(title)}</div>${html}<div class="note">＋ Add note</div></div>`;
+}
+function renderSummary(){
+  if(!els.summary || !state.lastResponse) return;
+  const r = state.lastResponse;
+  els.summary.innerHTML = `<div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
+    ${card("orange","NEXT MOVE",r.next_move,1)}${card("","DECISION",r.decision,state.decisions.length)}${card("green","ACTION STEPS",r.action_steps,r.action_steps.length)}${card("purple","READY ASSETS",r.ready_assets,r.ready_assets.length)}${card("red","ACTIVE RISKS",r.risk,state.risks.length)}${card("orange","PRIORITY",r.priority,r.priority)}${card("","RECOMMENDED COMMAND",r.recommended_command,1)}
+    <div class="half"><div class="sum-card tiny"><div class="sum-title">RECENT DECISIONS</div><ul>${state.decisions.slice(0,2).map(d=>`<li>${esc(d.title)}</li>`).join("")}</ul></div><div class="sum-card tiny green"><div class="sum-title">SYSTEM STATUS</div><p>Runtime state active</p><div class="note">Updated now</div></div></div>`;
+}
+function renderIntel(){
+  if(!els.intel || !state.lastResponse) return;
+  const r = state.lastResponse;
+  els.intel.innerHTML = `<h3>EXECUTIVE INTELLIGENCE</h3><div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
+    <div class="rail-card"><div class="rail-title">◆ CURRENT FOCUS</div><p>${esc(r.next_move)}</p><div class="link">View focus →</div></div>
+    <div class="rail-card"><div class="rail-title">▧ ACTIVE RISK</div><p>${esc(r.risk)}</p><div class="link">View mitigation →</div></div>
+    <div class="rail-card"><div class="rail-title">▣ WORKSPACE ITEMS</div><div class="priority-row"><div class="num">${state.actions.length}</div><div><strong>Actions</strong><br><span>Runtime tasks created</span></div></div><div class="priority-row"><div class="num">${state.assets.length}</div><div><strong>Assets</strong><br><span>Runtime assets prepared</span></div></div><div class="priority-row"><div class="num">${state.decisions.length}</div><div><strong>Decisions</strong><br><span>Captured from responses</span></div></div><div class="link">View all →</div></div>
+    <div class="rail-card"><div class="rail-title">⚡ RECOMMENDED FOLLOW-UP</div><p>${esc(r.recommended_command)}</p><button class="recommended-btn rail-run" data-command="${esc(r.recommended_command)}">Run follow-up →</button></div>`;
+  els.intel.querySelectorAll("[data-command]").forEach(btn => btn.addEventListener("click", () => submitCommand(btn.getAttribute("data-command") || "")));
+}
+
+function bindNav(){
+  document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active")); item.classList.add("active");
+    const name = item.textContent.trim().toLowerCase();
+    if(!state.lastResponse) return;
+    let response = null;
+    if(name.includes("decision")) response = {...state.lastResponse, summary:"Decision workspace opened.", why:"These are decisions captured from the live thread.", next_move: state.decisions[0]?.title || state.lastResponse.decision, action_steps: state.decisions.map(d=>({title:d.title})), ready_assets: []};
+    else if(name.includes("risk")) response = {...state.lastResponse, summary:"Risk monitor opened.", why:"This shows what could block the current objective.", next_move: state.risks[0]?.mitigation || state.lastResponse.next_move, action_steps: state.risks.map(r=>({title:r.title})), ready_assets: []};
+    else if(name.includes("active projects") || name.includes("strategy")) response = {...state.lastResponse, summary:"Action workspace opened.", why:"These are the task rows created from the latest command.", next_move: state.actions[0]?.title || state.lastResponse.next_move, action_steps: state.actions.map(a=>({title:a.title})), ready_assets: state.assets};
+    if(response){ state.messages.push({ id:uid(), role:"assistant", status:"success", response, created:now() }); renderAll(); }
+  }));
+}
+
+function initComposer(){
+  if(els.composer){
+    els.composer.innerHTML = `<input id="followInput" placeholder="Ask a follow-up or refine your request..." /><div class="composer-icons"><span>♩</span><button id="followSend" type="button">▷</button></div>`;
+  }
+  setupComposer();
+}
+
+els.execute?.addEventListener("click", () => submitCommand());
+els.clear?.addEventListener("click", () => { if(els.input) els.input.value = ""; });
+els.input?.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); submitCommand(); } });
+document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => { if(els.input) els.input.value = chip.textContent.trim(); submitCommand(); }));
+initComposer();
+bindNav();
+renderButtons();
