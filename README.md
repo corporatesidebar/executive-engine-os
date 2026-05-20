@@ -1,25 +1,18 @@
-# Executive Engine OS — V35160B Backend Response Comprehension Fix
+# Executive Engine OS — V35160D Frontend Command Box Fix
 
-Backend-only package.
+Frontend-only patch.
 
 ## Purpose
-Fix `/run` intelligence and readability without changing frontend, layout, navigation, database, Supabase, Claude routing, or deployment settings.
+Tighten the bottom command/chat box so it feels less awkward, sits in a better position, uses less vertical space, and does not show instructional placeholder text inside the box.
 
-## What changed
-- Stronger auto-intent filter.
-- Proposal intent wins over meeting/revenue/execution when the command contains proposal, dealership, SEO, Google Ads, CPA, or auto-loan language.
-- Guard prevents proposal requests from returning Costa Rica, relocation, residency, lifestyle, or job-search content.
-- More concise output fields for frontend readability.
-- Preserves required `/run` contract.
-- Preserves `/test-report` browser page with Run Tests and Copy JSON.
+## Scope
+- Frontend only
+- No backend changes
+- No database changes
+- No Supabase changes
+- No routing changes
+- No navigation changes
+- No sidebar movement
 
 ## Files
-- `backend/main.py`
-- `backend/requirements.txt`
-- `README.md`
-- `test-checklist.md`
-
-## Required test prompt
-`Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.`
-
-Expected: dealership proposal output only. No Costa Rica or relocation content.
+- frontend/index.html
