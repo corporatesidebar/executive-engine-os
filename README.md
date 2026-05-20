@@ -1,18 +1,43 @@
-# Executive Engine OS — V36230 Command Centre Brain
+# Executive Engine OS — V35160 Backend Response Intelligence Fix
 
-Backend response intelligence upgraded. Frontend layout preserved.
+Backend-only package.
 
-# Executive Engine OS — V36210 Navigation System
+## Purpose
+Fix `/run` response intelligence without changing frontend, database, Supabase, navigation, layout, deployment settings, or provider routing.
 
-Built from the stable 0a9926b base.
+## What changed
+- Preserves `POST /run`.
+- Preserves required output contract:
+  - `next_move`
+  - `decision`
+  - `action_steps`
+  - `ready_assets`
+  - `risk`
+  - `priority`
+  - `recommended_command`
+  - `provider_used`
+  - `status`
+- Adds deterministic intent routing for:
+  - proposal
+  - meeting
+  - decision
+  - revenue
+  - follow_up
+  - strategy
+  - execution
+  - risk
+  - general
+- Adds proposal guard so dealership / SEO / Google Ads / CPA prompts cannot return relocation or unrelated output.
+- Preserves `/`, `/health`, `/debug`, `/test-report`, `/test-report-json`.
+- Preserves `/test-report` browser tools: Run Tests and Copy JSON.
 
-## Included
-- Updated left navigation to the requested Executive Engine system map
-- Preserved layout, columns, backend API URL, and /run behavior
-- Navigation items are clickable and update command context/placeholder
+## Files
+```text
+backend/main.py
+backend/requirements.txt
+README.md
+test-checklist.md
+```
 
-## Do not change
-- Layout
-- Column structure
-- Backend API URL
-- Existing /run contract
+## Do not deploy to frontend
+Deploy this package to the backend Render service only.

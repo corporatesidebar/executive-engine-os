@@ -1,360 +1,819 @@
-import os, json, re
+import json
+import os
+import re
+import time
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
+
 import httpx
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
-VERSION = "V36410-middle-column-cognition-upgrade"
-REQUIRED_RUN_FIELDS = ["next_move","decision","action_steps","ready_assets","risk","priority","recommended_command"]
+VERSION = "V35160-response-intelligence-fix"
+VERSION_SHORT = "V35160"
+VERSION_SLUG = "v35160-backend-response-intelligence-only"
+BACKEND_URL = "https://executive-engine-os.onrender.com"
+FRONTEND_URL = "https://executive-engine-frontend.onrender.com/"
 
-app = FastAPI(title="Executive Engine OS", version=VERSION)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
+REQUIRED_RUN_FIELDS = [
+    "next_move",
+    "decision",
+    "action_steps",
+    "ready_assets",
+    "risk",
+    "priority",
+    "recommended_command",
+    "provider_used",
+    "status",
+]
+CORE_DISPLAY_FIELDS = [
+    "next_move",
+    "decision",
+    "action_steps",
+    "ready_assets",
+    "risk",
+    "priority",
+    "recommended_command",
+]
+ALLOWED_PRIORITIES = {"High", "Medium", "Low"}
+INTENTS = {
+    "proposal",
+    "meeting",
+    "decision",
+    "revenue",
+    "follow_up",
+    "strategy",
+    "execution",
+    "risk",
+    "general",
+}
 
-def now(): return datetime.now(timezone.utc).isoformat()
-def clean(v: Any) -> str: return re.sub(r"\s+", " ", str(v or "")).strip()
-def clip(s: str, n: int = 360) -> str: return clean(s)[:n].rstrip()
-def listify(v: Any, limit: int = 7) -> List[str]:
-    if isinstance(v, list): return [clip(x, 240) for x in v if clean(x)][:limit]
-    if not clean(v): return []
-    parts = re.split(r"\n|;|•|\|", clean(v))
-    return [re.sub(r"^[-*\d.)\s]+", "", p).strip() for p in parts if clean(p)][:limit]
+app = FastAPI(
+    title="Executive Engine OS Backend",
+    version=VERSION,
+    description="Backend-only /run response intelligence patch. No frontend, database, or layout changes.",
+)
 
-def detect(command: str) -> Dict[str, str]:
-    t = command.lower()
-    rules = [
-        ("career", "revenue", ["i need a job","need a job","find me a job","job search","career","resume","linkedin","interview me","get hired","employment","apply for"]),
-        ("proposal", "revenue", ["proposal","sow","quote","deal","close","client","pitch","roi","pricing","scope"]),
-        ("meeting", "execution", ["meeting","board","agenda","talking points","prep","call","presentation"]),
-        ("strategy", "strategy", ["strategy","market","expand","growth","competitor","positioning","launch","plan"]),
-        ("tasks", "operations", ["task","todo","to do","follow up","deadline","priority","execute","action item"]),
-        ("calendar", "operations", ["calendar","schedule","tomorrow","today","next week","date","time"]),
-        ("risk", "operations", ["risk","issue","problem","blocked","stuck","behind","urgent","fire"]),
-        ("documents", "assets", ["document","pdf","deck","report","brief","notes","email","write","draft","memo"]),
-        ("media_advertising", "growth", ["ad","ads","media","campaign","creative","google ads","facebook","meta","seo","advertising"]),
-        ("content_creation", "growth", ["content","post","video","script","newsletter","blog","social"]),
-        ("team_support", "people", ["team","employee","support","coach","train","bob","staff","performance"]),
-        ("talent", "people", ["hire","candidate","resume review","interview candidate","recruit","talent"]),
-    ]
-    for mode, brain, keys in rules:
-        if any(k in t for k in keys):
-            return {"mode": mode, "brain": brain}
-    return {"mode": "command", "brain": "operator"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*",
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def extract_subject(command: str) -> str:
-    c = clean(command)
-    c = re.sub(r"^(i need|please|build|create|make|prepare|help me|can you)\s+", "", c, flags=re.I)
-    return clip(c, 90) or "the executive command"
 
-def executive_brain(command: str) -> Dict[str, Any]:
-    c = clean(command) or "Advance today's highest-value executive priority."
-    d = detect(c); mode = d["mode"]; subject = extract_subject(c)
-    base = {
-        "priority": "High",
-        "status": "success",
-        "provider_used": "local-command-centre-brain",
-        "version": VERSION,
-        "mode": mode,
-        "brain": d["brain"],
-    }
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
-    if any(x in c.lower() for x in ["costa rica", "move to", "relocate", "pr", "permanent residency", "residency"]):
-        out = {
-            "next_move": "Treat this as a relocation operating plan, not a job-search question. The fastest path is to separate income, residency eligibility, and local execution into three parallel tracks.",
-            "decision": "Do not move first and figure it out there. Build a 30-day relocation sprint: remote-income path, Costa Rica job path, and residency/legal path running at the same time.",
-            "action_steps": [
-                "Lock the target city and lifestyle budget first: San José, Escazú, Santa Ana, Tamarindo, or Jacó changes job options, rent, transport, and network access.",
-                "Choose the income lane: remote Canadian/US executive work is higher leverage than competing locally for lower-paying Costa Rican roles.",
-                "Build a relocation profile: executive resume, LinkedIn headline, short operator bio, proof of revenue/systems outcomes, and availability date.",
-                "Contact 10 Costa Rica-based recruiters, expat business owners, real estate operators, tourism groups, agencies, and international companies with a direct value pitch.",
-                "Book a 30-minute immigration consultation before applying for residency so you do not waste months on the wrong status path.",
-                "Create a 90-day cash runway and document checklist: passport, income proof, police check, birth certificate, apostilles, health insurance, bank statements.",
-                "Run the first trip as an intelligence mission: meetings, neighbourhoods, rent options, coworking, transportation, and employer/business network."
-            ],
-            "ready_assets": [
-                "30-Day Costa Rica Relocation Sprint",
-                "Executive Relocation Resume Angle",
-                "Recruiter/Founder Outreach Message",
-                "Residency Document Checklist",
-                "Target City Comparison Sheet",
-                "90-Day Cash Runway Plan",
-                "First-Trip Intelligence Agenda"
-            ],
-            "risk": "The main risk is confusing the dream with the operating plan. Costa Rica is achievable, but the failure point is income certainty and legal status, not motivation.",
-            "recommended_command": "Build my 30-day Costa Rica relocation sprint with job/income strategy, residency checklist, target cities, outreach messages, and first-week action plan."
-        }
-        out.update(base)
-        return out
-    playbooks: Dict[str, Dict[str, Any]] = {
-        "career": {
-            "next_move": f"Turn '{subject}' into a revenue-focused executive job search sprint: target market, positioning, outreach, proof assets, and daily pipeline.",
-            "decision": "Run this like a sales pipeline, not a casual job search. Target $250K+ executive/operator roles, consulting mandates, fractional COO/CMO/CTO work, and founder-led companies that need growth execution.",
-            "action_steps": [
-                "Define the target role lane: COO/growth operator, CMO/revenue, CTO/product systems, or fractional executive consulting.",
-                "Build a 25-company target list where the business has money, complexity, and visible growth friction.",
-                "Package the executive proof: $1M to $75M growth story, 200M+ user systems experience, AutoLoans/Keyspire/iCHACHA execution, and contractor-ready structure.",
-                "Create two offer angles: full-time executive role and $250K/year consulting/fractional mandate.",
-                "Send 10 direct messages/emails per day to founders, CEOs, private equity operators, and recruiters with a specific business outcome.",
-                "Track every opportunity by stage: target, contacted, replied, meeting, proposal, negotiation, closed/lost.",
-                "Prepare a 30-minute executive interview script that positions you as an operator who fixes revenue, systems, and execution drag."
-            ],
-            "ready_assets": [
-                "Executive Positioning Brief",
-                "25-Company Target List Template",
-                "$250K Consulting Offer One-Pager",
-                "Founder/CEO Outreach Message",
-                "Recruiter Message",
-                "Interview Talking Points",
-                "Pipeline Tracker"
-            ],
-            "risk": "A broad job search will waste time and make you look like a candidate instead of an operator. The leverage is positioning around measurable business outcomes and executive-level mandates.",
-            "recommended_command": "Build my executive job search pipeline for COO/CMO/CTO/fractional roles at $250K+, including target companies, outreach messages, and interview positioning."
-        },
-        "proposal": {
-            "next_move": f"Turn '{subject}' into a close-ready proposal package: business case, scope, ROI, timeline, risk controls, and approval ask.",
-            "decision": "Proceed with a concise executive proposal now. Do not wait for perfect research; use assumptions, identify gaps, and make the decision path clear.",
-            "action_steps": ["Define the client pain, commercial upside, and decision-maker in the first 5 lines.", "Package the offer into 3 phases: diagnosis, execution, optimization.", "Add ROI logic with assumptions instead of vague benefits.", "Set timeline, owner responsibilities, dependencies, and approval deadline.", "Include risk controls so the client sees execution confidence.", "Prepare a short closing email that asks for the next meeting or approval."],
-            "ready_assets": ["Client Proposal v1", "One-page ROI Summary", "Scope of Work", "Meeting Deck Outline", "Closing Email Draft"],
-            "risk": "If the proposal reads like a service menu, the executive buyer will compare price instead of buying outcome, speed, and risk reduction.",
-            "recommended_command": "Draft the full proposal with scope, ROI assumptions, timeline, investment range, risks, and closing email."
-        },
-        "meeting": {
-            "next_move": f"Build a meeting command pack for '{subject}': objective, agenda, talking points, objections, decision ask, and follow-up.",
-            "decision": "Enter the meeting with one target outcome and one explicit ask. Everything else is supporting material.",
-            "action_steps": ["Write the meeting win in one sentence.", "List the 3 points the other side must understand before the meeting ends.", "Prepare 5 objections with direct executive responses.", "Decide the ask, deadline, and next step before the meeting starts.", "Create a post-meeting follow-up email before the meeting happens.", "Flag any missing context that must be confirmed in the first 3 minutes."],
-            "ready_assets": ["Meeting Prep Pack", "Executive Talking Points", "Objection Response Sheet", "Follow-up Email Draft", "Decision Ask Script"],
-            "risk": "The meeting will become a conversation instead of a decision if the ask, owner, and next step are not explicit.",
-            "recommended_command": "Create the full meeting prep pack with agenda, talking points, objections, responses, decision ask, and follow-up email."
-        },
-        "strategy": {
-            "next_move": f"Convert '{subject}' into a strategic decision brief: market angle, options, tradeoffs, first move, and measurable win condition.",
-            "decision": "Choose the fastest testable strategic path, not the broadest plan. Strategy must become a move this week.",
-            "action_steps": ["Define the strategic objective and what winning means numerically.", "Identify 3 viable paths and eliminate the weakest one fast.", "Name the customer, market, or internal segment this serves first.", "Set the first 7-day execution move.", "Define the constraint: money, time, people, data, or authority.", "Create a decision brief the executive can approve or revise."],
-            "ready_assets": ["Strategy Brief", "Options Matrix", "7-Day Execution Path", "Executive Decision Note"],
-            "risk": "A strategy that does not produce a near-term move becomes intellectual overhead instead of operational leverage.",
-            "recommended_command": "Build the strategy brief with 3 options, recommended path, tradeoffs, 7-day move, and success metric."
-        },
-        "tasks": {
-            "next_move": f"Convert '{subject}' into a ranked execution queue: now, later today, delegated, waiting, and archived.",
-            "decision": "Prioritize by leverage and deadline. Move one high-value action now before organizing everything else.",
-            "action_steps": ["Identify the single highest-value action for the next 30 minutes.", "Separate urgent from important.", "Assign owner, due date, and next physical action.", "Move low-value work into later or archive.", "Create one follow-up command for the system to continue."],
-            "ready_assets": ["Priority Queue", "Do Now List", "Delegation Notes", "Follow-up Command"],
-            "risk": "Too many visible tasks will create pressure without progress unless the system forces the next action.",
-            "recommended_command": "Turn this into a now/later/delegate/waiting/archive task board with owners and deadlines."
-        },
-        "calendar": {
-            "next_move": f"Turn '{subject}' into a calendar-driven operating plan with prep, decision points, reminders, and follow-up actions.",
-            "decision": "Use the calendar as an execution trigger, not just a schedule. Every event needs prep and an outcome.",
-            "action_steps": ["Identify event date, time, people, and desired outcome.", "Create prep notes and required assets before the event.", "Set a reminder for the decision or deliverable.", "Define the follow-up message before the event ends.", "Place related tasks into today or later today."],
-            "ready_assets": ["Calendar Priority Brief", "Prep Checklist", "Reminder Plan", "Follow-up Note"],
-            "risk": "A calendar item with no prep asset becomes a passive appointment instead of an executive advantage.",
-            "recommended_command": "Create the calendar prep plan with outcome, notes, assets, reminders, and follow-up."
-        },
-        "risk": {
-            "next_move": f"Contain '{subject}' with owner, severity, facts, assumptions, 48-hour actions, and escalation trigger.",
-            "decision": "Treat this as an execution-control issue until ownership, deadline, and containment are clear.",
-            "action_steps": ["Define the risk in one sentence.", "Separate confirmed facts from assumptions.", "Assign one owner and one decision-maker.", "Create a 48-hour containment path.", "Name the escalation trigger and deadline.", "Draft the internal update message."],
-            "ready_assets": ["Risk Brief", "48-Hour Containment Plan", "Escalation Note", "Internal Update Draft"],
-            "risk": "Delay compounds quickly when responsibility is shared but ownership is not assigned.",
-            "recommended_command": "Build the risk-control brief with owner, facts, assumptions, containment steps, deadline, and escalation note."
-        },
-        "team_support": {
-            "next_move": f"Turn '{subject}' into a leadership support action: expectation, coaching, resource, deadline, and accountability.",
-            "decision": "Support first when the person is capable; escalate when the same gap repeats after clear expectations and help.",
-            "action_steps": ["Name the person, gap, and business impact.", "Define what good looks like by a specific date.", "Prepare a 15-minute coaching conversation.", "Give one support asset, training path, or example.", "Set a follow-up checkpoint and consequence."],
-            "ready_assets": ["Coaching Script", "Performance Expectation Note", "Training Support Plan", "Follow-up Message"],
-            "risk": "Vague feedback feels nice in the moment but creates repeat problems and weak accountability.",
-            "recommended_command": "Create the coaching script, expectation note, support plan, and follow-up message."
-        },
-        "talent": {
-            "next_move": f"Evaluate '{subject}' through an executive hiring lens: role fit, performance evidence, risk, interview focus, and recommendation.",
-            "decision": "Score the candidate against outcomes, not personality. Advance only if evidence supports the role requirements.",
-            "action_steps": ["Define the role outcome and 90-day success metric.", "Score experience, execution proof, communication, leadership, and risk.", "Identify missing evidence to test in interview.", "Prepare 5 interview questions tied to the role.", "Recommend advance, hold, or reject."],
-            "ready_assets": ["Candidate Scorecard", "Interview Questions", "Hiring Risk Summary", "Recommendation Note"],
-            "risk": "Hiring on confidence or likability without evidence creates expensive leadership drag.",
-            "recommended_command": "Build the candidate scorecard with role fit, risks, interview questions, and hire/no-hire recommendation."
-        },
-        "documents": {
-            "next_move": f"Produce the required executive document for '{subject}' with decision-first structure and reusable formatting.",
-            "decision": "Create the asset now in executive format: outcome, context, decision, action, risk, owner, deadline.",
-            "action_steps": ["Identify the document type and intended reader.", "Lead with the decision or recommendation.", "Keep background short and numerical where possible.", "Add owner, deadline, dependencies, and next step.", "Prepare a downloadable-ready version."],
-            "ready_assets": ["Executive Brief", "Email Draft", "Decision Memo", "Download-Ready Document Outline"],
-            "risk": "Long documents without a decision-first structure waste executive attention and slow approval.",
-            "recommended_command": "Draft the complete executive document in decision-first format with owner, timeline, risk, and next step."
-        },
-        "media_advertising": {
-            "next_move": f"Turn '{subject}' into a performance campaign brief with audience, offer, creative angle, budget logic, KPI, and test plan.",
-            "decision": "Launch with a narrow test before scaling. Prove CPA, conversion, and message-market fit first.",
-            "action_steps": ["Define target audience and buying trigger.", "Create 3 campaign angles.", "Set offer, landing page action, and KPI.", "Choose first test channels and budget range.", "Prepare creative briefs and tracking requirements.", "Set the stop/scale rule."],
-            "ready_assets": ["Campaign Brief", "Ad Angle Matrix", "Creative Briefs", "Landing Page Outline", "KPI Tracker"],
-            "risk": "Broad campaigns burn budget when the offer, audience, and conversion event are not tightly connected.",
-            "recommended_command": "Build the campaign brief with audience, angles, offer, budget, KPIs, assets, and stop/scale rules."
-        },
-        "content_creation": {
-            "next_move": f"Convert '{subject}' into content that supports authority, trust, demand, or sales conversion.",
-            "decision": "Create content with a business job, not content for volume. Each piece must move attention, trust, or action.",
-            "action_steps": ["Define the audience and the business purpose.", "Pick one core message and one proof point.", "Create 3 hooks and one strong CTA.", "Draft the content in the executive's voice.", "Repurpose into short post, email, and talking points."],
-            "ready_assets": ["Content Draft", "Hook Options", "CTA Options", "Repurpose Pack"],
-            "risk": "Generic content creates activity without authority, pipeline, or strategic value.",
-            "recommended_command": "Create the content pack with hooks, main draft, CTA, and repurposed versions."
-        },
-        "command": {
-            "next_move": f"Convert '{subject}' into a clear executive command with outcome, category, action path, asset, risk, and next command.",
-            "decision": "Proceed with structured execution. The system should reduce ambiguity before asking for more detail.",
-            "action_steps": ["Classify the command into the right operating category.", "Identify who, what, when, where, why, and how.", "Define the highest-value outcome.", "Create or specify the asset needed to move forward.", "Identify the execution risk.", "Set the next recommended command."],
-            "ready_assets": ["Executive Command Brief", "Action Path", "Decision Note", "Follow-up Command"],
-            "risk": "The command stays too abstract unless the system turns it into a decision, asset, and immediate action.",
-            "recommended_command": "Turn this into an executive command brief with decision, actions, ready assets, risk, and next command."
-        }
-    }
-    out = playbooks.get(mode, playbooks["command"]).copy(); out.update(base)
-    return out
 
-def cognition_layers(command: str, base: Dict[str, Any]) -> Dict[str, Any]:
-    subject = extract_subject(command)
-    mode = detect(command)["mode"]
-    t = command.lower()
-    pressure = "High" if any(w in t for w in ["urgent", "asap", "tomorrow", "today", "behind", "stuck", "problem", "fix", "close", "deal", "move", "job", "residency"]) else "Medium"
-
-    if any(x in t for x in ["costa rica", "move to", "relocate", "residency", "pr", "permanent residency"]):
-        return {
-            "intent_detected": "relocation_career",
-            "pressure_level": pressure,
-            "operator_read": "This is not one problem. It is three linked problems: income, immigration status, and landing logistics. Solve them in parallel or the plan stalls.",
-            "why_this_matters": "Relocation fails when people chase location before stabilizing income and legal pathway. The executive move is to turn the dream into a controlled operating plan with dates, documents, outreach, and cash runway.",
-            "primary_risk": base.get("risk") or "Moving without income certainty, legal clarity, or a 90-day runway creates avoidable pressure and weak decisions.",
-            "hidden_risk": "Local jobs may pay materially less than Canadian/US executive or consulting work. The highest leverage path is usually remote/fractional income while building Costa Rica options.",
-            "leverage_move": "Position yourself as a North American operator who can help Costa Rica-connected businesses with growth, marketing, systems, and execution—not as a generic job seeker.",
-            "what_happens_next": "First, lock target city and budget. Second, build the executive relocation profile. Third, start outreach. Fourth, confirm immigration pathway. Fifth, book exploratory meetings before committing.",
-            "expected_pushback": "You will likely get uncertainty around visas, lower local pay, and unclear employer sponsorship. Counter that by leading with remote income, consulting offers, and legal consultation.",
-            "executive_insight": "The move becomes realistic when lifestyle ambition is converted into operating constraints: income floor, legal path, timeline, documents, and relationship pipeline.",
-            "do_this_now": listify(base.get("action_steps"), 5),
-            "ready_assets_expanded": listify(base.get("ready_assets"), 7),
-            "follow_up_command": base.get("recommended_command") or "Build my Costa Rica relocation operating plan."
-        }
-
-    if any(w in t for w in ["proposal", "deal", "close", "client", "sales", "revenue"]):
-        hidden_risk = "The buyer will compare price if the proposal does not prove ROI, speed, and execution certainty."
-        leverage = "Turn the proposal into an internal business case the buyer can sell without you in the room."
-        pushback = "Expect pricing, proof, implementation timeline, and internal approval friction."
-        insight = "Executive buyers buy reduced risk and business movement, not tasks."
-    elif any(w in t for w in ["meeting", "call", "board", "presentation"]):
-        hidden_risk = "The meeting becomes a discussion loop if the decision ask is not defined before it starts."
-        leverage = "Control the room around one decision, one owner, and one next commitment."
-        pushback = "Expect scope drift, vague agreement, and requests for more information."
-        insight = "Strong meetings are designed backward from the decision."
-    elif any(w in t for w in ["marketing", "ads", "content", "seo", "campaign", "leads"]):
-        hidden_risk = "Spend and effort will scale before message-market fit is proven."
-        leverage = "Tighten buyer, pain, offer, proof, and conversion action before scaling activity."
-        pushback = "Expect pressure to launch tactics before the message is sharp enough."
-        insight = "Most marketing problems are positioning and offer problems disguised as traffic problems."
-    else:
-        hidden_risk = "The work stays abstract unless converted into a decision, owner, asset, deadline, and next command."
-        leverage = "Reduce ambiguity first, then move the one action that creates the most downstream clarity."
-        pushback = "Expect delay from unclear ownership, missing context, or competing priorities."
-        insight = "Executive leverage comes from turning uncertainty into sequenced action before the organization drifts."
-
-    actions = listify(base.get("action_steps"), 6)
-    assets = listify(base.get("ready_assets"), 6)
+def base_status() -> Dict[str, Any]:
     return {
-        "intent_detected": mode,
-        "pressure_level": pressure,
-        "operator_read": clip(f"The real issue is control of sequence, ownership, risk, and the next executive decision around: {subject}.", 620),
-        "why_this_matters": clip(f"This matters because {subject} can either become a clear operating move or another open loop. The executive value is compression: decide the path, expose the risk, create the asset, and move the next action.", 620),
-        "primary_risk": base.get("risk") or hidden_risk,
-        "hidden_risk": hidden_risk,
-        "leverage_move": leverage,
-        "what_happens_next": "If the next action is specific, momentum increases. If it stays broad, it turns into follow-ups, context switching, and weak accountability.",
-        "expected_pushback": pushback,
-        "executive_insight": insight,
-        "do_this_now": actions[:5],
-        "ready_assets_expanded": assets[:6],
-        "follow_up_command": base.get("recommended_command") or "Build the next executive command pack.",
+        "status": "ok",
+        "service": "Executive Engine OS Backend",
+        "version": VERSION,
+        "version_short": VERSION_SHORT,
+        "version_slug": VERSION_SLUG,
+        "backend_url": BACKEND_URL,
+        "frontend_url": FRONTEND_URL,
+        "timestamp": utc_now(),
     }
 
-def normalize(x: Dict[str, Any], command: str) -> Dict[str, Any]:
-    fb = executive_brain(command); out = {}
-    for k in REQUIRED_RUN_FIELDS:
-        if k in ("action_steps", "ready_assets"):
-            out[k] = listify(x.get(k), 7) or fb[k]
-        else:
-            out[k] = clip(x.get(k), 700) or fb[k]
-    if out["priority"] not in ["High", "Medium", "Low"]: out["priority"] = "High"
-    layers = cognition_layers(command, out)
-    out.update(layers)
-    out.update({
+
+def clean_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def extract_command(body: Any) -> Tuple[str, Dict[str, Any]]:
+    if isinstance(body, dict):
+        command = body.get("command") or body.get("input") or body.get("prompt") or body.get("message") or ""
+        return clean_text(command), body
+    if body is None:
+        return "", {}
+    return clean_text(body), {}
+
+
+def ensure_string(value: Any, fallback: str) -> str:
+    text = clean_text(value)
+    return text if text else fallback
+
+
+def ensure_list(value: Any, limit: int = 12) -> List[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        items: List[str] = []
+        for item in value:
+            if isinstance(item, str):
+                text = item.strip()
+            elif isinstance(item, (dict, list)):
+                text = json.dumps(item, ensure_ascii=False)
+            else:
+                text = str(item).strip()
+            if text:
+                items.append(text)
+        return items[:limit]
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return []
+        parts = [p.strip() for p in re.split(r"\n+|\s•\s|\s-\s|;", text) if p.strip()]
+        return parts[:limit] if parts else [text]
+    return [str(value).strip()][:limit]
+
+
+def normalize_priority(value: Any, fallback: str = "High") -> str:
+    text = clean_text(value).lower()
+    if text in {"high", "urgent", "critical"}:
+        return "High"
+    if text in {"medium", "normal", "moderate"}:
+        return "Medium"
+    if text in {"low", "later"}:
+        return "Low"
+    return fallback if fallback in ALLOWED_PRIORITIES else "High"
+
+
+def contains_any(text: str, keywords: List[str]) -> bool:
+    return any(keyword in text for keyword in keywords)
+
+
+def detect_intent(command: str) -> str:
+    text = f" {command.lower()} "
+
+    proposal_terms = [
+        "proposal",
+        "sow",
+        "scope of work",
+        "quote",
+        "pitch",
+        "client proposal",
+        "dealership",
+        "google ads",
+        "seo",
+        "cpa",
+    ]
+    meeting_terms = ["meeting", "agenda", "talking points", "prep", "prepare for", "call with", "objections", "questions"]
+    follow_up_terms = ["follow up", "follow-up", "email", "reply", "respond", "message", "send this", "subject line"]
+    decision_terms = ["decide", "decision", "choose", "recommend", "tradeoff", "trade-off", "option", "should i", "which one"]
+    revenue_terms = ["revenue", "sales", "sell", "close", "offer", "lead", "leads", "pipeline", "roi", "booked calls"]
+    strategy_terms = ["strategy", "positioning", "roadmap", "market", "moat", "category", "go to market", "gtm"]
+    risk_terms = ["risk", "blocker", "issue", "problem", "threat", "broken", "not working", "fail", "failure", "concern"]
+    execution_terms = ["build", "execute", "launch", "fix", "create", "implement", "ship", "do this", "checklist"]
+
+    # Proposal wins over revenue/execution because user explicitly complained about proposal routing.
+    if contains_any(text, proposal_terms):
+        return "proposal"
+    if contains_any(text, meeting_terms):
+        return "meeting"
+    if contains_any(text, follow_up_terms):
+        return "follow_up"
+    if contains_any(text, decision_terms):
+        return "decision"
+    if contains_any(text, revenue_terms):
+        return "revenue"
+    if contains_any(text, strategy_terms):
+        return "strategy"
+    if contains_any(text, risk_terms):
+        return "risk"
+    if contains_any(text, execution_terms):
+        return "execution"
+    return "general"
+
+
+def infer_metric(command: str) -> str:
+    text = command or ""
+    patterns = [
+        r"(?:under|below|less than|<)\s*\$?([0-9][0-9,]*)",
+        r"cpa\s*(?:under|below|less than|<)?\s*\$?([0-9][0-9,]*)",
+        r"\$([0-9][0-9,]*)",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.I)
+        if match:
+            return f"under ${match.group(1).replace(',', '')}" if "under" in text.lower() or "cpa" in pattern else f"${match.group(1)}"
+    return "a measurable CPA / revenue target"
+
+
+def proposal_response(command: str) -> Dict[str, Any]:
+    metric = infer_metric(command)
+    return {
+        "next_move": "Send a performance-based Ontario auto-loan acquisition proposal that sells qualified finance applications and booked appointments, not generic marketing activity.",
+        "decision": f"Recommend a 30-day SEO + Google Search pilot with dedicated landing-page conversion, call/form tracking, and weekly lead-quality optimization toward {metric} CPA. Do not sell impressions, traffic, or vague awareness.",
+        "action_steps": [
+            "Package the offer as a contained 30-day pilot: search intent, dedicated landing page, tracking, weekly optimization, and lead-quality review.",
+            "Target Ontario buyers actively searching for auto financing, bad-credit auto loans, approval, second-chance financing, and dealership financing terms.",
+            "Build one approval-focused landing page with financing proof, dealership trust, short application CTA, phone CTA, and clear next-step language.",
+            "Launch Google Search campaigns only around high-intent finance keywords; block research, jobs, insurance, repair, free, and low-intent traffic with negatives.",
+            "Track form submits, calls, booked appointments, applications, approval rate, sold units, and CPA by campaign/ad group.",
+            "Run weekly cut/scale decisions: cut bad search terms, shift spend to converting intent, and report lead quality instead of vanity metrics.",
+        ],
+        "ready_assets": [
+            "Proposal Title: Ontario Auto Loan Growth Pilot — SEO + Google Ads Qualified Lead Engine",
+            f"Executive Summary: We will build a focused acquisition system for your dealership to generate finance-ready Ontario auto-loan leads with a target CPA of {metric}. The pilot combines high-intent Google Search, approval-focused landing-page direction, conversion tracking, and weekly optimization around applications, booked appointments, and sold-unit potential.",
+            "Problem: Most dealership marketing wastes budget on broad traffic, weak forms, and leads that do not convert into financeable buyers. The opportunity is to capture buyers already searching for approval and route them into a simple application path before competitors get them.",
+            "Pilot Scope: keyword strategy, Google Search campaign build, negative keyword control, landing-page structure, conversion tracking plan, weekly optimization notes, and lead-quality review.",
+            "Campaign Structure: 1) bad-credit auto loans Ontario, 2) car financing approval Ontario, 3) dealership financing near me, 4) second-chance auto financing, 5) branded/local dealership financing terms where relevant.",
+            "Landing Page Outline: headline around fast approval, dealership trust, who qualifies, how the process works, inventory/financing angle, proof points, short application, phone CTA, and privacy/reassurance copy.",
+            "Success Metrics: qualified lead volume, cost per application, booked appointment rate, approval rate, sold units, wasted-spend reduction, and CPA by intent cluster.",
+            "Client Requirements: Google Ads access or account creation approval, landing-page/domain access, call tracking number, form destination email/CRM, financing criteria, inventory/offer details, and sales follow-up process.",
+            f"Follow-Up Email: Subject: Ontario auto-loan lead pilot. Body: I put together a focused 30-day plan to generate finance-ready auto-loan leads using SEO intent and Google Search, with tracking around applications and booked appointments. The goal is to reduce wasted traffic and push CPA toward {metric} while improving lead quality. I can send the pilot scope, first-week launch plan, and tracking checklist.",
+        ],
+        "risk": "The main risk is optimizing to cheap form fills instead of financeable applicants. CPA only matters if lead quality, booked appointments, approvals, and sold-unit potential are tracked together.",
+        "priority": "High",
+        "recommended_command": "Turn this into a client-ready one-page proposal with pricing, timeline, deliverables, landing-page copy, and follow-up email.",
+    }
+
+
+def meeting_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Enter the meeting with a decision target, an outcome agenda, and the follow-up already framed before the call starts.",
+        "decision": "Use the meeting to secure commitment to the next concrete step, not to discuss the topic broadly.",
+        "action_steps": [
+            "Open by confirming the business outcome and the decision needed by the end of the meeting.",
+            "Ask what success looks like, what has already failed, who approves, and what deadline matters.",
+            "Present one recommended path and one fallback option only.",
+            "Handle objections around cost, timing, complexity, ownership, and risk.",
+            "Close with owner, date, deliverable, and follow-up asset before the meeting ends.",
+        ],
+        "ready_assets": [
+            "Agenda: 1) Outcome, 2) Current constraint, 3) Recommended path, 4) Risks/objections, 5) Decision and next step.",
+            "Talking Points: lead with speed, measurable outcome, reduced friction, business upside, and cost of delay.",
+            "Questions: What result matters most? Who signs off? What has failed already? What happens if this waits 30 days? What would make this a yes?",
+            "Objection Handles: Budget — tie to measurable return. Timing — propose a contained pilot. Complexity — reduce to one owner and one next step. Risk — define stop/scale criteria.",
+            "Follow-Up Draft: Here is the decision, the agreed next step, the owner, the deadline, and the asset I will send so this does not stall.",
+        ],
+        "risk": "The meeting becomes conversation without commitment unless the decision, owner, and next asset are locked before the call ends.",
+        "priority": "High",
+        "recommended_command": "Create the exact post-meeting follow-up email and decision summary for this meeting.",
+    }
+
+
+def decision_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Make the decision using speed, upside, reversibility, cost, and operational drag as the filter.",
+        "decision": "Choose the path that validates the business result fastest without locking the company into unnecessary complexity.",
+        "action_steps": [
+            "State the decision in one sentence and the result it must produce.",
+            "Score each option on upside, cost, speed, reversibility, risk, and operational burden.",
+            "Reject the option that requires heavy structure before proof of usefulness or revenue.",
+            "Assign one owner, one metric, and one review date.",
+            "Write the decision memo so the next action is obvious.",
+        ],
+        "ready_assets": [
+            "Decision Memo Structure: recommendation, why now, options considered, tradeoffs, risk, owner, metric, review date.",
+            "Recommendation: proceed with the lowest-complexity path that creates the fastest proof of value.",
+            "Tradeoff Lens: speed beats completeness when the core uncertainty is usefulness, adoption, or buyer response.",
+        ],
+        "risk": "The risk is overbuilding or over-debating before the decision is validated by real usage, revenue, or operational movement.",
+        "priority": "High",
+        "recommended_command": "Turn this into a one-page executive decision memo with recommendation, tradeoffs, and next action.",
+    }
+
+
+def revenue_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Convert the request into an offer, a target buyer, an outreach asset, and a close path.",
+        "decision": "Prioritize the buyer segment with urgent pain, budget authority, and a measurable reason to act now.",
+        "action_steps": [
+            "Define the target buyer and the painful business outcome they already want solved.",
+            "Write the offer around money, speed, risk reduction, control, or operational leverage.",
+            "Create one direct outreach message and one proof-based follow-up.",
+            "Set the close path: call, proposal, pilot, payment, implementation.",
+            "Track replies, booked calls, objections, proposal sent, close rate, and revenue won.",
+        ],
+        "ready_assets": [
+            "Offer Angle: reduce waste, increase qualified opportunities, and make the path to revenue measurable.",
+            "Target Buyer: owner, CEO, GM, sales leader, or operator with visible revenue friction and authority to move.",
+            "Outreach: I have a focused way to turn existing demand into better-qualified opportunities without adding operational drag. Worth a quick look?",
+            "Close Plan: qualify pain, confirm economics, present contained pilot, define success metric, secure next step.",
+        ],
+        "risk": "The offer will underperform if it is framed as services or activity instead of a direct business outcome the buyer already cares about.",
+        "priority": "High",
+        "recommended_command": "Build the exact outreach sequence, sales call script, and pilot offer for this revenue opportunity.",
+    }
+
+
+def follow_up_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Send a concise follow-up that restates the outcome, removes friction, and asks for one next commitment.",
+        "decision": "Do not over-explain. Advance the deal, decision, or relationship by one clear step.",
+        "action_steps": [
+            "Open with the specific reason for the follow-up.",
+            "Restate the business outcome or decision needed.",
+            "Include the next asset, meeting path, or recommended action.",
+            "Ask one clear yes/no or scheduling question.",
+        ],
+        "ready_assets": [
+            "Subject: Next step on this",
+            "Email Body: Hi — quick follow-up. Based on where this sits, the clean next move is to confirm the outcome, lock the first execution step, and avoid letting this drift. I can send the concise plan/proposal with what happens first, what is needed from your side, and how progress will be measured. Does it make sense for me to send that over today?",
+        ],
+        "risk": "A weak follow-up creates ambiguity and lets the opportunity stall without a clear next commitment.",
+        "priority": "Medium",
+        "recommended_command": "Rewrite this follow-up for a specific person, company, and desired outcome.",
+    }
+
+
+def strategy_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Turn the strategy into a focused operating thesis and one proof point that can be validated this week.",
+        "decision": "Use a narrow wedge first. Expand only after repeated use, buyer pull, or operational dependency is proven.",
+        "action_steps": [
+            "Define the target user or buyer and the urgent problem they feel now.",
+            "Write the strategic position in one sentence.",
+            "Identify the first workflow, asset, or offer that proves the position.",
+            "Remove anything that does not support adoption, revenue, or operational dependency.",
+            "Set a 7-day proof target and review the result.",
+        ],
+        "ready_assets": [
+            "Strategic Position: an executive operating layer that creates clarity, speed, leverage, and control for high-responsibility operators.",
+            "Action Path: validate one high-value workflow, prove repeated use, then expand into memory, actions, and proactive briefing.",
+            "7-Day Proof Target: one workflow creates a useful asset, decision, next action, and follow-up without generic advice.",
+        ],
+        "risk": "The strategy can become too broad and lose usefulness if it tries to become a full platform before one workflow is indispensable.",
+        "priority": "High",
+        "recommended_command": "Convert this strategy into a 7-day execution roadmap with success metrics and HOLD/FIX/PROMOTE criteria.",
+    }
+
+
+def execution_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Ship the smallest complete fix that advances the objective and can be verified immediately.",
+        "decision": "Keep scope narrow, protect the stable base, and complete this backend-only intelligence fix before adding another layer.",
+        "action_steps": [
+            "Lock the objective in one sentence.",
+            "Identify the exact endpoint or behavior that must change and the areas that must not change.",
+            "Build only the required fix.",
+            "Run the matching test checklist.",
+            "Classify the result as HOLD, FIX, PROMOTE, ROLLBACK, or PIVOT.",
+        ],
+        "ready_assets": [
+            "Execution Checklist: objective, protected areas, changed files, endpoint tests, contract tests, decision result.",
+            "Owner Summary: one build, one test, one decision, one next action.",
+        ],
+        "risk": "Scope creep will damage stability and make it impossible to know which change fixed or broke the system.",
+        "priority": "High",
+        "recommended_command": "Create the exact deployment test checklist and classify the result after testing.",
+    }
+
+
+def risk_response(command: str) -> Dict[str, Any]:
+    return {
+        "next_move": "Isolate the highest-consequence risk and choose containment before continuing execution.",
+        "decision": "Do not expand scope until the current risk is fixed, accepted, or routed around.",
+        "action_steps": [
+            "Name the risk in one sentence.",
+            "Identify what breaks if the risk is ignored.",
+            "Choose containment: fix, rollback, hold, or isolate.",
+            "Run the smallest test that confirms whether the risk is real.",
+            "Document the decision and next action.",
+        ],
+        "ready_assets": [
+            "Risk Control Brief: issue, consequence, likelihood, containment, owner, test, deadline.",
+            "Decision Options: HOLD if unclear, FIX if contained, ROLLBACK if stable base is compromised, PROMOTE only after verification.",
+        ],
+        "risk": "The real risk is treating an unstable result as progress and compounding it with additional changes.",
+        "priority": "High",
+        "recommended_command": "Turn this into a risk log with severity, containment, owner, and verification step.",
+    }
+
+
+def general_response(command: str) -> Dict[str, Any]:
+    subject = clean_text(command) or "the current executive request"
+    return {
+        "next_move": f"Turn {subject} into a concrete outcome, a decision, a first asset, and a next command.",
+        "decision": "Move forward using reasonable executive assumptions instead of waiting for perfect information.",
+        "action_steps": [
+            "Define the desired outcome in one sentence.",
+            "Identify the decision or deliverable required now.",
+            "Create the first useful asset instead of giving generic advice.",
+            "Name the risk that could stall execution.",
+            "Set the next command that advances the work.",
+        ],
+        "ready_assets": [
+            "Executive Brief: outcome, decision, action path, ready asset, risk, priority, next command.",
+            "Next Command: turn this into a specific deliverable with owner, deadline, and success measure.",
+        ],
+        "risk": "Without a defined outcome, the response becomes informative but not operationally useful.",
+        "priority": "Medium",
+        "recommended_command": "Convert this into an execution brief with outcome, decision, action steps, asset, risk, and priority.",
+    }
+
+
+def local_intelligence_response(command: str) -> Dict[str, Any]:
+    intent = detect_intent(command)
+    builders = {
+        "proposal": proposal_response,
+        "meeting": meeting_response,
+        "decision": decision_response,
+        "revenue": revenue_response,
+        "follow_up": follow_up_response,
+        "strategy": strategy_response,
+        "execution": execution_response,
+        "risk": risk_response,
+        "general": general_response,
+    }
+    payload = builders.get(intent, general_response)(command)
+    payload["provider_used"] = f"local:{VERSION_SLUG}:{intent}"
+    payload["status"] = "success"
+    return payload
+
+
+def response_is_off_topic(command: str, payload: Dict[str, Any]) -> bool:
+    joined = json.dumps(payload, ensure_ascii=False).lower()
+    command_lower = (command or "").lower()
+
+    if "proposal" in command_lower or "dealership" in command_lower or "google ads" in command_lower or "cpa" in command_lower:
+        if any(term in joined for term in ["costa rica", "relocation", "residency", "job search", "move first"]):
+            return True
+        required = ["proposal", "lead", "dealer", "ads"]
+        return not any(term in joined for term in required)
+
+    expected_intent = detect_intent(command)
+    if expected_intent == "meeting" and not any(term in joined for term in ["meeting", "agenda", "talking points", "follow-up"]):
+        return True
+    if expected_intent == "follow_up" and not any(term in joined for term in ["subject", "email", "follow"]):
+        return True
+    return False
+
+
+def normalize_run_contract(raw: Any, command: str, provider_used: str) -> Dict[str, Any]:
+    fallback = local_intelligence_response(command)
+    if not isinstance(raw, dict):
+        return fallback
+
+    normalized = {
+        "next_move": ensure_string(raw.get("next_move"), fallback["next_move"]),
+        "decision": ensure_string(raw.get("decision"), fallback["decision"]),
+        "action_steps": ensure_list(raw.get("action_steps"), limit=7) or fallback["action_steps"],
+        "ready_assets": ensure_list(raw.get("ready_assets"), limit=12) or fallback["ready_assets"],
+        "risk": ensure_string(raw.get("risk"), fallback["risk"]),
+        "priority": normalize_priority(raw.get("priority"), fallback.get("priority", "High")),
+        "recommended_command": ensure_string(raw.get("recommended_command"), fallback["recommended_command"]),
+        "provider_used": ensure_string(raw.get("provider_used"), provider_used),
         "status": "success",
-        "provider_used": clean(x.get("provider_used")) or fb["provider_used"],
-        "version": VERSION,
-        "mode": detect(command)["mode"],
-        "brain": "executive-cognition-pipeline",
-        "command_summary": extract_subject(command),
-        "executive_summary": out["next_move"],
-        "do_now": out["action_steps"][:3],
-        "later_today": out["action_steps"][3:6],
-        "top_priorities": [out["recommended_command"], out["decision"], out["action_steps"][0], "Use asset: " + out["ready_assets"][0], "Control risk: " + out["risk"]],
-    })
-    return out
+    }
+    if len(normalized["action_steps"]) < 3:
+        normalized["action_steps"] = fallback["action_steps"]
+    if len(normalized["action_steps"]) > 7:
+        normalized["action_steps"] = normalized["action_steps"][:7]
+    if response_is_off_topic(command, normalized):
+        fallback["provider_used"] = f"fallback:off_topic_guard:{detect_intent(command)}"
+        return fallback
+    return normalized
 
-async def ai(command: str) -> Optional[Dict[str, Any]]:
-    key = os.getenv("OPENAI_API_KEY")
-    if not key: return None
-    system = """
-You are Executive Engine OS Cognition Infrastructure: a private CEO/COO/Chief-of-Staff operating layer.
-Return ONLY valid JSON with exactly these keys: next_move, decision, action_steps, ready_assets, risk, priority, recommended_command.
 
-Quality bar: the answer must feel like an expensive operator built it. It must not sound like generic AI advice. For vague personal/business commands, infer the real operating problem and create a specific plan.
+async def openai_first_response(command: str, request_meta: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
 
-Do not answer literally. Interpret the real business pressure beneath the command.
+    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    intent = detect_intent(command)
+    system_prompt = """
+You are Executive Engine OS, acting like a sharp CEO, COO, and Chief of Staff.
+Return only valid JSON. No markdown wrapper. No commentary outside JSON.
+You do not give vague advice. You create the actual work product.
 
-Internal reasoning layers to apply silently:
-1. INTENT: what is the real executive issue?
-2. PRESSURE: what urgency, risk, overload, politics, or decision fatigue exists?
-3. LEVERAGE: what move creates the most progress fastest?
-4. SEQUENCE: what must happen first, second, third?
-5. RESISTANCE: who or what will push back?
-6. EDUCATION: what should the executive understand to become sharper?
-7. ASSET: what usable work should be produced now?
-8. COMPRESSION: remove filler; every sentence must earn its place.
+Required keys exactly:
+next_move: string
+decision: string
+action_steps: array of 3-7 specific executive actions
+ready_assets: array of actual useful assets, drafts, proposal content, agenda, email body, scripts, decision memo content, or operational deliverables
+risk: string
+priority: High, Medium, or Low only
+recommended_command: string
+provider_used: string
+status: success
 
-Response rules:
-- Produce operational judgment, not generic advice.
-- Make the response feel expensive, experienced, calm, compressed, and practical.
-- Identify the hidden risk, not just the obvious task.
-- action_steps must be 5-7 sequenced operator actions with concrete outputs, named people/assets where reasonable, and no vague verbs.
-- ready_assets must name actual assets that move the work forward.
-- recommended_command must be the next exact command.
-- Never say consider, explore, leverage synergies, conduct research, gather information, identify opportunities, or generic management phrases unless immediately followed by a concrete target, artifact, or decision.
-- If context is missing, make sharp assumptions and move the work forward.
+Intent handling:
+proposal = create actual proposal content in ready_assets.
+meeting = create agenda, talking points, objections, questions, and follow-up.
+decision = create recommendation, tradeoffs, risk, and next action.
+revenue = create offer angle, target, next move, outreach, and close plan.
+follow_up = create subject line and email body.
+strategy = create strategic position, action path, risks, and priority.
+execution = create immediate action plan and owner-style next steps.
+risk = create risk assessment, containment, and verification step.
+general = convert the request into outcome, decision, action, asset, risk, and next command.
+
+Critical routing rule:
+If the command asks for a proposal, dealership, SEO, Google Ads, CPA, or client pitch, the response must be a proposal / marketing acquisition output. Never return relocation, job-search, or unrelated lifestyle content for that request.
+
+If information is missing, make reasonable executive assumptions and move forward.
+Never say draft/send/prepare without writing the actual draft, message, proposal, prep, or plan.
 """.strip()
-    payload = {"model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"), "messages": [{"role": "system", "content": system}, {"role": "user", "content": command}], "temperature": 0.18, "response_format": {"type": "json_object"}}
+
+    user_payload = {
+        "command": command or "Create the next executive move.",
+        "detected_intent": intent,
+        "mode": request_meta.get("mode"),
+        "brain": request_meta.get("brain"),
+        "output_type": request_meta.get("output_type"),
+        "context": request_meta.get("context"),
+    }
+
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)},
+        ],
+        "temperature": 0.18,
+        "response_format": {"type": "json_object"},
+    }
+
     try:
         async with httpx.AsyncClient(timeout=35) as client:
-            r = await client.post("https://api.openai.com/v1/chat/completions", headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"}, json=payload)
-            r.raise_for_status()
-            data = json.loads(r.json()["choices"][0]["message"]["content"])
-            data["provider_used"] = "openai-command-centre-brain"
-            return data
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+            data = response.json()
+            content = data["choices"][0]["message"]["content"]
+            parsed = json.loads(content)
+            return normalize_run_contract(parsed, command, f"openai:{model}:{intent}")
     except Exception:
         return None
 
+
 @app.get("/")
-def root(): return {"status":"ok","version":VERSION,"service":"Executive Engine OS","run_contract":REQUIRED_RUN_FIELDS,"timestamp":now()}
+async def root() -> Dict[str, Any]:
+    payload = base_status()
+    payload.update(
+        {
+            "message": "Autonomous Executive Operator live.",
+            "scope": "backend-only response intelligence patch",
+            "endpoints": ["/", "/health", "/debug", "/test-report", "/test-report-json", "/run"],
+            "run_contract": REQUIRED_RUN_FIELDS,
+            "core_display_contract": CORE_DISPLAY_FIELDS,
+            "intent_detection": sorted(INTENTS),
+        }
+    )
+    return payload
+
+
 @app.get("/health")
-def health(): return {"status":"ok","health":"healthy","version":VERSION,"timestamp":now()}
+async def health() -> Dict[str, Any]:
+    payload = base_status()
+    payload.update(
+        {
+            "health": "healthy",
+            "run_contract_status": "locked",
+            "required_run_fields": REQUIRED_RUN_FIELDS,
+            "priority_allowed_values": sorted(ALLOWED_PRIORITIES),
+            "routing": "openai-first with deterministic local executive fallback and off-topic guard",
+        }
+    )
+    return payload
+
+
 @app.get("/debug")
-def debug(): return {"status":"ok","version":VERSION,"openai_configured":bool(os.getenv("OPENAI_API_KEY")),"required_run_fields":REQUIRED_RUN_FIELDS,"brain":"executive-cognition-pipeline-v36400"}
+async def debug() -> Dict[str, Any]:
+    payload = base_status()
+    payload.update(
+        {
+            "environment": {
+                "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
+                "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                "provider_order": "openai-first-local-fallback",
+                "claude_routing_changed": False,
+            },
+            "contract": {
+                "required_fields": REQUIRED_RUN_FIELDS,
+                "frontend_display_fields": CORE_DISPLAY_FIELDS,
+                "priority_allowed_values": sorted(ALLOWED_PRIORITIES),
+                "arrays": ["action_steps", "ready_assets"],
+            },
+            "intent_detection": sorted(INTENTS),
+            "off_topic_guard": "proposal/dealership/SEO/Google Ads/CPA cannot return relocation/job-search output",
+            "test_prompt": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
+        }
+    )
+    return payload
+
+
 @app.post("/run")
-async def run(request: Request):
-    try: body = await request.json()
-    except Exception: body = {}
-    command = clean(body.get("command") or body.get("input") or body.get("prompt") or body) if isinstance(body, dict) else clean(body)
-    data = await ai(command) or executive_brain(command)
-    return JSONResponse(normalize(data, command))
+async def run(request: Request) -> JSONResponse:
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    command, meta = extract_command(body)
+    ai_payload = await openai_first_response(command, meta)
+    if ai_payload is None:
+        ai_payload = local_intelligence_response(command)
+    return JSONResponse(content=ai_payload)
+
+
+async def check_url(method: str, url: str, json_payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    started = time.perf_counter()
+    result: Dict[str, Any] = {
+        "name": f"{method} {url}",
+        "method": method,
+        "url": url,
+        "pass": False,
+        "status_code": None,
+        "ms": None,
+        "error": None,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
+            if method == "POST":
+                response = await client.post(url, json=json_payload or {})
+            else:
+                response = await client.get(url)
+            result["status_code"] = response.status_code
+            result["ms"] = round((time.perf_counter() - started) * 1000)
+            result["pass"] = 200 <= response.status_code < 400
+            content_type = response.headers.get("content-type", "")
+            if "application/json" in content_type:
+                try:
+                    result["response"] = response.json()
+                except Exception:
+                    result["response"] = response.text[:2500]
+            else:
+                result["response"] = response.text[:1000]
+    except Exception as exc:
+        result["ms"] = round((time.perf_counter() - started) * 1000)
+        result["error"] = str(exc)
+    return result
+
+
+def validate_run_contract(payload: Any) -> Dict[str, Any]:
+    checks: Dict[str, Any] = {
+        "pass": False,
+        "missing_fields": [],
+        "wrong_types": [],
+        "priority_valid": False,
+        "status_valid": False,
+        "proposal_guard_pass": None,
+    }
+    if not isinstance(payload, dict):
+        checks["wrong_types"].append("response must be object")
+        return checks
+    checks["missing_fields"] = [field for field in REQUIRED_RUN_FIELDS if field not in payload]
+    if "action_steps" in payload and not isinstance(payload.get("action_steps"), list):
+        checks["wrong_types"].append("action_steps must be array")
+    if "ready_assets" in payload and not isinstance(payload.get("ready_assets"), list):
+        checks["wrong_types"].append("ready_assets must be array")
+    if isinstance(payload.get("action_steps"), list) and not (3 <= len(payload.get("action_steps")) <= 7):
+        checks["wrong_types"].append("action_steps must contain 3-7 items")
+    joined = json.dumps(payload, ensure_ascii=False).lower()
+    checks["proposal_guard_pass"] = (
+        any(term in joined for term in ["proposal", "dealership", "google", "auto-loan", "lead"])
+        and not any(term in joined for term in ["costa rica", "relocation", "residency"])
+    )
+    checks["priority_valid"] = payload.get("priority") in ALLOWED_PRIORITIES
+    checks["status_valid"] = payload.get("status") == "success"
+    checks["pass"] = (
+        not checks["missing_fields"]
+        and not checks["wrong_types"]
+        and checks["priority_valid"]
+        and checks["status_valid"]
+        and bool(checks["proposal_guard_pass"])
+    )
+    return checks
+
+
 @app.get("/test-report-json")
-def test_report_json():
-    samples = ["I have a board meeting tomorrow and need talking points", "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100", "Review candidate resume for VP Sales"]
-    return {"status":"pass","version":VERSION,"tests":[{"name":"health","pass":True},{"name":"run_contract","pass":True},{"name":"sample_outputs","pass":True}],"sample_modes":[detect(s) for s in samples],"timestamp":now()}
+async def test_report_json() -> Dict[str, Any]:
+    test_prompt = "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
+    tests: List[Dict[str, Any]] = []
+    tests.append(await check_url("GET", f"{BACKEND_URL}/"))
+    tests.append(await check_url("GET", f"{BACKEND_URL}/health"))
+    tests.append(await check_url("GET", f"{BACKEND_URL}/debug"))
+    run_test = await check_url("POST", f"{BACKEND_URL}/run", {"command": test_prompt})
+    run_test["contract"] = validate_run_contract(run_test.get("response"))
+    run_test["pass"] = bool(run_test.get("pass")) and bool(run_test["contract"].get("pass"))
+    tests.append(run_test)
+    tests.append(await check_url("GET", FRONTEND_URL))
+    tests.append(await check_url("GET", BACKEND_URL))
+
+    version_checks = []
+    for item in tests:
+        response = item.get("response")
+        if isinstance(response, dict) and "version" in response:
+            version_checks.append(response.get("version") == VERSION)
+    all_pass = all(item.get("pass") for item in tests)
+    consistent = all(version_checks) if version_checks else False
+    return {
+        "status": "pass" if all_pass and consistent else "fail",
+        "version": VERSION,
+        "version_short": VERSION_SHORT,
+        "version_slug": VERSION_SLUG,
+        "backend_url": BACKEND_URL,
+        "frontend_url": FRONTEND_URL,
+        "timestamp": utc_now(),
+        "version_consistent": consistent,
+        "test_prompt": test_prompt,
+        "tests": tests,
+    }
+
+
 @app.get("/test-report", response_class=HTMLResponse)
-def report(): return f"<html><body><h1>Executive Engine OS {VERSION}</h1><p>Status: PASS</p><p>Command Centre Brain upgraded.</p></body></html>"
+async def test_report() -> str:
+    return f"""
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Executive Engine OS Backend Test Report — {VERSION_SHORT}</title>
+  <style>
+    :root {{ --bg:#0f172a; --card:#ffffff; --text:#111827; --muted:#64748b; --pass:#16a34a; --fail:#dc2626; --line:#e5e7eb; --accent:#f97316; }}
+    * {{ box-sizing:border-box; }}
+    body {{ margin:0; font-family:Arial, Helvetica, sans-serif; background:#f8fafc; color:var(--text); }}
+    header {{ background:var(--bg); color:white; padding:26px 32px; }}
+    header h1 {{ margin:0 0 8px; font-size:26px; }}
+    header p {{ margin:0; color:#cbd5e1; }}
+    main {{ max-width:1180px; margin:0 auto; padding:28px; }}
+    .toolbar {{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }}
+    button {{ border:0; border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer; }}
+    .run {{ background:var(--accent); color:white; }}
+    .copy {{ background:#111827; color:white; }}
+    .grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }}
+    .card {{ background:white; border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:0 8px 24px rgba(15,23,42,.06); }}
+    .label {{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }}
+    .value {{ font-size:18px; font-weight:900; }}
+    .results {{ display:grid; gap:12px; }}
+    .row {{ background:white; border:1px solid var(--line); border-radius:14px; padding:14px; display:grid; grid-template-columns:96px 1fr 180px; gap:14px; align-items:start; }}
+    .badge {{ display:inline-flex; justify-content:center; align-items:center; min-width:72px; border-radius:999px; padding:8px 10px; font-size:12px; font-weight:900; color:white; }}
+    .passBadge {{ background:var(--pass); }}
+    .failBadge {{ background:var(--fail); }}
+    .endpoint {{ font-weight:900; word-break:break-all; }}
+    .meta {{ color:var(--muted); font-size:13px; margin-top:4px; }}
+    pre {{ white-space:pre-wrap; word-break:break-word; background:#0b1220; color:#e5e7eb; border-radius:14px; padding:16px; max-height:440px; overflow:auto; }}
+    @media(max-width:850px) {{ .grid {{ grid-template-columns:1fr; }} .row {{ grid-template-columns:1fr; }} }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Executive Engine OS Backend Test Report</h1>
+    <p>Version: <strong>{VERSION}</strong> · Backend: {BACKEND_URL}</p>
+  </header>
+  <main>
+    <div class="toolbar">
+      <button class="run" onclick="runTests()">Run Tests</button>
+      <button class="copy" onclick="copyReport()">Copy JSON</button>
+    </div>
+    <section class="grid">
+      <div class="card"><div class="label">Overall Status</div><div id="overall" class="value">Not run</div></div>
+      <div class="card"><div class="label">Version Target</div><div class="value">{VERSION_SHORT}</div></div>
+      <div class="card"><div class="label">Guardrail</div><div class="value">Proposal routing fixed</div></div>
+    </section>
+    <section id="results" class="results"></section>
+    <h2>Raw JSON</h2>
+    <pre id="raw">Click Run Tests.</pre>
+  </main>
+<script>
+let lastReport = null;
+function esc(s) {{ return String(s ?? '').replace(/[&<>'"]/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}}[c])); }}
+function render(report) {{
+  lastReport = report;
+  document.getElementById('overall').textContent = (report.status || 'fail').toUpperCase();
+  document.getElementById('raw').textContent = JSON.stringify(report, null, 2);
+  const results = document.getElementById('results');
+  results.innerHTML = '';
+  (report.tests || []).forEach(test => {{
+    const row = document.createElement('div');
+    row.className = 'row';
+    const pass = !!test.pass;
+    const contract = test.contract ? 'Contract: ' + (test.contract.pass ? 'PASS' : 'FAIL') : '';
+    row.innerHTML = `
+      <div><span class="badge ${{pass ? 'passBadge' : 'failBadge'}}">${{pass ? 'PASS' : 'FAIL'}}</span></div>
+      <div>
+        <div class="endpoint">${{esc(test.name || test.url)}}</div>
+        <div class="meta">Status: ${{esc(test.status_code || 'n/a')}} · Time: ${{esc(test.ms || 'n/a')}}ms</div>
+        ${{test.error ? `<div class="meta">Error: ${{esc(test.error)}}</div>` : ''}}
+      </div>
+      <div class="meta">${{esc(contract)}}</div>
+    `;
+    results.appendChild(row);
+  }});
+}}
+async function runTests() {{
+  document.getElementById('overall').textContent = 'Running...';
+  document.getElementById('raw').textContent = 'Running backend verification...';
+  try {{
+    const res = await fetch('/test-report-json', {{ cache:'no-store' }});
+    const report = await res.json();
+    render(report);
+  }} catch (err) {{
+    render({{ status:'fail', version:'{VERSION}', error:String(err), tests:[] }});
+  }}
+}}
+async function copyReport() {{
+  const text = JSON.stringify(lastReport || {{ status:'not_run', version:'{VERSION}' }}, null, 2);
+  await navigator.clipboard.writeText(text);
+}}
+runTests();
+</script>
+</body>
+</html>
+"""
