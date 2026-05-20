@@ -1,0 +1,140 @@
+/* Executive Engine OS — V36510 Frontend Typography Weight Fix
+   Purpose: reduce overly-bold typography while preserving layout/navigation.
+   Add this at the END of your main CSS file, or load it after the existing CSS.
+*/
+
+/* Global readable default */
+body,
+button,
+input,
+textarea,
+select {
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Main response / middle column content */
+.main-column,
+.middle-column,
+.command-center,
+.response-panel,
+.response-card,
+.output-card,
+.result-card,
+.ai-response,
+.engine-response,
+.response-content,
+.message,
+.message-content {
+  font-weight: 400;
+}
+
+/* Keep headings strong, but not aggressively bold */
+h1,
+h2,
+h3,
+.section-title,
+.card-title,
+.panel-title,
+.response-title,
+.output-title {
+  font-weight: 600;
+}
+
+/* Labels should be clear but not heavy */
+label,
+.label,
+.meta-label,
+.field-label,
+.kicker,
+.badge,
+.status-badge,
+.nav-label {
+  font-weight: 500;
+}
+
+/* Paragraph/body text should not look bold */
+p,
+li,
+span,
+div,
+.response-content p,
+.response-content li,
+.output-card p,
+.output-card li,
+.message-content p,
+.message-content li {
+  font-weight: 400;
+}
+
+/* Strong/bold inside generated responses should be toned down */
+.response-content strong,
+.response-content b,
+.output-card strong,
+.output-card b,
+.message-content strong,
+.message-content b,
+.ai-response strong,
+.ai-response b {
+  font-weight: 600;
+}
+
+/* Action lists: readable, not chunky */
+.action-steps,
+.ready-assets,
+.risk-section,
+.priority-section,
+.next-move-section,
+.decision-section,
+.recommended-command-section {
+  font-weight: 400;
+}
+
+.action-steps strong,
+.ready-assets strong,
+.risk-section strong,
+.priority-section strong,
+.next-move-section strong,
+.decision-section strong,
+.recommended-command-section strong {
+  font-weight: 600;
+}
+
+/* Command input should feel premium but not loud */
+.command-input,
+.command-box,
+textarea,
+input[type="text"] {
+  font-weight: 400;
+}
+
+/* Navigation can keep hierarchy without being too heavy */
+.sidebar,
+.left-nav,
+.navigation,
+.nav-item {
+  font-weight: 400;
+}
+
+.sidebar .active,
+.left-nav .active,
+.navigation .active,
+.nav-item.active {
+  font-weight: 600;
+}
+
+/* Utility override for accidental heavy global styles */
+.font-bold,
+.fw-bold,
+.bold {
+  font-weight: 600 !important;
+}
+
+/* If previous CSS forced all cards/text to 700+, this neutralizes it */
+[class*="response"],
+[class*="output"],
+[class*="message"],
+[class*="card"] {
+  font-weight: inherit;
+}
