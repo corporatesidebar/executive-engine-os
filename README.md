@@ -1,15 +1,14 @@
-# Executive Engine OS — V36200 System Build
+# Executive Engine OS — V36210 Navigation System
 
-Built from Commit 0a9926b stable backup.
+Built from the stable 0a9926b base.
 
-## What is included
-- Screenshot-aligned four-column executive cockpit frontend
-- Functional command input and follow-up input
-- Clickable sidebar/chips
-- Live `/run` integration
-- Backend contract: `next_move`, `decision`, `action_steps`, `ready_assets`, `risk`, `priority`, `recommended_command`
-- Strong local fallback intelligence if OpenAI key is unavailable
+## Included
+- Updated left navigation to the requested Executive Engine system map
+- Preserved layout, columns, backend API URL, and /run behavior
+- Navigation items are clickable and update command context/placeholder
 
-## Deploy
-Backend: deploy `/backend` to Render FastAPI.
-Frontend: deploy `/frontend` as static site.
+## Do not change
+- Layout
+- Column structure
+- Backend API URL
+- Existing /run contract
