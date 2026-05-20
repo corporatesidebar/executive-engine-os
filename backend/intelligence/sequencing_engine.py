@@ -1,44 +1,63 @@
-def build_sequence(intent: str) -> dict:
+def sequence_for(intent: str) -> dict:
     if intent == "monetization":
         return {
             "today": [
-                "Define one paid offer: Executive Operating System Audit.",
-                "Set pricing: $5k audit, $15k implementation, $3k/month continuity.",
-                "Record a Loom showing before/after executive workflow."
+                "Package the Executive Operating System Audit.",
+                "Create Stripe or booking link.",
+                "Record a 2-minute Loom demo."
             ],
             "next_24_hours": [
-                "Build one-page landing page.",
-                "Create Stripe payment or booking link.",
-                "Write 3-message outreach sequence."
+                "Build a one-page Framer landing page.",
+                "Write one outreach message.",
+                "Build a list of 50 CEO/COO/operator prospects."
             ],
             "next_7_days": [
-                "Contact 50 CEOs/operators/founders.",
+                "Send 50 targeted messages.",
                 "Book 5 calls.",
                 "Close 1 paid audit."
-            ],
+            ]
         }
 
     if intent == "overload":
         return {
             "today": [
                 "List every active project.",
-                "Mark each as Cash, Stability, Obligation, or Noise.",
-                "Keep only one Cash, one Stability, one Obligation item active."
+                "Classify each as Cash, Stability, Obligation, or Noise.",
+                "Pause everything except one item in the first three categories."
             ],
             "next_24_hours": [
-                "Create pause list.",
-                "Move paused items out of view.",
-                "Execute only the highest cash or stability item."
+                "Move paused work out of view.",
+                "Execute only the Cash or Stability item.",
+                "Close one open loop."
             ],
             "next_7_days": [
-                "Review active list daily.",
-                "Do not add new work unless it replaces existing work.",
-                "Close one loop per day."
+                "Review active list once daily.",
+                "Do not add new work unless it replaces current work.",
+                "Close or kill one loop per day."
+            ]
+        }
+
+    if intent == "proposal":
+        return {
+            "today": [
+                "Write proposal around funded-deal economics.",
+                "Define sub-$100 CPA conditions.",
+                "Create the 90-day sprint scope."
             ],
+            "next_24_hours": [
+                "Create landing page outline.",
+                "Build keyword intent list.",
+                "Draft dealership follow-up email."
+            ],
+            "next_7_days": [
+                "Send proposal.",
+                "Book decision call.",
+                "Close pilot budget and tracking access."
+            ]
         }
 
     return {
         "today": ["Choose one outcome.", "Create the first usable asset.", "Send or test it."],
-        "next_24_hours": ["Review result.", "Remove weak actions.", "Double down on the highest signal."],
-        "next_7_days": ["Repeat the working motion.", "Document what converts.", "Package the repeatable system."],
+        "next_24_hours": ["Review response.", "Remove weak actions.", "Double down on the strongest signal."],
+        "next_7_days": ["Repeat working motion.", "Package the process.", "Turn it into a repeatable system."]
     }

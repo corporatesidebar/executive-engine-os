@@ -3,12 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import os
-from openai import OpenAI
 
-from intelligence.dual_layer_engine import build_dual_layer_response
-from intelligence.context_engine import load_workspace, save_run_context
+from intelligence.execution_infrastructure import build_execution_response
+from intelligence.state_store import load_workspace, save_execution_state
 
-APP_VERSION = "V36630-Dual-Layer-Executive-Intelligence-Engine"
+APP_VERSION = "V36640-V36700-Output-First-Executive-Infrastructure"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -38,8 +37,7 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "dual_layer_executive_intelligence",
-        "purpose": "executive scan layer + operational depth layer"
+        "engine": "output_first_executive_execution_infrastructure"
     }
 
 @app.get("/health")
@@ -54,7 +52,7 @@ def health():
 def run(req: RunRequest):
     workspace = load_workspace(req.workspace_id or "default", req.user_id or "will")
 
-    response = build_dual_layer_response(
+    response = build_execution_response(
         user_input=req.input,
         mode=req.mode or "execution",
         brain=req.brain or "operator",
@@ -64,7 +62,7 @@ def run(req: RunRequest):
         model=OPENAI_MODEL,
     )
 
-    save_run_context(
+    save_execution_state(
         workspace_id=req.workspace_id or "default",
         user_id=req.user_id or "will",
         user_input=req.input,
@@ -76,11 +74,10 @@ def run(req: RunRequest):
 
 @app.get("/engine-state")
 def engine_state(workspace_id: str = "default", user_id: str = "will"):
-    workspace = load_workspace(workspace_id, user_id)
     return {
         "status": "success",
         "version": APP_VERSION,
-        "workspace": workspace,
+        "workspace": load_workspace(workspace_id, user_id)
     }
 
 @app.get("/test-report")
@@ -89,16 +86,20 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36630",
-            "POST /run returns executive_scan and operational_depth",
-            "POST /run preserves existing required contract",
-            "Overwhelm input returns actual actions/resources/assets",
-            "Profitability input returns monetization sequence"
+            "GET /health returns V36640-V36700",
+            "POST /run returns output-first response",
+            "Response includes executive_scan",
+            "Response includes operational_depth",
+            "Response includes execution_assets",
+            "Response includes resource_links",
+            "Response includes stop_doing",
+            "Response preserves existing /run contract"
         ],
         "test_commands": [
             "I have too many projects and feel overwhelmed.",
             "How do I make Executive Engine profitable fastest?",
-            "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
+            "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
+            "What should I stop doing this week?"
         ]
     }
 
