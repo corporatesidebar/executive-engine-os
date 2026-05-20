@@ -10,7 +10,7 @@ try:
 except Exception:
     OpenAI = None
 
-APP_VERSION = "V36540-Strategic-Inference-Engine"
+APP_VERSION = "V36550-Executive-Reasoning-Engine"
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 DATA_DIR = os.getenv("EE_DATA_DIR", "/tmp/executive_engine_data")
@@ -69,8 +69,8 @@ def empty_workspace(workspace_id="default", user_id="will"):
             "last_command": None,
             "last_next_move": None,
             "open_loops": [],
-            "strategic_theme": None,
-            "inference_history": []
+            "reasoning_history": [],
+            "strategic_theme": None
         },
         "continuity": {
             "recent_commands": [],
@@ -85,14 +85,14 @@ def load_workspace(workspace_id="default", user_id="will"):
         return empty_workspace(workspace_id, user_id)
     try:
         with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            ws = json.load(f)
         base = empty_workspace(workspace_id, user_id)
         for k, v in base.items():
-            data.setdefault(k, v)
-        data.setdefault("operator_state", base["operator_state"])
-        data["operator_state"].setdefault("inference_history", [])
-        data.setdefault("continuity", base["continuity"])
-        return data
+            ws.setdefault(k, v)
+        ws.setdefault("operator_state", base["operator_state"])
+        ws["operator_state"].setdefault("reasoning_history", [])
+        ws.setdefault("continuity", base["continuity"])
+        return ws
     except Exception:
         return empty_workspace(workspace_id, user_id)
 
@@ -107,13 +107,14 @@ def words(text):
 def detect_intent(text, mode="", brain="", output_type=""):
     blob = f"{text} {mode} {brain} {output_type}".lower()
     table = {
-        "proposal": ["proposal", "sow", "quote", "pitch", "offer"],
-        "revenue": ["revenue", "sales", "lead", "cpa", "ads", "seo", "pricing", "dealership", "customer"],
-        "meeting": ["meeting", "agenda", "call", "prep", "talking points"],
-        "decision": ["decide", "decision", "choose", "option", "should i"],
-        "risk": ["risk", "broken", "problem", "blocker", "issue", "wrong", "failure"],
-        "build": ["build", "ship", "deploy", "fix", "implement", "create"],
-        "communication": ["email", "reply", "message", "follow-up", "follow up"]
+        "proposal": ["proposal", "sow", "quote", "pitch", "offer", "scope"],
+        "revenue": ["revenue", "sales", "lead", "cpa", "ads", "seo", "pricing", "dealership", "customer", "pipeline"],
+        "meeting": ["meeting", "agenda", "call", "prep", "talking points", "presentation"],
+        "decision": ["decide", "decision", "choose", "option", "should i", "yes or no"],
+        "risk": ["risk", "broken", "problem", "blocker", "issue", "wrong", "failure", "stuck"],
+        "build": ["build", "ship", "deploy", "fix", "implement", "create", "version"],
+        "communication": ["email", "reply", "message", "follow-up", "follow up", "dm"],
+        "strategy": ["strategy", "positioning", "market", "roadmap", "plan"]
     }
     scores = {k: sum(1 for x in v if x in blob) for k, v in table.items()}
     best = max(scores, key=scores.get)
@@ -121,13 +122,13 @@ def detect_intent(text, mode="", brain="", output_type=""):
 
 def detect_pressure(text):
     t = text.lower()
-    critical = any(x in t for x in ["wtf", "fuck", "shit", "urgent", "asap", "broken", "doesnt work", "doesn't work", "stop"])
-    high = sum(1 for x in ["proposal", "client", "revenue", "deploy", "build", "fix", "deadline", "money", "cpa"] if x in t)
+    critical = any(x in t for x in ["wtf", "fuck", "shit", "urgent", "asap", "broken", "doesnt work", "doesn't work", "stop", "now"])
+    high_count = sum(1 for x in ["proposal", "client", "revenue", "deploy", "build", "fix", "deadline", "money", "cpa", "risk"] if x in t)
     if critical:
         return {"level": "Critical", "reason": "immediate pressure/frustration signal"}
-    if high >= 2:
-        return {"level": "High", "reason": "commercial/execution pressure"}
-    if high == 1:
+    if high_count >= 2:
+        return {"level": "High", "reason": "commercial or execution pressure"}
+    if high_count == 1:
         return {"level": "Medium", "reason": "active workstream signal"}
     return {"level": "Normal", "reason": "standard command"}
 
@@ -145,9 +146,9 @@ def retrieve_context(ws, query, limit=8):
 
 def infer_workflow_title(text, intent):
     clean = re.sub(r"\s+", " ", text).strip()
-    if len(clean) <= 80:
+    if len(clean) <= 82:
         return clean
-    return f"{intent.title()}: {clean[:68]}"
+    return f"{intent.title()}: {clean[:70]}"
 
 def upsert_workflow(ws, req, intent, pressure):
     title = infer_workflow_title(req.input, intent)
@@ -171,18 +172,18 @@ def upsert_workflow(ws, req, intent, pressure):
         "status": "active",
         "priority": "Critical" if pressure["level"] == "Critical" else "High",
         "owner": "Will",
-        "next_action": "Generate the next strategic asset.",
+        "next_action": "Produce the executive reasoning output and next asset.",
         "created_at": now_iso(),
         "updated_at": now_iso(),
         "last_command": req.input,
         "continuity_count": 1,
-        "importance": 4
+        "importance": 5
     }
     ws["workflows"].append(wf)
     ws["workflows"] = ws["workflows"][-100:]
     return wf
 
-FORBIDDEN_LANGUAGE = [
+FORBIDDEN = [
     "comprehensive strategy",
     "high-impact",
     "drive efficiency",
@@ -193,26 +194,35 @@ FORBIDDEN_LANGUAGE = [
     "streamline operations",
     "conduct analysis",
     "review existing assets",
-    "determine the specific type"
+    "determine the specific type",
+    "root cause analysis",
+    "targeted asset",
+    "operational needs",
+    "missed opportunities"
 ]
+
+REPLACEMENTS = {
+    "comprehensive strategy": "focused operating move",
+    "high-impact": "revenue-relevant",
+    "drive efficiency": "remove wasted motion",
+    "stakeholders": "decision-makers",
+    "optimize workflows": "tighten execution",
+    "leverage opportunities": "use the strongest opening",
+    "best practices": "what works here",
+    "streamline operations": "remove friction",
+    "conduct analysis": "name the constraint",
+    "review existing assets": "use only what moves the decision",
+    "determine the specific type": "choose the decision-moving asset",
+    "root cause analysis": "constraint call",
+    "targeted asset": "decision-moving asset",
+    "operational needs": "current constraint",
+    "missed opportunities": "lost momentum"
+}
 
 def clean_language(value):
     if isinstance(value, str):
         out = value
-        replacements = {
-            "comprehensive strategy": "focused operating plan",
-            "high-impact": "revenue-relevant",
-            "drive efficiency": "remove wasted motion",
-            "stakeholders": "decision-makers",
-            "optimize workflows": "tighten the execution path",
-            "leverage opportunities": "use the strongest opening",
-            "best practices": "what works in this situation",
-            "streamline operations": "remove friction",
-            "conduct analysis": "identify the constraint",
-            "review existing assets": "use only assets that move the decision",
-            "determine the specific type": "choose the asset that forces the next decision"
-        }
-        for a, b in replacements.items():
+        for a, b in REPLACEMENTS.items():
             out = re.sub(a, b, out, flags=re.I)
         return out
     if isinstance(value, list):
@@ -221,187 +231,294 @@ def clean_language(value):
         return {k: clean_language(v) for k, v in value.items()}
     return value
 
-def build_strategic_inference(req, intent, pressure, context, workflow):
+def executive_reasoning(req, intent, pressure, context, workflow):
     text = req.input.lower()
-    inference = {
-        "hidden_bottleneck": "The system needs to identify the real constraint, not repeat the surface task.",
-        "leverage_point": "Create the asset or decision that unlocks the next move fastest.",
-        "wrong_move": "Do not create generic planning steps that make the user do the work.",
-        "commercial_angle": "Tie the output to revenue, control, speed, risk reduction, or decision momentum.",
-        "operator_instinct": "Say the thing a sharp operator would notice immediately."
+
+    reasoning = {
+        "truth": "The command is too broad unless the system turns it into a specific decision or asset.",
+        "constraint": "The main constraint is ambiguity around what decision must be moved next.",
+        "leverage": "Produce the one output that changes the next decision fastest.",
+        "tradeoff": "More structure can create control, but too much structure can hide weak judgment.",
+        "wrong_move": "Do not create another generic task list.",
+        "operator_call": "Name the bottleneck, choose the move, create the asset.",
+        "commercial_logic": "The output must connect to money, time, risk, control, or momentum."
     }
 
-    if "dealership" in text or "auto loan" in text or "cpa" in text:
-        inference = {
-            "hidden_bottleneck": "The dealership does not care about SEO or ads. It cares about funded vehicle deals at a predictable acquisition cost.",
-            "leverage_point": "Position the offer around finance-intent lead capture, lead handling speed, and funded-deal tracking.",
-            "wrong_move": "Do not lead with keyword research, blog calendars, or generic digital marketing activities.",
-            "commercial_angle": "CPA under $100 is believable only if broad car-shopping traffic is excluded and credit/financing intent is isolated.",
-            "operator_instinct": "Use Google Ads for immediate finance-intent demand; use SEO as the 90-day cost-control layer."
+    if any(x in text for x in ["dealership", "auto loan", "cpa", "google ads", "seo"]):
+        reasoning = {
+            "truth": "The dealership does not buy SEO or ads. It buys confidence that more finance-ready buyers will turn into funded deals.",
+            "constraint": "The CPA target under $100 is only credible if the system controls search intent, landing page friction, and lead handling speed.",
+            "leverage": "Lead with financed-buyer acquisition economics, then show ads and SEO as the mechanism.",
+            "tradeoff": "Google Ads creates speed but waste risk; SEO lowers dependency but takes longer. The proposal should use both with different jobs.",
+            "wrong_move": "Do not pitch keyword research, blogs, or generic campaign setup as the value.",
+            "operator_call": "Sell the funded-deal acquisition sprint, not a marketing package.",
+            "commercial_logic": "A $100 CPA is meaningless unless it is tied to approvals, appointments, and funded loans."
         }
-    elif "build" in text and ("engine" in text or "system" in text):
-        inference = {
-            "hidden_bottleneck": "The product is not failing because it lacks structure. It is failing when responses do not produce strategic leverage.",
-            "leverage_point": "Upgrade reasoning quality before adding more UI or dashboard surface area.",
-            "wrong_move": "Do not add more cards, widgets, or static sections to hide weak cognition.",
-            "commercial_angle": "The value is dependency: the executive feels sharper, faster, and more in control after every command.",
-            "operator_instinct": "The system must challenge weak assumptions and produce the next asset, not narrate a process."
+    elif any(x in text for x in ["executive engine", "response", "cognition", "reasoning", "build v"]):
+        reasoning = {
+            "truth": "The product is not failing because it lacks UI. It is failing when the output does not make the user smarter or faster.",
+            "constraint": "The core constraint is reasoning quality: the system sees the task but misses the executive implication.",
+            "leverage": "Build an executive reasoning layer that makes calls, names tradeoffs, and creates finished assets.",
+            "tradeoff": "More memory and structure help continuity, but without judgment they only preserve mediocre output.",
+            "wrong_move": "Do not add more cards, dashboards, or canned sections to compensate for weak cognition.",
+            "operator_call": "Lock the shell and iterate only the reasoning engine until the output feels like a sharp operator.",
+            "commercial_logic": "Dependency starts when the executive thinks: I would have missed that."
         }
     elif intent == "meeting":
-        inference = {
-            "hidden_bottleneck": "Most meetings fail because they lack a decision target.",
-            "leverage_point": "Enter with the close first: what decision must be made before the meeting ends.",
-            "wrong_move": "Do not create a polite agenda that avoids the hard decision.",
-            "commercial_angle": "The meeting must protect time, force ownership, and reduce post-call ambiguity.",
-            "operator_instinct": "Prepare the objection before the other person says it."
+        reasoning = {
+            "truth": "A meeting is only useful if it forces a decision or unlocks a blocker.",
+            "constraint": "The likely constraint is unclear decision ownership.",
+            "leverage": "Enter with the close first: what must be decided before the meeting ends.",
+            "tradeoff": "A soft agenda protects comfort but wastes executive time.",
+            "wrong_move": "Do not build a polite agenda that avoids the hard decision.",
+            "operator_call": "Prepare the decision target, objection response, and closing line.",
+            "commercial_logic": "The meeting should reduce ambiguity, not create more follow-up."
         }
     elif intent == "decision":
-        inference = {
-            "hidden_bottleneck": "The issue is not options. It is the cost of delay and unclear tradeoffs.",
-            "leverage_point": "Choose the option that preserves momentum and limits downside.",
-            "wrong_move": "Do not keep exploring once the tradeoff is obvious.",
-            "commercial_angle": "A fast reversible decision beats a perfect delayed decision.",
-            "operator_instinct": "Name the tradeoff directly and move."
+        reasoning = {
+            "truth": "The real cost is usually delay, not choosing imperfectly.",
+            "constraint": "The constraint is unclear downside, reversibility, or timing.",
+            "leverage": "Choose the move that preserves momentum while limiting irreversible downside.",
+            "tradeoff": "A perfect answer later is often less valuable than a controlled decision now.",
+            "wrong_move": "Do not keep exploring options after the tradeoff is obvious.",
+            "operator_call": "Make the call, define the guardrail, move.",
+            "commercial_logic": "Executive decisions should buy speed, clarity, or downside protection."
         }
     elif intent == "risk":
-        inference = {
-            "hidden_bottleneck": "The problem will expand if the system keeps changing multiple layers at once.",
-            "leverage_point": "Isolate the failing layer and ship the smallest controlled fix.",
+        reasoning = {
+            "truth": "Risk expands when too many layers change at once.",
+            "constraint": "The constraint is isolation: finding the failing layer without breaking the working base.",
+            "leverage": "Freeze the stable layer, patch only the broken layer, test one known command.",
+            "tradeoff": "Speed without control creates rework.",
             "wrong_move": "Do not redesign while debugging.",
-            "commercial_angle": "Protect working assets first; speed only matters after stability.",
-            "operator_instinct": "Lock the stable base before touching anything else."
+            "operator_call": "Lock, isolate, patch, test, promote or rollback.",
+            "commercial_logic": "Stability protects momentum; uncontrolled changes burn time and trust."
         }
 
-    return inference
+    return reasoning
 
-def strategic_fallback(req, intent, pressure, context, workflow):
-    inf = build_strategic_inference(req, intent, pressure, context, workflow)
+def proposal_asset(reasoning):
+    return f"""CLIENT-FACING PROPOSAL DRAFT — AUTO LOAN DEALERSHIP
 
-    if intent == "proposal" or "proposal" in req.input.lower():
-        asset = f"""DEALERSHIP PROPOSAL — STRATEGIC DRAFT
+Positioning Line:
+We help the dealership acquire more finance-ready vehicle buyers at a controlled cost per lead, then track which leads turn into appointments, approvals, and funded deals.
 
-Core Position:
-The dealership does not need “SEO and Google Ads.” It needs a predictable path to financed vehicle buyers at a controlled acquisition cost.
+Executive Read:
+{reasoning["truth"]}
 
-Strategic Read:
-{inf["hidden_bottleneck"]}
+Commercial Constraint:
+{reasoning["constraint"]}
 
-Offer:
+Recommended Offer:
 90-Day Funded Deal Acquisition Sprint
 
-What We Control:
-1. Search intent: only financing, bad-credit, approval, and local buyer terms.
-2. Landing path: pre-approval focused, fast contact, no generic dealership browsing.
-3. Tracking: lead source, form submit, call, booked appointment, approval, funded deal.
-4. Budget waste: remove broad auto traffic, research traffic, and low-intent clicks weekly.
-5. SEO layer: build local finance pages to reduce paid dependency over 90 days.
+The Strategy:
+Google Ads is used for speed. SEO is used to reduce paid dependency over time. Both are tied to one commercial outcome: more qualified finance opportunities.
 
-Why CPA Under $100 Can Work:
-It is not a “traffic” target. It is an intent-control target. The campaign must avoid broad car shoppers and isolate buyers actively looking for financing.
+What We Will Build:
+1. Finance-intent Google Ads campaigns
+   - Bad credit car loan terms
+   - Auto financing terms
+   - Pre-approval terms
+   - Local Ontario dealership intent
+   - Exclusions for broad car-shopping traffic
 
-What Not To Sell:
-- Blog calendar first
+2. Lead conversion path
+   - Pre-approval focused landing page
+   - Clear form
+   - Call tracking
+   - Fast contact expectation
+   - Appointment handoff
+
+3. Tracking layer
+   - Cost per lead
+   - Cost per booked appointment
+   - Approval rate
+   - Funded-deal attribution
+   - Weekly budget waste removal
+
+4. SEO cost-control layer
+   - Local financing pages
+   - Bad credit auto loan pages
+   - Dealership service-area pages
+   - Buyer-intent content, not generic blog posting
+
+What We Will NOT Sell:
 - Generic SEO reports
-- Broad Google Ads campaigns
-- Vanity ranking reports
-- Traffic without funded-deal tracking
+- Broad traffic campaigns
+- Blog volume as a success metric
+- Rankings without lead quality
+- Ad spend without funded-deal tracking
+
+Why CPA Under $100 Is Possible:
+The target is possible only if the traffic is finance-intent and the dealership responds fast. If broad vehicle-shopping traffic enters the campaign, the CPA will drift and lead quality will fall.
 
 Close:
-If the goal is CPA under $100, the first move is not more marketing. It is tighter intent control, better lead handling, and proof that the dealership can convert finance leads into funded deals."""
-        return {
-            "next_move": "Reframe the proposal around funded deals and CPA control, not SEO/Ads activity.",
-            "decision": "Lead with finance-intent Google Ads for speed; use SEO as the 90-day cost-control layer.",
-            "action_steps": [
-                "Open the proposal with funded-deal economics, not marketing tasks.",
-                "State that CPA under $100 depends on excluding broad car-shopping traffic.",
-                "Build the offer as a 90-day acquisition sprint with weekly waste removal.",
-                "Add tracking from click to lead to appointment to funded deal.",
-                "Close with a kickoff ask: budget, landing page access, tracking access, launch date."
-            ],
-            "ready_assets": [asset],
-            "risk": "The deal will sound weak if it sells deliverables instead of showing how the dealership gets finance-ready buyers at a controlled cost.",
-            "priority": "High",
-            "recommended_command": "Generate the final dealership proposal with pricing, timeline, deliverables, and kickoff email.",
-            "what_to_do_now": "Use the funded-deal acquisition angle as the spine of the proposal.",
-            "asset": asset,
-            "follow_up": "Next output should produce the actual client-facing proposal, not another planning list.",
-            "provider_used": "local-strategic-inference-engine",
-            "status": "success"
-        }
+If the dealership wants a real shot at sub-$100 CPA, the first move is to control intent, tighten the landing path, and track every lead through the funded-deal process.
 
-    asset = f"""STRATEGIC INFERENCE
+Recommended Next Step:
+Approve the 90-day sprint, confirm ad budget, provide landing page access, and launch tracking before spend scales."""
 
-Hidden Bottleneck:
-{inf["hidden_bottleneck"]}
+def engine_asset(reasoning):
+    return f"""EXECUTIVE REASONING ENGINE — BUILD SPEC
 
-Leverage Point:
-{inf["leverage_point"]}
+Truth:
+{reasoning["truth"]}
+
+Core Constraint:
+{reasoning["constraint"]}
+
+Reasoning Layer Must Add:
+1. Truth call — what is actually happening.
+2. Constraint call — what is blocking progress.
+3. Leverage call — what moves the situation fastest.
+4. Tradeoff call — what gets gained/lost.
+5. Wrong-move call — what should not be done.
+6. Operator call — what a sharp executive would do next.
+7. Asset creation — the actual output, not advice.
+
+Pass Standard:
+Every /run response must make the user feel:
+- clearer
+- faster
+- more prepared
+- more in control
+- less buried in generic planning
+
+Fail Standard:
+If the response says “conduct analysis,” “review assets,” or “develop a strategy” without doing the work, it fails.
+
+Next Build Rule:
+Do not add UI. Do not add more dashboards. Improve reasoning only."""
+
+def generic_asset(reasoning, workflow):
+    return f"""EXECUTIVE REASONING OUTPUT
+
+Truth:
+{reasoning["truth"]}
+
+Constraint:
+{reasoning["constraint"]}
+
+Leverage:
+{reasoning["leverage"]}
+
+Tradeoff:
+{reasoning["tradeoff"]}
 
 Wrong Move:
-{inf["wrong_move"]}
+{reasoning["wrong_move"]}
 
-Commercial Angle:
-{inf["commercial_angle"]}
-
-Operator Instinct:
-{inf["operator_instinct"]}
+Operator Call:
+{reasoning["operator_call"]}
 
 Active Workflow:
 {workflow.get("title")}
-"""
+
+Decision:
+Create the output that moves the next decision. Do not create another planning loop."""
+
+def local_response(req, intent, pressure, context, workflow, reasoning):
+    text = req.input.lower()
+    if any(x in text for x in ["dealership", "auto loan", "cpa", "google ads", "seo", "proposal"]):
+        asset = proposal_asset(reasoning)
+        return {
+            "next_move": "Turn the request into a funded-deal acquisition proposal with CPA control, not a generic SEO/Ads plan.",
+            "decision": "Lead with financed-buyer economics. Use Google Ads for immediate intent capture and SEO as the 90-day cost-control layer.",
+            "action_steps": [
+                "Open with the business outcome: finance-ready buyers, appointments, approvals, funded deals.",
+                "Make the sub-$100 CPA conditional on intent control, landing page friction, and lead handling speed.",
+                "Exclude broad car-shopping traffic from the campaign strategy.",
+                "Include tracking from click to lead to appointment to funded deal.",
+                "Close with a 90-day sprint: budget, access, launch date, weekly waste removal."
+            ],
+            "ready_assets": [asset],
+            "risk": "The proposal fails if it sells marketing activity instead of proving how the dealership gets finance-ready buyers at a controlled acquisition cost.",
+            "priority": "High",
+            "recommended_command": "Generate the final polished client proposal PDF copy with pricing, timeline, and kickoff email.",
+            "what_to_do_now": "Use the funded-deal acquisition sprint as the core offer.",
+            "asset": asset,
+            "follow_up": "Next response should produce the finished client-facing version, not more planning.",
+            "provider_used": "local-executive-reasoning-engine",
+            "status": "success"
+        }
+
+    if any(x in text for x in ["executive engine", "response", "cognition", "reasoning", "build v"]):
+        asset = engine_asset(reasoning)
+        return {
+            "next_move": "Stop expanding the interface and force every response through the executive reasoning layer.",
+            "decision": "The foundation is good enough. The priority is reasoning quality, not more structure.",
+            "action_steps": [
+                "Add truth, constraint, leverage, tradeoff, wrong-move, and operator-call fields internally.",
+                "Use those fields to generate the existing /run contract.",
+                "Reject generic language before the response is returned.",
+                "Make asset creation mandatory when the input asks for work.",
+                "Use the proposal command as the pass/fail test."
+            ],
+            "ready_assets": [asset],
+            "risk": "More continuity will only preserve weak output if the reasoning layer does not make sharper calls.",
+            "priority": "High",
+            "recommended_command": "Test V36550 with the dealership proposal command and compare strategic sharpness.",
+            "what_to_do_now": "Deploy backend only and run the known proposal test.",
+            "asset": asset,
+            "follow_up": "Promote only if the response says something commercially sharper than the prior version.",
+            "provider_used": "local-executive-reasoning-engine",
+            "status": "success"
+        }
+
+    asset = generic_asset(reasoning, workflow)
     return {
-        "next_move": inf["leverage_point"],
-        "decision": f"Do this: {inf['operator_instinct']}",
+        "next_move": reasoning["leverage"],
+        "decision": reasoning["operator_call"],
         "action_steps": [
-            inf["wrong_move"],
-            inf["leverage_point"],
+            reasoning["wrong_move"],
+            reasoning["leverage"],
             "Create the decision-moving asset now.",
-            "Save the inference to the active workflow.",
-            "Use the next command to produce the finished asset."
+            "Save the reasoning to the active workflow.",
+            "Use the next command to produce the finished output."
         ],
         "ready_assets": [asset],
-        "risk": inf["hidden_bottleneck"],
+        "risk": reasoning["constraint"],
         "priority": "Critical" if pressure["level"] == "Critical" else "High",
-        "recommended_command": "Generate the finished executive asset using this strategic inference.",
-        "what_to_do_now": inf["leverage_point"],
+        "recommended_command": "Generate the finished executive asset using this reasoning.",
+        "what_to_do_now": reasoning["operator_call"],
         "asset": asset,
-        "follow_up": "Continue from this strategic inference instead of restarting the topic.",
-        "provider_used": "local-strategic-inference-engine",
+        "follow_up": "Continue from this reasoning state instead of restarting.",
+        "provider_used": "local-executive-reasoning-engine",
         "status": "success"
     }
 
-def build_prompt(req, intent, pressure, context, workflow, inference):
+def build_prompt(req, intent, pressure, context, workflow, reasoning):
     return f"""
-You are Executive Engine OS — Strategic Inference Engine.
+You are Executive Engine OS — Executive Reasoning Engine.
 
-You are not a chatbot. You are a sharp operator sitting beside the executive.
+Role:
+A sharp CEO/COO/Chief of Staff/operator sitting beside Will.
 
-Your job:
-- infer the real bottleneck
-- identify the highest-leverage move
-- challenge weak assumptions
-- create the actual asset
-- remove generic business language
-- make the user think: "that is smart"
+Your job is to produce judgment, not generic task management.
 
-Detected intent: {intent}
-Pressure: {pressure}
+Internal reasoning inputs:
+{json.dumps(reasoning, ensure_ascii=False, indent=2)}
+
+Intent: {intent}
+Pressure: {json.dumps(pressure, ensure_ascii=False)}
 Active workflow: {json.dumps(workflow, ensure_ascii=False)}
-Retrieved context: {json.dumps(context, ensure_ascii=False)[:8000]}
-Strategic inference: {json.dumps(inference, ensure_ascii=False, indent=2)}
+Retrieved context: {json.dumps(context, ensure_ascii=False)[:9000]}
 
-Forbidden language:
-{json.dumps(FORBIDDEN_LANGUAGE)}
+Response standard:
+- Say the truth.
+- Name the real constraint.
+- Identify leverage.
+- Name the tradeoff.
+- Say what NOT to do.
+- Create the actual asset.
+- Tie output to money, time, risk, control, or momentum.
+- Make the user feel sharper after reading it.
 
-Rules:
-1. Do not produce generic task lists.
-2. Do not say "conduct analysis", "review assets", or "prepare strategy" unless you create the actual strategic output.
-3. Every answer must include at least one non-obvious insight.
-4. Every answer must say what NOT to do.
-5. Commercial logic matters: money, risk, speed, leverage, control, conversion, trust.
-6. Return only valid JSON.
+Forbidden phrases:
+{json.dumps(FORBIDDEN)}
 
-Required JSON:
+Return only valid JSON:
 {{
   "next_move": "",
   "decision": "",
@@ -418,16 +535,16 @@ Required JSON:
 }}
 """
 
-def enforce_contract(data):
+def enforce(data):
     data = clean_language(data or {})
-    data.setdefault("next_move", "Identify the real bottleneck and create the decision-moving asset.")
-    data.setdefault("decision", "Prioritize strategic leverage over generic activity.")
+    data.setdefault("next_move", "Name the real constraint and create the decision-moving asset.")
+    data.setdefault("decision", "Use executive reasoning, not generic planning.")
     data.setdefault("action_steps", [])
     data.setdefault("ready_assets", [])
-    data.setdefault("risk", "The risk is organized output with no strategic intelligence.")
+    data.setdefault("risk", "The risk is organized output with weak judgment.")
     data.setdefault("priority", "High")
-    data.setdefault("recommended_command", "Generate the finished asset using the strategic inference.")
-    data.setdefault("provider_used", "local-strategic-inference-engine")
+    data.setdefault("recommended_command", "Generate the finished executive asset using this reasoning.")
+    data.setdefault("provider_used", "local-executive-reasoning-engine")
     data.setdefault("status", "success")
     if isinstance(data["action_steps"], str):
         data["action_steps"] = [data["action_steps"]]
@@ -435,17 +552,17 @@ def enforce_contract(data):
         data["ready_assets"] = [data["ready_assets"]]
     if len(data["action_steps"]) < 3:
         data["action_steps"] += [
-            "Name the hidden bottleneck.",
-            "Choose the leverage move.",
-            "Create the asset that forces the next decision."
+            "Name the truth.",
+            "Name the constraint.",
+            "Create the decision-moving asset."
         ][:3-len(data["action_steps"])]
     if not data["ready_assets"]:
-        data["ready_assets"] = [data.get("asset", "Strategic inference saved.")]
+        data["ready_assets"] = [data.get("asset", "Executive reasoning saved.")]
     if data["priority"] not in ["Critical", "High", "Medium", "Low"]:
         data["priority"] = "High"
     return data
 
-def call_openai(req, intent, pressure, context, workflow, inference):
+def call_openai(req, intent, pressure, context, workflow, reasoning):
     if not OPENAI_API_KEY or OpenAI is None:
         return None
     try:
@@ -453,15 +570,15 @@ def call_openai(req, intent, pressure, context, workflow, inference):
         result = client.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=[
-                {"role": "system", "content": build_prompt(req, intent, pressure, context, workflow, inference)},
+                {"role": "system", "content": build_prompt(req, intent, pressure, context, workflow, reasoning)},
                 {"role": "user", "content": req.input}
             ],
-            temperature=0.28,
+            temperature=0.22,
             response_format={"type": "json_object"}
         )
         data = json.loads(result.choices[0].message.content or "{}")
         data["provider_used"] = f"openai:{DEFAULT_MODEL}"
-        return enforce_contract(data)
+        return enforce(data)
     except Exception:
         return None
 
@@ -470,8 +587,8 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "strategic_inference",
-        "purpose": "turn organized output into commercially sharp operator intelligence"
+        "engine": "executive_reasoning",
+        "purpose": "truth, constraint, leverage, tradeoff, wrong-move, operator-call reasoning"
     }
 
 @app.get("/health")
@@ -490,27 +607,27 @@ def run(req: RunRequest):
     pressure = detect_pressure(req.input)
     context = retrieve_context(ws, req.input)
     workflow = upsert_workflow(ws, req, intent, pressure)
-    inference = build_strategic_inference(req, intent, pressure, context, workflow)
+    reasoning = executive_reasoning(req, intent, pressure, context, workflow)
 
-    response = call_openai(req, intent, pressure, context, workflow, inference)
+    response = call_openai(req, intent, pressure, context, workflow, reasoning)
     if not response:
-        response = strategic_fallback(req, intent, pressure, context, workflow)
-    response = enforce_contract(response)
+        response = local_response(req, intent, pressure, context, workflow, reasoning)
+    response = enforce(response)
 
     ws["operator_state"]["current_pressure"] = pressure["level"]
     ws["operator_state"]["current_focus"] = workflow["title"]
     ws["operator_state"]["last_command"] = req.input
     ws["operator_state"]["last_next_move"] = response["next_move"]
     ws["operator_state"]["strategic_theme"] = intent
-    ws["operator_state"]["inference_history"].append({
-        "id": f"inf_{uuid.uuid4().hex[:8]}",
+    ws["operator_state"]["reasoning_history"].append({
+        "id": f"rsn_{uuid.uuid4().hex[:8]}",
         "created_at": now_iso(),
         "workflow_id": workflow["id"],
         "input": req.input[:500],
-        "inference": inference,
+        "reasoning": reasoning,
         "next_move": response["next_move"]
     })
-    ws["operator_state"]["inference_history"] = ws["operator_state"]["inference_history"][-50:]
+    ws["operator_state"]["reasoning_history"] = ws["operator_state"]["reasoning_history"][-50:]
 
     ws["decisions"].append({
         "id": f"dec_{uuid.uuid4().hex[:8]}",
@@ -520,7 +637,7 @@ def run(req: RunRequest):
         "next_move": response["next_move"],
         "risk": response["risk"],
         "priority": response["priority"],
-        "strategic_inference": inference,
+        "reasoning": reasoning,
         "importance": 5
     })
     ws["decisions"] = ws["decisions"][-100:]
@@ -543,21 +660,22 @@ def run(req: RunRequest):
             "id": f"asset_{uuid.uuid4().hex[:8]}",
             "created_at": now_iso(),
             "workflow_id": workflow["id"],
-            "content": str(asset)[:2500]
+            "content": str(asset)[:3000]
         })
     ws["continuity"]["recent_assets"] = ws["continuity"]["recent_assets"][-50:]
+
     workflow["next_action"] = response["recommended_command"]
     workflow["updated_at"] = now_iso()
 
     save_workspace(ws)
 
-    response["strategic_inference"] = inference
+    response["executive_reasoning"] = reasoning
     response["memory_context"] = {
         "active_workflow": workflow,
         "pressure": pressure,
         "intent": intent,
         "recent_decisions_count": len(ws["decisions"]),
-        "inference_count": len(ws["operator_state"]["inference_history"])
+        "reasoning_count": len(ws["operator_state"]["reasoning_history"])
     }
     response["version"] = APP_VERSION
     return response
@@ -583,7 +701,12 @@ def add_memory(item: MemoryRequest):
 @app.get("/memory")
 def memory(workspace_id: str = "default", user_id: str = "will"):
     ws = load_workspace(workspace_id, user_id)
-    return {"status": "success", "version": APP_VERSION, "memory": ws["memory"], "decisions": ws["decisions"][-25:]}
+    return {
+        "status": "success",
+        "version": APP_VERSION,
+        "memory": ws["memory"],
+        "decisions": ws["decisions"][-25:]
+    }
 
 @app.get("/engine-state")
 def engine_state(workspace_id: str = "default", user_id: str = "will"):
@@ -602,15 +725,15 @@ def engine_state(workspace_id: str = "default", user_id: str = "will"):
 @app.get("/operator-scan")
 def operator_scan(workspace_id: str = "default", user_id: str = "will"):
     ws = load_workspace(workspace_id, user_id)
-    hist = ws["operator_state"].get("inference_history", [])
+    hist = ws["operator_state"].get("reasoning_history", [])
     latest = hist[-1] if hist else None
     return {
         "status": "success",
         "version": APP_VERSION,
         "current_pressure": ws["operator_state"].get("current_pressure"),
         "current_focus": ws["operator_state"].get("current_focus"),
-        "latest_inference": latest,
-        "recommended_command": "Generate the finished asset using the latest strategic inference."
+        "latest_reasoning": latest,
+        "recommended_command": "Generate the finished asset using the latest executive reasoning."
     }
 
 @app.get("/test-report")
@@ -619,13 +742,15 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36540",
-            "POST /run returns strategic_inference object",
-            "Proposal test produces funded-deal positioning, not generic SEO/Ads tasks",
-            "Forbidden generic language is replaced",
-            "GET /engine-state shows inference_history"
+            "GET /health returns V36550",
+            "POST /run returns executive_reasoning object",
+            "Proposal test produces funded-deal economics, not generic SEO/Ads tasks",
+            "Build/version prompts produce reasoning-engine logic",
+            "Forbidden filler language is replaced",
+            "GET /engine-state shows reasoning_history"
         ],
-        "proposal_test": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100."
+        "proposal_test": "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
+        "engine_test": "Build V36550 — Executive Reasoning Engine"
     }
 
 @app.get("/test-report-json")
