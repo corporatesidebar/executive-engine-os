@@ -1,43 +1,30 @@
-# Executive Engine OS — V36560 Executive Presence Engine
+# Executive Engine OS — V36580 Executive Briefing Engine
 
 Backend-only build.
 
 ## Purpose
 
-Add:
-- executive presence
-- response compression
-- authority
-- leverage prioritization
-- psychological awareness
-- commercial sharpness
-- contextual personality modes
+Upgrade response presentation from structured productivity output into high-signal executive briefing.
 
-The engine now:
-- challenges wasted motion
-- compresses responses
-- shifts tone by context
-- forces momentum
-- prioritizes ruthlessly
+## What changes
 
-## Presence Modes
+- One dominant insight
+- One decision
+- One warning
+- One next action
+- Less section-label dependency
+- Less project-manager language
+- More executive briefing tone
+- More scan-friendly cognitive density
 
-- commercial
-- technical
-- ruthless
-- political
-- containment
-- executive
-- operator
+## What this does NOT touch
 
-## What This Does NOT Touch
-
-- frontend
-- layout
+- frontend layout
 - navigation
 - sidebars
 - columns
-- design
+- design shell
+- spacing system
 - API URL
 
 ## Verify
@@ -45,18 +32,13 @@ The engine now:
 https://executive-engine-os.onrender.com/health
 
 Expected:
-"version": "V36560-Executive-Presence-Engine"
 
-## Test Commands
+"version": "V36580-Executive-Briefing-Engine"
+
+## Test commands
 
 Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
 
-Convert this into a specific executive operating brief with decision, next action, asset, risk, and follow-up command.
+I have too many active projects and feel overwhelmed.
 
-Expected:
-- compressed reasoning
-- sharper tone
-- executive language
-- less operational fluff
-- what NOT to do
-- leverage-first responses
+Should I keep building Executive Engine or pivot?
