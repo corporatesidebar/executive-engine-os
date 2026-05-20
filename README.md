@@ -1,83 +1,81 @@
-# Executive Engine OS — 2026-05-20 V36500 Intelligence Architecture
 
-Backend-only package.
+# EXECUTIVE ENGINE — V36520 RESPONSE COGNITION OVERHAUL
 
-## What this builds
+## OBJECTIVE
 
-Executive Intelligence Architecture:
+Transform Executive Engine from:
+- structured chatbot responses
 
-- continuity
-- memory
-- operational graphing
-- workflow persistence
-- pressure detection
-- intelligent routing
-- contextual reasoning
-- operational sequencing
-- executive communication generation
-- proactive execution support
+Into:
+- executive cognition infrastructure
 
-## Preserved contract
+## CORE UPGRADES
 
-`POST /run` returns:
-
-- next_move
+### Dynamic Response Architecture
+Different output structures for:
+- proposal
+- revenue
 - decision
-- action_steps
-- ready_assets
+- execution
+- meeting
 - risk
-- priority
-- recommended_command
-- provider_used
-- status
+- strategy
 
-Additional context fields are included for the frontend if needed:
+### Generic Language Removal
+Kill:
+- “high-impact”
+- “drive efficiency”
+- “stakeholders”
+- “optimize workflows”
 
-- router
-- active_context
-- workspace
+Replace with:
+- operational language
+- commercial logic
+- decisive sequencing
+- executive compression
 
-## Files
+### Asset-First Engine
+Every response should create:
+- proposals
+- messaging
+- plans
+- sequences
+- negotiation positioning
+- execution frameworks
+- operational playbooks
 
-```text
-backend/main.py
-backend/requirements.txt
-README.md
-```
+### Memory + Continuity
+Persist:
+- workflows
+- decisions
+- priorities
+- pressure
+- operator state
+- ongoing execution
 
-## Local run
+### Operator Intelligence Layer
+Infer:
+- leverage
+- urgency
+- pressure
+- momentum loss
+- operational friction
+- execution complexity
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+### Output Compression
+Less filler.
+More signal.
+Higher-density cognition.
 
-## Render
+## IMPORTANT
 
-Start command:
+DO NOT:
+- redesign layout
+- remove columns
+- modify navigation
+- collapse into chat UI
 
-```bash
-uvicorn main:app --host 0.0.0.0 --port $PORT
-```
-
-Environment variable:
-
-```text
-OPENAI_API_KEY=your_key
-OPENAI_MODEL=gpt-4o-mini
-```
-
-If no OpenAI key is present, deterministic local intelligence fallback still returns the required contract.
-
-## Test command
-
-```bash
-curl -X POST https://executive-engine-os.onrender.com/run \
-  -H "Content-Type: application/json" \
-  -d '{"input":"Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.","mode":"execution","brain":"revenue","output_type":"proposal","depth":"standard"}'
-```
-
-## Important
-
-This package does not change frontend layout, navigation, sidebars, or design.
+PRESERVE:
+- 4-column architecture
+- executive cockpit feel
+- operational command center structure
