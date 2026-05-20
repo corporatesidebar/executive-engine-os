@@ -1,19 +1,36 @@
-# V36750 — Asset Generation Engine
+# Executive Engine OS — V36760 Deployment Engine
 
-Backend-only module.
+Backend-only build.
 
-Purpose:
-Make Executive Engine generate real operational assets instead of only describing execution.
+## Purpose
 
-Install:
-Drop `asset_generation_engine.py` into `backend/intelligence/`.
+Turns Executive Engine from asset recommendation into deploy-ready execution infrastructure.
 
-Integration:
-Import `build_v36750_response(user_input)` into your `/run` route or merge its logic into the current execution engine.
+## Adds
 
-Preserves:
-- frontend
-- layout
-- navigation
-- API URL
-- deployment structure
+- deployment_assets
+- send_ready_assets
+- export_ready_assets
+- implementation_checklist
+- primary_asset content
+- deployment package in ready_assets
+- no artificial compression or asset slicing
+
+## Preserves
+
+- /run
+- /health
+- /engine-state
+- /test-report
+- frontend compatibility
+- UI/layout/navigation untouched
+
+## Test Commands
+
+Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.
+
+How do I make Executive Engine profitable fastest?
+
+I have too many projects and feel overwhelmed.
+
+Create a send-ready outreach campaign for Executive Engine.

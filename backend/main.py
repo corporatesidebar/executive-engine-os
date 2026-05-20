@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import os
 
-from intelligence.execution_operating_engine import build_execution_operating_response
-from intelligence.state_store import load_workspace, save_execution_state
+from intelligence.deployment_engine import build_deployment_response
+from intelligence.state_store import load_workspace, save_deployment_state
 
-APP_VERSION = "V36710-Execution-Operating-Engine"
+APP_VERSION = "V36760-Deployment-Engine"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -26,7 +26,7 @@ class RunRequest(BaseModel):
     mode: Optional[str] = "execution"
     brain: Optional[str] = "operator"
     output_type: Optional[str] = "standard"
-    depth: Optional[str] = "standard"
+    depth: Optional[str] = "detailed"
     provider: Optional[str] = "openai"
     workspace_id: Optional[str] = "default"
     user_id: Optional[str] = "will"
@@ -37,8 +37,8 @@ def root():
     return {
         "status": "ok",
         "version": APP_VERSION,
-        "engine": "execution_operating_engine",
-        "purpose": "turn executive inputs into operational systems, assets, decisions, leverage, and action"
+        "engine": "deployment_engine",
+        "purpose": "generate deploy-ready, send-ready, export-ready executive assets"
     }
 
 @app.get("/health")
@@ -53,17 +53,15 @@ def health():
 def run(req: RunRequest):
     workspace = load_workspace(req.workspace_id or "default", req.user_id or "will")
 
-    response = build_execution_operating_response(
+    response = build_deployment_response(
         user_input=req.input,
-        mode=req.mode or "execution",
-        brain=req.brain or "operator",
-        output_type=req.output_type or "standard",
         workspace=workspace,
         openai_api_key=OPENAI_API_KEY,
         model=OPENAI_MODEL,
+        depth=req.depth or "detailed",
     )
 
-    save_execution_state(
+    save_deployment_state(
         workspace_id=req.workspace_id or "default",
         user_id=req.user_id or "will",
         user_input=req.input,
@@ -87,18 +85,19 @@ def test_report():
         "status": "success",
         "version": APP_VERSION,
         "tests": [
-            "GET /health returns V36710",
-            "POST /run returns original frontend-compatible contract",
-            "POST /run returns new execution operating fields",
-            "Overload input creates stop/delegate/action system",
-            "Revenue input creates monetization path and assets",
-            "Proposal input creates proposal structure and tools"
+            "GET /health returns V36760",
+            "POST /run preserves frontend-compatible keys",
+            "POST /run returns deployment_assets",
+            "POST /run returns send_ready_assets",
+            "POST /run returns export_ready_assets",
+            "POST /run returns implementation_checklist",
+            "No artificial array slicing in generated assets"
         ],
         "test_commands": [
-            "I have too many projects and feel overwhelmed.",
-            "How do I make Executive Engine profitable fastest?",
             "Build proposal for Ontario auto loan dealership with SEO and Google Ads CPA under $100.",
-            "What should I stop doing this week?"
+            "How do I make Executive Engine profitable fastest?",
+            "I have too many projects and feel overwhelmed.",
+            "Create a send-ready outreach campaign for Executive Engine."
         ]
     }
 
