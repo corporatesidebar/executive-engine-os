@@ -1,31 +1,47 @@
-# Executive Engine OS — V37100 Frontend Layout Function Fix
+# Executive Engine OS — V36800 Structured Execution Object Engine
 
-Deployment type: Frontend only.
+Deployment type: **Backend only**.
 
-Base: EXECUTIVE-ENGINE-V37100-REAL-FRONTEND-STATE-CONTROLLER.
+## Purpose
+This backend upgrades `/run` to return the structured execution contract required by frontend V37100.
 
-Visual target: approved 28(1) four-column layout.
+## Required `/run` fields returned
+- `executive_summary`
+- `next_move`
+- `decision`
+- `action_steps`
+- `ready_assets`
+- `risk`
+- `priority`
+- `recommended_command`
+- `execution_objects`
+- `primary_object`
+- `deployment_sequence`
+- `executive_scan`
 
-Preserved:
-- Dark left sidebar
-- Four-column structure
-- Command area
-- Executive Summary column
-- Executive Intelligence column
-- Footer placement
-- API URL: https://executive-engine-os.onrender.com/run
-- /run contract
-
-Changed:
-- Runtime app.js state model
-- Guided assistant workflow rendering
-- Follow-up composer behavior
-- Runtime Summary and Intelligence binding
-- Sidebar click behavior tied to runtime state
-- Footer/viewport containment so the layout does not create a large blank area underneath the app
-
-Not changed:
-- Backend
+## Not touched
+- Frontend
+- Layout
 - Supabase
 - DB schema
-- Provider routing
+- Provider routing outside this backend contract
+
+## Preserved endpoint
+- `POST /run`
+
+## Run locally
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+## Render start command
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+```
+
+If Render runs from inside the `backend` folder, use:
+```bash
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
