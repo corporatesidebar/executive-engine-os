@@ -1,47 +1,43 @@
-# Executive Engine OS — V36800 Structured Execution Object Engine
+# Executive Engine OS — V37200 Execution Object Persistence + Workspace Engine
 
-Deployment type: **Backend only**.
+BACKEND ONLY.
 
-## Purpose
-This backend upgrades `/run` to return the structured execution contract required by frontend V37100.
+## Structure
 
-## Required `/run` fields returned
-- `executive_summary`
-- `next_move`
-- `decision`
-- `action_steps`
-- `ready_assets`
-- `risk`
-- `priority`
-- `recommended_command`
-- `execution_objects`
-- `primary_object`
-- `deployment_sequence`
-- `executive_scan`
+backend/
+├── main.py
+└── requirements.txt
+README.md
+test-checklist.md
 
-## Not touched
-- Frontend
-- Layout
+## What this adds
+
+- Persistent execution objects
+- Persistent command threads
+- Workspace state
+- Ready-to-review asset queue
+- Object status updates
+- Object archiving
+- V36800-compatible /run contract
+
+## Endpoints
+
+- GET /
+- GET /health
+- POST /run
+- GET /workspace
+- GET /workspace/objects
+- GET /workspace/ready
+- PATCH /workspace/objects/{object_id}
+- POST /workspace/objects/{object_id}/archive
+- GET /test-report
+- GET /test-report-json
+
+## Do not touch
+
+- frontend
+- layout
+- navigation
 - Supabase
 - DB schema
-- Provider routing outside this backend contract
-
-## Preserved endpoint
-- `POST /run`
-
-## Run locally
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000
-```
-
-## Render start command
-```bash
-uvicorn backend.main:app --host 0.0.0.0 --port $PORT
-```
-
-If Render runs from inside the `backend` folder, use:
-```bash
-uvicorn main:app --host 0.0.0.0 --port $PORT
-```
+- API URL
