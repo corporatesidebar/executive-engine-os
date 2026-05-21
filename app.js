@@ -236,132 +236,61 @@ bindNav();
 renderButtons();
 
 
-
-/* V37300 — Executive Response Compression Engine */
+/* V37310 — Compression Renderer Hard Patch */
 (function(){
-  function esc2(v=""){
-    return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-  }
+  function esc(v=""){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function arr(v){return v==null||v===""?[]:(Array.isArray(v)?v:[v]);}
+  function label(s){return String(s||"object").replace(/_/g," ").replace(/\b\w/g,m=>m.toUpperCase());}
+  function text(v){if(v==null)return"";if(typeof v==="string")return v;if(typeof v==="number")return String(v);if(Array.isArray(v))return v.map(text).filter(Boolean).join(", ");if(typeof v==="object")return v.title||v.name||v.summary||v.description||v.content||v.next_move||v.executive_summary||JSON.stringify(v);return String(v);}
+  function short(v,max=170){const t=text(v);return t.length>max?t.slice(0,max-1)+"…":t;}
+  function list(items,max=5){const values=arr(items).filter(Boolean).slice(0,max);return `<ul>${(values.length?values:["Ready for review."]).map(item=>`<li>${esc(short(item,135))}</li>`).join("")}</ul>`;}
+  function json(value){try{return JSON.stringify(value||{},null,2)}catch{return text(value)}}
+  function normalizeAsset(item,i){if(item&&typeof item==="object"){return{title:item.title||item.asset_name||item.name||`Prepared Asset ${i+1}`,type:item.type||item.object_type||item.asset_type||"Ready Asset",status:item.status||"Ready",detail:item.payload||item.details||item}}return{title:text(item)||`Prepared Asset ${i+1}`,type:"Ready Asset",status:"Ready",detail:item};}
 
-  function arr2(v){
-    if(v == null || v === "") return [];
-    return Array.isArray(v) ? v : [v];
-  }
-
-  function label2(s){
-    return String(s || "object").replace(/_/g, " ").replace(/\b\w/g, m => m.toUpperCase());
-  }
-
-  function text2(v){
-    if(v == null) return "";
-    if(typeof v === "string") return v;
-    if(typeof v === "number") return String(v);
-    if(Array.isArray(v)) return v.map(text2).filter(Boolean).join(", ");
-    if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.next_move || v.executive_summary || JSON.stringify(v);
-    return String(v);
-  }
-
-  function short(v, max=160){
-    const t = text2(v);
-    return t.length > max ? t.slice(0, max - 1) + "…" : t;
-  }
-
-  function list(items, max=5){
-    const clean = arr2(items).filter(Boolean).slice(0, max);
-    if(!clean.length) return "<ul><li>Prepared for review.</li></ul>";
-    return `<ul>${clean.map(x => `<li>${esc2(short(x, 140))}</li>`).join("")}</ul>`;
-  }
-
-  function detailJSON(value){
-    try { return JSON.stringify(value || {}, null, 2); }
-    catch { return text2(value); }
-  }
-
-  window.renderObjectCard = function renderObjectCardCompressed(o){
-    const id = "obj_" + Math.random().toString(36).slice(2);
-    return `
-      <div class="ee-object-card" id="${id}">
-        <div class="ee-object-head">
-          <div>
-            <strong>${esc2(o.title || "Execution Asset")}</strong>
-            <small>${esc2(label2(o.type || o.object_type))} · ${esc2(o.status || "Ready")}</small>
-          </div>
-          <div class="ee-object-actions">
-            <button class="ee-mini-btn" onclick="document.getElementById('${id}').classList.toggle('open')">View</button>
-            <button class="ee-mini-btn" data-copy="${esc2(detailJSON(o.details || o.payload || o))}">Copy</button>
-          </div>
-        </div>
-        <div class="ee-details"><pre>${esc2(detailJSON(o.details || o.payload || o))}</pre></div>
+  window.renderObjectCard=function(raw,i=0){
+    const o=normalizeAsset(raw,i); const id="v37310_"+Math.random().toString(36).slice(2);
+    return `<div class="ee-v37310-object" id="${id}">
+      <div class="ee-v37310-object-summary">
+        <div class="ee-v37310-object-title"><strong>${esc(short(o.title,95))}</strong><small>${esc(label(o.type))} · ${esc(o.status)}</small></div>
+        <div class="ee-v37310-actions"><button class="ee-v37310-btn" type="button" onclick="document.getElementById('${id}').classList.toggle('open')">View</button><button class="ee-v37310-btn" type="button" data-copy="${esc(json(o.detail))}">Copy</button></div>
       </div>
-    `;
+      <div class="ee-v37310-object-detail"><pre>${esc(json(o.detail))}</pre></div>
+    </div>`;
   };
 
-  window.renderAssistantResponse = function renderAssistantResponseCompressed(r){
-    if(!r) return `<div class="copy">Response received.</div>`;
+  window.renderAssistantResponse=function(r){
+    if(!r)return `<div class="ee-v37310-response"><div class="ee-v37310-card">Response received.</div></div>`;
+    const actions=arr(r.action_steps||r.immediate_actions||r.execution_sequence||r.deployment_sequence).slice(0,5);
+    const objects=arr(r.execution_objects).slice(0,6);
+    const ready=arr(r.ready_assets||r.generated_assets||r.deployment_assets).slice(0,6);
+    const assets=objects.length?objects:ready;
+    const summary=r.executive_summary||r.summary||r.next_move||"Execution package prepared.";
+    const decision=r.decision||r.operator_decision||"Review and deploy the prepared asset.";
+    const next=r.next_move||r.what_to_do_now||"Review the prepared asset, edit if needed, and deploy.";
+    const risk=r.risk||r.risk_control||"Delay comes from leaving prepared work unreviewed.";
+    const priority=r.priority||r.pressure_level||"High";
+    const recommended=r.recommended_command||r.follow_up_command||"Continue with recommended command";
 
-    const actionSteps = arr2(r.action_steps).slice(0, 5);
-    const readyAssets = arr2(r.ready_assets).slice(0, 5);
-    const objects = arr2(r.execution_objects).slice(0, 6);
+    const chips=assets.slice(0,4).map((item,i)=>{const a=normalizeAsset(item,i);return `<div class="ee-v37310-asset"><strong>${esc(short(a.title,70))}</strong><span>${esc(label(a.type))}</span></div>`}).join("");
+    const objectList=assets.length?`<div class="ee-v37310-object-list">${assets.map(window.renderObjectCard).join("")}</div>`:"";
 
-    const objectCards = objects.length
-      ? `<div class="ee-object-strip">${objects.map(window.renderObjectCard).join("")}</div>`
-      : "";
-
-    const assetChips = (objects.length ? objects : readyAssets).slice(0, 4).map((item, i) => {
-      const title = item.title || item.asset_name || text2(item);
-      const type = item.type || item.object_type || "Ready asset";
-      return `<div class="ee-asset-chip"><strong>${esc2(short(title, 70))}</strong><span>${esc2(label2(type))}</span></div>`;
-    }).join("");
-
-    return `
-      <div class="ee-compressed-response">
-        <div class="ee-command-answer">
-          <div class="ee-answer-top">
-            <div class="ee-answer-cell">
-              <div class="ee-label">Clear Answer</div>
-              <strong>${esc2(short(r.executive_summary || r.next_move, 190))}</strong>
-            </div>
-            <div class="ee-answer-cell">
-              <div class="ee-label">Decision</div>
-              <strong>${esc2(short(r.decision, 170))}</strong>
-            </div>
-            <div class="ee-answer-cell">
-              <div class="ee-label">Priority</div>
-              <span class="ee-priority-pill">${esc2(short(r.priority || "High", 20))}</span>
-            </div>
-          </div>
-          <div class="ee-primary-action">
-            <div class="ee-label">Do this next</div>
-            <strong>${esc2(short(r.next_move, 220))}</strong>
-          </div>
+    return `<div class="ee-v37310-response" data-build="V37310">
+      <div class="ee-v37310-command">
+        <div class="ee-v37310-command-head">
+          <div class="ee-v37310-cell"><div class="ee-v37310-label">Clear Answer</div><div class="ee-v37310-main">${esc(short(summary,190))}</div></div>
+          <div class="ee-v37310-cell"><div class="ee-v37310-label">Decision</div><div class="ee-v37310-main">${esc(short(decision,170))}</div></div>
+          <div class="ee-v37310-cell"><div class="ee-v37310-label">Priority</div><span class="ee-v37310-priority">${esc(short(priority,20))}</span></div>
         </div>
-
-        <div class="ee-compressed-grid">
-          <div class="ee-list-card">
-            <div class="ee-label">Action Path</div>
-            ${list(actionSteps, 5)}
-          </div>
-          <div class="ee-assets-card">
-            <div class="ee-label">Ready to Review</div>
-            <div class="ee-assets-row">${assetChips || `<div class="ee-asset-chip"><strong>Execution package</strong><span>Ready</span></div>`}</div>
-          </div>
-        </div>
-
-        ${objectCards}
-
-        <div class="ee-risk-card">
-          <div class="ee-label">Risk Control</div>
-          <p>${esc2(short(r.risk, 220))}</p>
-        </div>
-
-        <button class="ee-followup" type="button">${esc2(short(r.recommended_command || "Continue with recommended command", 90))} →</button>
-
-        <div class="ee-action-row">
-          <button type="button">Turn into action plan</button>
-          <button type="button">Draft asset</button>
-          <button type="button">Save decision</button>
-        </div>
+        <div class="ee-v37310-next"><div class="ee-v37310-label">Do This Next</div><strong>${esc(short(next,230))}</strong></div>
       </div>
-    `;
+      <div class="ee-v37310-two">
+        <div class="ee-v37310-card"><div class="ee-v37310-label">Action Path</div>${list(actions,5)}</div>
+        <div class="ee-v37310-card"><div class="ee-v37310-label">Ready To Review</div><div class="ee-v37310-assets">${chips||`<div class="ee-v37310-asset"><strong>Execution package</strong><span>Ready</span></div>`}</div></div>
+      </div>
+      ${objectList}
+      <div class="ee-v37310-risk"><div class="ee-v37310-label">Risk Control</div><p>${esc(short(risk,230))}</p></div>
+      <button class="ee-v37310-follow" type="button">${esc(short(recommended,95))} →</button>
+      <div class="ee-v37310-action-row"><button type="button">Turn into action plan</button><button type="button">Draft asset</button><button type="button">Save decision</button></div>
+    </div>`;
   };
 })();

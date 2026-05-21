@@ -1,12 +1,8 @@
-# V37300 Test Checklist
+# V37310 Test Checklist
 
-[ ] Frontend deploy only
-[ ] Layout unchanged
-[ ] Execute still works
-[ ] Loading still replaces with response
-[ ] Clear Answer/Decision/Priority appear
-[ ] Ready assets appear as compact cards
-[ ] View opens object details
-[ ] Copy works
-[ ] No raw JSON visible by default
-[ ] Right rail still updates
+[ ] Hard refresh
+[ ] Run cookie-shop command
+[ ] Response has data-build V37310
+[ ] Object details hidden until View
+[ ] No giant JSON visible by default
+[ ] Right rail still syncs
