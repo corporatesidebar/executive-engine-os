@@ -1,4 +1,3 @@
-
 const API_URL = "https://executive-engine-os.onrender.com/run";
 
 const els = {
@@ -8,291 +7,361 @@ const els = {
   thread: document.getElementById("thread"),
   summary: document.getElementById("summaryRail"),
   intel: document.getElementById("intelRail"),
+  composer: document.querySelector(".composer"),
 };
 
 const state = {
   messages: [],
-  currentCommand: "",
-  isLoading: false,
+  decisions: [],
+  actions: [],
+  assets: [],
+  risks: [],
+  contexts: [],
+  savedDecisions: [],
   lastResponse: null,
-  executionObjects: [],
-  rightRailState: null,
-  error: null,
+  lastCommand: "",
+  isLoading: false,
 };
 
 function uid(){ return "m_" + Math.random().toString(36).slice(2) + Date.now().toString(36); }
-function now(){ return new Date().toLocaleString([], { month:"numeric", day:"numeric", year:"numeric", hour:"numeric", minute:"2-digit" }); }
+function now(){ return new Date().toLocaleString([], { month:"numeric", day:"numeric", hour:"numeric", minute:"2-digit" }); }
 function esc(v=""){ return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
-function arr(v){ if(v == null || v === "") return []; return Array.isArray(v) ? v : [v]; }
-function textOf(v){
-  if(v == null) return "";
+function normalizeText(v){
+  if(v == null || v === "") return "";
   if(typeof v === "string") return v;
-  if(typeof v === "number") return String(v);
-  if(Array.isArray(v)) return v.map(textOf).filter(Boolean).join(", ");
-  if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.next_move || v.executive_summary || JSON.stringify(v);
+  if(typeof v === "number" || typeof v === "boolean") return String(v);
+  if(Array.isArray(v)) return v.map(normalizeText).filter(Boolean).join("\n");
+  if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.text || JSON.stringify(v);
   return String(v);
 }
-function first(v){ return textOf(Array.isArray(v) ? v[0] : v); }
-function label(s){ return String(s || "object").replace(/_/g, " ").replace(/\b\w/g, m => m.toUpperCase()); }
+function toArray(v){
+  if(v == null || v === "") return [];
+  if(Array.isArray(v)) return v.map(x => typeof x === "object" ? x : { title: normalizeText(x) }).filter(x => normalizeText(x.title || x.description || x));
+  const raw = normalizeText(v);
+  return raw.split(/\n|;|•/).map(x => x.trim()).filter(Boolean).map(x => ({ title:x }));
+}
+function firstValue(obj, keys){
+  for(const key of keys){ if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key]; }
+  return "";
+}
+function compact(v, fallback){ return normalizeText(v).trim() || fallback; }
+function label(s){ return String(s || "asset").replace(/_/g," ").replace(/\b\w/g, m => m.toUpperCase()); }
 
-function payload(command){
-  return {
-    input: command,
-    mode: "execution",
-    brain: "operator",
-    output_type: "standard",
-    depth: "auto",
-    provider: "openai"
-  };
+function buildPayload(command){
+  return { input: command, mode:"execution", brain:"operator", output_type:"standard", depth:"standard", provider:"openai" };
 }
 
-function parseResponse(data){
-  const r = data && typeof data === "object" ? data : {};
-  const scan = r.executive_scan || {};
-  const executionObjects = normalizeObjects(r);
-
-  return {
-    raw: r,
-    executive_summary: r.executive_summary || scan.dominant_insight || r.summary || r.next_move || "Execution response generated.",
-    next_move: r.next_move || scan.move || r.what_to_do_now || "Review the prepared execution package and choose the next action.",
-    decision: r.decision || r.operator_decision || scan.decision || "Proceed with the highest-leverage execution path.",
-    action_steps: arr(r.action_steps || r.immediate_actions || r.execution_sequence || r.deployment_sequence).slice(0, 8),
-    ready_assets: arr(r.ready_assets || r.generated_assets || r.deployment_assets || r.export_ready_assets).slice(0, 8),
-    risk: r.risk || r.risk_control || scan.risk || "Execution risk should be controlled before deployment.",
-    priority: r.priority || r.pressure_level || "High",
-    recommended_command: r.recommended_command || r.follow_up_command || r.next_execution_package || "Generate the next deployment-ready asset.",
-    execution_objects: executionObjects,
-    deployment_sequence: arr(r.deployment_sequence || r.implementation_plan || r.execution_sequence).slice(0, 8),
-    provider_used: r.provider_used || "backend",
-    status: r.status || "success"
-  };
+function parseResponse(raw){
+  const r = raw && typeof raw === "object" ? raw : { next_move: normalizeText(raw) };
+  const scan = r.executive_scan || r.scan || {};
+  const nextMove = compact(firstValue(r,["next_move","nextMove","what_to_do_now","recommendation"]) || scan.move, "Confirm the objective, then move the highest-leverage action forward.");
+  const decision = compact(firstValue(r,["decision","recommended_decision","operator_decision"]) || scan.decision, "Proceed, but only after the objective, owner, deadline, and asset are clear.");
+  const actions = toArray(firstValue(r,["action_steps","actions","steps","next_steps","immediate_actions","execution_sequence"]));
+  const assets = toArray(firstValue(r,["ready_assets","assets","prepared_assets","deliverables","generated_assets"]));
+  const risk = compact(firstValue(r,["risk","risks","active_risks","risk_control"]) || scan.risk, "Unclear input can create false certainty. Lock the outcome before execution.");
+  const priority = compact(firstValue(r,["priority","urgency","pressure_level"]), "High");
+  const recommended = compact(firstValue(r,["recommended_command","follow_up_command","next_command","command"]), `Turn this into a 7-step action plan for: ${state.lastCommand || "this objective"}`);
+  const summary = compact(firstValue(r,["executive_summary","summary","clear_answer"]) || scan.dominant_insight || nextMove, nextMove);
+  const why = compact(firstValue(r,["why_it_matters","business_impact","strategic_value"]), "This matters because the command needs to become an operating path, not a loose answer.");
+  const safeActions = actions.length ? actions.slice(0,7) : [
+    { title:"Clarify the outcome" }, { title:"Name the owner" }, { title:"Set the deadline" }, { title:"Prepare the required asset" }
+  ];
+  const safeAssets = assets.length ? assets.slice(0,6) : [{ title:"Execution brief", description:"A working asset created from the latest command." }];
+  return { raw:r, summary, why, next_move: nextMove, decision, action_steps:safeActions, ready_assets:safeAssets, risk, priority, recommended_command: recommended, provider_used:r.provider_used || "backend", status:r.status || "success" };
 }
 
-function normalizeObjects(r){
-  const objects = [];
-  arr(r.execution_objects).forEach((o, i) => objects.push(normalizeObject(o, i)));
-  [
-    ["primary_object", "primary_object"],
-    ["primary_asset", "primary_asset"],
-    ["execution_packages", "execution_package"],
-    ["deployment_assets", "deployment_asset"],
-    ["generated_assets", "generated_asset"],
-    ["proposal", "proposal"],
-    ["crm_system", "crm_pipeline"],
-    ["kpi_system", "kpi_scorecard"],
-    ["outbound_systems", "outreach_sequence"],
-    ["automation_stack", "automation_stack"],
-    ["delegation_map", "delegation_map"],
-    ["implementation_plan", "implementation_plan"],
-    ["deployment_sequence", "deployment_checklist"]
-  ].forEach(([key, type]) => {
-    if(!r[key]) return;
-    arr(r[key]).forEach((o, i) => objects.push(normalizeObject(o, objects.length + i, type)));
-  });
-  const unique = [];
-  const seen = new Set();
-  objects.forEach(o => {
-    const key = `${o.type}:${o.title}`;
-    if(!seen.has(key)){ seen.add(key); unique.push(o); }
-  });
-  return unique.slice(0, 10);
-}
+function addUserMessage(command){ state.messages.push({ id:uid(), role:"user", content:command, created:now() }); }
+function addAssistantLoading(){ const id=uid(); state.messages.push({ id, role:"assistant", status:"loading", created:now() }); return id; }
+function replaceMessage(id, patch){ const i=state.messages.findIndex(m=>m.id===id); if(i>=0) state.messages[i] = { ...state.messages[i], ...patch }; }
 
-function normalizeObject(o, i, fallbackType="execution_object"){
-  if(!o || typeof o !== "object"){
-    return { id: uid(), type: fallbackType, title: `${label(fallbackType)} ${i + 1}`, status: "Ready", purpose: textOf(o), details: o };
-  }
-  const payload = o.payload && typeof o.payload === "object" ? o.payload : o;
-  return {
-    id: uid(),
-    type: o.object_type || o.asset_type || o.type || fallbackType,
-    title: o.title || o.asset_name || o.name || payload.title || payload.offer || `${label(fallbackType)} ${i + 1}`,
-    status: o.status || o.deployment_priority || "Ready",
-    purpose: o.purpose || payload.purpose || payload.positioning || payload.business_problem || payload.promise || textOf(payload).slice(0, 180),
-    details: payload
-  };
-}
-
-async function submitCommand(){
-  const command = (els.input?.value || "").trim();
+async function submitCommand(commandOverride){
+  const command = (commandOverride || els.input?.value || "").trim();
   if(!command || state.isLoading) return;
-
-  state.error = null;
-  state.currentCommand = command;
+  state.lastCommand = command;
   state.isLoading = true;
-
-  const userMsg = { id: uid(), role: "user", status: "success", content: command, created: now() };
-  const loadingId = uid();
-  const loadingMsg = { id: loadingId, role: "assistant", status: "loading", content: "Building execution package", created: now() };
-
-  state.messages.push(userMsg, loadingMsg);
+  addUserMessage(command);
+  const loadingId = addAssistantLoading();
   if(els.input) els.input.value = "";
-  renderApp();
-
+  setComposerValue("");
+  renderThread();
+  renderButtons();
   try{
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload(command))
-    });
-
+    const res = await fetch(API_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(buildPayload(command)) });
     const bodyText = await res.text();
-    let data = {};
-    try { data = JSON.parse(bodyText); }
-    catch { data = { executive_summary: bodyText || "Backend returned an unreadable response." }; }
-
+    let data; try{ data = JSON.parse(bodyText); }catch{ data = { executive_summary: bodyText }; }
     if(!res.ok) throw new Error(data.detail || data.error || `Backend returned HTTP ${res.status}`);
-
     const parsed = parseResponse(data);
-    state.lastResponse = parsed;
-    state.executionObjects = parsed.execution_objects || [];
-    state.rightRailState = parsed;
-
-    const idx = state.messages.findIndex(m => m.id === loadingId);
-    if(idx >= 0){
-      state.messages[idx] = { id: loadingId, role: "assistant", status: "success", content: parsed.executive_summary, response: parsed, created: now() };
-    }
-
+    applyRuntimeState(parsed, command);
+    replaceMessage(loadingId, { status:"success", response:parsed, content:parsed.summary, created:now() });
   }catch(err){
-    const message = err?.message || "Frontend could not connect to backend.";
-    state.error = message;
-    const idx = state.messages.findIndex(m => m.id === loadingId);
-    if(idx >= 0){
-      state.messages[idx] = { id: loadingId, role: "assistant", status: "error", content: message, created: now() };
-    }
+    replaceMessage(loadingId, { status:"error", content: err?.message || "Frontend could not connect to backend.", created:now() });
   }finally{
     state.isLoading = false;
-    renderApp();
+    renderAll();
   }
 }
 
-function renderApp(){
-  renderThread();
-  renderRightSummary();
-  renderIntelRail();
-  if(els.execute){
-    els.execute.disabled = state.isLoading;
-    els.execute.textContent = state.isLoading ? "Executing..." : "Execute →";
-  }
+function applyRuntimeState(r, command){
+  state.lastResponse = r;
+  state.decisions.unshift({ title:r.decision, command, created:now(), priority:r.priority });
+  r.action_steps.forEach((a,i)=> state.actions.unshift({ title: compact(a.title || a.name || a.description || a, `Action ${i+1}`), status:i===0?"Next":"Open", command }));
+  r.ready_assets.forEach((a,i)=> state.assets.unshift({ title: compact(a.title || a.name || a.asset_name || a, `Ready asset ${i+1}`), description: compact(a.description || a.summary || a.purpose, "Prepared from latest command."), type:a.type || a.asset_type || "Execution Asset" }));
+  state.risks.unshift({ title:r.risk, mitigation:`Mitigation: ${r.next_move}`, command });
+  state.contexts.unshift({ command, focus:r.next_move, recommended:r.recommended_command, created:now() });
+  state.decisions = state.decisions.slice(0,12); state.actions = state.actions.slice(0,20); state.assets = state.assets.slice(0,20); state.risks = state.risks.slice(0,12); state.contexts = state.contexts.slice(0,12);
 }
+
+function renderAll(){ renderThread(); renderSummary(); renderIntel(); renderButtons(); }
+function renderButtons(){ if(els.execute){ els.execute.disabled=state.isLoading; els.execute.textContent=state.isLoading ? "Executing..." : "Execute →"; } }
 
 function renderThread(){
   if(!els.thread) return;
-  if(!state.messages.length){
-    els.thread.innerHTML = `<div class="empty-thread"><div><b>No active command thread yet.</b><span>Enter a command above to create live executive output. No fake thread data is preloaded.</span></div></div>`;
+  const follow = getComposerHTML();
+  const runtime = state.messages.map(renderMessage).join("");
+  if(runtime){
+    const existingDemo = state.messages.length === 0 ? els.thread.innerHTML : "";
+    els.thread.innerHTML = existingDemo || runtime + follow;
+  }else{
+    // Preserve the approved 28(1) demo thread before the first live command.
+    ensureComposerBound();
     return;
   }
-  els.thread.innerHTML = state.messages.map(renderMessage).join("");
-  els.thread.querySelectorAll("[data-copy]").forEach(btn => {
-    btn.addEventListener("click", () => navigator.clipboard?.writeText(btn.getAttribute("data-copy") || ""));
-  });
+  bindRuntimeButtons();
   els.thread.scrollTop = els.thread.scrollHeight;
 }
 
 function renderMessage(m){
-  if(m.role === "user"){
-    return `<div class="msg"><div class="bubble-avatar">W</div><div><div class="meta"><strong>You</strong><span>${esc(m.created)}</span></div><div class="copy">${esc(m.content)}</div></div></div>`;
-  }
-  if(m.status === "loading"){
-    return `<div class="msg loading"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="copy"><span class="loading-dots">${esc(m.content)}</span></div></div></div>`;
-  }
-  if(m.status === "error"){
-    return `<div class="msg"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="error-box">${esc(m.content)}</div></div></div>`;
-  }
-  return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div>${renderAssistantResponse(m.response)}</div></div>`;
+  if(m.role === "user") return `<div class="msg user-msg"><div class="bubble-avatar">W</div><div><div class="meta"><strong>You</strong><span>${esc(m.created)}</span></div><div class="copy user-copy">${esc(m.content)}</div></div></div>`;
+  if(m.status === "loading") return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="workflow-card loading-card">Building executive workflow…</div></div></div>`;
+  if(m.status === "error") return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div><div class="risk-block"><strong>Connection issue</strong><p>${esc(m.content)}</p></div></div></div>`;
+  return `<div class="msg engine"><div class="bubble-avatar engine-avatar">E</div><div><div class="meta"><strong>Executive Engine</strong><span>${esc(m.created)}</span></div>${renderWorkflowCard(m.response)}</div></div>`;
 }
 
-function renderAssistantResponse(r){
-  if(!r) return `<div class="copy">Response received.</div>`;
-  const actions = r.action_steps.length ? `<div class="exec-mini"><b>Action Path</b><ul>${r.action_steps.map(x => `<li>${esc(textOf(x))}</li>`).join("")}</ul></div>` : "";
-  const assets = r.ready_assets.length ? `<div class="exec-mini"><b>Ready Assets</b><ul>${r.ready_assets.slice(0,4).map(x => `<li>${esc(first(x))}</li>`).join("")}</ul></div>` : "";
-  const objects = r.execution_objects.length ? `<div class="object-cards">${r.execution_objects.map(renderObjectCard).join("")}</div>` : "";
+function renderWorkflowCard(r){
+  return `<div class="workflow-card">
+    <div class="wf-section clear-answer"><span>Clear Answer</span><p>${esc(r.summary)}</p></div>
+    <div class="wf-section why"><span>Why it matters</span><p>${esc(r.why)}</p></div>
+    <div class="do-next"><span>Do this next</span><strong>${esc(r.next_move)}</strong></div>
+    <div class="wf-split"><div class="wf-section"><span>Decision</span><p>${esc(r.decision)}</p></div><div class="wf-section"><span>Priority</span><p>${esc(r.priority)}</p></div></div>
+    <div class="task-list">${r.action_steps.map((a,i)=>`<div class="task-row"><span class="check">${i===0?"→":"○"}</span><div><strong>${esc(compact(a.title || a.name || a.description || a, `Action ${i+1}`))}</strong><small>${i===0?"Next":"Open"}</small></div></div>`).join("")}</div>
+    <div class="asset-grid">${r.ready_assets.map((a,i)=>`<div class="asset-card"><div class="doc-icon">▤</div><div><strong>${esc(compact(a.title || a.name || a.asset_name || a, `Asset ${i+1}`))}</strong><span>${esc(compact(a.description || a.summary || a.purpose || a.type, "Ready to use"))}</span></div></div>`).join("")}</div>
+    <div class="risk-block"><strong>Active risk</strong><p>${esc(r.risk)}</p><small>Mitigation: ${esc(r.next_move)}</small></div>
+    <button class="recommended-btn" data-command="${esc(r.recommended_command)}">Continue with recommended command →</button>
+    <div class="workflow-actions"><button data-action="plan">Turn into action plan</button><button data-action="asset">Draft asset</button><button data-action="decision">Save decision</button></div>
+  </div>`;
+}
 
-  return `
-    <div class="copy">${esc(r.executive_summary)}</div>
-    <div class="exec-package">
-      <div class="exec-head">
-        <div><div class="exec-type">Execution Package</div><strong>${esc(r.next_move)}</strong></div>
-        <button data-copy="${esc(JSON.stringify(r.raw || r, null, 2))}">Copy</button>
-      </div>
-      <div class="exec-body">
-        <div class="exec-grid">
-          <div class="exec-mini"><b>Decision</b><p>${esc(r.decision)}</p></div>
-          <div class="exec-mini"><b>Risk Control</b><p>${esc(r.risk)}</p></div>
-          ${actions}
-          ${assets}
+function getComposerHTML(){ return `<div class="composer runtime-composer"><input id="followInput" placeholder="Ask a follow-up or refine your request..." /><div class="composer-icons"><span>♩</span><button id="followSend" type="button">▷</button></div></div>`; }
+function ensureComposerBound(){ setupComposer(); }
+function setupComposer(){
+  const input = document.getElementById("followInput") || document.querySelector(".composer input");
+  const send = document.getElementById("followSend") || document.querySelector(".composer button");
+  send?.addEventListener("click", () => submitCommand(input?.value || ""));
+  input?.addEventListener("keydown", e => { if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); submitCommand(input.value); } });
+}
+function setComposerValue(v){ const input = document.getElementById("followInput") || document.querySelector(".composer input"); if(input) input.value = v; }
+
+function bindRuntimeButtons(){
+  setupComposer();
+  els.thread.querySelectorAll("[data-command]").forEach(btn => btn.addEventListener("click", () => submitCommand(btn.getAttribute("data-command") || "")));
+  els.thread.querySelectorAll("[data-action]").forEach(btn => btn.addEventListener("click", () => handleAction(btn.getAttribute("data-action"))));
+}
+
+function handleAction(action){
+  const r = state.lastResponse; if(!r) return;
+  if(action === "plan"){
+    const plan = { summary:"Action plan created from the current response.", why:"This converts the answer into trackable execution.", next_move:"Work the first open task now.", decision:r.decision, action_steps:r.action_steps, ready_assets:r.ready_assets, risk:r.risk, priority:r.priority, recommended_command:r.recommended_command };
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:plan, created:now() });
+  }
+  if(action === "asset"){
+    const asset = { title:"Draft asset package", description:r.ready_assets.map(a=>compact(a.title||a)).join("; ") || r.summary, type:"Draft" };
+    state.assets.unshift(asset);
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:{...r, summary:"Draft asset package prepared.", why:"This turns the workflow into a usable deliverable.", next_move:"Review the asset card and decide what to send or refine.", ready_assets:[asset], action_steps:[{title:"Review draft asset"},{title:"Confirm audience"},{title:"Send or refine"}]}, created:now() });
+  }
+  if(action === "decision"){
+    state.savedDecisions.unshift({ title:r.decision, created:now() });
+    state.messages.push({ id:uid(), role:"assistant", status:"success", response:{...r, summary:"Decision saved to the runtime decision workspace.", why:"Captured decisions create continuity instead of another disposable answer.", next_move:r.recommended_command, action_steps:[{title:"Use the saved decision as the operating assumption"},{title:"Move the next action forward"}]}, created:now() });
+  }
+  renderAll();
+}
+
+function card(color,title,body,count){
+  const html = Array.isArray(body) ? `<ul>${body.slice(0,5).map(x=>`<li>${esc(compact(x.title || x.name || x.description || x, ""))}</li>`).join("")}</ul>` : `<p>${esc(compact(body,"—"))}</p>`;
+  return `<div class="sum-card ${color}"><div class="badge">${esc(count ?? "")}</div><div class="sum-title">${esc(title)}</div>${html}<div class="note">＋ Add note</div></div>`;
+}
+function renderSummary(){
+  if(!els.summary || !state.lastResponse) return;
+  const r = state.lastResponse;
+  els.summary.innerHTML = `<div class="section-head">EXECUTIVE SUMMARY</div><div class="section-sub">Live updates from the conversation</div>
+    ${card("orange","NEXT MOVE",r.next_move,1)}${card("","DECISION",r.decision,state.decisions.length)}${card("green","ACTION STEPS",r.action_steps,r.action_steps.length)}${card("purple","READY ASSETS",r.ready_assets,r.ready_assets.length)}${card("red","ACTIVE RISKS",r.risk,state.risks.length)}${card("orange","PRIORITY",r.priority,r.priority)}${card("","RECOMMENDED COMMAND",r.recommended_command,1)}
+    <div class="half"><div class="sum-card tiny"><div class="sum-title">RECENT DECISIONS</div><ul>${state.decisions.slice(0,2).map(d=>`<li>${esc(d.title)}</li>`).join("")}</ul></div><div class="sum-card tiny green"><div class="sum-title">SYSTEM STATUS</div><p>Runtime state active</p><div class="note">Updated now</div></div></div>`;
+}
+function renderIntel(){
+  if(!els.intel || !state.lastResponse) return;
+  const r = state.lastResponse;
+  els.intel.innerHTML = `<h3>EXECUTIVE INTELLIGENCE</h3><div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
+    <div class="rail-card"><div class="rail-title">◆ CURRENT FOCUS</div><p>${esc(r.next_move)}</p><div class="link">View focus →</div></div>
+    <div class="rail-card"><div class="rail-title">▧ ACTIVE RISK</div><p>${esc(r.risk)}</p><div class="link">View mitigation →</div></div>
+    <div class="rail-card"><div class="rail-title">▣ WORKSPACE ITEMS</div><div class="priority-row"><div class="num">${state.actions.length}</div><div><strong>Actions</strong><br><span>Runtime tasks created</span></div></div><div class="priority-row"><div class="num">${state.assets.length}</div><div><strong>Assets</strong><br><span>Runtime assets prepared</span></div></div><div class="priority-row"><div class="num">${state.decisions.length}</div><div><strong>Decisions</strong><br><span>Captured from responses</span></div></div><div class="link">View all →</div></div>
+    <div class="rail-card"><div class="rail-title">⚡ RECOMMENDED FOLLOW-UP</div><p>${esc(r.recommended_command)}</p><button class="recommended-btn rail-run" data-command="${esc(r.recommended_command)}">Run follow-up →</button></div>`;
+  els.intel.querySelectorAll("[data-command]").forEach(btn => btn.addEventListener("click", () => submitCommand(btn.getAttribute("data-command") || "")));
+}
+
+function bindNav(){
+  document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active")); item.classList.add("active");
+    const name = item.textContent.trim().toLowerCase();
+    if(!state.lastResponse) return;
+    let response = null;
+    if(name.includes("decision")) response = {...state.lastResponse, summary:"Decision workspace opened.", why:"These are decisions captured from the live thread.", next_move: state.decisions[0]?.title || state.lastResponse.decision, action_steps: state.decisions.map(d=>({title:d.title})), ready_assets: []};
+    else if(name.includes("risk")) response = {...state.lastResponse, summary:"Risk monitor opened.", why:"This shows what could block the current objective.", next_move: state.risks[0]?.mitigation || state.lastResponse.next_move, action_steps: state.risks.map(r=>({title:r.title})), ready_assets: []};
+    else if(name.includes("active projects") || name.includes("strategy")) response = {...state.lastResponse, summary:"Action workspace opened.", why:"These are the task rows created from the latest command.", next_move: state.actions[0]?.title || state.lastResponse.next_move, action_steps: state.actions.map(a=>({title:a.title})), ready_assets: state.assets};
+    if(response){ state.messages.push({ id:uid(), role:"assistant", status:"success", response, created:now() }); renderAll(); }
+  }));
+}
+
+function initComposer(){
+  if(els.composer){
+    els.composer.innerHTML = `<input id="followInput" placeholder="Ask a follow-up or refine your request..." /><div class="composer-icons"><span>♩</span><button id="followSend" type="button">▷</button></div>`;
+  }
+  setupComposer();
+}
+
+els.execute?.addEventListener("click", () => submitCommand());
+els.clear?.addEventListener("click", () => { if(els.input) els.input.value = ""; });
+els.input?.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); submitCommand(); } });
+document.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => { if(els.input) els.input.value = chip.textContent.trim(); submitCommand(); }));
+initComposer();
+bindNav();
+renderButtons();
+
+
+
+/* V37300 — Executive Response Compression Engine */
+(function(){
+  function esc2(v=""){
+    return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  function arr2(v){
+    if(v == null || v === "") return [];
+    return Array.isArray(v) ? v : [v];
+  }
+
+  function label2(s){
+    return String(s || "object").replace(/_/g, " ").replace(/\b\w/g, m => m.toUpperCase());
+  }
+
+  function text2(v){
+    if(v == null) return "";
+    if(typeof v === "string") return v;
+    if(typeof v === "number") return String(v);
+    if(Array.isArray(v)) return v.map(text2).filter(Boolean).join(", ");
+    if(typeof v === "object") return v.title || v.name || v.summary || v.description || v.content || v.next_move || v.executive_summary || JSON.stringify(v);
+    return String(v);
+  }
+
+  function short(v, max=160){
+    const t = text2(v);
+    return t.length > max ? t.slice(0, max - 1) + "…" : t;
+  }
+
+  function list(items, max=5){
+    const clean = arr2(items).filter(Boolean).slice(0, max);
+    if(!clean.length) return "<ul><li>Prepared for review.</li></ul>";
+    return `<ul>${clean.map(x => `<li>${esc2(short(x, 140))}</li>`).join("")}</ul>`;
+  }
+
+  function detailJSON(value){
+    try { return JSON.stringify(value || {}, null, 2); }
+    catch { return text2(value); }
+  }
+
+  window.renderObjectCard = function renderObjectCardCompressed(o){
+    const id = "obj_" + Math.random().toString(36).slice(2);
+    return `
+      <div class="ee-object-card" id="${id}">
+        <div class="ee-object-head">
+          <div>
+            <strong>${esc2(o.title || "Execution Asset")}</strong>
+            <small>${esc2(label2(o.type || o.object_type))} · ${esc2(o.status || "Ready")}</small>
+          </div>
+          <div class="ee-object-actions">
+            <button class="ee-mini-btn" onclick="document.getElementById('${id}').classList.toggle('open')">View</button>
+            <button class="ee-mini-btn" data-copy="${esc2(detailJSON(o.details || o.payload || o))}">Copy</button>
+          </div>
         </div>
-        ${objects}
+        <div class="ee-details"><pre>${esc2(detailJSON(o.details || o.payload || o))}</pre></div>
       </div>
-    </div>`;
-}
-
-function renderObjectCard(o){
-  return `<div class="object-card"><div class="object-card-top"><div><strong>${esc(o.title)}</strong><small>${esc(label(o.type))} · ${esc(o.status)}</small></div><button data-copy="${esc(JSON.stringify(o.details, null, 2))}">Copy</button></div><p>${esc(o.purpose || "Deployment-ready execution object.")}</p></div>`;
-}
-
-function renderRightSummary(){
-  if(!els.summary) return;
-  const r = state.rightRailState;
-  if(!r){
-    els.summary.innerHTML = `
-      <div class="section-head">EXECUTIVE SUMMARY</div>
-      <div class="section-sub">Live updates from the conversation</div>
-      ${summaryCard("orange", "NEXT MOVE", "Enter a command to generate the next move.", 1)}
-      ${summaryCard("blue", "DECISION", "No live decision yet.", 1)}
-      ${summaryCard("green", "ACTION STEPS", ["Awaiting command."], 1)}
-      ${summaryCard("purple", "READY ASSETS", ["No assets generated yet."], 0)}
-      ${summaryCard("red", "ACTIVE RISKS", "No live risk detected yet.", 0)}
-      ${summaryCard("orange", "PRIORITY", "Normal", "—")}
-      ${summaryCard("blue", "RECOMMENDED COMMAND", "Run a command to begin.", 1)}
     `;
-    return;
-  }
-  els.summary.innerHTML = `
-    <div class="section-head">EXECUTIVE SUMMARY</div>
-    <div class="section-sub">Live updates from the current command</div>
-    ${summaryCard("orange", "NEXT MOVE", r.next_move, 1)}
-    ${summaryCard("blue", "DECISION", r.decision, 1)}
-    ${summaryCard("green", "ACTION STEPS", r.action_steps, r.action_steps.length)}
-    ${summaryCard("purple", "READY ASSETS", r.ready_assets.length ? r.ready_assets : r.execution_objects.map(o => o.title), r.ready_assets.length || r.execution_objects.length)}
-    ${summaryCard("red", "ACTIVE RISKS", r.risk, 1)}
-    ${summaryCard("orange", "PRIORITY", r.priority, "High")}
-    ${summaryCard("blue", "RECOMMENDED COMMAND", r.recommended_command, 1)}
-  `;
-}
+  };
 
-function summaryCard(color, title, body, count){
-  const content = Array.isArray(body) ? `<ul>${body.slice(0,5).map(x => `<li>${esc(textOf(x))}</li>`).join("")}</ul>` : `<p>${esc(textOf(body))}</p>`;
-  return `<div class="sum-card ${esc(color)}"><div class="badge">${esc(count)}</div><div class="sum-title">${esc(title)}</div>${content}<div class="note">＋ Add note</div></div>`;
-}
+  window.renderAssistantResponse = function renderAssistantResponseCompressed(r){
+    if(!r) return `<div class="copy">Response received.</div>`;
 
-function renderIntelRail(){
-  if(!els.intel) return;
-  const r = state.rightRailState;
-  const objects = r?.execution_objects || [];
-  els.intel.innerHTML = `
-    <h3>EXECUTIVE INTELLIGENCE</h3>
-    <div class="search">⌕ Search files, notes, and context... <span style="margin-left:auto">☷</span></div>
-    <div class="rail-card"><div class="rail-title">◆ KEY INSIGHT</div><p>${esc(r ? r.executive_summary : "Executive Engine converts commands into saved execution assets.")}</p><div class="link">View insight →</div></div>
-    <div class="rail-card"><div class="rail-title">▧ MEMORY</div><p>${esc(objects.length ? `${objects.length} execution object${objects.length === 1 ? "" : "s"} prepared from the latest command.` : "No generated execution objects yet.")}</p><div class="link">View all memory →</div></div>
-    <div class="rail-card"><div class="rail-title">▣ READY TO REVIEW</div>${objects.length ? objects.slice(0,5).map((o,i) => `<div class="priority-row"><div class="num">${i+1}</div><div><strong>${esc(o.title)}</strong><br><span>${esc(label(o.type))}</span></div></div>`).join("") : `<p>Run a command to generate review-ready assets.</p>`}<div class="link">View all →</div></div>
-    <div class="rail-card"><div class="rail-title">♙ EXECUTION STATE</div><div class="team"><span>Status</span><strong class="ok">${esc(state.isLoading ? "Working" : "Ready")}</strong></div><div class="team"><span>Objects</span><strong>${esc(objects.length)}</strong></div><div class="team"><span>Priority</span><strong>${esc(r?.priority || "Normal")}</strong></div></div>
-  `;
-}
+    const actionSteps = arr2(r.action_steps).slice(0, 5);
+    const readyAssets = arr2(r.ready_assets).slice(0, 5);
+    const objects = arr2(r.execution_objects).slice(0, 6);
 
-function bindEvents(){
-  els.execute?.addEventListener("click", submitCommand);
-  els.clear?.addEventListener("click", () => { if(els.input) els.input.value = ""; });
-  els.input?.addEventListener("keydown", e => {
-    if(e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); submitCommand(); }
-  });
-  document.querySelectorAll(".chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      if(els.input) els.input.value = chip.textContent.trim();
-      submitCommand();
-    });
-  });
-}
+    const objectCards = objects.length
+      ? `<div class="ee-object-strip">${objects.map(window.renderObjectCard).join("")}</div>`
+      : "";
 
-bindEvents();
-renderApp();
+    const assetChips = (objects.length ? objects : readyAssets).slice(0, 4).map((item, i) => {
+      const title = item.title || item.asset_name || text2(item);
+      const type = item.type || item.object_type || "Ready asset";
+      return `<div class="ee-asset-chip"><strong>${esc2(short(title, 70))}</strong><span>${esc2(label2(type))}</span></div>`;
+    }).join("");
+
+    return `
+      <div class="ee-compressed-response">
+        <div class="ee-command-answer">
+          <div class="ee-answer-top">
+            <div class="ee-answer-cell">
+              <div class="ee-label">Clear Answer</div>
+              <strong>${esc2(short(r.executive_summary || r.next_move, 190))}</strong>
+            </div>
+            <div class="ee-answer-cell">
+              <div class="ee-label">Decision</div>
+              <strong>${esc2(short(r.decision, 170))}</strong>
+            </div>
+            <div class="ee-answer-cell">
+              <div class="ee-label">Priority</div>
+              <span class="ee-priority-pill">${esc2(short(r.priority || "High", 20))}</span>
+            </div>
+          </div>
+          <div class="ee-primary-action">
+            <div class="ee-label">Do this next</div>
+            <strong>${esc2(short(r.next_move, 220))}</strong>
+          </div>
+        </div>
+
+        <div class="ee-compressed-grid">
+          <div class="ee-list-card">
+            <div class="ee-label">Action Path</div>
+            ${list(actionSteps, 5)}
+          </div>
+          <div class="ee-assets-card">
+            <div class="ee-label">Ready to Review</div>
+            <div class="ee-assets-row">${assetChips || `<div class="ee-asset-chip"><strong>Execution package</strong><span>Ready</span></div>`}</div>
+          </div>
+        </div>
+
+        ${objectCards}
+
+        <div class="ee-risk-card">
+          <div class="ee-label">Risk Control</div>
+          <p>${esc2(short(r.risk, 220))}</p>
+        </div>
+
+        <button class="ee-followup" type="button">${esc2(short(r.recommended_command || "Continue with recommended command", 90))} →</button>
+
+        <div class="ee-action-row">
+          <button type="button">Turn into action plan</button>
+          <button type="button">Draft asset</button>
+          <button type="button">Save decision</button>
+        </div>
+      </div>
+    `;
+  };
+})();

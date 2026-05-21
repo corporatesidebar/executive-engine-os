@@ -1,43 +1,44 @@
-# Executive Engine OS — V37200 Execution Object Persistence + Workspace Engine
+# Executive Engine V37300 — Executive Response Compression Engine
 
-BACKEND ONLY.
+FRONTEND ONLY.
 
-## Structure
+## Deploy these files
 
-backend/
-├── main.py
-└── requirements.txt
-README.md
-test-checklist.md
+- index.html
+- app.js
+- styles.css
 
-## What this adds
+## What this fixes
 
-- Persistent execution objects
-- Persistent command threads
-- Workspace state
-- Ready-to-review asset queue
-- Object status updates
-- Object archiving
-- V36800-compatible /run contract
+The product is working, but responses are too visually heavy. V37300 compresses response rendering into an executive-readable format:
 
-## Endpoints
+- Clear Answer
+- Decision
+- Priority
+- Do This Next
+- Action Path
+- Ready to Review assets
+- Collapsible execution object cards
+- Risk Control
+- Follow-up action
 
-- GET /
-- GET /health
-- POST /run
-- GET /workspace
-- GET /workspace/objects
-- GET /workspace/ready
-- PATCH /workspace/objects/{object_id}
-- POST /workspace/objects/{object_id}/archive
-- GET /test-report
-- GET /test-report-json
+## Does not touch
 
-## Do not touch
-
-- frontend
-- layout
-- navigation
-- Supabase
-- DB schema
+- backend
 - API URL
+- /run contract
+- Supabase
+- layout shell
+- sidebar/navigation
+
+## Test command
+
+i need proposal for digital marketing and advertising for a cookie shop in Barrie Ontario consumer research average cost per cookie and how do we sell them across canada
+
+## Pass condition
+
+- No giant text wall
+- Assets are compact cards
+- Details open only when clicked
+- Right rail still syncs
+- Layout remains stable
